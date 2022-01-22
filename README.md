@@ -31,3 +31,4 @@ No additional instructions required.
 | ----------: | :------: | :----------------- | ----------------------------- |
 |    John Doe | 99887766 | john@doe.com       | Windows 10/Visual Studio 2019 |
 | Juliet Teoh | 96583182 | E0426308@u.nus.edu | macOS/CLion                   |
+| Vivegan Kanakaraja | 85425235 | e0407867@u.nus.edu | Windows 11/CLion       |
