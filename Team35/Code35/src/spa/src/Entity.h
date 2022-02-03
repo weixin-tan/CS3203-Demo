@@ -9,9 +9,9 @@
 class Entity {
 public:
     Entity();
-    Entity(entityType cType, std::string name);
+    Entity(EntityType cType, std::string name);
 
-    entityType cType;
+    EntityType cType;
     std::string name;
 
     std::string toString();

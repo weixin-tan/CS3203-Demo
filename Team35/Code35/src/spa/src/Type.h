@@ -6,7 +6,7 @@
 #ifndef SPA_TYPE_H
 #define SPA_TYPE_H
 
-enum entityType{
+enum EntityType {
     Assignment,
     Variable,
     If,
@@ -21,7 +21,7 @@ enum entityType{
     Wildcard
 };
 
-enum relationshipType{
+enum RelationshipType {
     Modifies,
     Uses,
     Parent,
