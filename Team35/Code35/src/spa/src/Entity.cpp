@@ -5,7 +5,7 @@ Entity::Entity() {
     Entity::cType = Wildcard;
 }
 
-Entity::Entity(entityType cType, std::string name) {
+Entity::Entity(EntityType cType, std::string name) {
     Entity::cType = cType;
     Entity::name = name;
 }
