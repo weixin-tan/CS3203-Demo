@@ -11,7 +11,7 @@ public:
     Entity();
     Entity(EntityType cType, std::string name);
 
-    EntityType cType;
+    EntityType rType;
     std::string name;
 
     std::string toString();
