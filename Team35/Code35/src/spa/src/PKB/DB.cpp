@@ -1,3 +1,8 @@
 #include "DB.h"
 
-DB::DB() : modifiesStmtTable(), modifiesProcTable() {};
+DB::DB() :
+  modifyStmtToVarTable(),
+  modifyProcToVarTable(),
+  varToModifyStmtTable(),
+  stmtTypeTable(),
+  variables() {}

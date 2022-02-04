@@ -5,13 +5,15 @@
 //#include "parsed_statement_temp.h"  // TODO: delete when ParsedStatement is implemented
 
 class PkbSetter {
-private:
+ private:
   DB* db;
 
-private:
+ private:
   void handleModifies(const ParsedStatement& parsedStatement);
+  void handleStatementType(const ParsedStatement& parsedStatement);
+  void handleVariables(const ParsedStatement& parsedStatement);
 
-public:
+ public:
   PkbSetter(DB* db);
   void insertStmt(const ParsedStatement& parsedStatement);
 

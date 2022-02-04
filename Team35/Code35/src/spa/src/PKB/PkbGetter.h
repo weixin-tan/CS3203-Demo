@@ -11,13 +11,12 @@ private:
 
 public:
   explicit PkbGetter(DB* db);
-  // TODO: change to pass by reference or pointer
   bool isRelationship(const RelationshipType& r, const Entity& leftSide, const Entity& rightSide) const;
-//  std::vector<Entity> getEntity(const EntityType& typeToGet) const;
+  std::vector<Entity> getEntity(const EntityType& typeToGet) const;
   // TODO: does not explicitly returns statements, maybe use template?
-//  std::vector<Entity> getRelationshipStatements(RelationshipType r);
-//  std::vector<Entity> getLeftSide(RelationshipType r, Entity rightSide, EntityType typeToGet);
-//  std::vector<Entity> getRightSide(RelationshipType r, Entity leftSide, EntityType typeToGet);
+  std::vector<Entity> getRelationshipStatements(const RelationshipType& r) const;
+  std::vector<Entity> getLeftSide(const RelationshipType& r, const Entity& rightSide, const EntityType& typeToGet) const;
+  std::vector<Entity> getRightSide(const RelationshipType& r, const Entity& leftSide, const EntityType& typeToGet) const;
 };
 
 #endif //SPA_PKBGETTER_H
