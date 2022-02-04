@@ -6,10 +6,10 @@
 
 class RelationshipRef{
 public:
-    relationshipType rType;
+    RelationshipType rType;
     Entity leftEntity;
     Entity rightEntity;
-    RelationshipRef(relationshipType rType, Entity leftEntity, Entity rightEntity);
+    RelationshipRef(RelationshipType rType, Entity leftEntity, Entity rightEntity);
     std::string toString();
 };
 

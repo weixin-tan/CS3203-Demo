@@ -1,17 +1,16 @@
+#ifndef SPA_ENTITY_H
+#define SPA_ENTITY_H
+
 #include <string>
 #include <sstream>
 #include "Type.h"
 
-#ifndef SPA_ENTITY_H
-#define SPA_ENTITY_H
-
-
 class Entity {
 public:
     Entity();
-    Entity(EntityType cType, std::string name);
+    Entity(EntityType eType, std::string name);
 
-    EntityType cType;
+    EntityType eType;
     std::string name;
 
     std::string toString();

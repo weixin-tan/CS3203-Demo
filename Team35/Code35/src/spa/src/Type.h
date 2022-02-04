@@ -1,10 +1,7 @@
-//
-// Created by Juliet Teoh on 2/2/22.
-//
-#include <map>
-
 #ifndef SPA_TYPE_H
 #define SPA_TYPE_H
+
+#include <map>
 
 enum EntityType {
     Assignment,
