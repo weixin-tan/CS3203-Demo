@@ -10,10 +10,6 @@ struct DB {
 public:
   std::map<int, std::set<std::string>> modifiesStmtTable;
   std::map<int, std::set<std::string>> modifiesProcTable;
-//  std::map<std::string, int> varToIdTable;
-//  std::map<std::string, int> procToIdTable;
-  std::map<int, int> followsTable;
-  std::map<int, int> parentTable;
 
 public:
   DB();
