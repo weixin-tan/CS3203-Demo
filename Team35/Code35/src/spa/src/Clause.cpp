@@ -1,8 +1,6 @@
 #include "Clause.h"
 
-Clause::Clause() {
-
-};
+Clause::Clause() {};
 
 void Clause::appendEntityToFind(Entity e) {
     Clause::entityToFindList.push_back(e);

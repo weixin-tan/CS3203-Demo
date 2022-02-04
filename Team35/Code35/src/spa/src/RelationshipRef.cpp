@@ -1,6 +1,6 @@
 #include "RelationshipRef.h"
 
-RelationshipRef::RelationshipRef(relationshipType rType, Entity leftEntity, Entity rightEntity) {
+RelationshipRef::RelationshipRef(RelationshipType rType, Entity leftEntity, Entity rightEntity) {
     RelationshipRef::rType = rType;
     RelationshipRef::leftEntity = leftEntity;
     RelationshipRef::rightEntity = rightEntity;

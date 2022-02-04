@@ -1,9 +1,9 @@
+#ifndef SPA_CLAUSE_H
+#define SPA_CLAUSE_H
+
 #include <vector>
 #include "Entity.h"
 #include "RelationshipRef.h"
-
-#ifndef SPA_CLAUSE_H
-#define SPA_CLAUSE_H
 
 class Clause{
 
@@ -16,9 +16,6 @@ public:
     void appendEntityToFind(Entity e);
     void appendRef(RelationshipRef r);
     std::string toString();
-
-
-
 };
 
 
