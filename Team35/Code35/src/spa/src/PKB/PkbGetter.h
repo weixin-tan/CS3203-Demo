@@ -2,7 +2,7 @@
 #define SPA_PKBGETTER_H
 
 #include <vector>
-#include "Entity.h"
+#include "../Entity.h"
 #include "DB.h"
 
 class PkbGetter {
