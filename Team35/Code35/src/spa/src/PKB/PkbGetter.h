@@ -5,12 +5,18 @@
 #include "Entity.h"
 
 class PkbGetter {
-    virtual bool isRelationship(RelationshipType r, Entity leftSide, Entity rightSide) = 0;
-    virtual std::vector<Entity> getEntity(EntityType typeToGet) = 0;
-    // TODO: does not explicitly returns statements, maybe use template?
-    virtual std::vector<Entity> getRelationshipStatements(RelationshipType r) = 0;
-    virtual std::vector<Entity> getLeftSide(RelationshipType r, Entity rightSide, EntityType typeToGet) = 0;
-    virtual std::vector<Entity> getRightSide(RelationshipType r, Entity leftSide, EntityType typeToGet) = 0;
+private:
+    DB* db;
+
+public:
+    PkbGetter(DB* db);
+    // TODO: change to pass by reference or pointer
+    bool isRelationship(RelationshipType r, Entity leftSide, Entity rightSide);
+//    std::vector<Entity> getEntity(EntityType typeToGet);
+//    // TODO: does not explicitly returns statements, maybe use template?
+//    std::vector<Entity> getRelationshipStatements(RelationshipType r);
+//    std::vector<Entity> getLeftSide(RelationshipType r, Entity rightSide, EntityType typeToGet);
+//    std::vector<Entity> getRightSide(RelationshipType r, Entity leftSide, EntityType typeToGet);
 };
 
 #endif //SPA_PKBGETTER_H

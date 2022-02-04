@@ -1,21 +1,15 @@
 #pragma once
 
-#include <stdio.h>
-#include <iostream>
-#include <string>
-#include <vector>
+#include "DB.h"
+#include "PkbGetter.h"
 
 using namespace std;
-typedef short PROC;
-
-class TNode;
-
-class VarTable;  // no need to #include "VarTable.h" as all I need is pointer
 
 class PKB {
+    DB db;
+    PkbGetter pkbGetter;
 public:
-	static VarTable* varTable; 
-	static int setProcToAST(PROC p, TNode* r);
-	static TNode* getRootAST (PROC p);
+    PKB();
+    PkbGetter* getGetter();
 
 };

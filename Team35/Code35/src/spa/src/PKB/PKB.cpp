@@ -1,17 +1,7 @@
-#include<stdio.h>
-#include <iostream>
-#include <string>
-#include <vector>
-
-using namespace std;
-
 #include "PKB.h"
-#include "TNode.h"
 
-int PKB::setProcToAST(PROC p, TNode* r) {
-	return 0;
-}
+PKB::PKB() : db(), pkbGetter(&db) {}
 
-TNode* PKB::getRootAST (PROC p){
-	return nullptr;
+PkbGetter* PKB::getGetter() {
+    return &pkbGetter;
 }
