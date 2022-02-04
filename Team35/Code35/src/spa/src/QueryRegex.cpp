@@ -1,8 +1,5 @@
-//
-// Created by Juliet Teoh on 4/2/22.
-//
-
 #include "QueryRegex.h"
+
 bool isIdent(std::string s){
   std::regex identRegex("[A-Za-z][A-Za-z0-9]*");
   return std::regex_match(s, identRegex);
@@ -77,6 +74,4 @@ std::vector<std::string> extractDeclaration(std::string s){
   return returnList;
 }
 
-std::vector<std::string> extractDesignEntityandSynonym(std::string s){
-
-}
+std::vector<std::string> extractDesignEntityandSynonym(std::string s);

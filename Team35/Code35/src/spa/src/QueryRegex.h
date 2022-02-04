@@ -1,7 +1,3 @@
-//
-// Created by Juliet Teoh on 4/2/22.
-//
-
 #ifndef SPA_SRC_SPA_SRC_QUERYREGEX_H_
 #define SPA_SRC_SPA_SRC_QUERYREGEX_H_
 
