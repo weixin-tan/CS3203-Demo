@@ -8,10 +8,10 @@
 // just a dataclass to hold all the tables
 struct DB {
 public:
-  std::map<int, std::set<int>> modifiesStmtTable;
-  std::map<int, std::set<int>> modifiesProcTable;
-  std::map<std::string, int> varToIdTable;
-  std::map<std::string, int> procToIdTable;
+  std::map<int, std::set<std::string>> modifiesStmtTable;
+  std::map<int, std::set<std::string>> modifiesProcTable;
+//  std::map<std::string, int> varToIdTable;
+//  std::map<std::string, int> procToIdTable;
   std::map<int, int> followsTable;
   std::map<int, int> parentTable;
 

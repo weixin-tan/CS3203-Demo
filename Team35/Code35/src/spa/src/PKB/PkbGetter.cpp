@@ -24,14 +24,12 @@ bool PkbGetter::isRelationship(const RelationshipType& r, const Entity& leftSide
   if (r == Modifies) {
     assert(rightSide.eType == Variable);
     if (isStatement(leftSide)) {
-      const int& varId = db->varToIdTable[rightSide.name];
-      const std::set<int>& modifiedVars = db->modifiesStmtTable[stoi(leftSide.name)];
-      return modifiedVars.find(varId) != modifiedVars.end();
+      const std::set<std::string>& modifiedVars = db->modifiesStmtTable[stoi(leftSide.name)];
+      return modifiedVars.find(rightSide.name) != modifiedVars.end();
     }
     if (leftSide.eType == Procedure) {
-      const int& procId = db->procToIdTable[rightSide.name];
-      const std::set<int>& modifiedVars = db->modifiesProcTable[stoi(leftSide.name)];
-      return modifiedVars.find(procId) != modifiedVars.end();
+      const std::set<std::string>& modifiedVars = db->modifiesProcTable[stoi(leftSide.name)];
+      return modifiedVars.find(rightSide.name) != modifiedVars.end();
     }
   }
   assert(false);  // not implemented yet
