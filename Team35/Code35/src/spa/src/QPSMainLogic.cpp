@@ -16,6 +16,39 @@ QPSMainLogic* QPSMainLogic::getInstance() {
   return instance;
 }
 
-// Default constructor
-QPSMainLogic::QPSMainLogic() = default;
+// Constructor
+QPSMainLogic::QPSMainLogic() {
+  queryProcessor = new QueryProcessor();
+  suchThatHandler = new SuchThatHandler();
+  resultProcessor = new ResultProcessor();
+  resultFormatter = new ResultFormatter();
+}
 
+//
+std::string QPSMainLogic::parse(std::string query) {
+  std::vector<Clause> clauses = callParser(query);
+  std::vector<Result> matchingEntities = callHandler(clauses);
+  Result processedEntities = callProcessor(matchingEntities);
+  std::string finalResult = callFormatter(processedEntities);
+  return finalResult;
+}
+
+std::vector<Clause> QPSMainLogic::callParser(std::string query) {
+  std::vector<Clause> clauses = queryProcessor->parsePQL(query);
+  return clauses;
+}
+
+std::vector<Result> QPSMainLogic::callHandler(std::vector<Clause> clauses) {
+  std::vector<Result> matchingEntities = suchThatHandler->processClause(clauses);
+  return matchingEntities;
+}
+
+Result QPSMainLogic::callProcessor(std::vector<Result> matchingEntities) {
+  Result processedEntities = resultProcessor->processResults(matchingEntities);
+  return processedEntities;
+}
+
+std::string QPSMainLogic::callFormatter(Result processedEntities) {
+  std::string finalResult = resultFormatter->formatResult(processedEntities);
+  return finalResult;
+}
