@@ -2,18 +2,18 @@
 #include "Type.h"
 
 Entity::Entity() {
-    Entity::cType = Wildcard;
+  Entity::cType = Wildcard;
 }
 
 Entity::Entity(EntityType cType, std::string name) {
-    Entity::cType = cType;
-    Entity::name = name;
+  Entity::cType = cType;
+  Entity::name = name;
 }
 
 std::string Entity::toString() {
-    std::ostringstream buffer;
-    buffer << "Type: " << Type::entityTypeStringArr[cType] << ", Name: " << name;
-    return buffer.str();
+  std::ostringstream buffer;
+  buffer << "Type: " << Type::entityTypeStringArr[cType] << ", Name: " << name;
+  return buffer.str();
 }
 
 

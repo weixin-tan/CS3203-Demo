@@ -1,3 +1,3 @@
 #include "DB.h"
 
-DB::DB() : modifiesStmtTable(), varToIntTable() {};
+DB::DB() : modifiesStmtTable(), varToIdTable(), procToIdTable(), followsTable(), parentTable() {};

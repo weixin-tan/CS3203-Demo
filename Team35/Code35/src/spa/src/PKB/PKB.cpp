@@ -3,5 +3,5 @@
 PKB::PKB() : db(), pkbGetter(&db) {}
 
 PkbGetter* PKB::getGetter() {
-    return &pkbGetter;
+  return &pkbGetter;
 }
