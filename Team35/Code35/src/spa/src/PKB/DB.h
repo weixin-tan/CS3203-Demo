@@ -4,7 +4,7 @@
 #include <map>
 #include <set>
 #include <string>
-#include "Type.h"
+#include "../Type.h"
 
 // just a dataclass to hold all the tables
 struct DB {
