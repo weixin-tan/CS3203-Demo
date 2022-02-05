@@ -5,9 +5,13 @@
 
 using namespace std;
 
-
 #include "PKB.h"
+#include "TNode.h"
 
-int DesignExtractor () {
+int PKB::setProcToAST(PROC p, TNode* r) {
 	return 0;
+}
+
+TNode* PKB::getRootAST (PROC p){
+	return nullptr;
 }
