@@ -41,7 +41,7 @@ std::vector<Entity> PkbGetter::getRelationshipStatements(const RelationshipType&
   std::vector<Entity> result;
 
   if (r == Modifies) {
-    for (const auto&[stmtNo, _]: db->modifyStmtToVarTable)
+    for (const auto& [stmtNo, _]: db->modifyStmtToVarTable)
       result.emplace_back(Entity(Assignment, std::to_string(stmtNo)));
   }
 

@@ -65,4 +65,3 @@ void PkbSetter::insertStmt(const ParsedStatement& parsedStatement) {
   handleModifies(parsedStatement);
   handleCalls(parsedStatement);
 }
-
