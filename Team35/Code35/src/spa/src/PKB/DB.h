@@ -5,15 +5,31 @@
 #include <set>
 #include <string>
 #include "../Type.h"
+#include "parsed_statement_temp.h"
 
 // just a dataclass to hold all the tables
 struct DB {
  public:
+  // relationship tables
+  std::map<int, ParsedStatement> stmtTable;
   std::map<int, std::set<std::string>> modifyStmtToVarTable;
   std::map<std::string, std::set<std::string>> modifyProcToVarTable;
   std::map<std::string, std::set<int>> varToModifyStmtTable;
+  std::map<std::string, std::set<std::string>> varToModifyProcTable;
+  std::map<int, std::set<std::string>> usesStmtToVarTable;
+  std::map<std::string, std::set<std::string>> usesProcToVarTable;
+  std::map<std::string, std::set<int>> varToUsesStmtTable;
+  std::map<std::string, std::set<std::string>> varToUsesProcTable;
   std::map<int, EntityType> stmtTypeTable;
-  std::set<std::string> variables;  // might be redundant? all variables must be modified by a statement?
+  std::map<int, std::set<int>> parentToChildTable;
+  std::map<int, int> childToParentTable;
+  std::map<int, std::string> stmtToProcedureCalled;
+  std::map<int, int> stmtPreceding;
+  std::map<int, int> stmtFollowing;
+
+  // entity tables
+  std::set<std::string> variables;
+  std::set<std::string> procedures;
 
  public:
   DB();
