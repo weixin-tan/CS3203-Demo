@@ -1,0 +1,60 @@
+#include "ConcreteSyntaxBasic.h"
+
+ConcreteSyntaxBasic::ConcreteSyntaxBasic() {
+
+}
+
+Procedure ConcreteSyntaxBasic::parseProcedure(std::queue<Token> &tokensQueue) {
+	// procedure_keyword
+	tokensQueue.pop();
+	// procedure name
+	tokensQueue.pop();
+	// left_curly
+	tokensQueue.pop();
+
+	Procedure procedure;
+	StmtLst stmtLst;
+
+	int stmt_count = 2;
+
+	while (tokensQueue.front() != RIGHT_CURLY) {
+		Statement temp_statement = ConcreteSyntaxBasic::parseStmt(tokensQueue);
+		temp_statement.stmt_no = stmt_count;
+		stmtLst.setNextStmt(temp_statement);
+		stmt_count++;
+	}
+
+	procedure.setStmtLst(stmtLst);
+	return procedure;
+}
+
+Statement ConcreteSyntaxBasic::parseStmt(std::queue<Token> &tokensQueue) {
+	if (tokensQueue.front() == NAME) {
+		return ConcreteSyntaxBasic::parseAssign(tokensQueue);
+	}
+}
+
+Statement ConcreteSyntaxBasic::parseAssign(std::queue<Token> &tokensQueue) {
+	Statement assignStmt;
+	assignStmt.statement_type = kassign_stmt;
+	assignStmt.var_name = tokensQueue.front();
+	// var_name
+	tokensQueue.pop();
+	// equals sign
+	tokensQueue.pop();
+	assignStmt.expr = ConcreteSyntaxBasic::parseExpr(tokensQueue);
+	// semicolon
+	tokensQueue.pop();
+	return assignStmt;
+}
+
+std::vector<std::string> ConcreteSyntaxBasic::parseExpr(std::queue<Token> &tokensQueue) {
+	std::vector<std::string> result;
+	while (tokensQueue.front() != SEMICOLON) {
+		if (tokensQueue.front() == NAME) {
+			result.push_back(tokensQueue.front());
+		}
+		tokensQueue.pop();
+	}
+	return result;
+}
