@@ -1,6 +1,5 @@
 #pragma once
 
-#include<stdio.h>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -10,13 +9,18 @@
 #include "StmtLst.h"
 #include "Procedure.h"
 
+#include <PKB/PkbSetter.h>
+
 class Convertor {
 
 
 public:
 
+	PkbSetter* pkb_setter;
 	static std::string curr_procedure;
 	std::stack<int> nestedstack;
+
+	Convertor::Convertor(PkbSetter* pkb_setter);
 
 	void Convertor::ProcedureReader(std::vector<Procedure> procedurelist);
 

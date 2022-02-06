@@ -5,17 +5,20 @@
 #include "Convertor.h"
 #include "ParsedStatement.h"
 
+#include "PKB\PKB.h"
+
 #include "TNode.h"
 #include "catch.hpp"
 using namespace std;
 void require(bool b) {
     REQUIRE(b);
 }
+	// PKB setter
+	PKB pkb;
+	
 
-TEST_CASE("Convertor ") {
-
-	//Creating the statement container
 	StmtLst stmt_cont;
+
 
 	//Creating the statement b = a
 	Statement statement1; 
@@ -41,7 +44,7 @@ TEST_CASE("Convertor ") {
 	//Creating the parsedStatements for the solution
 
 	// Creating the convertor
-	Convertor convertor;
+	Convertor convertor(pkb.getSetter());
 	std::vector<ParsedStatement> results = convertor.StatementListReader(stmt_cont, ContainerType::kprocedure);
 
 	ParsedStatement parsed_statement1 = results[0];

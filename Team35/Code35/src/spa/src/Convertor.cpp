@@ -5,16 +5,20 @@
 #include "Convertor.h"
 #include "Statement.h"
 #include "StatementType.h"
+#include <PKB/PkbSetter.h>
 #include "Procedure.h"
 
 std::string Convertor::curr_procedure = "no_procedure";
+
+Convertor::Convertor(PkbSetter* pkb_setter) {
+	this->pkb_setter = pkb_setter;
+}
 
 // Reads the procedurelist and calls a statemnet list reader for each procedure in the list.
 void Convertor::ProcedureReader(std::vector<Procedure> procedurelist) {
 	for (int i = 0; i < procedurelist.size(); i++) {
 		curr_procedure = procedurelist[i].getProcName();
 		StatementListReader(procedurelist[i].getStmtLst(), -1);
-		
 		
 	}
 }
@@ -39,7 +43,12 @@ std::vector<ParsedStatement> Convertor::StatementListReader(StmtLst statement_li
 	for (int i = 0; i < statement_list.getSize(); i++) {
 		results.push_back(this->readStatement(statement_list.getStmtAtIndex(i), containertype, nestedstack, container_number));
 	}
-	 
+
+	// TODO: Sending the statement list to the PKB - should be removed 
+	for (const auto i : results) {
+		pkb_setter->insertStmt(i);
+	}
+
 	return results;
 }
 
