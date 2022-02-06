@@ -16,4 +16,11 @@ std::string Entity::toString() {
     return buffer.str();
 }
 
+bool Entity::operator==(const Entity &e1) const {
+  if(eType == e1.eType && name == e1.name) {
+    return true;
+  } else {
+    return false;
+  }
+}
 

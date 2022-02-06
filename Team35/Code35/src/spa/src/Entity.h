@@ -14,6 +14,7 @@ public:
     std::string name;
 
     std::string toString();
+    bool operator==(const Entity & e1) const;
 };
 
 
