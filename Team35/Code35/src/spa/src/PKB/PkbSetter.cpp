@@ -1,6 +1,6 @@
 #include "PkbSetter.h"
 #include "../Type.h"
-//#include "parsed_statement_temp.h"  // TODO: delete when ParsedStatement is implemented
+#include "../ParsedStatement.h" 
 
 PkbSetter::PkbSetter(DB *db) : db(db) {}
 

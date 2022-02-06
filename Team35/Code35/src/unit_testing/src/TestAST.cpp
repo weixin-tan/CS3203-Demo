@@ -5,6 +5,8 @@
 #include "Convertor.h"
 #include "ParsedStatement.h"
 
+#include "PKB\PKB.h"
+
 #include "TNode.h"
 #include "catch.hpp"
 using namespace std;

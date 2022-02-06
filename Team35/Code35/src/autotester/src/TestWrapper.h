@@ -5,14 +5,20 @@
 #include <iostream>
 #include <list>
 
+#include "PKB/PKB.h"
+#include "Convertor.h"
+
 // include your other headers here
 #include "AbstractWrapper.h"
 
 class TestWrapper : public AbstractWrapper {
+ private:
+	PKB pkb;
+	Convertor convertor;
  public:
   // default constructor
   TestWrapper();
-  
+
   // destructor
   ~TestWrapper();
   
@@ -21,6 +27,7 @@ class TestWrapper : public AbstractWrapper {
   
   // method for evaluating a query
   virtual void evaluate(std::string query, std::list<std::string>& results);
+	
 };
 
 #endif

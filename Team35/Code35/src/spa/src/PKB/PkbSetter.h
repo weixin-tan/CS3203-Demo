@@ -2,7 +2,8 @@
 #define SPA_PKBSETTER_H
 
 #include "DB.h"
-//#include "parsed_statement_temp.h"  // TODO: delete when ParsedStatement is implemented
+#include "../ParsedStatement.h" 
+
 
 class PkbSetter {
  private:
