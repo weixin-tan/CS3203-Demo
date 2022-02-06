@@ -12,7 +12,7 @@ void require(bool b) {
     REQUIRE(b);
 }
 
-TEST_CASE("Convertor") {
+TEST_CASE("Convertor ") {
 
 	//Creating the statement container
 	StatementContainer stmt_cont;
