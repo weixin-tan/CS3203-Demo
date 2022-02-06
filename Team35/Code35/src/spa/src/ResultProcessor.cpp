@@ -4,10 +4,9 @@
 
 #include "ResultProcessor.h"
 
-ResultProcessor::ResultProcessor() {
-
-}
+ResultProcessor::ResultProcessor() = default;
 
 Result ResultProcessor::processResults(std::vector<Result> results) {
-    return Result();
+  Result r = results.front();
+  return r;
 }

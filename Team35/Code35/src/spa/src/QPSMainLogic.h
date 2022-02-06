@@ -1,7 +1,3 @@
-//
-// Created by viv on 4/2/2022.
-//
-
 #ifndef SPA_QPSMAINLOGIC_H
 #define SPA_QPSMAINLOGIC_H
 
@@ -15,11 +11,11 @@
 
 class QPSMainLogic {
  public:
-  static QPSMainLogic* getInstance(); // Static access method
+  static QPSMainLogic* getInstance(PkbGetter* pg); // Static access method
   std::string parse(std::string query);
 
  private:
-  QPSMainLogic(); // Make constructor private
+  explicit QPSMainLogic(PkbGetter* pg); // Make constructor private
   QPSMainLogic(const QPSMainLogic&); // Make copy constructor private
   QPSMainLogic& operator = (const QPSMainLogic&); // Make assignment operator private
   static QPSMainLogic* instance; // The instance of QPSMainLogic will be stored here

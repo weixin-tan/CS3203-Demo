@@ -1,13 +1,13 @@
-//
-// Created by viv on 4/2/2022.
-//
-
 #include "ResultFormatter.h"
 
-ResultFormatter::ResultFormatter() {
-
-}
+ResultFormatter::ResultFormatter() = default;
 
 std::string ResultFormatter::formatResult(Result finalResult) {
-    return std::string();
+  std::vector<Entity> resultEntities = finalResult.getResultEntities();
+  std::string result;
+  for(const Entity& e : resultEntities) {
+    result += e.name + ", ";
+  }
+  
+  return result;
 }

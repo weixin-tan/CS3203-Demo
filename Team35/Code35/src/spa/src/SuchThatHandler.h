@@ -1,7 +1,3 @@
-//
-// Created by viv on 4/2/2022.
-//
-
 #ifndef SPA_SUCHTHATHANDLER_H
 #define SPA_SUCHTHATHANDLER_H
 
@@ -10,19 +6,21 @@
 #include "Entity.h"
 #include "Type.h"
 #include "Clause.h"
+#include "Result.h"
+#include "PkbGetter.h"
 
 class SuchThatHandler {
  public:
-  SuchThatHandler(PkbGetter* pg);
+  explicit SuchThatHandler(PkbGetter* pg);
 
   PkbGetter* pg;
 
-  std::vector<Result> processClause(Clause c);
-  bool isRelationship(RelationshipType r, Entity e1, Entity e2);
-  Result getEntity(Type typeToGet);
-  Result getRelationshipStatements(RelationshipType r);
-  Result getLeftSide(RelationshipType r, Entity rightSide, Type typeToGet);
-  Result getRightSide(RelationshipType r, Entity rightSide, Type typeToGet);
+  std::vector<Result> processClause(const std::vector<Clause>& clauses) const;
+  bool isRelationship(RelationshipType r, const Entity& e1, const Entity& e2) const;
+  std::vector<Entity> getEntity(EntityType typeToGet) const;
+  std::vector<Entity> getRelationshipStatements(RelationshipType r) const;
+  std::vector<Entity> getLeftSide(RelationshipType r, const Entity& rightSide, EntityType typeToGet) const;
+  std::vector<Entity> getRightSide(RelationshipType r, const Entity& leftSide, EntityType typeToGet) const;
 
 };
 
