@@ -2,57 +2,66 @@
 #include "../Type.h"
 #include "parsed_statement_temp.h"  // TODO: delete when ParsedStatement is implemented
 
-PkbSetter::PkbSetter(DB *db) : db(db) {}
+PkbSetter::PkbSetter(DB *db) : db(db) {
+  PkbSetter::spTypeToQpsTypeTable = {
+      {StatementType::kassign_stmt, EntityType::Assignment},
+      {StatementType::kprint_stmt,  EntityType::Print},
+      {StatementType::kcall_stmt,   EntityType::Call},
+      {StatementType::kif_stmt,     EntityType::If},
+      {StatementType::kwhile_stmt,  EntityType::While},
+      {StatementType::kread_stmt,   EntityType::Read}
+  };
+}
 
 void PkbSetter::handleVariables(const ParsedStatement& parsedStatement) {
-  for (const auto& var: parsedStatement.varModified)
+  for (const auto& var: parsedStatement.var_modified)
     db->variables.insert(var);
 }
 
 void PkbSetter::handleProcedure(const ParsedStatement& parsedStatement) {
-  db->procedures.insert(parsedStatement.procedureName);
+  db->procedures.insert(parsedStatement.procedure_name);
 }
 
 void PkbSetter::handleModifies(const ParsedStatement& parsedStatement) {
-  for (const auto& var: parsedStatement.varModified) {
-    db->modifyStmtToVarTable[parsedStatement.stmtNo].insert(var);
-    db->varToModifyStmtTable[var].insert(parsedStatement.stmtNo);
-    db->modifyProcToVarTable[parsedStatement.procedureName].insert(var);
-    db->varToModifyProcTable[var].insert(parsedStatement.procedureName);
+  for (const auto& var: parsedStatement.var_modified) {
+    db->modifyStmtToVarTable[parsedStatement.stmt_no].insert(var);
+    db->varToModifyStmtTable[var].insert(parsedStatement.stmt_no);
+    db->modifyProcToVarTable[parsedStatement.procedure_name].insert(var);
+    db->varToModifyProcTable[var].insert(parsedStatement.procedure_name);
   }
 }
 
 void PkbSetter::handleUses(const ParsedStatement& parsedStatement) {
-  for (const auto& var: parsedStatement.varUsed) {
-    db->usesStmtToVarTable[parsedStatement.stmtNo].insert(var);
-    db->varToUsesStmtTable[var].insert(parsedStatement.stmtNo);
-    db->usesProcToVarTable[parsedStatement.procedureName].insert(var);
-    db->varToUsesProcTable[var].insert(parsedStatement.procedureName);
+  for (const auto& var: parsedStatement.var_used) {
+    db->usesStmtToVarTable[parsedStatement.stmt_no].insert(var);
+    db->varToUsesStmtTable[var].insert(parsedStatement.stmt_no);
+    db->usesProcToVarTable[parsedStatement.procedure_name].insert(var);
+    db->varToUsesProcTable[var].insert(parsedStatement.procedure_name);
   }
 }
 
 void PkbSetter::handleStatementType(const ParsedStatement& parsedStatement) {
-  db->stmtTypeTable[parsedStatement.stmtNo] = SP_TYPE_ENTITY_TYPE_MAP[parsedStatement.statementType];  // pending SP
+  db->stmtTypeTable[parsedStatement.stmt_no] = spTypeToQpsTypeTable[parsedStatement.statement_type];
 }
 
 void PkbSetter::handleParent(const ParsedStatement& parsedStatement) {
-  db->parentToChildTable[parsedStatement.ifLineNo].insert(parsedStatement.stmtNo);
-  db->childToParentTable[parsedStatement.stmtNo] = parsedStatement.ifLineNo;
-  db->parentToChildTable[parsedStatement.whileLineNo].insert(parsedStatement.stmtNo);
-  db->childToParentTable[parsedStatement.stmtNo] = parsedStatement.whileLineNo;
+  db->parentToChildTable[parsedStatement.if_line_no].insert(parsedStatement.stmt_no);
+  db->childToParentTable[parsedStatement.stmt_no] = parsedStatement.if_line_no;
+  db->parentToChildTable[parsedStatement.while_line_no].insert(parsedStatement.stmt_no);
+  db->childToParentTable[parsedStatement.stmt_no] = parsedStatement.while_line_no;
 }
 
 void PkbSetter::handleFollows(const ParsedStatement& parsedStatement) {
-  db->stmtPreceding[parsedStatement.stmtNo] = parsedStatement.preceding;
-  db->stmtFollowing[parsedStatement.preceding] = parsedStatement.stmtNo;
+  db->stmtPreceding[parsedStatement.stmt_no] = parsedStatement.preceding;
+  db->stmtFollowing[parsedStatement.preceding] = parsedStatement.stmt_no;
 }
 
 void PkbSetter::handleCalls(const ParsedStatement& parsedStatement) {
-  db->stmtToProcedureCalled[parsedStatement.stmtNo] = parsedStatement.procedureCalled;
+  db->stmtToProcedureCalled[parsedStatement.stmt_no] = parsedStatement.procedure_called;
 }
 
 void PkbSetter::insertStmt(const ParsedStatement& parsedStatement) {
-  db->stmtTable[parsedStatement.stmtNo] = parsedStatement;
+  db->stmtTable[parsedStatement.stmt_no] = parsedStatement;
   // handle entity
   handleVariables(parsedStatement);
   handleProcedure(parsedStatement);

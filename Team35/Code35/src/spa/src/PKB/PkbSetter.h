@@ -6,6 +6,7 @@
 
 class PkbSetter {
  private:
+  static std::map<StatementType, EntityType> spTypeToQpsTypeTable;
   DB* db;
 
  private:
