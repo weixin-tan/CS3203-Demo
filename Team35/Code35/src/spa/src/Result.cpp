@@ -4,14 +4,16 @@
 
 #include "Result.h"
 
-Result::Result() {
+Result::Result() = default;
 
+Result::Result(std::vector<Entity> entities) {
+  Result::resultEntities = entities;
 }
 
-void Result::appendResultEntity(Entity e) {
-
+void Result::appendResultEntity(const Entity& e) {
+  resultEntities.push_back(e);
 }
 
-std::string Result::toString() {
-    return std::string();
+std::vector<Entity> Result::getResultEntities() {
+    return resultEntities;
 }

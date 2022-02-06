@@ -12,12 +12,12 @@
 class Result {
  public:
   Result();
+  explicit Result(std::vector<Entity> entities);
 
-  std::vector<Entity> resultEntities;
+  std::vector<Entity> resultEntities = {};
 
-  void appendResultEntity(Entity e);
-  std::string toString();
-
+  void appendResultEntity(const Entity& e);
+  std::vector<Entity> getResultEntities();
 };
 
 
