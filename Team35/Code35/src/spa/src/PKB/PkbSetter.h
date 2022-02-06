@@ -3,7 +3,8 @@
 
 #include "DB.h"
 #include "../ParsedStatement.h" 
-
+#include "../StatementType.h"
+#include <map>
 
 class PkbSetter {
  private:
