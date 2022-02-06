@@ -7,11 +7,11 @@
 PkbGetter::PkbGetter(DB* db) : db(db) {}
 
 bool inline isUndefined(const Entity& e) {
-  return e.eType == Wildcard && e.name.empty();
+  return e.eType == EntityType::Wildcard && e.name.empty();
 }
 
 bool inline isStatement(const EntityType& eType) {
-  return eType == Assignment || eType == Read || eType == While || eType == If || eType == Print || eType == Call;
+  return eType == EntityType::Assignment || eType == EntityType::Read || eType == EntityType::While || eType == EntityType::If || eType == EntityType::Print || eType == EntityType::Call;
 }
 
 bool inline isStatement(const Entity& e) {
@@ -20,13 +20,13 @@ bool inline isStatement(const Entity& e) {
 
 bool PkbGetter::isRelationship(const RelationshipType& r, const Entity& leftSide, const Entity& rightSide) const {
   assert(!(isUndefined(leftSide) || isUndefined(rightSide)));  // must be named
-  if (r == Modifies) {
-    assert(rightSide.eType == Variable);
+  if (r == RelationshipType::Modifies) {
+    assert(rightSide.eType == EntityType::Variable);
     if (isStatement(leftSide)) {
       const std::set<std::string>& modifiedVars = db->modifyStmtToVarTable[stoi(leftSide.name)];
       return modifiedVars.find(rightSide.name) != modifiedVars.end();
     }
-    if (leftSide.eType == Procedure) {
+    if (leftSide.eType == EntityType::Procedure) {
       const std::set<std::string>& modifiedVars = db->modifyProcToVarTable[leftSide.name];
       return modifiedVars.find(rightSide.name) != modifiedVars.end();
     }
@@ -36,18 +36,18 @@ bool PkbGetter::isRelationship(const RelationshipType& r, const Entity& leftSide
 
 std::vector<Entity> PkbGetter::getRelationshipStatements(const RelationshipType& r) const {
   std::vector<Entity> result;
-  if (r == Modifies) {
+  if (r == RelationshipType::Modifies) {
     for (const auto& [stmtNo, _]: db->modifyStmtToVarTable)
-      result.emplace_back(Entity(Assignment, std::to_string(stmtNo)));
+      result.emplace_back(Entity(EntityType::Assignment, std::to_string(stmtNo)));
   }
   return result;
 }
 
 std::vector<Entity> PkbGetter::getEntity(const EntityType& typeToGet) const {
   std::vector<Entity> result;
-  if (typeToGet == Variable)
+  if (typeToGet == EntityType::Variable)
     for (const std::string& var : db->variables)
-      result.emplace_back(Entity(Variable, var));
+      result.emplace_back(Entity(EntityType::Variable, var));
   if (isStatement(typeToGet))
     for (const auto& [stmtNo, eType] : db->stmtTypeTable)
       if (eType == typeToGet)
@@ -60,8 +60,8 @@ std::vector<Entity> PkbGetter::getLeftSide(const RelationshipType& r, const Enti
                                            const EntityType& typeToGet) const {
   std::vector<Entity> result;
   assert(!isUndefined(rightSide));
-  if (r == Modifies) {
-    assert(rightSide.eType == Variable);
+  if (r == RelationshipType::Modifies) {
+    assert(rightSide.eType == EntityType::Variable);
     if (isStatement(typeToGet))
       for (const int& stmtNo: db->varToModifyStmtTable[rightSide.name])
         if (db->stmtTypeTable[stmtNo] == typeToGet)
@@ -74,12 +74,12 @@ std::vector<Entity> PkbGetter::getRightSide(const RelationshipType& r, const Ent
                                             const EntityType& typeToGet) const {
   std::vector<Entity> result;
   assert(!isUndefined(leftSide));
-  if (r == Modifies) {
-    assert(typeToGet == Variable);
-    assert(isStatement(leftSide) || leftSide.eType == Procedure);
+  if (r == RelationshipType::Modifies) {
+    assert(typeToGet == EntityType::Variable);
+    assert(isStatement(leftSide) || leftSide.eType == EntityType::Procedure);
     if (isStatement(leftSide)) {
       for (const std::string& var : db->modifyStmtToVarTable[std::stoi(leftSide.name)]) {
-        result.emplace_back(Entity(Variable, var));
+        result.emplace_back(Entity(EntityType::Variable, var));
       }
     }
   }

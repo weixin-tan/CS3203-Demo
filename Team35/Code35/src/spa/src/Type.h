@@ -2,8 +2,9 @@
 #define SPA_TYPE_H
 
 #include <map>
+#include <string>
 
-enum EntityType {
+enum class EntityType {
   Statement,
   Assignment,
   Variable,
@@ -20,7 +21,7 @@ enum EntityType {
   FixedString
 };
 
-enum RelationshipType {
+enum class RelationshipType{
   Modifies,
   Uses,
   Parent,
@@ -54,6 +55,9 @@ class Type{
                                                               "ParentT",
                                                               "Follows",
                                                               "FollowsT"};
+  static std::string entityTypeToString(EntityType e);
+
+  static std::string relationshipTypeToString(RelationshipType r);;
 };
 
 #endif //SPA_TYPE_H

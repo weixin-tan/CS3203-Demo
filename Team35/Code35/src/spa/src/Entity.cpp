@@ -2,7 +2,7 @@
 #include "Type.h"
 
 Entity::Entity() {
-    Entity::eType = Wildcard;
+    Entity::eType = EntityType::Wildcard;
 }
 
 Entity::Entity(EntityType eType, std::string name) {
@@ -12,7 +12,7 @@ Entity::Entity(EntityType eType, std::string name) {
 
 std::string Entity::toString() {
     std::ostringstream buffer;
-    buffer << "Type: " << Type::entityTypeStringArr[eType] << ", Name: " << name;
+    buffer << "Type: " << Type::entityTypeToString(eType) << ", Name: " << name;
     return buffer.str();
 }
 

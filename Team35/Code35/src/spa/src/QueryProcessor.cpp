@@ -7,27 +7,27 @@ std::unordered_map<std::string,Entity> QueryProcessor::createDeclarationObjects(
   std::string designEntity = designEntityArr[0];
   EntityType eType;
   if (designEntity == "stmt"){
-    eType = Statement;
+    eType = EntityType::Statement;
   }else if (designEntity == "read"){
-    eType = Read;
+    eType = EntityType::Read;
   }else if (designEntity == "print"){
-    eType = Print;
+    eType = EntityType::Print;
   }else if (designEntity == "call"){
-    eType = Call;
+    eType = EntityType::Call;
   }else if (designEntity == "while"){
-    eType = While;
+    eType = EntityType::While;
   }else if (designEntity == "if"){
-    eType = If;
+    eType = EntityType::If;
   }else if (designEntity == "assign"){
-    eType = Assignment;
+    eType = EntityType::Assignment;
   }else if (designEntity == "variable"){
-    eType = Variable;
+    eType = EntityType::Variable;
   }else if (designEntity == "constant"){
-    eType = Constant;
+    eType = EntityType::Constant;
   }else if (designEntity == "procedure"){
-    eType = Procedure;
+    eType = EntityType::Procedure;
   }else{
-    eType = Wildcard; // just putting some default type down
+    eType = EntityType::Wildcard; // just putting some default type down
   }
   for(int i=1; i<designEntityArr.size(); i++){
     std::string entityName = designEntityArr[i];
@@ -42,19 +42,19 @@ RelationshipRef QueryProcessor::createRelationshipObject(std::vector<std::string
   RelationshipType rType;
 
   if (relStr == "Follows"){
-    rType = Follows;
+    rType = RelationshipType::Follows;
   }else if (relStr == "Follows*"){
-    rType = FollowsT;
+    rType = RelationshipType::FollowsT;
   }else if (relStr == "Parent"){
-    rType = Parent;
+    rType = RelationshipType::Parent;
   }else if (relStr == "Parent*"){
-    rType = ParentT;
+    rType = RelationshipType::ParentT;
   }else if (relStr == "Uses"){
-    rType = Uses;
+    rType = RelationshipType::Uses;
   }else if (relStr == "Modifies"){
-    rType = Modifies;
+    rType = RelationshipType::Modifies;
   }else{
-    rType = Uses; // just putting some default type down
+    rType = RelationshipType::Uses; // just putting some default type down
   }
   Entity leftEntity = findRelationshipEntity(relRefList[1], entityMap);
   Entity rightEntity = findRelationshipEntity(relRefList[2], entityMap);
@@ -66,11 +66,11 @@ Entity QueryProcessor::findRelationshipEntity(const std::string& s, std::unorder
   if (entityMap.find(s) != entityMap.end()){
     return entityMap[s]; //
   }else if(s == "_"){
-    return Entity(Wildcard, "_");
+    return Entity(EntityType::Wildcard, "_");
   }else if(isInteger(s)){
-    return Entity(FixedInteger, s);
+    return Entity(EntityType::FixedInteger, s);
   }else if(isQuotationIdent(s)){
-    return Entity(FixedString, s);
+    return Entity(EntityType::FixedString, s);
   }else{
     return Entity();
   }

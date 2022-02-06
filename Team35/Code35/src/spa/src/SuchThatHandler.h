@@ -21,7 +21,6 @@ class SuchThatHandler {
   std::vector<Entity> getRelationshipStatements(RelationshipType r) const;
   std::vector<Entity> getLeftSide(RelationshipType r, const Entity& rightSide, EntityType typeToGet) const;
   std::vector<Entity> getRightSide(RelationshipType r, const Entity& leftSide, EntityType typeToGet) const;
-
 };
 
 

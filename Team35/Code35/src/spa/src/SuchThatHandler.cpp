@@ -26,7 +26,7 @@ std::vector<Result> SuchThatHandler::processClause(const std::vector<Clause>& cl
 
     if (left == entityToFind && right == entityToFind) {
       //Do nothing for now
-    } else if (right.eType == Wildcard && left == entityToFind) {
+    } else if (right.eType == EntityType::Wildcard && left == entityToFind) {
       // Handle wildcard for modifies
       // Only handles for all Modifies statement for now
       resultEntities = getRelationshipStatements(refType);

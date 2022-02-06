@@ -8,7 +8,7 @@ RelationshipRef::RelationshipRef(RelationshipType rType, Entity leftEntity, Enti
 
 std::string RelationshipRef::toString() {
     std::ostringstream buffer;
-    buffer << "Relationship Type: " << Type::relationshipTypeStringArr[rType] << " leftEntity: "
+    buffer << "Relationship Type: " << Type::relationshipTypeToString(rType) << " leftEntity: "
         << leftEntity.toString() << " rightEntity " << rightEntity.toString() << std::endl;
 
     return buffer.str();
