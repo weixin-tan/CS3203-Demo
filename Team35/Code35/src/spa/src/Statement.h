@@ -1,17 +1,24 @@
-#include<stdio.h>
-#include <iostream>
-#include <string>
-#include <vector> 
-#include "StatementType.h"
-#include "StatementContainer.h"
-
 #ifndef STATEMENT_H
 #define STATEMENT_H
+
+#include <string>
+#include <vector>
+#include "StatementType.h"
+#include "StmtLst.h"
+
+
+class StmtLst;
+
+class StatementContainer;
+
+class StatementContainer;
 
 class StatementContainer;
 
 class Statement {
 public:
+	Statement();
+
 	int stmt_no;
 
 	StatementType statement_type;
@@ -28,17 +35,16 @@ public:
 	// for call statements
 	std::string proc_name;
 
+
+
+
+
+
+
 	// for then, else, while statements. 
-	StatementContainer *ifthen_stmt_list;
-	StatementContainer *ifelse_stmt_list;
-	StatementContainer *while_stmt_list;
+	StmtLst* ifthen_stmt_list;
+	StmtLst* ifelse_stmt_list;
+	StmtLst* while_stmt_list;
 
 };
-
-
-
-
-
-
 #endif
-
