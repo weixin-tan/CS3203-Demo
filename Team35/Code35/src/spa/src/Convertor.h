@@ -1,28 +1,31 @@
 #pragma once
 
-#include<stdio.h>
 #include <iostream>
 #include <string>
 #include <vector>
 #include "ParsedStatement.h"
 #include "Statement.h"
 #include <stack>
+#include "StmtLst.h"
+#include "Procedure.h"
 
-
+#include <PKB/PkbSetter.h>
 
 class Convertor {
 
 
 public:
-	Convertor();
 
+	PkbSetter* pkb_setter;
 	static std::string curr_procedure;
 	std::stack<int> nestedstack;
 
-	void Convertor::ProcedureReader(std::vector<StatementContainer> procedurelist);
+	Convertor::Convertor(PkbSetter* pkb_setter);
 
-	std::vector<ParsedStatement> Convertor::StatementListReader(StatementContainer stmtcontainer, int container_number);
+	void Convertor::ProcedureReader(std::vector<Procedure> procedurelist);
 
+	std::vector<ParsedStatement> Convertor::StatementListReader(StmtLst statement_list, int container_number);
+	
 	ParsedStatement Convertor::readStatement(Statement stmt, ContainerType containertype,
 		std::stack<int>& nestedstack, int container_number);
 

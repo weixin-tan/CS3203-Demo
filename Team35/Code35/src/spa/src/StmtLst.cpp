@@ -5,6 +5,10 @@ StmtLst::StmtLst() {
 	this->stmts = s;
 }
 
+ContainerType StmtLst::GetContainerType() {
+	return this->container_type;
+}
+
 Statement StmtLst::getStmtAtIndex(int index) const {
 	return this->stmts.at(index);
 }
@@ -15,4 +19,8 @@ std::size_t StmtLst::getSize() const {
 
 void StmtLst::setNextStmt(Statement stmt) {
 	this->stmts.push_back(stmt);
+}
+
+void StmtLst::SetContainerType(ContainerType container_type) {
+	this-> container_type = container_type;
 }

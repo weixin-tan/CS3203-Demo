@@ -5,16 +5,21 @@
 #include "Convertor.h"
 #include "Statement.h"
 #include "StatementType.h"
+#include <PKB/PkbSetter.h>
+#include "Procedure.h"
 
-Convertor::Convertor() {
-	
+std::string Convertor::curr_procedure = "no_procedure";
+
+Convertor::Convertor(PkbSetter* pkb_setter) {
+	this->pkb_setter = pkb_setter;
 }
 
 // Reads the procedurelist and calls a statemnet list reader for each procedure in the list.
-// 
-void Convertor::ProcedureReader(std::vector<StatementContainer> procedurelist) {
+void Convertor::ProcedureReader(std::vector<Procedure> procedurelist) {
 	for (int i = 0; i < procedurelist.size(); i++) {
-		StatementListReader(procedurelist[i], -1);
+		curr_procedure = procedurelist[i].getProcName();
+		StatementListReader(procedurelist[i].getStmtLst(), -1);
+		
 	}
 }
 
@@ -22,13 +27,10 @@ void Convertor::ProcedureReader(std::vector<StatementContainer> procedurelist) {
 // Identifes the type of statementlist, and also includes the line number of the container. 
 // For Procedures, since there are no line numbers, line number will be -1. 
 // Creates a stack for the line numbers of the statement container..
-std::vector<ParsedStatement> Convertor::StatementListReader(StatementContainer stmtcontainer, int container_number) {
+std::vector<ParsedStatement> Convertor::StatementListReader(StmtLst statement_list, int container_number) {
 	// Gets the container type. If it is a procedure, then the current procedure(static) will
 	// be that procedure. 
-	ContainerType containertype = stmtcontainer.container_type;
-	if (containertype == ContainerType::kprocedure) {
-		curr_procedure = stmtcontainer.container_type;
-	}
+	ContainerType containertype = statement_list.GetContainerType();
 
 	//creating new stack and pushing in -1 line number. 
 	nestedstack.push(-1);
@@ -38,8 +40,13 @@ std::vector<ParsedStatement> Convertor::StatementListReader(StatementContainer s
 
 
 // Reading every statement in the container. 
-	for (int i = 0; i < stmtcontainer.stmt_list.size(); i++) {
-		results.push_back(this->readStatement(stmtcontainer.stmt_list[i], containertype, nestedstack, container_number));
+	for (int i = 0; i < statement_list.getSize(); i++) {
+		results.push_back(this->readStatement(statement_list.getStmtAtIndex(i), containertype, nestedstack, container_number));
+	}
+
+	// TODO: Sending the statement list to the PKB - should be removed 
+	for (const auto i : results) {
+		pkb_setter->insertStmt(i);
 	}
 
 	return results;
@@ -68,8 +75,10 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 	case ContainerType::kifthen:
 	case ContainerType::kifelse:
 		current_statement.if_line_no = container_num;
+		break;
 	case ContainerType::kwhile:
 		current_statement.while_line_no = container_num;
+		break;
 	}
 
 	//push the value into the stack
@@ -80,25 +89,31 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 	case StatementType::kassign_stmt: 
 		current_statement.var_modified = stmt.var_name;
 		current_statement.var_used = stmt.expr;
+		break;
 		//Pattern recogniser here
 	case StatementType::kread_stmt:
 		current_statement.var_modified = stmt.var_name;
+		break;
 	case StatementType::kprint_stmt:
 		current_statement.var_used = stmt.expr;
+		break;
 	case StatementType::kif_stmt:
 		current_statement.var_used = stmt.cond_expr;
 
 		// In this case, if statement will have 2 statement lists (if and then) 
 		this->StatementListReader(*stmt.ifthen_stmt_list, stmt.stmt_no);
 		this->StatementListReader(*stmt.ifelse_stmt_list, stmt.stmt_no);
+		break;
 	
 	case StatementType::kwhile_stmt:
 		current_statement.var_used = stmt.cond_expr;
 		//In this case, this statement will a while statement list. 
 		this->StatementListReader(*stmt.while_stmt_list, stmt.stmt_no);
+		break;
 
 	case StatementType::kcall_stmt:
 		current_statement.procedure_called = stmt.proc_name;
+		break;
 	
 		//Recursively read the inner statement stack. 	
 	}

@@ -1,4 +1,7 @@
 #include "TestWrapper.h"
+#include "Convertor.h"
+#include "PKB/PKB.h"
+
 
 // implementation code of WrapperFactory - do NOT modify the next 5 lines
 AbstractWrapper* WrapperFactory::wrapper = 0;
@@ -10,9 +13,7 @@ AbstractWrapper* WrapperFactory::createWrapper() {
 volatile bool AbstractWrapper::GlobalStop = false;
 
 // a default constructor
-TestWrapper::TestWrapper() {
-  // create any objects here as instance variables of this class
-  // as well as any initialization required for your spa program
+TestWrapper::TestWrapper(): pkb(), convertor(pkb.getSetter()) {
 }
 
 // method for parsing the SIMPLE source
