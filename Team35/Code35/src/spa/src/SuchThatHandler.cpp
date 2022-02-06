@@ -8,8 +8,15 @@ std::vector<Result> SuchThatHandler::processClause(const std::vector<Clause>& cl
   std::vector<Result> results;
   for(const Clause& c : clauses) {
     std::vector<Entity> entityToFindList = c.entityToFindList;
-    std::vector<RelationshipRef> refList = c.refList;
     Entity entityToFind = entityToFindList.front(); // For basic Modifies
+    std::vector<RelationshipRef> refList = c.refList;
+
+    // Handle queries with no such that or pattern clauses
+    if (refList.empty()) {
+      getEntity(entityToFind.eType);
+      continue;
+    }
+
     RelationshipRef ref = refList.front(); // For basic Modifies
     RelationshipType refType = ref.rType;
     Entity left = ref.leftEntity;
