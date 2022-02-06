@@ -1,12 +1,10 @@
-#include<stdio.h>
-#include <iostream>
-#include <string>
-#include <vector> 
-#include "StatementType.h"
-#include "StatementContainer.h"
-
 #ifndef STATEMENT_H
 #define STATEMENT_H
+
+#include <string>
+#include <vector>
+#include "StatementType.h"
+#include "StatementContainer.h"
 
 class StatementContainer;
 
@@ -36,11 +34,4 @@ public:
 	StatementContainer *while_stmt_list;
 
 };
-
-
-
-
-
-
 #endif
-

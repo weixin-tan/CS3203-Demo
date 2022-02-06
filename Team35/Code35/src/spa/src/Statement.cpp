@@ -1,6 +1,4 @@
-#include<stdio.h>
-#include"Statement.h"
-
+#include "Statement.h"
 
 Statement::Statement() {
 

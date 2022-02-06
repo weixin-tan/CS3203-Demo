@@ -7,7 +7,7 @@
 #include "StatementType.h"
 #include <PKB/PkbSetter.h>
 
-
+std::string Convertor::curr_procedure = "no_procedure";
 
 Convertor::Convertor(PkbSetter* pkb_setter) {
 	this->pkb_setter = pkb_setter;
