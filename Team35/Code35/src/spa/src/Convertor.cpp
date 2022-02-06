@@ -5,14 +5,16 @@
 #include "Convertor.h"
 #include "Statement.h"
 #include "StatementType.h"
+#include "Procedure.h"
 
 std::string Convertor::curr_procedure = "no_procedure";
 
 // Reads the procedurelist and calls a statemnet list reader for each procedure in the list.
-void Convertor::ProcedureReader(std::vector<StatementContainer> procedurelist) {
-	curr_procedure = "procedure 1";
+void Convertor::ProcedureReader(std::vector<Procedure> procedurelist) {
 	for (int i = 0; i < procedurelist.size(); i++) {
-		StatementListReader(procedurelist[i], -1);
+		curr_procedure = procedurelist[i].getProcName();
+		StatementListReader(procedurelist[i].getStmtLst(), -1);
+		
 		
 	}
 }
@@ -21,11 +23,10 @@ void Convertor::ProcedureReader(std::vector<StatementContainer> procedurelist) {
 // Identifes the type of statementlist, and also includes the line number of the container. 
 // For Procedures, since there are no line numbers, line number will be -1. 
 // Creates a stack for the line numbers of the statement container..
-std::vector<ParsedStatement> Convertor::StatementListReader(StatementContainer stmtcontainer, int container_number) {
+std::vector<ParsedStatement> Convertor::StatementListReader(StmtLst statement_list, int container_number) {
 	// Gets the container type. If it is a procedure, then the current procedure(static) will
 	// be that procedure. 
-	ContainerType containertype = stmtcontainer.container_type;
-
+	ContainerType containertype = statement_list.GetContainerType();
 
 	//creating new stack and pushing in -1 line number. 
 	nestedstack.push(-1);
@@ -35,10 +36,10 @@ std::vector<ParsedStatement> Convertor::StatementListReader(StatementContainer s
 
 
 // Reading every statement in the container. 
-	for (int i = 0; i < stmtcontainer.stmt_list.size(); i++) {
-		results.push_back(this->readStatement(stmtcontainer.stmt_list[i], containertype, nestedstack, container_number));
+	for (int i = 0; i < statement_list.getSize(); i++) {
+		results.push_back(this->readStatement(statement_list.getStmtAtIndex(i), containertype, nestedstack, container_number));
 	}
-
+	 
 	return results;
 }
 

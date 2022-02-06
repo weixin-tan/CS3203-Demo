@@ -1,6 +1,6 @@
 
 #include "Statement.h"
-#include "StatementContainer.h"
+#include "StmtLst.h"
 #include <stdio.h>
 #include "Convertor.h"
 #include "ParsedStatement.h"
@@ -15,8 +15,7 @@ void require(bool b) {
 TEST_CASE("Convertor ") {
 
 	//Creating the statement container
-	StatementContainer stmt_cont;
-	
+	StmtLst stmt_cont;
 
 	//Creating the statement b = a
 	Statement statement1; 
@@ -35,18 +34,15 @@ TEST_CASE("Convertor ") {
 	statement2.var_name = std::vector<std::string>{ "a" };
 
 	//place statements into statementlist
-	std::vector<Statement> stmt_list = { statement1, statement2 };
-	
-	// place statements into statementcontainer
-	StatementContainer statement_container; 
-	statement_container.container_type = kprocedure; 
-	statement_container.stmt_list = stmt_list;
+	stmt_cont.setNextStmt(statement1);
+	stmt_cont.setNextStmt(statement2);
+	stmt_cont.SetContainerType(ContainerType::kprocedure);
 
 	//Creating the parsedStatements for the solution
 
 	// Creating the convertor
 	Convertor convertor;
-	std::vector<ParsedStatement> results = convertor.StatementListReader(statement_container, ContainerType::kprocedure);
+	std::vector<ParsedStatement> results = convertor.StatementListReader(stmt_cont, ContainerType::kprocedure);
 
 	ParsedStatement parsed_statement1 = results[0];
 	ParsedStatement parsed_statement2 = results[1];

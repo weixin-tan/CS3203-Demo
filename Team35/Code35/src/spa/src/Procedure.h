@@ -14,6 +14,7 @@ public:
 	StmtLst getStmtLst() const;
 	void setProcName(std::string name);
 	void setStmtLst(StmtLst stmtLst);
+
 };
 
 #endif

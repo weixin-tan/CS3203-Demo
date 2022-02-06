@@ -1,14 +1,13 @@
-#include<stdio.h>
-#include <iostream>
-#include <string>
-#include <vector> 
-#include "StatementType.h"
-#include "StatementContainer.h"
-
 #ifndef STATEMENT_H
 #define STATEMENT_H
 
-class StatementContainer;
+#include <string>
+#include <vector> 
+#include "StatementType.h"
+#include "StmtLst.h"
+
+
+class StmtLst;
 
 class Statement {
 public:
@@ -31,9 +30,9 @@ public:
 	std::string proc_name;
 
 	// for then, else, while statements. 
-	StatementContainer *ifthen_stmt_list;
-	StatementContainer *ifelse_stmt_list;
-	StatementContainer *while_stmt_list;
+	StmtLst* ifthen_stmt_list;
+	StmtLst* ifelse_stmt_list;
+	StmtLst* while_stmt_list;
 
 };
 
