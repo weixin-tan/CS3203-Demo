@@ -6,15 +6,14 @@
 #include "Statement.h"
 #include "StatementType.h"
 
-Convertor::Convertor() {
-	
-}
+std::string Convertor::curr_procedure = "no_procedure";
 
 // Reads the procedurelist and calls a statemnet list reader for each procedure in the list.
-// 
 void Convertor::ProcedureReader(std::vector<StatementContainer> procedurelist) {
+	curr_procedure = "procedure 1";
 	for (int i = 0; i < procedurelist.size(); i++) {
 		StatementListReader(procedurelist[i], -1);
+		
 	}
 }
 
@@ -26,9 +25,7 @@ std::vector<ParsedStatement> Convertor::StatementListReader(StatementContainer s
 	// Gets the container type. If it is a procedure, then the current procedure(static) will
 	// be that procedure. 
 	ContainerType containertype = stmtcontainer.container_type;
-	if (containertype == ContainerType::kprocedure) {
-		curr_procedure = stmtcontainer.container_type;
-	}
+
 
 	//creating new stack and pushing in -1 line number. 
 	nestedstack.push(-1);
@@ -68,8 +65,10 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 	case ContainerType::kifthen:
 	case ContainerType::kifelse:
 		current_statement.if_line_no = container_num;
+		break;
 	case ContainerType::kwhile:
 		current_statement.while_line_no = container_num;
+		break;
 	}
 
 	//push the value into the stack
@@ -80,25 +79,31 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 	case StatementType::kassign_stmt: 
 		current_statement.var_modified = stmt.var_name;
 		current_statement.var_used = stmt.expr;
+		break;
 		//Pattern recogniser here
 	case StatementType::kread_stmt:
 		current_statement.var_modified = stmt.var_name;
+		break;
 	case StatementType::kprint_stmt:
 		current_statement.var_used = stmt.expr;
+		break;
 	case StatementType::kif_stmt:
 		current_statement.var_used = stmt.cond_expr;
 
 		// In this case, if statement will have 2 statement lists (if and then) 
 		this->StatementListReader(*stmt.ifthen_stmt_list, stmt.stmt_no);
 		this->StatementListReader(*stmt.ifelse_stmt_list, stmt.stmt_no);
+		break;
 	
 	case StatementType::kwhile_stmt:
 		current_statement.var_used = stmt.cond_expr;
 		//In this case, this statement will a while statement list. 
 		this->StatementListReader(*stmt.while_stmt_list, stmt.stmt_no);
+		break;
 
 	case StatementType::kcall_stmt:
 		current_statement.procedure_called = stmt.proc_name;
+		break;
 	
 		//Recursively read the inner statement stack. 	
 	}

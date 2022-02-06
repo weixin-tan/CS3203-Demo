@@ -12,6 +12,8 @@ class StatementContainer;
 
 class Statement {
 public:
+	Statement();
+
 	int stmt_no;
 
 	StatementType statement_type;

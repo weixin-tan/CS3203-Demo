@@ -14,7 +14,6 @@ class Convertor {
 
 
 public:
-	Convertor();
 
 	static std::string curr_procedure;
 	std::stack<int> nestedstack;
