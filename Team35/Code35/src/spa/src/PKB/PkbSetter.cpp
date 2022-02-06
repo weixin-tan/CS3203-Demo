@@ -1,6 +1,8 @@
 #include "PkbSetter.h"
 #include "../Type.h"
-#include "parsed_statement_temp.h"  // TODO: delete when ParsedStatement is implemented
+#include "../ParsedStatement.h"
+
+# define NULL_STMT_NO -1
 
 PkbSetter::PkbSetter(DB *db) : db(db) {
   PkbSetter::spTypeToQpsTypeTable = {
@@ -45,15 +47,21 @@ void PkbSetter::handleStatementType(const ParsedStatement& parsedStatement) {
 }
 
 void PkbSetter::handleParent(const ParsedStatement& parsedStatement) {
-  db->parentToChildTable[parsedStatement.if_line_no].insert(parsedStatement.stmt_no);
-  db->childToParentTable[parsedStatement.stmt_no] = parsedStatement.if_line_no;
-  db->parentToChildTable[parsedStatement.while_line_no].insert(parsedStatement.stmt_no);
-  db->childToParentTable[parsedStatement.stmt_no] = parsedStatement.while_line_no;
+  if (parsedStatement.if_line_no != NULL_STMT_NO) {
+    db->parentToChildTable[parsedStatement.if_line_no].insert(parsedStatement.stmt_no);
+    db->childToParentTable[parsedStatement.stmt_no] = parsedStatement.if_line_no;
+  }
+  if (parsedStatement.while_line_no != NULL_STMT_NO) {
+    db->parentToChildTable[parsedStatement.while_line_no].insert(parsedStatement.stmt_no);
+    db->childToParentTable[parsedStatement.stmt_no] = parsedStatement.while_line_no;
+  }
 }
 
 void PkbSetter::handleFollows(const ParsedStatement& parsedStatement) {
-  db->stmtPreceding[parsedStatement.stmt_no] = parsedStatement.preceding;
-  db->stmtFollowing[parsedStatement.preceding] = parsedStatement.stmt_no;
+  if (parsedStatement.stmt_no != NULL_STMT_NO) {
+    db->stmtPreceding[parsedStatement.stmt_no] = parsedStatement.preceding;
+    db->stmtFollowing[parsedStatement.preceding] = parsedStatement.stmt_no;
+  }
 }
 
 void PkbSetter::handleCalls(const ParsedStatement& parsedStatement) {
