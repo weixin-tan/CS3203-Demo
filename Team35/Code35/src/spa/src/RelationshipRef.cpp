@@ -12,4 +12,4 @@ std::string RelationshipRef::toString() {
         << leftEntity.toString() << " rightEntity " << rightEntity.toString() << std::endl;
 
     return buffer.str();
-};
+}

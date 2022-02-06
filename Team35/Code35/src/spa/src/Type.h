@@ -4,50 +4,56 @@
 #include <map>
 
 enum EntityType {
-    Assignment,
-    Variable,
-    If,
-    While,
-    Procedure,
-    Read,
-    Print,
-    Call,
-    Boolean,
-    ConstantNumber,
-    ConstantString,
-    Wildcard
+  Statement,
+  Assignment,
+  Variable,
+  If,
+  While,
+  Procedure,
+  Read,
+  Print,
+  Call,
+  Boolean,
+  Constant,
+  Wildcard,
+  FixedInteger,
+  FixedString
 };
 
 enum RelationshipType {
-    Modifies,
-    Uses,
-    Parent,
-    ParentT,
-    Follows,
-    FollowsT
+  Modifies,
+  Uses,
+  Parent,
+  ParentT,
+  Follows,
+  FollowsT
 };
 
 class Type{
-public:
-    static constexpr const char* entityTypeStringArr[] = {"Assignment",
-                                            "Variable",
-                                            "If",
-                                            "While",
-                                            "Procedure",
-                                            "Read",
-                                            "Print",
-                                            "Call",
-                                            "Boolean",
-                                            "ConstantNumber",
-                                            "ConstantString",
-                                            "Wildcard"};
+ public:
+  static constexpr const char* entityTypeStringArr[] = {
+      "Statement",
+      "Assignment",
+      "Variable",
+      "If",
+      "While",
+      "Procedure",
+      "Read",
+      "Print",
+      "Call",
+      "Boolean",
+      "Constant",
+      "Wildcard",
+      "FixedInteger",
+      "FixedString"
+  };
 
-    static constexpr const char* relationshipTypeStringArr[] = {"Modifies",
-                                           "Uses",
-                                           "Parent",
-                                           "ParentT",
-                                           "Follows",
-                                           "FollowsT"};
+  static constexpr const char* relationshipTypeStringArr[] = {"Modifies",
+                                                              "Uses",
+                                                              "Parent",
+                                                              "ParentT",
+                                                              "Follows",
+                                                              "FollowsT"};
 };
 
 #endif //SPA_TYPE_H
