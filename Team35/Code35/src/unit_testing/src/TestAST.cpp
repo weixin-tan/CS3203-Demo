@@ -19,6 +19,10 @@ TEST_CASE("Convertor ") {
 	//Creating the statement container
 	StatementContainer stmt_cont;
 	
+	// PKB setter
+	PKB pkb;
+	
+
 
 	//Creating the statement b = a
 	Statement statement1; 
@@ -47,7 +51,7 @@ TEST_CASE("Convertor ") {
 	//Creating the parsedStatements for the solution
 
 	// Creating the convertor
-	Convertor convertor;
+	Convertor convertor(pkb.getSetter());
 	std::vector<ParsedStatement> results = convertor.StatementListReader(statement_container, ContainerType::kprocedure);
 
 	ParsedStatement parsed_statement1 = results[0];
