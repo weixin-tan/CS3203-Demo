@@ -25,12 +25,20 @@ bool PkbGetter::isRelationship(const RelationshipType& r, const Entity& leftSide
 
   bool result = false;
 
-  switch (r){
+  switch (r) {
     case Modifies: {
       assert(rightSide.eType == Variable);
       if (isStatement(leftSide)) {
-        const std::set<std::string>& modifiedVars = db->modifyStmtToVarTable[stoi(leftSide.name)];
+        int leftStmtNo = std::stoi(leftSide.name);
+        assert(db->stmtTypeTable[leftStmtNo] == leftSide.eType);
+        const std::set<std::string>& modifiedVars = db->modifyStmtToVarTable[leftStmtNo];
         result = modifiedVars.find(rightSide.name) != modifiedVars.end();
+        if (leftSide.eType == EntityType::If || leftSide.eType == EntityType::While) {
+          for (const int& childStmtNo: db->parentToChildTable[leftStmtNo]) {
+            if (result) break;
+            result = isRelationship(r, Entity(db->stmtTypeTable[childStmtNo], std::to_string(childStmtNo)), rightSide);
+          }
+        }
       } else if (leftSide.eType == Procedure) {
         const std::set<std::string>& modifiedVars = db->modifyProcToVarTable[leftSide.name];
         result = modifiedVars.find(rightSide.name) != modifiedVars.end();
@@ -40,8 +48,16 @@ bool PkbGetter::isRelationship(const RelationshipType& r, const Entity& leftSide
     case Uses: {
       assert(rightSide.eType == Variable);
       if (isStatement(leftSide)) {
-        const std::set<std::string>& usedVars = db->usesStmtToVarTable[stoi(leftSide.name)];
+        int leftStmtNo = std::stoi(leftSide.name);
+        assert(db->stmtTypeTable[leftStmtNo] == leftSide.eType);
+        const std::set<std::string>& usedVars = db->usesStmtToVarTable[leftStmtNo];
         result = usedVars.find(rightSide.name) != usedVars.end();
+        if (leftSide.eType == EntityType::If || leftSide.eType == EntityType::While) {
+          for (const int& childStmtNo: db->parentToChildTable[leftStmtNo]) {
+            if (result) break;
+            result = isRelationship(r, Entity(db->stmtTypeTable[childStmtNo], std::to_string(childStmtNo)), rightSide);
+          }
+        }
       } else if (leftSide.eType == Procedure) {
         const std::set<std::string>& usedVars = db->usesProcToVarTable[leftSide.name];
         result = usedVars.find(rightSide.name) != usedVars.end();
