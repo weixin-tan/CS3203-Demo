@@ -70,5 +70,3 @@ std::vector<Entity> SuchThatHandler::getRightSide(RelationshipType r, const Enti
   std::vector<Entity> resultEntities = pg->getRightSide(r, leftSide, typeToGet);
   return resultEntities;
 }
-
-

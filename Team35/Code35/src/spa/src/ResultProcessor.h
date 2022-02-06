@@ -1,7 +1,3 @@
-//
-// Created by viv on 4/2/2022.
-//
-
 #ifndef SPA_RESULTPROCESSOR_H
 #define SPA_RESULTPROCESSOR_H
 

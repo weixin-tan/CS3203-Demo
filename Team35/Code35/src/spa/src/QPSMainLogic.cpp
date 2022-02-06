@@ -21,7 +21,7 @@ QPSMainLogic::QPSMainLogic(PkbGetter* pg) {
   resultFormatter = new ResultFormatter();
 }
 
-//
+//main function
 std::string QPSMainLogic::parse(std::string query) {
   std::vector<Clause> clauses = callParser(query);
   std::vector<Result> matchingEntities = callHandler(clauses);
