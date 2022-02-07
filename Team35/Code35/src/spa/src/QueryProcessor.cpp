@@ -119,7 +119,8 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
         }
       }
 
-      std::cout << newClause.toString() << "\n";
+//      std::cout << newClause.toString() << "\n";
+      clauseList.push_back(newClause);
       /*
       FOR NEXT WEEK
       for (auto s: PatternClauses){

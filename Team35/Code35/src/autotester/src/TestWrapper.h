@@ -10,11 +10,13 @@
 
 // include your other headers here
 #include "AbstractWrapper.h"
+#include "QPSMainLogic.h"
 
 class TestWrapper : public AbstractWrapper {
  private:
-	PKB pkb;
-	Convertor convertor;
+  PKB pkb;
+  Convertor convertor;
+  QPSMainLogic* qpsMainLogic;
  public:
   // default constructor
   TestWrapper();
