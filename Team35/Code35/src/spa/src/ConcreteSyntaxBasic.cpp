@@ -53,7 +53,7 @@ std::vector<std::string> ConcreteSyntaxBasic::parseExpr(std::queue<Token> &token
 	std::vector<std::string> result;
 	while (tokensQueue.front().type != SEMICOLON) {
 		if (tokensQueue.front().type == NAME) {
-			result.push_back(tokensQueue.front());
+			result.push_back(tokensQueue.front().getId());
 		}
 		tokensQueue.pop();
 	}

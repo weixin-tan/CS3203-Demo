@@ -18,3 +18,11 @@ void Procedure::setProcName(std::string name) {
 void Procedure::setStmtLst(StmtLst stmtLst) {
 	this->stmtLst = stmtLst;
 }
+
+void Procedure::setSize(int size) {
+	this->size = size;
+}
+
+int Procedure::getSize() {
+	return this->size;
+}
