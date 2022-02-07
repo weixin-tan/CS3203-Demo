@@ -23,7 +23,6 @@ TestWrapper::TestWrapper(): pkb(), convertor(pkb.getSetter()) {
 
 // method for parsing the SIMPLE source
 void TestWrapper::parse(std::string filename) {
-	// call your parser to do the parsing
 	std::ifstream t(filename);
 	std::stringstream buffer;
 	buffer << t.rdbuf();
@@ -33,7 +32,6 @@ void TestWrapper::parse(std::string filename) {
 	std::vector<Procedure> procedureLst;
 	procedureLst.push_back(concrete.parseProcedure(tokeniser.putInQueue(buffer.str())));
 	convertor.ProcedureReader(procedureLst);
-  // ...rest of your code...
 }
 
 // method to evaluating a query
