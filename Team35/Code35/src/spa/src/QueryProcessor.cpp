@@ -68,9 +68,16 @@ Entity QueryProcessor::findRelationshipEntity(const std::string& s, std::unorder
   }else if(s == "_"){
     return Entity(EntityType::Wildcard, "_");
   }else if(isInteger(s)){
-    return Entity(EntityType::FixedInteger, s);
+    return Entity(EntityType::Assignment, s);
   }else if(isQuotationIdent(s)){
-    return Entity(EntityType::FixedString, s);
+    std::string s2;
+    char first = s[0];
+    if (first == '\"') {
+        s2 = s.substr(1, s.length() - 2);
+    } else {
+        s2 = s;
+    }
+    return Entity(EntityType::Variable, s2);
   }else{
     return Entity();
   }
