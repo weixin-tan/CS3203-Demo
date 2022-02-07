@@ -24,7 +24,7 @@ Procedure ConcreteSyntaxBasic::parseProcedure(std::queue<Token> &tokensQueue) {
 		stmt_count++;
 	}
 
-	stmtLst.setContainerType(kprocedure);
+	stmtLst.SetContainerType(kprocedure);
 	procedure.setStmtLst(stmtLst);
 	return procedure;
 }
@@ -38,7 +38,7 @@ Statement ConcreteSyntaxBasic::parseStmt(std::queue<Token> &tokensQueue) {
 Statement ConcreteSyntaxBasic::parseAssign(std::queue<Token> &tokensQueue) {
 	Statement assignStmt;
 	assignStmt.statement_type = kassign_stmt;
-	assignStmt.var_name = tokensQueue.front();
+	assignStmt.var_name.push_back(tokensQueue.front().getId());
 	// var_name
 	tokensQueue.pop();
 	// equals sign

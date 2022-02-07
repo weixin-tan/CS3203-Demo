@@ -59,14 +59,14 @@ TEST_CASE("PKB Basic") {
 
   SECTION("Modifies") {
     SECTION("isRelationship") {
-      REQUIRE(pkb_getter->isRelationship(RelationshipType::Modifies, Entity(Assignment, "1"), Entity(Variable, "x"))
+      REQUIRE(pkb_getter->isRelationship(RelationshipType::Modifies, Entity(EntityType::Assignment, "1"), Entity(EntityType::Variable, "x"))
                   == true);
-      REQUIRE(pkb_getter->isRelationship(RelationshipType::Modifies, Entity(Assignment, "2"), Entity(Variable, "y"))
+      REQUIRE(pkb_getter->isRelationship(RelationshipType::Modifies, Entity(EntityType::Assignment, "2"), Entity(EntityType::Variable, "y"))
                   == true);
       // TODO: Current PKB does not search recursively
-      REQUIRE(pkb_getter->isRelationship(RelationshipType::Modifies, Entity(While, "4"), Entity(Variable, "y"))
+      REQUIRE(pkb_getter->isRelationship(RelationshipType::Modifies, Entity(EntityType::While, "4"), Entity(EntityType::Variable, "y"))
                   == true);
-      REQUIRE(pkb_getter->isRelationship(RelationshipType::Modifies, Entity(If, "6"), Entity(Variable, "y"))
+      REQUIRE(pkb_getter->isRelationship(RelationshipType::Modifies, Entity(EntityType::If, "6"), Entity(EntityType::Variable, "y"))
                   == true);
     }
     SECTION("getEntity") {  // TODO: this does not particularly tie to Modifies, maybe start a General SECTION
@@ -112,7 +112,7 @@ TEST_CASE("PKB Basic") {
     SECTION("getLeftSide") {
       SECTION("Assignment given Variable") {
         std::set<std::pair<EntityType, std::string>> result =
-            entityVecToSet(pkb_getter->getLeftSide(RelationshipType::Modifies, Entity(Variable, "x"), EntityType::Assignment));
+            entityVecToSet(pkb_getter->getLeftSide(RelationshipType::Modifies, Entity(EntityType::Variable, "x"), EntityType::Assignment));
 
         std::set<std::pair<EntityType, std::string>> expected = entityVecToSet({
                                                                                    Entity(EntityType::Assignment, "1"),
@@ -124,7 +124,7 @@ TEST_CASE("PKB Basic") {
       }
       SECTION("If given Variable") {
         std::set<std::pair<EntityType, std::string>> result =
-            entityVecToSet(pkb_getter->getLeftSide(RelationshipType::Modifies, Entity(Variable, "x"), EntityType::If));
+            entityVecToSet(pkb_getter->getLeftSide(RelationshipType::Modifies, Entity(EntityType::Variable, "x"), EntityType::If));
 
         std::set<std::pair<EntityType, std::string>> expected = entityVecToSet({
                                                                                    Entity(EntityType::If, "6"),
@@ -134,7 +134,7 @@ TEST_CASE("PKB Basic") {
       }
       SECTION("While given Variable") {
         std::set<std::pair<EntityType, std::string>> result =
-            entityVecToSet(pkb_getter->getLeftSide(RelationshipType::Modifies, Entity(Variable, "x"), EntityType::While));
+            entityVecToSet(pkb_getter->getLeftSide(RelationshipType::Modifies, Entity(EntityType::Variable, "x"), EntityType::While));
 
         std::set<std::pair<EntityType, std::string>> expected = entityVecToSet({
                                                                                    Entity(EntityType::While, "4"),
@@ -148,11 +148,11 @@ TEST_CASE("PKB Basic") {
         std::set<std::pair<EntityType, std::string>> result;
         std::set<std::pair<EntityType, std::string>> expected;
 
-        result = entityVecToSet(pkb_getter->getRightSide(RelationshipType::Modifies, Entity(Assignment, "1"), EntityType::Variable));
+        result = entityVecToSet(pkb_getter->getRightSide(RelationshipType::Modifies, Entity(EntityType::Assignment, "1"), EntityType::Variable));
         expected = entityVecToSet({Entity(EntityType::Variable, "x")});
         REQUIRE(result == expected);
 
-        result = entityVecToSet(pkb_getter->getRightSide(RelationshipType::Modifies, Entity(Assignment, "2"), EntityType::Variable));
+        result = entityVecToSet(pkb_getter->getRightSide(RelationshipType::Modifies, Entity(EntityType::Assignment, "2"), EntityType::Variable));
         expected = entityVecToSet({Entity(EntityType::Variable, "y")});
         REQUIRE(result == expected);
       }
