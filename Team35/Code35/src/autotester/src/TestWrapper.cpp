@@ -1,6 +1,11 @@
 #include "TestWrapper.h"
+#include "Tokeniser.h"
+#include "ConcreteSyntaxBasic.h"
 #include "Convertor.h"
 #include "PKB/PKB.h"
+#include <iostream>
+#include <fstream>
+#include <vector>
 
 
 // implementation code of WrapperFactory - do NOT modify the next 5 lines
@@ -19,6 +24,15 @@ TestWrapper::TestWrapper(): pkb(), convertor(pkb.getSetter()) {
 // method for parsing the SIMPLE source
 void TestWrapper::parse(std::string filename) {
 	// call your parser to do the parsing
+	std::ifstream t(filename);
+	std::stringstream buffer;
+	buffer << t.rdbuf();
+
+	Tokeniser tokeniser;
+	ConcreteSyntaxBasic concrete;
+	std::vector<Procedure> procedureLst;
+	procedureLst.push_back(concrete.parseProcedure(tokeniser.putInQueue(buffer.str())));
+	convertor.ProcedureReader(procedureLst);
   // ...rest of your code...
 }
 
