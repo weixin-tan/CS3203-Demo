@@ -25,6 +25,8 @@ void TestWrapper::parse(std::string filename) {
 
 // method to evaluating a query
 void TestWrapper::evaluate(std::string query, std::list<std::string>& results){
-  std::string resultStr = qpsMainLogic->parse(query);
-  results.push_back(resultStr);
+  std::list<std::string> resultStr = qpsMainLogic->parse(query);
+  for (const auto& s : resultStr) {
+      results.push_back(s);
+  }
 }
