@@ -1,4 +1,3 @@
-
 #include "Statement.h"
 #include "StmtLst.h"
 #include <stdio.h>
@@ -13,6 +12,8 @@ using namespace std;
 void require(bool b) {
     REQUIRE(b);
 }
+
+TEST_CASE("Case 1") {
 	// PKB setter
 	PKB pkb;
 	
