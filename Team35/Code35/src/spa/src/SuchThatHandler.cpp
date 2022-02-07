@@ -10,10 +10,12 @@ std::vector<Result> SuchThatHandler::processClause(const std::vector<Clause>& cl
     std::vector<Entity> entityToFindList = c.entityToFindList;
     Entity entityToFind = entityToFindList.front(); // For basic Modifies
     std::vector<RelationshipRef> refList = c.refList;
-
+    std::vector<Entity> resultEntities;
     // Handle queries with no such that or pattern clauses
     if (refList.empty()) {
-      getEntity(entityToFind.eType);
+      resultEntities = getEntity(entityToFind.eType);
+      auto* result = new Result(resultEntities);
+      results.push_back(*result);
       continue;
     }
 
@@ -22,7 +24,6 @@ std::vector<Result> SuchThatHandler::processClause(const std::vector<Clause>& cl
     Entity left = ref.leftEntity;
     Entity right = ref.rightEntity;
 
-    std::vector<Entity> resultEntities;
 
     if (left == entityToFind && right == entityToFind) {
       //Do nothing for now

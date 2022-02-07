@@ -12,7 +12,7 @@ Entity::Entity(EntityType eType, std::string name) {
 
 std::string Entity::toString() {
     std::ostringstream buffer;
-    buffer << "Type: " << Type::entityTypeToString(eType) << ", Name: " << name;
+    buffer << "Type: " << Type::entityTypeToString(eType) << ", Name: " << name << "\n";
     return buffer.str();
 }
 
