@@ -38,7 +38,10 @@ Statement ConcreteSyntaxBasic::parseStmt(std::queue<Token> &tokensQueue) {
 Statement ConcreteSyntaxBasic::parseAssign(std::queue<Token> &tokensQueue) {
 	Statement assignStmt;
 	assignStmt.statement_type = kassign_stmt;
-	assignStmt.var_name.push_back(tokensQueue.front().getId());
+
+	std::vector<std::string> var_name_result;
+	var_name_result.push_back(tokensQueue.front().getId());
+	assignStmt.var_name = var_name_result;
 	// var_name
 	tokensQueue.pop();
 	// equals sign
