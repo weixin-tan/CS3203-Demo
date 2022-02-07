@@ -6,16 +6,15 @@
 #include "RelationshipRef.h"
 
 class Clause{
-
 public:
-    Clause();
+  Clause();
 
-    std::vector<Entity> entityToFindList;
-    std::vector<RelationshipRef> refList;
+  std::vector<Entity> entityToFindList;
+  std::vector<RelationshipRef> refList;
 
-    void appendEntityToFind(Entity e);
-    void appendRef(RelationshipRef r);
-    std::string toString();
+  void appendEntityToFind(const Entity& e);
+  void appendRef(const RelationshipRef& r);
+  std::string toString();
 };
 
 
