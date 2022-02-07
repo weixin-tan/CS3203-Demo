@@ -1,4 +1,5 @@
 #include "ConcreteSyntaxBasic.h"
+#include <iostream>
 
 ConcreteSyntaxBasic::ConcreteSyntaxBasic() {
 
@@ -15,7 +16,7 @@ Procedure ConcreteSyntaxBasic::parseProcedure(std::queue<Token> tokensQueue) {
 	Procedure procedure;
 	StmtLst stmtLst;
 
-	int stmt_count = 2;
+	int stmt_count = 1;
 
 	while (tokensQueue.front().type != RIGHT_CURLY) {
 		Statement temp_statement = ConcreteSyntaxBasic::parseStmt(tokensQueue);

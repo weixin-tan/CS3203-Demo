@@ -34,10 +34,10 @@ Token Tokeniser::tokeniser(std::string input) {
         } else if (input == ";"){
             Token t = Token(SEMICOLON, input);
             return t;
-        } else if (input == "{") {
+        } else if (input == "}") {
             Token t = Token(RIGHT_CURLY, input);
             return t;
-        } else if (input == "}") {
+        } else if (input == "{") {
             Token t = Token(LEFT_CURLY, input);
             return t;
         } else {
