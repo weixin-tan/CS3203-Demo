@@ -3,6 +3,7 @@
 
 
 #include <string>
+#include <list>
 #include "Result.h"
 
 class ResultFormatter {
