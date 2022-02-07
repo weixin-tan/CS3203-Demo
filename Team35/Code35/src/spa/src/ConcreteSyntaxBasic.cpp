@@ -4,7 +4,7 @@ ConcreteSyntaxBasic::ConcreteSyntaxBasic() {
 
 }
 
-Procedure ConcreteSyntaxBasic::parseProcedure(std::queue<Token> &tokensQueue) {
+Procedure ConcreteSyntaxBasic::parseProcedure(std::queue<Token> tokensQueue) {
 	// procedure_keyword
 	tokensQueue.pop();
 	// procedure name
