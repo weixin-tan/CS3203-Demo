@@ -63,7 +63,6 @@ TEST_CASE("PKB Basic") {
                   == true);
       REQUIRE(pkb_getter->isRelationship(RelationshipType::Modifies, Entity(EntityType::Assignment, "2"), Entity(EntityType::Variable, "y"))
                   == true);
-      // TODO: Current PKB does not search recursively
       REQUIRE(pkb_getter->isRelationship(RelationshipType::Modifies, Entity(EntityType::While, "4"), Entity(EntityType::Variable, "y"))
                   == true);
       REQUIRE(pkb_getter->isRelationship(RelationshipType::Modifies, Entity(EntityType::If, "6"), Entity(EntityType::Variable, "y"))
@@ -129,7 +128,6 @@ TEST_CASE("PKB Basic") {
         std::set<std::pair<EntityType, std::string>> expected = entityVecToSet({
                                                                                    Entity(EntityType::If, "6"),
                                                                                });
-        // TODO
         REQUIRE(result == expected);
       }
       SECTION("While given Variable") {
@@ -139,7 +137,6 @@ TEST_CASE("PKB Basic") {
         std::set<std::pair<EntityType, std::string>> expected = entityVecToSet({
                                                                                    Entity(EntityType::While, "4"),
                                                                                });
-        // TODO
         REQUIRE(result == expected);
       }
     }
