@@ -20,13 +20,13 @@ public:
 	static std::string curr_procedure;
 	std::stack<int> nestedstack;
 
-	Convertor::Convertor(PkbSetter* pkb_setter);
+	Convertor(PkbSetter* pkb_setter);
 
-	void Convertor::ProcedureReader(std::vector<Procedure> procedurelist);
+	void ProcedureReader(std::vector<Procedure> procedurelist);
 
-	std::vector<ParsedStatement> Convertor::StatementListReader(StmtLst statement_list, int container_number);
+	std::vector<ParsedStatement> StatementListReader(StmtLst statement_list, int container_number);
 	
-	ParsedStatement Convertor::readStatement(Statement stmt, ContainerType containertype,
+	ParsedStatement readStatement(Statement stmt, ContainerType containertype,
 		std::stack<int>& nestedstack, int container_number);
 
 };

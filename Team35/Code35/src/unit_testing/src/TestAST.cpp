@@ -4,7 +4,7 @@
 #include "Convertor.h"
 #include "ParsedStatement.h"
 
-#include "PKB\PKB.h"
+#include "PKB/PKB.h"
 
 #include "TNode.h"
 #include "catch.hpp"
@@ -16,7 +16,6 @@ void require(bool b) {
 TEST_CASE("Case 1") {
 	// PKB setter
 	PKB pkb;
-	
 
 	StmtLst stmt_cont;
 
