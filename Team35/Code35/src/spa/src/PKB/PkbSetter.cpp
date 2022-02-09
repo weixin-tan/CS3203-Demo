@@ -1,18 +1,19 @@
 #include "PkbSetter.h"
-#include "../Type.h"
 #include "../ParsedStatement.h"
+#include "../StatementType.h"
 
 # define NULL_STMT_NO -1
 
+const std::map<StatementType, EntityType> PkbSetter::spTypeToQpsTypeTable = {
+    {StatementType::kassign_stmt, EntityType::Assignment},
+    {StatementType::kprint_stmt,  EntityType::Print},
+    {StatementType::kcall_stmt,   EntityType::Call},
+    {StatementType::kif_stmt,     EntityType::If},
+    {StatementType::kwhile_stmt,  EntityType::While},
+    {StatementType::kread_stmt,   EntityType::Read}
+};
+
 PkbSetter::PkbSetter(DB *db) : db(db) {
-  PkbSetter::spTypeToQpsTypeTable = {
-      {StatementType::kassign_stmt, EntityType::Assignment},
-      {StatementType::kprint_stmt,  EntityType::Print},
-      {StatementType::kcall_stmt,   EntityType::Call},
-      {StatementType::kif_stmt,     EntityType::If},
-      {StatementType::kwhile_stmt,  EntityType::While},
-      {StatementType::kread_stmt,   EntityType::Read}
-  };
 }
 
 void PkbSetter::handleVariables(const ParsedStatement& parsedStatement) {
@@ -43,17 +44,14 @@ void PkbSetter::handleUses(const ParsedStatement& parsedStatement) {
 }
 
 void PkbSetter::handleStatementType(const ParsedStatement& parsedStatement) {
-  db->stmtTypeTable[parsedStatement.stmt_no] = spTypeToQpsTypeTable[parsedStatement.statement_type];
+  db->stmtTypeTable[parsedStatement.stmt_no] = spTypeToQpsTypeTable.at(parsedStatement.statement_type);
 }
 
 void PkbSetter::handleParent(const ParsedStatement& parsedStatement) {
-  if (parsedStatement.if_line_no != NULL_STMT_NO) {
-    db->parentToChildTable[parsedStatement.if_line_no].insert(parsedStatement.stmt_no);
-    db->childToParentTable[parsedStatement.stmt_no] = parsedStatement.if_line_no;
-  }
-  if (parsedStatement.while_line_no != NULL_STMT_NO) {
-    db->parentToChildTable[parsedStatement.while_line_no].insert(parsedStatement.stmt_no);
-    db->childToParentTable[parsedStatement.stmt_no] = parsedStatement.while_line_no;
+  int parentStmtNo = ((parsedStatement.while_line_no != NULL_STMT_NO) ? parsedStatement.while_line_no : parsedStatement.if_line_no);
+  db->childToParentTable[parsedStatement.stmt_no] = parentStmtNo;
+  if (parentStmtNo != NULL_STMT_NO) {
+    db->parentToChildTable[parentStmtNo].insert(parsedStatement.stmt_no);
   }
 }
 

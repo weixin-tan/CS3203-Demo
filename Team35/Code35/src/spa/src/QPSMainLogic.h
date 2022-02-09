@@ -12,7 +12,7 @@
 class QPSMainLogic {
  public:
   static QPSMainLogic* getInstance(PkbGetter* pg); // Static access method
-  std::string parse(std::string query);
+  std::list<std::string> parse(std::string query);
 
  private:
   explicit QPSMainLogic(PkbGetter* pg); // Make constructor private
@@ -27,7 +27,7 @@ class QPSMainLogic {
   std::vector<Clause> callParser(std::string query);
   std::vector<Result> callHandler(std::vector<Clause> clauses);
   Result callProcessor(std::vector<Result> results);
-  std::string callFormatter(Result result);
+  std::list<std::string> callFormatter(Result result);
 };
 
 

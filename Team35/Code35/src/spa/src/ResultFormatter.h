@@ -8,7 +8,7 @@
 class ResultFormatter {
  public:
   ResultFormatter();
-  std::string formatResult(Result finalResult);
+  std::list<std::string> formatResult(Result finalResult);
 };
 
 

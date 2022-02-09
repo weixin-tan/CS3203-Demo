@@ -162,9 +162,9 @@ std::vector<Entity> PkbGetter::getLeftSide(const RelationshipType& r, const Enti
         for (const int &stmtNo : db->varToModifyStmtTable[rightSide.name]) {
           int curStmtNo = stmtNo;
           while (curStmtNo != NULL_STMT_NO && stmtNos.find(curStmtNo) == stmtNos.end()) {
-            if (db->stmtTypeTable[stmtNo] == typeToGet)
-              stmtNos.insert(stmtNo);
-            curStmtNo = db->childToParentTable[curStmtNo];
+            if (db->stmtTypeTable.at(curStmtNo) == typeToGet)
+              stmtNos.insert(curStmtNo);
+            curStmtNo = db->childToParentTable.at(curStmtNo);
           }
         }
         for (const int &stmtNo : stmtNos)
@@ -181,9 +181,9 @@ std::vector<Entity> PkbGetter::getLeftSide(const RelationshipType& r, const Enti
         for (const int& stmtNo: db->varToUsesStmtTable[rightSide.name]) {
           int curStmtNo = stmtNo;
           while (curStmtNo != NULL_STMT_NO && stmtNos.find(curStmtNo) == stmtNos.end()) {
-            if (db->stmtTypeTable[stmtNo] == typeToGet)
-              stmtNos.insert(stmtNo);
-            curStmtNo = db->childToParentTable[curStmtNo];
+            if (db->stmtTypeTable.at(curStmtNo) == typeToGet)
+              stmtNos.insert(curStmtNo);
+            curStmtNo = db->childToParentTable.at(curStmtNo);
           }
         }
         for (const int& stmtNo: stmtNos)
@@ -258,7 +258,7 @@ std::vector<Entity> PkbGetter::getRightSide(const RelationshipType& r, const Ent
           vars.insert(var);
 
         for (const int& childStmtNo: db->parentToChildTable[std::stoi(leftSide.name)])
-          for (const Entity& e: getRightSide(RelationshipType::Uses, Entity(db->stmtTypeTable[childStmtNo], std::to_string(childStmtNo)), typeToGet))
+          for (const Entity& e: getRightSide(RelationshipType::Modifies, Entity(db->stmtTypeTable[childStmtNo], std::to_string(childStmtNo)), EntityType::Variable))
             vars.insert(e.name);
 
         for (const std::string& var : vars)
@@ -266,6 +266,7 @@ std::vector<Entity> PkbGetter::getRightSide(const RelationshipType& r, const Ent
       } else {
         assert(false);
       }
+      break;
     }
     case RelationshipType::Uses: {
       assert(isStatement(leftSide) || leftSide.eType == EntityType::Procedure);
@@ -285,6 +286,7 @@ std::vector<Entity> PkbGetter::getRightSide(const RelationshipType& r, const Ent
       } else {
         assert(false);
       }
+      break;
     }
     case RelationshipType::Follows: {
       assert(isStatement(leftSide) && isStatement(typeToGet));
