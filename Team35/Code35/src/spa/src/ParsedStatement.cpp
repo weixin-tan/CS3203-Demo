@@ -8,16 +8,16 @@ std::string ParsedStatement::default_pattern = "";
 std::string ParsedStatement::default_procedure_name = "";
 
 ParsedStatement::ParsedStatement() {
-	stmt_no = default_null_stmt_no; // statement number 
-	if_stmt_no = default_null_stmt_no; //if statement number refers to the statement number of if
-	while_stmt_no = default_null_stmt_no; // while statement number refers to the statement number of while
-	statement_type = StatementType::knone; // what kind of statement it is.
-	pattern = default_pattern; // implementation not done
-	procedure_name = default_procedure_name;
-	std::vector<std::string> var_used;
-	std::vector<std::string> var_modified;
-	std::string procedure_called = default_procedure_name;
-	int preceding = default_null_stmt_no;
+	this->stmt_no = default_null_stmt_no; // statement number 
+	this->if_stmt_no = default_null_stmt_no; //if statement number refers to the statement number of if
+	this->while_stmt_no = default_null_stmt_no; // while statement number refers to the statement number of while
+	this->statement_type = StatementType::knone; // what kind of statement it is.
+	this->pattern = default_pattern; // implementation not done
+	this->procedure_name = default_procedure_name;
+	this->var_used;
+	this->var_modified;
+	this->procedure_called = default_procedure_name;
+	this->preceding = default_null_stmt_no;
 }
 
 ParsedStatement::ParsedStatement(int stmt_no, int if_stmt_no, int while_stmt_no,
