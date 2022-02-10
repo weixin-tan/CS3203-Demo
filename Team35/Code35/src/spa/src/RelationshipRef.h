@@ -1,6 +1,7 @@
 #ifndef SPA_RELATIONSHIPREF_H
 #define SPA_RELATIONSHIPREF_H
 
+#include <cassert>
 #include "Type.h"
 #include "Entity.h"
 
