@@ -6,11 +6,9 @@ const std::string ProgramElement::null_string_value;
 // TODO: test suggestion of using std::move
 ProgramElement::ProgramElement(ElementType element_type, int integer_value, const std::string& string_value) : element_type(element_type), integer_value(integer_value), string_value(string_value) {}
 
-ProgramElement ProgramElement::createStatement(ElementType element_type, int stmt_no, const std::string& procedure_called) {
-  if (!procedure_called.empty())
-    assert(element_type == ElementType::Call);
+ProgramElement ProgramElement::createStatement(ElementType element_type, int stmt_no) {
   assert(isStatementType(element_type));
-  return {element_type, stmt_no, procedure_called};
+  return {element_type, stmt_no, null_string_value};
 }
 
 ProgramElement ProgramElement::createProcedure(const std::string& procedure_name) {

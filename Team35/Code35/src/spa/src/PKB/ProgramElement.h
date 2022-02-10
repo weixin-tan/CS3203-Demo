@@ -18,7 +18,7 @@ class ProgramElement {
   ProgramElement(ElementType element_type, int integer_value, const std::string& string_value);
 
  public:
-  static ProgramElement createStatement(ElementType element_type, int stmt_no, const std::string& procedure_called);
+  static ProgramElement createStatement(ElementType element_type, int stmt_no);
   static ProgramElement createProcedure(const std::string& procedure_name);
   static ProgramElement createVariable(const std::string& variable_name);
   static ProgramElement createConstant(int constant_value);
