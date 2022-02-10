@@ -20,6 +20,11 @@ bool isQuotationIdent(const std::string& s){
   return std::regex_match(s, quotationIdentRegex);
 }
 
+bool isWildCardIdent(const std::string& s){
+  std::regex quotationIdentRegex("_\"[A-Za-z][A-Za-z0-9]*\"_");
+  return std::regex_match(s, quotationIdentRegex);
+}
+
 bool isStmtRef(const std::string& s){
   return isIdent(s) || isWildCard(s) || isInteger(s) ;
 }

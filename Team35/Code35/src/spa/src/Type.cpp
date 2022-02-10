@@ -16,6 +16,7 @@ std::string Type::entityTypeToString(EntityType e){
     case EntityType::Wildcard: return "Wildcard";
     case EntityType::FixedInteger: return "FixedInteger";
     case EntityType::FixedString: return "FixedString";
+    default: return "";
   }
 
 }
@@ -28,5 +29,6 @@ std::string Type::relationshipTypeToString(RelationshipType r) {
     case RelationshipType::Follows: return "Follows";
     case RelationshipType::FollowsT: return "FollowsT";
     case RelationshipType::Pattern: return "Pattern";
+    default: return "";
   }
 }

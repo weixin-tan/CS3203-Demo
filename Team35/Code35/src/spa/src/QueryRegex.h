@@ -12,6 +12,7 @@ bool isWildCard(const std::string& s);
 bool isQuotationIdent(const std::string& s);
 bool isStmtRef(const std::string& s);
 bool isEntRef(const std::string& s);
+bool isWildCardIdent(const std::string& s);
 std::string stripString(std::string s);
 std::vector<std::string> splitString(const std::string& s, const std::string& delimiter);
 

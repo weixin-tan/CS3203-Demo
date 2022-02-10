@@ -54,6 +54,7 @@ RelationshipRef QueryProcessor::createRelationshipObject(std::vector<std::string
   }else if (relStr == "Modifies"){
     rType = RelationshipType::Modifies;
   }else{
+    //this means that there is no relationship type -> cause empty clause
     rType = RelationshipType::Uses; // just putting some default type down
   }
   Entity leftEntity = findRelationshipEntity(relRefList[1], entityMap);
@@ -70,15 +71,13 @@ Entity QueryProcessor::findRelationshipEntity(const std::string& s, std::unorder
   }else if(isInteger(s)){
     return Entity(EntityType::FixedInteger, s);
   }else if(isQuotationIdent(s)){
-    std::string s2;
-    char first = s[0];
-    if (first == '\"') {
-      s2 = s.substr(1, s.length() - 2);
-    } else {
-      s2 = s;
-    }
+    std::string s2 = s.substr(1, s.length() - 2);
+    return Entity(EntityType::FixedString, s2);
+  }else if(isWildCardIdent(s)){
+    std::string s2 = s.substr(2, s.length() - 4);
     return Entity(EntityType::FixedString, s2);
   }else{
+    // this entity is NULL -> causes empty clause
     return Entity(EntityType::FixedString, s);
   }
 }
