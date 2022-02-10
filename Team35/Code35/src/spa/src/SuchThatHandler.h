@@ -7,7 +7,7 @@
 #include "Type.h"
 #include "Clause.h"
 #include "Result.h"
-#include "PkbGetter.h"
+#include "PKB/PkbGetter.h"
 
 class SuchThatHandler {
  public:

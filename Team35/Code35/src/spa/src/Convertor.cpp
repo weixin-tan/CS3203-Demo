@@ -45,7 +45,7 @@ std::vector<ParsedStatement> Convertor::StatementListReader(StmtLst statement_li
 	}
 
 	// TODO: Sending the statement list to the PKB - should be removed 
-	for (const auto i : results) {
+	for (const ParsedStatement i : results) {
 		pkb_setter->insertStmt(i);
 	}
 

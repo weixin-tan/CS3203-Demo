@@ -23,7 +23,7 @@ TEST_CASE("Case 1") {
 	//Creating the statement b = a
 	Statement statement1; 
 	statement1.stmt_no = 1;
-	statement1.statement_type = kassign_stmt;
+	statement1.statement_type = StatementType::kassign_stmt;
 	statement1.expr = std::vector<std::string>{ "a" };
 	statement1.proc_name = "procedure 1";
 	statement1.var_name = std::vector<std::string>{ "b" };
@@ -31,7 +31,7 @@ TEST_CASE("Case 1") {
 	// Creating the statement a = a + 1
 	Statement statement2;
 	statement2.stmt_no = 2;
-	statement2.statement_type = kassign_stmt;
+	statement2.statement_type = StatementType::kassign_stmt;
 	statement2.expr = std::vector<std::string>{ "a" };
 	statement2.proc_name = "procedure 1";
 	statement2.var_name = std::vector<std::string>{ "a" };
@@ -45,7 +45,7 @@ TEST_CASE("Case 1") {
 
 	// Creating the convertor
 	Convertor convertor(pkb.getSetter());
-	std::vector<ParsedStatement> results = convertor.StatementListReader(stmt_cont, ContainerType::kprocedure);
+	std::vector<ParsedStatement> results = convertor.StatementListReader(stmt_cont, -1);
 
 	ParsedStatement parsed_statement1 = results[0];
 	ParsedStatement parsed_statement2 = results[1];
@@ -80,8 +80,8 @@ TEST_CASE("Case 1") {
 	}
 
 	SECTION("Checking if the statement_type is correct") {
-		REQUIRE(parsed_statement1.statement_type == kassign_stmt);
-		REQUIRE(parsed_statement2.statement_type == kassign_stmt);
+		REQUIRE(parsed_statement1.statement_type == StatementType::kassign_stmt);
+		REQUIRE(parsed_statement2.statement_type == StatementType::kassign_stmt);
 	}
 
 }

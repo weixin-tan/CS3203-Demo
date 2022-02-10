@@ -4,7 +4,7 @@
 #include <vector>
 #include "Statement.h"
 
-enum ContainerType {
+enum class ContainerType {
 	kprocedure,
 	kifthen,
 	kwhile,
