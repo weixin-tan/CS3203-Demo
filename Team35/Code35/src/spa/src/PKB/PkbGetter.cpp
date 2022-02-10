@@ -1,28 +1,15 @@
-#include "PkbGetter.h"
-#include "../Type.h"  // KIV: might be problematic
-#include "DB.h"
 #include <set>
 #include <cassert>
+
+#include "PkbGetter.h"
+#include "ProgramElement.h"
+#include "DB.h"
 
 #define NULL_STMT_NO -1
 
 PkbGetter::PkbGetter(DB* db) : db(db) {}
 
-bool inline isUndefined(const Entity& e) {
-  return e.eType == EntityType::Wildcard && e.name.empty();
-}
-
-bool inline isStatement(const EntityType& eType) {
-  return eType == EntityType::Assignment || eType == EntityType::Read || eType == EntityType::While || eType == EntityType::If || eType == EntityType::Print || eType == EntityType::Call;
-}
-
-bool inline isStatement(const Entity& e) {
-  return isStatement(e.eType);
-}
-
-bool PkbGetter::isRelationship(const RelationshipType& r, const Entity& leftSide, const Entity& rightSide) const {
-  assert(!(isUndefined(leftSide) || isUndefined(rightSide)));  // must be named
-
+bool PkbGetter::isRelationship(const RelationshipType& r, const ProgramElement &leftSide, const ProgramElement &rightSide) const {
   bool result = false;
 
   switch (r) {
@@ -100,7 +87,7 @@ bool PkbGetter::isRelationship(const RelationshipType& r, const Entity& leftSide
   return result;
 }
 
-std::vector<Entity> PkbGetter::getRelationshipStatements(const RelationshipType& r) const {
+std::set<ProgramElement> PkbGetter::getRelationshipStatements(const RelationshipType& r) const {
   std::vector<Entity> result;
 
   switch (r) {
@@ -122,7 +109,7 @@ std::vector<Entity> PkbGetter::getRelationshipStatements(const RelationshipType&
   return result;
 }
 
-std::vector<Entity> PkbGetter::getEntity(const EntityType& typeToGet) const {
+std::set<ProgramElement> PkbGetter::getEntity(const ElementType &typeToGet) const {
   std::vector<Entity> result;
 
   if (isStatement(typeToGet)) {
@@ -147,8 +134,8 @@ std::vector<Entity> PkbGetter::getEntity(const EntityType& typeToGet) const {
   return result;
 }
 
-std::vector<Entity> PkbGetter::getLeftSide(const RelationshipType& r, const Entity& rightSide,
-                                           const EntityType& typeToGet) const {
+std::set<ProgramElement> PkbGetter::getLeftSide(const RelationshipType& r, const ProgramElement &rightSide,
+                                                const ElementType &typeToGet) const {
   assert(!isUndefined(rightSide));
   std::vector<Entity> result;
 
@@ -241,11 +228,9 @@ std::vector<Entity> PkbGetter::getLeftSide(const RelationshipType& r, const Enti
   return result;
 }
 
-std::vector<Entity> PkbGetter::getRightSide(const RelationshipType& r, const Entity& leftSide,
-                                            const EntityType& typeToGet) const {
-  assert(!isUndefined(leftSide));
-
-  std::vector<Entity> result;
+std::set<ProgramElement> PkbGetter::getRightSide(const RelationshipType& r, const ProgramElement &leftSide,
+                                                 const ElementType &typeToGet) const {
+  std::set<ProgramElement> result;
   switch (r) {
     case RelationshipType::Modifies: {
       assert(isStatement(leftSide) || leftSide.eType == EntityType::Procedure);
