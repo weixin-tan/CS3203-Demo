@@ -42,16 +42,16 @@ TEST_CASE("PKB Basic") {
 //}
 
   std::vector<ParsedStatement> statements = {
-              ParsedStatement::ParsedStatement(1, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
-              ParsedStatement::ParsedStatement(2, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {"x"}, {"y"}, ParsedStatement::default_procedure_name, 1),
-              ParsedStatement::ParsedStatement(3, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"}, ParsedStatement::default_procedure_name, 2),
-              ParsedStatement::ParsedStatement(4, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kwhile_stmt, ParsedStatement::default_pattern, "f", {"x"}, {}, ParsedStatement::default_procedure_name, 3),
-              ParsedStatement::ParsedStatement(5, ParsedStatement::default_null_stmt_no, 4, StatementType::kread_stmt, ParsedStatement::default_pattern, "f", {}, {"z"}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
-              ParsedStatement::ParsedStatement(6, ParsedStatement::default_null_stmt_no, 4, StatementType::kif_stmt, ParsedStatement::default_pattern, "f", {"z"}, {}, ParsedStatement::default_procedure_name, 5),
-              ParsedStatement::ParsedStatement(7, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
-              ParsedStatement::ParsedStatement(8, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"z"}, ParsedStatement::default_procedure_name, 7),
-              ParsedStatement::ParsedStatement(9, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"y"}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
-              ParsedStatement::ParsedStatement(10, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"z"}, ParsedStatement::default_procedure_name, 9),
+      ParsedStatement::ParsedStatement(1, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
+      ParsedStatement::ParsedStatement(2, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {"x"}, {"y"}, ParsedStatement::default_procedure_name, 1),
+      ParsedStatement::ParsedStatement(3, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"}, ParsedStatement::default_procedure_name, 2),
+      ParsedStatement::ParsedStatement(4, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kwhile_stmt, ParsedStatement::default_pattern, "f", {"x"}, {}, ParsedStatement::default_procedure_name, 3),
+      ParsedStatement::ParsedStatement(5, ParsedStatement::default_null_stmt_no, 4, StatementType::kread_stmt, ParsedStatement::default_pattern, "f", {}, {"z"}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
+      ParsedStatement::ParsedStatement(6, ParsedStatement::default_null_stmt_no, 4, StatementType::kif_stmt, ParsedStatement::default_pattern, "f", {"z"}, {}, ParsedStatement::default_procedure_name, 5),
+      ParsedStatement::ParsedStatement(7, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
+      ParsedStatement::ParsedStatement(8, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"z"}, ParsedStatement::default_procedure_name, 7),
+      ParsedStatement::ParsedStatement(9, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"y"}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
+      ParsedStatement::ParsedStatement(10, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"z"}, ParsedStatement::default_procedure_name, 9),
   };
   for (const ParsedStatement& parsed_statement : statements)
     pkb_setter->insertStmt(parsed_statement);

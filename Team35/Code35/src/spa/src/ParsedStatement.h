@@ -25,9 +25,9 @@ public:
 	std::string procedure_called;
 	int preceding = -1; 
 
-	ParsedStatement::ParsedStatement();
+	ParsedStatement();
 
-	ParsedStatement::ParsedStatement(int stmt_no, int if_stmt_no, int while_stmt_no,
+	ParsedStatement(int stmt_no, int if_stmt_no, int while_stmt_no,
 		StatementType statement_type, std::string pattern, std::string procedure_name,
 		std::vector<std::string> var_used, std::vector<std::string> var_modified,
 		std::string procedure_called, int preceding);
