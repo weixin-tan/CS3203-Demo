@@ -27,7 +27,8 @@ enum class RelationshipType{
   Parent,
   ParentT,
   Follows,
-  FollowsT
+  FollowsT,
+  Pattern
 };
 
 class Type{
@@ -49,14 +50,16 @@ class Type{
       "FixedString"
   };
 
-  static constexpr const char* relationshipTypeStringArr[] = {"Modifies",
-                                                              "Uses",
-                                                              "Parent",
-                                                              "ParentT",
-                                                              "Follows",
-                                                              "FollowsT"};
+  static constexpr const char* relationshipTypeStringArr[] = {
+      "Modifies",
+      "Uses",
+      "Parent",
+      "ParentT",
+      "Follows",
+      "FollowsT",
+      "Pattern"
+  };
   static std::string entityTypeToString(EntityType e);
-
   static std::string relationshipTypeToString(RelationshipType r);;
 };
 

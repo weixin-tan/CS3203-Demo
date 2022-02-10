@@ -13,14 +13,14 @@ void Clause::appendRef(const RelationshipRef& r) {
 std::string Clause::toString() {
   std::ostringstream buffer;
   buffer << "entities to find: \n";
-    for (auto e: entityToFindList) {
-      buffer << e.toString();
-    }
-    buffer << "relationships to satisfy: \n";
-    for (auto r: refList){
-        buffer << r.toString();
-    }
-    buffer << std::endl;
-    return buffer.str();
+  for (auto e: entityToFindList) {
+    buffer << e.toString();
+  }
+  buffer << "relationships to satisfy: \n";
+  for (auto r: refList){
+      buffer << r.toString();
+  }
+  buffer << std::endl;
+  return buffer.str();
 }
 

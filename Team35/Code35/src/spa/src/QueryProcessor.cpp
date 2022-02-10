@@ -68,19 +68,28 @@ Entity QueryProcessor::findRelationshipEntity(const std::string& s, std::unorder
   }else if(s == "_"){
     return Entity(EntityType::Wildcard, "_");
   }else if(isInteger(s)){
-    return Entity(EntityType::Assignment, s);
+    return Entity(EntityType::FixedInteger, s);
   }else if(isQuotationIdent(s)){
     std::string s2;
     char first = s[0];
     if (first == '\"') {
-        s2 = s.substr(1, s.length() - 2);
+      s2 = s.substr(1, s.length() - 2);
     } else {
-        s2 = s;
+      s2 = s;
     }
-    return Entity(EntityType::Variable, s2);
+    return Entity(EntityType::FixedString, s2);
   }else{
-    return Entity();
+    return Entity(EntityType::FixedString, s);
   }
+}
+
+RelationshipRef QueryProcessor::createPatternObject(std::vector<std::string> patternList, const std::unordered_map<std::string, Entity>& entityMap){
+  RelationshipType rType = RelationshipType::Pattern;
+  Entity assignmentEntity = findRelationshipEntity(patternList[0], entityMap);
+  Entity leftEntity = findRelationshipEntity(patternList[1], entityMap);
+  Entity rightEntity = findRelationshipEntity(patternList[2], entityMap);
+
+  return RelationshipRef(rType, leftEntity, rightEntity, assignmentEntity);
 }
 
 std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
@@ -92,11 +101,9 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
   std::vector<std::string> selectStmtList = extractSelect(parsePQL);
 
   for (const auto& declarationStmt: declarationStmtList){
-    std::vector<std::string> designEntityArr = extractDesignEntityAndSynonym(declarationStmt);
-
-    if (!checkDesignEntitySynonyms(designEntityArr)){
-      isValid = false;
-    }else{
+    std::vector<std::string> designEntityArr = extractDesignEntityAndSynonyms(declarationStmt);
+    isValid = isValid && checkDesignEntitySynonyms(designEntityArr);
+    if (isValid){
       entityMap = createDeclarationObjects(designEntityArr, entityMap);
     }
   }
@@ -112,33 +119,36 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
         isValid = isValid && isIdent(s) && (entityMap.find(s) != entityMap.end());
         if (isValid){
           newClause.appendEntityToFind(entityMap[s]);
-        }else{
-          isValid = false;
         }
       }
 
       for (const auto& s: SuchThatClauses){
         std::vector<std::string> relRefList = extractItemsInBrackets(s);
-        isValid = isValid && checkRelRefArr(relRefList);
+        isValid = isValid && checkRelRefList(relRefList);
         if (isValid){
           RelationshipRef newRef = createRelationshipObject(relRefList, entityMap);
           newClause.appendRef(newRef);
         }
       }
 
-//      std::cout << newClause.toString() << "\n";
-      clauseList.push_back(newClause);
-      /*
-      FOR NEXT WEEK
       for (auto s: PatternClauses){
-        //validate pattern
-        //create relationship object
+        s = removePattern(s);
+        std::vector<std::string> patternList = extractItemsInBrackets(s);
+        isValid = isValid && checkPatternList(patternList, entityMap);
+
+        if (isValid){
+          RelationshipRef newRef = createPatternObject(patternList, entityMap);
+          newClause.appendRef(newRef);
+        }
       }
-      */
+
+      //std::cout << "\n" << newClause.toString() << "\n";
+      clauseList.push_back(newClause);
     }
   }
 
   if (isValid){
+    //std::cout << "is valid!";
     return clauseList;
   }else{
     std::vector<Clause> emptyClause;
