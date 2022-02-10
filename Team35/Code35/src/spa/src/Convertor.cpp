@@ -74,10 +74,10 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 	switch (containertype) {
 	case ContainerType::kifthen:
 	case ContainerType::kifelse:
-		current_statement.if_line_no = container_num;
+		current_statement.if_stmt_no = container_num;
 		break;
 	case ContainerType::kwhile:
-		current_statement.while_line_no = container_num;
+		current_statement.while_stmt_no = container_num;
 		break;
 	}
 

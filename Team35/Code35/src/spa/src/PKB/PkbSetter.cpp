@@ -2,8 +2,6 @@
 #include "../ParsedStatement.h"
 #include "../StatementType.h"
 
-# define NULL_STMT_NO -1
-
 const std::map<StatementType, EntityType> PkbSetter::spTypeToQpsTypeTable = {
     {StatementType::kassign_stmt, EntityType::Assignment},
     {StatementType::kprint_stmt,  EntityType::Print},
@@ -48,15 +46,15 @@ void PkbSetter::handleStatementType(const ParsedStatement& parsedStatement) {
 }
 
 void PkbSetter::handleParent(const ParsedStatement& parsedStatement) {
-  int parentStmtNo = ((parsedStatement.while_line_no != NULL_STMT_NO) ? parsedStatement.while_line_no : parsedStatement.if_line_no);
+  int parentStmtNo = ((parsedStatement.while_stmt_no != ParsedStatement::default_null_stmt_no) ? parsedStatement.while_stmt_no : parsedStatement.if_stmt_no);
   db->childToParentTable[parsedStatement.stmt_no] = parentStmtNo;
-  if (parentStmtNo != NULL_STMT_NO) {
+  if (parentStmtNo != ParsedStatement::default_null_stmt_no) {
     db->parentToChildTable[parentStmtNo].insert(parsedStatement.stmt_no);
   }
 }
 
 void PkbSetter::handleFollows(const ParsedStatement& parsedStatement) {
-  if (parsedStatement.stmt_no != NULL_STMT_NO) {
+  if (parsedStatement.stmt_no != ParsedStatement::default_null_stmt_no) {
     db->stmtPreceding[parsedStatement.stmt_no] = parsedStatement.preceding;
     db->stmtFollowing[parsedStatement.preceding] = parsedStatement.stmt_no;
   }
