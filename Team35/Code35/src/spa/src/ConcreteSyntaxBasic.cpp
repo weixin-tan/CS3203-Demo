@@ -1,10 +1,11 @@
 #include "ConcreteSyntaxBasic.h"
+#include <iostream>
 
 ConcreteSyntaxBasic::ConcreteSyntaxBasic() {
 
 }
 
-Procedure ConcreteSyntaxBasic::parseProcedure(std::queue<Token> &tokensQueue) {
+Procedure ConcreteSyntaxBasic::parseProcedure(std::queue<Token> tokensQueue) {
 	// procedure_keyword
 	tokensQueue.pop();
 	// procedure name
@@ -15,7 +16,7 @@ Procedure ConcreteSyntaxBasic::parseProcedure(std::queue<Token> &tokensQueue) {
 	Procedure procedure;
 	StmtLst stmtLst;
 
-	int stmt_count = 2;
+	int stmt_count = 1;
 
 	while (tokensQueue.front().type != RIGHT_CURLY) {
 		Statement temp_statement = ConcreteSyntaxBasic::parseStmt(tokensQueue);
@@ -24,7 +25,7 @@ Procedure ConcreteSyntaxBasic::parseProcedure(std::queue<Token> &tokensQueue) {
 		stmt_count++;
 	}
 
-	stmtLst.SetContainerType(kprocedure);
+	stmtLst.SetContainerType(ContainerType::kprocedure);
 	procedure.setStmtLst(stmtLst);
 	return procedure;
 }
@@ -37,13 +38,13 @@ Statement ConcreteSyntaxBasic::parseStmt(std::queue<Token> &tokensQueue) {
 
 Statement ConcreteSyntaxBasic::parseAssign(std::queue<Token> &tokensQueue) {
 	Statement assignStmt;
-	assignStmt.statement_type = kassign_stmt;
+	assignStmt.statement_type = StatementType::kassign_stmt;
 
 	std::vector<std::string> var_name_result;
 	var_name_result.push_back(tokensQueue.front().getId());
 	assignStmt.var_name = var_name_result;
 	// var_name
-	tokensQueue.pop();
+	tokensQueue.pop();	
 	// equals sign
 	tokensQueue.pop();
 	assignStmt.expr = ConcreteSyntaxBasic::parseExpr(tokensQueue);

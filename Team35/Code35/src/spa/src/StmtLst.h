@@ -4,7 +4,7 @@
 #include <vector>
 #include "Statement.h"
 
-enum ContainerType {
+enum class ContainerType {
 	kprocedure,
 	kifthen,
 	kwhile,
@@ -24,7 +24,7 @@ public:
 	Statement getStmtAtIndex(int index) const;
 	std::size_t getSize() const;
 	void setNextStmt(Statement stmt);
-	void StmtLst::SetContainerType(ContainerType container_type);
+	void SetContainerType(ContainerType container_type);
 };
 
 

@@ -42,16 +42,16 @@ TEST_CASE("PKB Basic") {
 //}
 
   std::vector<ParsedStatement> statements = {
-      {1, NULL_STMT_NO, NULL_STMT_NO, StatementType::kassign_stmt, "", "f", {}, {"x"}, "", NULL_STMT_NO},
-      {2, NULL_STMT_NO, NULL_STMT_NO, StatementType::kassign_stmt, "", "f", {"x"}, {"y"}, "", 1},
-      {3, NULL_STMT_NO, NULL_STMT_NO, StatementType::kassign_stmt, "", "f", {}, {"x"}, "", 2},
-      {4, NULL_STMT_NO, NULL_STMT_NO, StatementType::kwhile_stmt, "", "f", {"x"}, {}, "", 3},
-      {5, NULL_STMT_NO, 4, StatementType::kread_stmt, "", "f", {}, {"z"}, "", NULL_STMT_NO},
-      {6, NULL_STMT_NO, 4, StatementType::kif_stmt, "", "f", {"z"}, {}, "", 5},
-      {7, 6, NULL_STMT_NO, StatementType::kassign_stmt, "", "f", {}, {"x"}, "", NULL_STMT_NO},
-      {8, 6, NULL_STMT_NO, StatementType::kassign_stmt, "", "f", {}, {"z"}, "", 7},
-      {9, 6, NULL_STMT_NO, StatementType::kassign_stmt, "", "f", {}, {"y"}, "", NULL_STMT_NO},
-      {10, 6, NULL_STMT_NO, StatementType::kassign_stmt, "", "f", {}, {"z"}, "", 9},
+      ParsedStatement(1, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
+      ParsedStatement(2, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {"x"}, {"y"}, ParsedStatement::default_procedure_name, 1),
+      ParsedStatement(3, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"}, ParsedStatement::default_procedure_name, 2),
+      ParsedStatement(4, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kwhile_stmt, ParsedStatement::default_pattern, "f", {"x"}, {}, ParsedStatement::default_procedure_name, 3),
+      ParsedStatement(5, ParsedStatement::default_null_stmt_no, 4, StatementType::kread_stmt, ParsedStatement::default_pattern, "f", {}, {"z"}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
+      ParsedStatement(6, ParsedStatement::default_null_stmt_no, 4, StatementType::kif_stmt, ParsedStatement::default_pattern, "f", {"z"}, {}, ParsedStatement::default_procedure_name, 5),
+      ParsedStatement(7, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
+      ParsedStatement(8, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"z"}, ParsedStatement::default_procedure_name, 7),
+      ParsedStatement(9, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"y"}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
+      ParsedStatement(10, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"z"}, ParsedStatement::default_procedure_name, 9),
   };
   for (const ParsedStatement& parsed_statement : statements)
     pkb_setter->insertStmt(parsed_statement);
@@ -63,7 +63,6 @@ TEST_CASE("PKB Basic") {
                   == true);
       REQUIRE(pkb_getter->isRelationship(RelationshipType::Modifies, Entity(EntityType::Assignment, "2"), Entity(EntityType::Variable, "y"))
                   == true);
-      // TODO: Current PKB does not search recursively
       REQUIRE(pkb_getter->isRelationship(RelationshipType::Modifies, Entity(EntityType::While, "4"), Entity(EntityType::Variable, "y"))
                   == true);
       REQUIRE(pkb_getter->isRelationship(RelationshipType::Modifies, Entity(EntityType::If, "6"), Entity(EntityType::Variable, "y"))
@@ -129,7 +128,6 @@ TEST_CASE("PKB Basic") {
         std::set<std::pair<EntityType, std::string>> expected = entityVecToSet({
                                                                                    Entity(EntityType::If, "6"),
                                                                                });
-        // TODO
         REQUIRE(result == expected);
       }
       SECTION("While given Variable") {
@@ -139,7 +137,6 @@ TEST_CASE("PKB Basic") {
         std::set<std::pair<EntityType, std::string>> expected = entityVecToSet({
                                                                                    Entity(EntityType::While, "4"),
                                                                                });
-        // TODO
         REQUIRE(result == expected);
       }
     }

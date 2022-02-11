@@ -45,7 +45,7 @@ std::vector<ParsedStatement> Convertor::StatementListReader(StmtLst statement_li
 	}
 
 	// TODO: Sending the statement list to the PKB - should be removed 
-	for (const auto i : results) {
+	for (const ParsedStatement i : results) {
 		pkb_setter->insertStmt(i);
 	}
 
@@ -74,10 +74,10 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 	switch (containertype) {
 	case ContainerType::kifthen:
 	case ContainerType::kifelse:
-		current_statement.if_line_no = container_num;
+		current_statement.if_stmt_no = container_num;
 		break;
 	case ContainerType::kwhile:
-		current_statement.while_line_no = container_num;
+		current_statement.while_stmt_no = container_num;
 		break;
 	}
 
