@@ -11,8 +11,7 @@ bool isInteger(const std::string& s){
 }
 
 bool isWildCard(const std::string& s) {
-  std::regex wildCardRegex("_");
-  return std::regex_match(s, wildCardRegex);
+  return s == "_";
 }
 
 bool isQuotationIdent(const std::string& s){

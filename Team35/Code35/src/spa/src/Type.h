@@ -18,7 +18,9 @@ enum class EntityType {
   Constant,
   Wildcard,
   FixedInteger,
-  FixedString
+  FixedString,
+  FixedStringWithinWildcard,
+  Null
 };
 
 enum class RelationshipType{
@@ -28,7 +30,8 @@ enum class RelationshipType{
   ParentT,
   Follows,
   FollowsT,
-  Pattern
+  Pattern,
+  Null
 };
 
 class Type{
@@ -47,7 +50,9 @@ class Type{
       "Constant",
       "Wildcard",
       "FixedInteger",
-      "FixedString"
+      "FixedString",
+      "FixedStringWithinWildcard",
+      "Null"
   };
 
   static constexpr const char* relationshipTypeStringArr[] = {
@@ -57,7 +62,8 @@ class Type{
       "ParentT",
       "Follows",
       "FollowsT",
-      "Pattern"
+      "Pattern",
+      "Null"
   };
   static std::string entityTypeToString(EntityType e);
   static std::string relationshipTypeToString(RelationshipType r);;

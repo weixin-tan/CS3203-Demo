@@ -27,7 +27,8 @@ std::unordered_map<std::string,Entity> QueryProcessor::createDeclarationObjects(
   }else if (designEntity == "procedure"){
     eType = EntityType::Procedure;
   }else{
-    eType = EntityType::Wildcard; // just putting some default type down
+    // this entity is NULL -> invalid
+    eType = EntityType::Null;
   }
   for(int i=1; i<designEntityArr.size(); i++){
     std::string entityName = designEntityArr[i];
@@ -54,19 +55,23 @@ RelationshipRef QueryProcessor::createRelationshipObject(std::vector<std::string
   }else if (relStr == "Modifies"){
     rType = RelationshipType::Modifies;
   }else{
-    //this means that there is no relationship type -> cause empty clause
-    rType = RelationshipType::Uses; // just putting some default type down
+    //this means that there is no relationship type -> invalid
+    rType = RelationshipType::Null;
   }
   Entity leftEntity = findRelationshipEntity(relRefList[1], entityMap);
   Entity rightEntity = findRelationshipEntity(relRefList[2], entityMap);
 
-  return RelationshipRef(rType, leftEntity, rightEntity);
+  if (rType == RelationshipType::Null || leftEntity.eType == EntityType::Null || rightEntity.eType == EntityType::Null){
+    return RelationshipRef(RelationshipType::Null , leftEntity, rightEntity);
+  }else{
+    return RelationshipRef(rType, leftEntity, rightEntity);
+  }
 }
 
 Entity QueryProcessor::findRelationshipEntity(const std::string& s, std::unordered_map<std::string, Entity> entityMap){
   if (entityMap.find(s) != entityMap.end()){
-    return entityMap[s]; //
-  }else if(s == "_"){
+    return entityMap[s];
+  }else if(isWildCard(s)){
     return Entity(EntityType::Wildcard, "_");
   }else if(isInteger(s)){
     return Entity(EntityType::FixedInteger, s);
@@ -75,10 +80,10 @@ Entity QueryProcessor::findRelationshipEntity(const std::string& s, std::unorder
     return Entity(EntityType::FixedString, s2);
   }else if(isWildCardIdent(s)){
     std::string s2 = s.substr(2, s.length() - 4);
-    return Entity(EntityType::FixedString, s2);
+    return Entity(EntityType::FixedStringWithinWildcard, s2);
   }else{
-    // this entity is NULL -> causes empty clause
-    return Entity(EntityType::FixedString, s);
+    // this entity is NULL -> invalid
+    return Entity(EntityType::Null, s);
   }
 }
 
@@ -88,7 +93,11 @@ RelationshipRef QueryProcessor::createPatternObject(std::vector<std::string> pat
   Entity leftEntity = findRelationshipEntity(patternList[1], entityMap);
   Entity rightEntity = findRelationshipEntity(patternList[2], entityMap);
 
-  return RelationshipRef(rType, leftEntity, rightEntity, assignmentEntity);
+  if (assignmentEntity.eType == EntityType::Null || leftEntity.eType == EntityType::Null || rightEntity.eType == EntityType::Null){
+    return RelationshipRef(RelationshipType::Null , leftEntity, rightEntity);
+  }else {
+    return RelationshipRef(rType, leftEntity, rightEntity, assignmentEntity);
+  }
 }
 
 std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
@@ -126,7 +135,12 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
         isValid = isValid && checkRelRefList(relRefList);
         if (isValid){
           RelationshipRef newRef = createRelationshipObject(relRefList, entityMap);
-          newClause.appendRef(newRef);
+          if (newRef.rType == RelationshipType::Null){
+            isValid = false;
+            break;
+          }else{
+            newClause.appendRef(newRef);
+          }
         }
       }
 
@@ -137,19 +151,24 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
 
         if (isValid){
           RelationshipRef newRef = createPatternObject(patternList, entityMap);
-          newClause.appendRef(newRef);
+          if (newRef.rType == RelationshipType::Null){
+            isValid = false;
+            break;
+          }else{
+            newClause.appendRef(newRef);
+          }
         }
       }
-
-      //std::cout << "\n" << newClause.toString() << "\n";
+      std::cout << "\n" << newClause.toString() << "\n";
       clauseList.push_back(newClause);
     }
   }
 
   if (isValid){
-    //std::cout << "is valid!";
+    std::cout << "is valid!";
     return clauseList;
   }else{
+    std::cout << "is invalid!";
     std::vector<Clause> emptyClause;
     return emptyClause;
   }
