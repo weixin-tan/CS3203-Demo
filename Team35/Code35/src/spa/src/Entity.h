@@ -7,14 +7,14 @@
 
 class Entity {
 public:
-    Entity();
-    Entity(EntityType eType, std::string name);
+  Entity();
+  Entity(EntityType eType, std::string name);
 
-    EntityType eType;
-    std::string name;
+  EntityType eType;
+  std::string name;
 
-    std::string toString();
-    bool operator==(const Entity & e1) const;
+  std::string toString();
+  bool operator==(const Entity & e1) const;
 };
 
 

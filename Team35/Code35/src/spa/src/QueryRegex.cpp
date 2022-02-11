@@ -11,12 +11,16 @@ bool isInteger(const std::string& s){
 }
 
 bool isWildCard(const std::string& s) {
-  std::regex wildCardRegex("_");
-  return std::regex_match(s, wildCardRegex);
+  return s == "_";
 }
 
 bool isQuotationIdent(const std::string& s){
   std::regex quotationIdentRegex("\"[A-Za-z][A-Za-z0-9]*\"");
+  return std::regex_match(s, quotationIdentRegex);
+}
+
+bool isWildCardIdent(const std::string& s){
+  std::regex quotationIdentRegex("_\"[A-Za-z][A-Za-z0-9]*\"_");
   return std::regex_match(s, quotationIdentRegex);
 }
 
@@ -61,7 +65,8 @@ std::vector<std::string> extractSelect(const std::string& s){
   std::vector<std::string> returnList;
   std::vector<std::string> stmtList = splitDeclarationAndSelect(s);
   for (const std::string& stmt: stmtList){
-    if (stmt.find("Select") != std::string::npos){
+    if (stmt.find("Select") == 0){
+      // select exists as the first word in the statement
       returnList.push_back(stmt);
     }
   }
@@ -73,12 +78,12 @@ std::vector<std::string> extractDeclaration(const std::string& s){
   std::vector<std::string> stmtList = splitDeclarationAndSelect(s);
   for (const std::string& stmt: stmtList){
     if (stmt.find("Select") == std::string::npos){
+      // select does not exist in the statement
       returnList.push_back(stmt);
     }
   }
   return returnList;
 }
-
 
 bool checkDesignEntitySynonyms(std::vector<std::string> sArr) {
   std::vector<std::string> designEntity {"stmt", "read", "print", "call", "while", "if", "assign", "variable", "constant", "procedure"};
@@ -86,7 +91,6 @@ bool checkDesignEntitySynonyms(std::vector<std::string> sArr) {
   if (sArr.size() <= 1){
     returnBool = false;
   }else{
-    returnBool = true;
     std::string designStr = sArr[0];
     if (std::find(std::begin(designEntity), std::end(designEntity), designStr) != std::end(designEntity)){
       //designStr contains one of the design entity keywords
@@ -101,7 +105,7 @@ bool checkDesignEntitySynonyms(std::vector<std::string> sArr) {
   return returnBool;
 }
 
-std::vector<std::string> extractDesignEntityAndSynonym(const std::string& s){
+std::vector<std::string> extractDesignEntityAndSynonyms(const std::string& s){
   std::vector<std::string> returnList;
   std::vector<std::string> temp = splitString(s,",");
   std::vector<std::string> temp2 = splitString(temp.front(), " ");
@@ -115,28 +119,23 @@ std::vector<std::string> extractDesignEntityAndSynonym(const std::string& s){
   return returnList;
 }
 
-bool checkSelect(const std::string& s){
+bool isSelect(const std::string& s){
   return s.find("Select") == 0 ;
 }
 
-bool checkSuchThat(const std::string& s){
-  std::vector<std::string> relRefList {"Follows", "Follows*", "Parent", "Parent*", "Uses", "Modifies"};
-
-  for(const auto& i: relRefList){
-    if (s.find(i) == 0){
-      return true;
-    }
-  }
-  return false;
+bool isPattern(const std::string& s){
+  return s.find("pattern") == 0;
 }
 
-std::vector<std::string> extractVariablesClauses(const std::string& s){
+std::vector<std::string> splitVariablesAndClauses(const std::string& s){
   std::vector<std::string> returnList;
   std::vector<std::string> temp = splitString(s,"such that");
-  for(const auto& i:temp){
-    std::vector<std::string> temp2 = splitString(i, "pattern");
-    for (const auto& j:temp2){
-      returnList.push_back(j);
+  returnList.push_back(temp[0]);
+
+  std::vector<std::string> temp2 = splitString(temp[1], ")");
+  for (int i=0; i<temp2.size(); i=i+1){
+    if (!temp2[i].empty()){
+      returnList.push_back(temp2[i] + ")");
     }
   }
   return returnList;
@@ -144,37 +143,38 @@ std::vector<std::string> extractVariablesClauses(const std::string& s){
 
 std::vector<std::string> extractVariablesToSelect(const std::string& s){
   std::vector<std::string> returnList;
-  std::vector<std::string> everythingList = extractVariablesClauses(s);
-
+  std::vector<std::string> everythingList = splitVariablesAndClauses(s);
   for(const auto& stmt:everythingList){
-    if (checkSelect(stmt)){
+    if (isSelect(stmt)){
       returnList.push_back(stripString(stmt.substr(6)));
     }
   }
   return returnList;
 }
+
 std::vector<std::string> extractSuchThatClauses(const std::string& s){
   std::vector<std::string> returnList;
-  std::vector<std::string> everythingList = extractVariablesClauses(s);
+  std::vector<std::string> everythingList = splitVariablesAndClauses(s);
 
   for(const auto& stmt:everythingList){
-    if (checkSuchThat(stmt)){
-      std::vector<std::string> wordsList = splitString(stmt, " ");
-      std::string relStmt;
-      for (int i=0; i<wordsList.size(); i=i+3){
-        relStmt = wordsList[i] + " " + wordsList[i+1] + " " + wordsList[i+2];
-        returnList.push_back(relStmt);
+    if (!isSelect(stmt) && !isPattern(stmt)){
+      std::vector<std::string> wordsList = splitString(stmt, ")");
+      for (int i=0; i<wordsList.size(); i=i+1){
+        if (!wordsList[i].empty()){
+          returnList.push_back(wordsList[i] + ")");
+        }
       }
     }
   }
   return returnList;
 }
+
 std::vector<std::string> extractPatternClauses(const std::string& s){
   std::vector<std::string> returnList;
-  std::vector<std::string> everythingList = extractVariablesClauses(s);
+  std::vector<std::string> everythingList = splitVariablesAndClauses(s);
 
   for(const auto& stmt:everythingList){
-    if ( (!checkSuchThat(stmt) && !checkSelect(stmt))){
+    if (isPattern(stmt)){
       returnList.push_back(stmt);
     }
   }
@@ -192,19 +192,33 @@ std::vector<std::string> extractItemsInBrackets(const std::string& s){
     returnList.push_back(stripString(s.substr(0, openBracketPosition)));
     returnList.push_back(stripString(s.substr(openBracketPosition+1, commaPosition - openBracketPosition - 1)));
     returnList.push_back(stripString(s.substr(commaPosition+1, closeBracketPosition - commaPosition - 1)));
-
   }
   return returnList;
 }
 
-bool checkRelRefArr(std::vector<std::string> sArr){
+bool checkRelRefList(std::vector<std::string> sArr){
   if (sArr.size() != 3){
     return false;
   }else{
     if (sArr[0] == "Follows" || sArr[0] ==  "Follows*" || sArr[0] ==  "Parent" || sArr[0] == "Parent*"){
       return isStmtRef(sArr[1]) && isStmtRef(sArr[2]);
-    }else{
+    }else if (sArr[0] == "Uses" || sArr[0] == "Modifies"){
       return (isEntRef(sArr[1]) && isEntRef(sArr[2])) || (isStmtRef(sArr[1]) && isEntRef(sArr[2]));
+    }else{
+      return false;
     }
   }
+}
+
+bool checkPatternList(std::vector<std::string> patternList, std::unordered_map<std::string, Entity> entityMap){
+  if (patternList.size() == 3 && isEntRef(patternList[1]) && entityMap.find(patternList[0]) != entityMap.end()){
+    if (entityMap[patternList[0]].eType == EntityType::Assignment){
+      return true;
+    }
+  }
+  return false;
+}
+
+std::string removePattern(const std::string& s){
+  return stripString(s.substr(7,s.length()));
 }
