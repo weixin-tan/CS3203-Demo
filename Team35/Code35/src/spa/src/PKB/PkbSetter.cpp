@@ -1,16 +1,17 @@
 #include "PkbSetter.h"
 #include "../ParsedStatement.h"
 #include "../StatementType.h"
+#include "ElementType.h"
 
 # define NULL_STMT_NO -1
 
-const std::map<StatementType, EntityType> PkbSetter::spTypeToQpsTypeTable = {
-    {StatementType::kassign_stmt, EntityType::Assignment},
-    {StatementType::kprint_stmt,  EntityType::Print},
-    {StatementType::kcall_stmt,   EntityType::Call},
-    {StatementType::kif_stmt,     EntityType::If},
-    {StatementType::kwhile_stmt,  EntityType::While},
-    {StatementType::kread_stmt,   EntityType::Read}
+const std::map<StatementType, ElementType> PkbSetter::spTypeToElementTypeTable = {
+    {StatementType::kassign_stmt, ElementType::Assignment},
+    {StatementType::kprint_stmt,  ElementType::Print},
+    {StatementType::kcall_stmt,   ElementType::Call},
+    {StatementType::kif_stmt,     ElementType::If},
+    {StatementType::kwhile_stmt,  ElementType::While},
+    {StatementType::kread_stmt,   ElementType::Read}
 };
 
 PkbSetter::PkbSetter(DB *db) : db(db) {
@@ -44,7 +45,7 @@ void PkbSetter::handleUses(const ParsedStatement& parsedStatement) {
 }
 
 void PkbSetter::handleStatementType(const ParsedStatement& parsedStatement) {
-  db->stmtTypeTable[parsedStatement.stmt_no] = spTypeToQpsTypeTable.at(parsedStatement.statement_type);
+  db->stmtTypeTable[parsedStatement.stmt_no] = spTypeToElementTypeTable.at(parsedStatement.statement_type);
 }
 
 void PkbSetter::handleParent(const ParsedStatement& parsedStatement) {

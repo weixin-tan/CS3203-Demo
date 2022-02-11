@@ -4,12 +4,13 @@
 #include "DB.h"
 #include "../ParsedStatement.h"
 #include "../StatementType.h"
+#include "ElementType.h"
 #include <map>
 
 class PkbSetter {
  private:
   DB* db;
-  static const std::map<StatementType, EntityType> spTypeToQpsTypeTable;
+  static const std::map<StatementType, ElementType> spTypeToElementTypeTable;
 
  private:
   void handleVariables(const ParsedStatement& parsedStatement);
