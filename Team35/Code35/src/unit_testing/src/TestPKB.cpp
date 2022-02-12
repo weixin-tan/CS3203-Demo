@@ -5,9 +5,6 @@
 #include "catch.hpp"
 using namespace std;
 
-#define NULL_STMT_NO (-1)
-
-
 std::pair<EntityType, std::string> entityToPair(const Entity& e) {
   return {e.eType, e.name};
 }
@@ -51,7 +48,7 @@ TEST_CASE("PKB Basic") {
       ParsedStatement(7, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
       ParsedStatement(8, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"z"}, ParsedStatement::default_procedure_name, 7),
       ParsedStatement(9, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"y"}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
-      ParsedStatement(10, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"z"}, ParsedStatement::default_procedure_name, 9),
+      ParsedStatement(10, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"z"}, ParsedStatement::default_procedure_name, 9)
   };
   for (const ParsedStatement& parsed_statement : statements)
     pkb_setter->insertStmt(parsed_statement);
