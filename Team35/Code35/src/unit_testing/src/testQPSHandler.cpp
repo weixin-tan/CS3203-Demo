@@ -10,7 +10,6 @@ TEST_CASE("QPS Handler") {
     SuchThatHandler st = SuchThatHandler(pkb.getGetter());
     QueryProcessor qp = QueryProcessor();
 
-
     //procedure f {
 //  x = 5;  // 1
 //  y = x;  // 2
@@ -42,7 +41,6 @@ TEST_CASE("QPS Handler") {
 
     for (const ParsedStatement& parsed_statement : statements)
         pkb.getSetter()->insertStmt(parsed_statement);
-
     SECTION("HANDLER") {
         std::string one = "assign a;\n Select a";
         std::string two = "assign a;\n Select a such that Modifies (1, \"x\")";
@@ -68,8 +66,10 @@ TEST_CASE("QPS Handler") {
 
         std::list<std::string> s4 = qr->parse(four);
         for (std::string s : s4) {
-            cout << "four: " << s << "\n";
+          cout << "four: " << s << "\n";
         }
+
+        REQUIRE(1 == 1);
         /*
         std::vector<Clause> c1 = qp.parsePQL(one);
         for (Clause c : c1) {
