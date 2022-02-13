@@ -37,6 +37,24 @@ TEST_CASE("testing objects equality"){
   c3.appendEntityToFind(e3);
   c3.appendRef(r1);
 
+  Clause c4 = Clause();
+  c4.appendEntityToFind(e1);
+  c4.appendEntityToFind(e2);
+  c2.appendRef(r2);
+  c4.appendRef(r4);
+
+  Clause c4_1 = Clause();
+  c4_1.appendEntityToFind(e2);
+  c4_1.appendEntityToFind(e1);
+  c4_1.appendRef(r2);
+  c4_1.appendRef(r4);
+
+  Clause c4_2 = Clause();
+  c4_2.appendEntityToFind(e1);
+  c4_2.appendEntityToFind(e2);
+  c4_2.appendRef(r4);
+  c4_2.appendRef(r2);
+
   SECTION("entity"){
     REQUIRE(e1 == e1_clone);
     REQUIRE(e1 == e1);
@@ -59,6 +77,9 @@ TEST_CASE("testing objects equality"){
     REQUIRE(!(c1 == c2));
     REQUIRE(!(c1 == c3));
     REQUIRE(!(c2 == c3));
+    REQUIRE((c4 == c4_1));
+    REQUIRE((c4 == c4_2));
+    REQUIRE((c4_1 == c4_2));
   }
 }
 
