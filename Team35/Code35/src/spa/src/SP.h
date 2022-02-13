@@ -14,9 +14,9 @@ public:
 	ConcreteSyntaxBasic concrete;
 	Convertor convertor;
 	
-	SP::SP(PkbSetter* pkb_setter);
+	SP(PkbSetter* pkb_setter);
 
-	void SP::Parse(std::string filename);
+	void Parse(std::string filename);
 	
 };
 
