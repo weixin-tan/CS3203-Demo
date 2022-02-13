@@ -8,7 +8,6 @@ RelationshipRef::RelationshipRef(RelationshipType rType, Entity leftEntity, Enti
 
 RelationshipRef::RelationshipRef(RelationshipType rType, Entity leftEntity, Entity rightEntity, Entity AssignmentEntity){
   assert(rType == RelationshipType::Pattern);
-  assert(AssignmentEntity.eType == EntityType::Assignment);
   RelationshipRef::rType = rType;
   RelationshipRef::leftEntity = leftEntity;
   RelationshipRef::rightEntity = rightEntity;

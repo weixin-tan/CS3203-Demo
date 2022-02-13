@@ -2,7 +2,7 @@
 
 QueryProcessor::QueryProcessor()= default;
 
-std::unordered_map<std::string,Entity> QueryProcessor::createDeclarationObjects(std::vector<std::string> designEntityArr, std::unordered_map<std::string, Entity> entityMap){
+void QueryProcessor::createDeclarationObjects(std::vector<std::string> designEntityArr, std::unordered_map<std::string, Entity>* entityMap){
   std::vector<Entity> returnList;
   std::string designEntity = designEntityArr[0];
   EntityType eType;
@@ -33,12 +33,11 @@ std::unordered_map<std::string,Entity> QueryProcessor::createDeclarationObjects(
   for(int i=1; i<designEntityArr.size(); i++){
     std::string entityName = designEntityArr[i];
     Entity newEntity = Entity(eType, entityName);
-    entityMap[entityName] = newEntity;
+    (*entityMap)[entityName] = newEntity;
   }
-  return entityMap;
 }
 
-RelationshipRef QueryProcessor::createRelationshipObject(std::vector<std::string> relRefList, const std::unordered_map<std::string, Entity>& entityMap){
+RelationshipRef QueryProcessor::createRelationshipObject(std::vector<std::string> relRefList, std::unordered_map<std::string, Entity>* entityMap){
   std::string relStr = relRefList[0];
   RelationshipType rType;
 
@@ -68,9 +67,9 @@ RelationshipRef QueryProcessor::createRelationshipObject(std::vector<std::string
   }
 }
 
-Entity QueryProcessor::findRelationshipEntity(const std::string& s, std::unordered_map<std::string, Entity> entityMap){
-  if (entityMap.find(s) != entityMap.end()){
-    return entityMap[s];
+Entity QueryProcessor::findRelationshipEntity(const std::string& s, std::unordered_map<std::string, Entity>* entityMap){
+  if ((*entityMap).find(s) != (*entityMap).end()){
+    return (*entityMap)[s];
   }else if(isWildCard(s)){
     return Entity(EntityType::Wildcard, "_");
   }else if(isInteger(s)){
@@ -78,7 +77,7 @@ Entity QueryProcessor::findRelationshipEntity(const std::string& s, std::unorder
   }else if(isQuotationIdent(s)){
     std::string s2 = s.substr(1, s.length() - 2);
     return Entity(EntityType::FixedString, s2);
-  }else if(isWildCardIdent(s)){
+  }else if(isStringWithinWildCard(s)){
     std::string s2 = s.substr(2, s.length() - 4);
     return Entity(EntityType::FixedStringWithinWildcard, s2);
   }else{
@@ -87,7 +86,7 @@ Entity QueryProcessor::findRelationshipEntity(const std::string& s, std::unorder
   }
 }
 
-RelationshipRef QueryProcessor::createPatternObject(std::vector<std::string> patternList, const std::unordered_map<std::string, Entity>& entityMap){
+RelationshipRef QueryProcessor::createPatternObject(std::vector<std::string> patternList, std::unordered_map<std::string, Entity>* entityMap){
   RelationshipType rType = RelationshipType::Pattern;
   Entity assignmentEntity = findRelationshipEntity(patternList[0], entityMap);
   Entity leftEntity = findRelationshipEntity(patternList[1], entityMap);
@@ -104,7 +103,6 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
   bool isValid = true;
   std::vector<Clause> clauseList;
   std::unordered_map<std::string, Entity> entityMap;
-
   std::vector<std::string> declarationStmtList = extractDeclaration(parsePQL);
   std::vector<std::string> selectStmtList = extractSelect(parsePQL);
 
@@ -112,7 +110,7 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
     std::vector<std::string> designEntityArr = extractDesignEntityAndSynonyms(declarationStmt);
     isValid = isValid && checkDesignEntitySynonyms(designEntityArr);
     if (isValid){
-      entityMap = createDeclarationObjects(designEntityArr, entityMap);
+      createDeclarationObjects(designEntityArr, &entityMap);
     }
   }
 
@@ -134,7 +132,7 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
         std::vector<std::string> relRefList = extractItemsInBrackets(s);
         isValid = isValid && checkRelRefList(relRefList);
         if (isValid){
-          RelationshipRef newRef = createRelationshipObject(relRefList, entityMap);
+          RelationshipRef newRef = createRelationshipObject(relRefList, &entityMap);
           if (newRef.rType == RelationshipType::Null){
             isValid = false;
             break;
@@ -147,10 +145,10 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
       for (auto s: PatternClauses){
         s = removePattern(s);
         std::vector<std::string> patternList = extractItemsInBrackets(s);
-        isValid = isValid && checkPatternList(patternList, entityMap);
+        isValid = isValid && checkPatternList(patternList, &entityMap);
 
         if (isValid){
-          RelationshipRef newRef = createPatternObject(patternList, entityMap);
+          RelationshipRef newRef = createPatternObject(patternList, &entityMap);
           if (newRef.rType == RelationshipType::Null){
             isValid = false;
             break;
@@ -159,16 +157,16 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
           }
         }
       }
-      std::cout << "\n" << newClause.toString() << "\n";
+      //std::cout << "\n" << newClause.toString() << "\n";
       clauseList.push_back(newClause);
     }
   }
 
   if (isValid){
-    std::cout << "is valid!";
+    //std::cout << "is valid!";
     return clauseList;
   }else{
-    std::cout << "is invalid!";
+    //std::cout << "is invalid!";
     std::vector<Clause> emptyClause;
     return emptyClause;
   }
