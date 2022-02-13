@@ -171,16 +171,16 @@ Factor ConcreteSyntax::parseFactor(std::queue<Token> &factorQueue) {
 		}
 
 		factor.setExpr(parseExprRecursion(exprStack));
-		factor.setType(expr);
+		factor.setType(EXPR);
 	}
 	else if (factorQueue.front().type == NAME) {
 		factor.setVarName(factorQueue.front());
-		factor.setType(varName);
+		factor.setType(VAR);
 		factorQueue.pop();
 	}
 	else if (factorQueue.front().type == INTEGER) {
 		factor.setConstValue(factorQueue.front());
-		factor.setType(constValue);
+		factor.setType(CONST);
 		factorQueue.pop();
 	}
 	return factor;
@@ -341,16 +341,16 @@ RelFactor ConcreteSyntax::parseRelFactor(std::queue<Token> &relFactorQueue) {
 			relFactorQueue.pop();
 		}
 		relFactor.setExpr(parseExprRecursion(exprStack));
-		relFactor.setType(expr);
+		relFactor.setType(EXPR);
 	}
 	else if (relFactorQueue.front().type == NAME) {
 		relFactor.setVarName(relFactorQueue.front());
-		relFactor.setType(varName);
+		relFactor.setType(VAR);
 		relFactorQueue.pop();
 	}
 	else if (relFactorQueue.front().type == INTEGER) {
 		relFactor.setConstValue(relFactorQueue.front());
-		relFactor.setType(constValue);
+		relFactor.setType(CONST);
 		relFactorQueue.pop();
 	}
 	return relFactor;
@@ -462,5 +462,3 @@ Statement ConcreteSyntax::parseCall(std::queue<Token>& tokensQueue) {
 	return callStmt;
 }
 // end for parsing Call
-
-// TODO: create grammar classes
