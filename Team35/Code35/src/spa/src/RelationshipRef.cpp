@@ -21,3 +21,6 @@ std::string RelationshipRef::toString() {
 
   return buffer.str();
 }
+bool RelationshipRef::operator==(const RelationshipRef &r1) {
+  return rType == r1.rType && leftEntity == r1.leftEntity && rightEntity == r1.rightEntity && AssignmentEntity == r1.AssignmentEntity;
+}
