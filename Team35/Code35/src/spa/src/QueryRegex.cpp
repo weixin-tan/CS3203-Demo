@@ -20,7 +20,7 @@ bool isQuotationIdent(const std::string& s){
 }
 
 bool isStringWithinWildCard(const std::string& s){
-  return s.substr(0,2) == "_\"" and s.substr(s.length()-2, 2) == "\"_";
+  return s.substr(0,2) == "_\"" && s.substr(s.length()-2, 2) == "\"_";
 }
 
 bool isStmtRef(const std::string& s){
