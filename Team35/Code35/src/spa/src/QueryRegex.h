@@ -37,4 +37,6 @@ bool checkRelRefList(std::vector<std::string> s);
 bool checkPatternList(std::vector<std::string> patternList, std::unordered_map<std::string, Entity>* entityMap);
 std::string removePattern(const std::string& s);
 
+bool entityMapContains(const std::string& s, std::unordered_map<std::string, Entity>* entityMap);
+
 #endif //SPA_SRC_SPA_SRC_QUERYREGEX_H_

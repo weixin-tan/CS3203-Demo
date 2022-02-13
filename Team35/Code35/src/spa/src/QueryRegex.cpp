@@ -213,9 +213,9 @@ std::vector<std::string> extractPatternClauses(const std::string& s){
 std::vector<std::string> extractItemsInBrackets(const std::string& s){
   std::vector<std::string> returnList;
 
-  long openBracketPosition = s.find("(");
-  long commaPosition = s.find(",");
-  long closeBracketPosition = s.find(")");
+  long openBracketPosition = s.find('(');
+  long commaPosition = s.find(',');
+  long closeBracketPosition = s.find(')');
 
   if (openBracketPosition < commaPosition && commaPosition < closeBracketPosition){
     returnList.push_back(stripString(s.substr(0, openBracketPosition)));
@@ -240,7 +240,7 @@ bool checkRelRefList(std::vector<std::string> sArr){
 }
 
 bool checkPatternList(std::vector<std::string> patternList, std::unordered_map<std::string, Entity>* entityMap){
-  if (patternList.size() == 3 && isEntRef(patternList[1]) && (*entityMap).find(patternList[0]) != (*entityMap).end()){
+  if (patternList.size() == 3 && isEntRef(patternList[1]) && entityMapContains(patternList[0], entityMap)){
     return true;
   }
   return false;
@@ -251,4 +251,8 @@ std::string removePattern(const std::string& s){
     return stripString(s.substr(7,s.length()));
   }
   return s;
+}
+
+bool entityMapContains(const std::string& s, std::unordered_map<std::string, Entity>* entityMap){
+  return (*entityMap).find(s) != (*entityMap).end();
 }

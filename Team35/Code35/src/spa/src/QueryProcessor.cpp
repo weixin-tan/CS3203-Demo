@@ -40,7 +40,6 @@ void QueryProcessor::createDeclarationObjects(std::vector<std::string> designEnt
 RelationshipRef QueryProcessor::createRelationshipObject(std::vector<std::string> relRefList, std::unordered_map<std::string, Entity>* entityMap){
   std::string relStr = relRefList[0];
   RelationshipType rType;
-
   if (relStr == "Follows"){
     rType = RelationshipType::Follows;
   }else if (relStr == "Follows*"){
@@ -54,7 +53,7 @@ RelationshipRef QueryProcessor::createRelationshipObject(std::vector<std::string
   }else if (relStr == "Modifies"){
     rType = RelationshipType::Modifies;
   }else{
-    //this means that there is no relationship type -> invalid
+    //this relationship type is NULL -> invalid
     rType = RelationshipType::Null;
   }
   Entity leftEntity = findRelationshipEntity(relRefList[1], entityMap);
@@ -68,7 +67,7 @@ RelationshipRef QueryProcessor::createRelationshipObject(std::vector<std::string
 }
 
 Entity QueryProcessor::findRelationshipEntity(const std::string& s, std::unordered_map<std::string, Entity>* entityMap){
-  if ((*entityMap).find(s) != (*entityMap).end()){
+  if (entityMapContains(s, entityMap)){
     return (*entityMap)[s];
   }else if(isWildCard(s)){
     return Entity(EntityType::Wildcard, "_");
