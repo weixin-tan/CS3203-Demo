@@ -4,14 +4,11 @@
 #include "QueryProcessor.h"
 #include "QPSMainLogic.h"
 
-#define NULL_STMT_NO (-1)
-
 TEST_CASE("QPS Handler") {
     PKB pkb = PKB();
     QPSMainLogic* qr = QPSMainLogic::getInstance(pkb.getGetter());
     SuchThatHandler st = SuchThatHandler(pkb.getGetter());
     QueryProcessor qp = QueryProcessor();
-
 
     //procedure f {
 //  x = 5;  // 1
@@ -30,20 +27,20 @@ TEST_CASE("QPS Handler") {
 //}
 
     std::vector<ParsedStatement> statements = {
-            {1, NULL_STMT_NO, NULL_STMT_NO, StatementType::kassign_stmt, "", "f", {}, {"x"}, "", NULL_STMT_NO},
-            {2, NULL_STMT_NO, NULL_STMT_NO, StatementType::kassign_stmt, "", "f", {"x"}, {"y"}, "", 1},
-            {3, NULL_STMT_NO, NULL_STMT_NO, StatementType::kassign_stmt, "", "f", {}, {"x"}, "", 2},
-            {4, NULL_STMT_NO, NULL_STMT_NO, StatementType::kwhile_stmt, "", "f", {"x"}, {}, "", 3},
-            {5, NULL_STMT_NO, 4, StatementType::kread_stmt, "", "f", {}, {"z"}, "", NULL_STMT_NO},
-            {6, NULL_STMT_NO, 4, StatementType::kif_stmt, "", "f", {"z"}, {}, "", 5},
-            {7, 6, NULL_STMT_NO, StatementType::kassign_stmt, "", "f", {}, {"x"}, "", NULL_STMT_NO},
-            {8, 6, NULL_STMT_NO, StatementType::kassign_stmt, "", "f", {}, {"z"}, "", 7},
-            {9, 6, NULL_STMT_NO, StatementType::kassign_stmt, "", "f", {}, {"y"}, "", NULL_STMT_NO},
-            {10, 6, NULL_STMT_NO, StatementType::kassign_stmt, "", "f", {}, {"z"}, "", 9},
+      ParsedStatement(1, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"}, {},  ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
+      ParsedStatement(2, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {"x"}, {"y"},{}, ParsedStatement::default_procedure_name, 1),
+      ParsedStatement(3, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"},{}, ParsedStatement::default_procedure_name, 2),
+      ParsedStatement(4, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kwhile_stmt, ParsedStatement::default_pattern, "f", {"x"}, {},{}, ParsedStatement::default_procedure_name, 3),
+      ParsedStatement(5, ParsedStatement::default_null_stmt_no, 4, StatementType::kread_stmt, ParsedStatement::default_pattern, "f", {}, {"z"}, {},ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
+      ParsedStatement(6, ParsedStatement::default_null_stmt_no, 4, StatementType::kif_stmt, ParsedStatement::default_pattern, "f", {"z"}, {},{}, ParsedStatement::default_procedure_name, 5),
+      ParsedStatement(7, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"},{}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
+      ParsedStatement(8, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"z"},{}, ParsedStatement::default_procedure_name, 7),
+      ParsedStatement(9, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"y"},{}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
+      ParsedStatement(10, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"z"},{}, ParsedStatement::default_procedure_name, 9),
     };
+
     for (const ParsedStatement& parsed_statement : statements)
         pkb.getSetter()->insertStmt(parsed_statement);
-
     SECTION("HANDLER") {
         std::string one = "assign a;\n Select a";
         std::string two = "assign a;\n Select a such that Modifies (1, \"x\")";
@@ -69,8 +66,10 @@ TEST_CASE("QPS Handler") {
 
         std::list<std::string> s4 = qr->parse(four);
         for (std::string s : s4) {
-            cout << "four: " << s << "\n";
+          cout << "four: " << s << "\n";
         }
+
+        REQUIRE(1 == 1);
         /*
         std::vector<Clause> c1 = qp.parsePQL(one);
         for (Clause c : c1) {

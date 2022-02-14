@@ -15,6 +15,7 @@ public:
   void appendEntityToFind(const Entity& e);
   void appendRef(const RelationshipRef& r);
   std::string toString();
+  bool operator==(const Clause & c1);
 };
 
 

@@ -74,10 +74,10 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 	switch (containertype) {
 	case ContainerType::kifthen:
 	case ContainerType::kifelse:
-		current_statement.if_line_no = container_num;
+		current_statement.if_stmt_no = container_num;
 		break;
 	case ContainerType::kwhile:
-		current_statement.while_line_no = container_num;
+		current_statement.while_stmt_no = container_num;
 		break;
 	}
 
@@ -89,6 +89,7 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 	case StatementType::kassign_stmt: 
 		current_statement.var_modified = stmt.var_name;
 		current_statement.var_used = stmt.expr;
+		current_statement.constant = stmt.constant;
 		break;
 		//Pattern recogniser here
 	case StatementType::kread_stmt:
@@ -99,6 +100,7 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 		break;
 	case StatementType::kif_stmt:
 		current_statement.var_used = stmt.cond_expr;
+		current_statement.constant = stmt.constant;
 
 		// In this case, if statement will have 2 statement lists (if and then) 
 		this->StatementListReader(*stmt.ifthen_stmt_list, stmt.stmt_no);
@@ -107,6 +109,7 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 	
 	case StatementType::kwhile_stmt:
 		current_statement.var_used = stmt.cond_expr;
+		current_statement.constant = stmt.constant;
 		//In this case, this statement will a while statement list. 
 		this->StatementListReader(*stmt.while_stmt_list, stmt.stmt_no);
 		break;
