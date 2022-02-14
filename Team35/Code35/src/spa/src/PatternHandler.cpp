@@ -35,8 +35,11 @@ Result PatternHandler::handleDoubleWildcard(Entity entityToGet) {
 
 Result PatternHandler::handleLeftWildcard(Entity entityToGet, Entity rightEntity, Entity assignEntity) {
   assert(rightEntity.eType == EntityType::FixedStringWithinWildcard); //Iteration 1
-  Expression e = Expression(rightEntity.name);//Missing Expression class here
-  std::vector<Entity> resultEntities = pg->getAssignment(e);
+  std::string name = rightEntity.name;
+  //TODO
+  //Doesnt handle constants
+  rightEntity.eType = EntityType::Variable;
+  std::vector<Entity> resultEntities = pg->getLeftSide(RelationshipType::Uses, rightEntity, EntityType::Assignment);
   return Result(resultEntities);
 }
 
