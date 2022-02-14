@@ -54,12 +54,18 @@ std::queue<Token> Tokeniser::putInQueue(std::string input) {
     std::queue<Token> tqueue;
     std::stringstream checker(input);
     std::string temp;
-
     while(getline(checker, temp, ' ')){
         Token t = tokeniser(temp);
         tqueue.push(t);
     }
     return tqueue;
+}
+
+std::string Tokeniser::printToken(Token token){
+    std::string string_type = ToString(token.getToken());
+    std::string string_id   = token.getId();
+    std::string output      = "(" + string_type + ", " + string_id + ")";
+    return output;
 }
 
 /*

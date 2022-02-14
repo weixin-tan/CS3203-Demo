@@ -21,6 +21,7 @@ public:
     Token tokeniser(std::string input);
     //std::string tokenPrinter(Tokeniser t);
     std::queue<Token> putInQueue (std::string input);
+    std::string printToken(Token token);
 
 };
 

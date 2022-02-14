@@ -10,6 +10,21 @@
 //enum
 enum TokenType{LETTER, DIGIT, NAME,  SPECIALCHAR, SEMICOLON, RIGHT_CURLY, LEFT_CURLY};
 
+inline const char* ToString(TokenType v)
+{
+    switch (v)
+    {
+        case LETTER:   return "LETTER";
+        case DIGIT:   return "DIGIT";
+        case NAME: return "NAME";
+        case SPECIALCHAR: return "SPECIALCHAR";
+        case SEMICOLON: return "SEMICOLON";
+        case RIGHT_CURLY: return "RIGHT_CURLY";
+        case LEFT_CURLY: return "LEFT_CURLY";
+        default:      return "[Unknown TokenType]";
+    }
+}
+
 class Token {
 public:
     //constructor
