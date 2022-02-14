@@ -65,7 +65,7 @@ bool PkbGetter::isRelationship(const RelationshipType& r, const ProgramElement &
             int targetStmtNo = leftSide.integer_value;
             int currentStmtNo = rightSide.integer_value;
             while (currentStmtNo != NULL_STMT_NO) {
-                currentStmtNo = db->stmtFollowing[currentStmtNo];
+                currentStmtNo = db->stmtFollowing.at(currentStmtNo);
                 if (currentStmtNo == targetStmtNo) {
                     result = true;
                     break;
@@ -208,7 +208,7 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const RelationshipType& r, const
             while (currentStmtNo != NULL_STMT_NO) {
                 if (db->stmtTypeTable.at(currentStmtNo) == typeToGet)
                     result.insert(ProgramElement::createStatement(typeToGet, currentStmtNo));
-                currentStmtNo = db->childToParentTable[currentStmtNo];
+                currentStmtNo = db->childToParentTable.at(currentStmtNo);
             }
 
             break;
