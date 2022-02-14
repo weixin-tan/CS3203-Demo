@@ -16,7 +16,7 @@ private:
 public:
   explicit QPSHandler(PkbGetter* pg);
   std::vector<Result> processClause(const std::vector<Clause>& clauses) const;
-  Result handleNoRelationshipRef(Entity entityToFind) const;
+  Result handleNoRelationshipRef(const Entity& entityToFind) const;
 };
 
 

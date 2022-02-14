@@ -33,7 +33,7 @@ std::vector<Result> QPSHandler::processClause(const std::vector<Clause> &clauses
   return results;
 }
 
-Result QPSHandler::handleNoRelationshipRef(Entity entityToFind) const {
+Result QPSHandler::handleNoRelationshipRef(const Entity& entityToFind) const {
   std::vector<Entity> resultEntities = pg->getEntity(entityToFind.eType);
   return Result(resultEntities);
 }
