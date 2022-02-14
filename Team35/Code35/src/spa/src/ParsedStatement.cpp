@@ -18,11 +18,12 @@ ParsedStatement::ParsedStatement() {
 	this->var_modified;
 	this->procedure_called = default_procedure_name;
 	this->preceding = default_null_stmt_no;
+	this->constant; 
 }
 
 ParsedStatement::ParsedStatement(int stmt_no, int if_stmt_no, int while_stmt_no,
 	StatementType statement_type, std::string pattern, std::string procedure_name,
-	std::vector<std::string> var_used, std::vector<std::string> var_modified,
+	std::vector<std::string> var_used, std::vector<std::string> var_modified, std::vector<std::string> constant,
 	std::string procedure_called, int preceding) {
 
 	this->stmt_no = stmt_no;
@@ -33,8 +34,10 @@ ParsedStatement::ParsedStatement(int stmt_no, int if_stmt_no, int while_stmt_no,
 	this->procedure_name = procedure_name;
 	this->var_used = var_used;
 	this->var_modified = var_modified;
+	this->constant = constant;
 	this->procedure_called = procedure_called;
 	this->preceding = preceding;
+	
 
 
 }
