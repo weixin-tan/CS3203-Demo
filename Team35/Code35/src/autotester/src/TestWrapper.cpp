@@ -1,8 +1,6 @@
 #include "TestWrapper.h"
-#include "Tokeniser.h"
-#include "ConcreteSyntaxBasic.h"
-#include "Convertor.h"
 #include "PKB/PKB.h"
+#include "SP.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -18,21 +16,13 @@ AbstractWrapper* WrapperFactory::createWrapper() {
 volatile bool AbstractWrapper::GlobalStop = false;
 
 // a default constructor
-TestWrapper::TestWrapper(): pkb(), convertor(pkb.getSetter()) {
+TestWrapper::TestWrapper(): pkb(), sp(pkb.getSetter()) {
   TestWrapper::qpsMainLogic = QPSMainLogic::getInstance(pkb.getGetter());
 }
 
 // method for parsing the SIMPLE source
 void TestWrapper::parse(std::string filename) {
-	std::ifstream t(filename);
-	std::stringstream buffer;
-	buffer << t.rdbuf();
-
-	Tokeniser tokeniser;
-	ConcreteSyntaxBasic concrete;
-	std::vector<Procedure> procedureLst;
-	procedureLst.push_back(concrete.parseProcedure(tokeniser.putInQueue(buffer.str())));
-	convertor.ProcedureReader(procedureLst);
+	sp.Parse(filename);
 }
 
 // method to evaluating a query
