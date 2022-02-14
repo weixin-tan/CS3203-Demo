@@ -5,7 +5,6 @@
 
 enum Type{VAR, CONST, EXPR};
 
-class Expr;
 class Factor {
 private:
 	Type type;
