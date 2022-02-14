@@ -58,6 +58,7 @@ std::string Tokeniser::printToken(Token token){
     return output;
 }
 
+/*
 std::queue<Token> Tokeniser::putInQueue(std::string input) {
     std::queue<Token> tqueue;
     std::stringstream checker(input);
@@ -68,6 +69,25 @@ std::queue<Token> Tokeniser::putInQueue(std::string input) {
     }
     return tqueue;
 }
+ */
+
+std::queue<Token> Tokeniser ::putInQueue(std::string input) {
+    std::queue<Token> tqueue;
+    std::stringstream checker(input);
+    std::string temp;
+    while(getline(checker, temp, ' ')){
+        if(temp == ToString(SEMICOLON)){
+            break;
+        } else {
+            Token t = tokeniser(temp);
+            tqueue.push(t);
+        }
+    }
+    return tqueue;
+
+}
+
+
 
 
 /*
