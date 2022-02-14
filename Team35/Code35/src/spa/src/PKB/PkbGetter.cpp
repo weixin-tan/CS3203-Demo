@@ -13,9 +13,26 @@ bool inline isStatementTypeToGet(const ElementType& typeToGet, const ElementType
     return (typeToGet == ElementType::Statement) || (typeToGet == targetType);
 }
 
+bool PkbGetter::isExists(const ProgramElement& elementToCheck) const {
+    if (isStatementType(elementToCheck.element_type)) {
+        int stmtNo = elementToCheck.integer_value;
+        if (db->stmtTable.count(stmtNo) == 0) return false;
+        return isStatementTypeToGet(elementToCheck.element_type, db->stmtTypeTable.at(stmtNo));
+    }
+    if (ElementType::Procedure == elementToCheck.element_type)
+        return db->procedures.count(elementToCheck.string_value);
+    if (ElementType::Variable == elementToCheck.element_type)
+        return db->variables.count(elementToCheck.string_value);
+    if (ElementType::Constant == elementToCheck.element_type)
+        assert(false); // TODO
+    assert(false);
+}
+
 PkbGetter::PkbGetter(DB* db) : db(db) {}
 
 bool PkbGetter::isRelationship(const RelationshipType& r, const ProgramElement &leftSide, const ProgramElement &rightSide) const {
+    if (!isExists(leftSide) || !isExists(rightSide)) return false;
+
     bool result = false;
 
     switch (r) {
@@ -106,12 +123,19 @@ std::set<ProgramElement> PkbGetter::getRelationshipStatements(const Relationship
 std::set<ProgramElement> PkbGetter::getEntity(const ElementType &typeToGet) const {
     std::set<ProgramElement> result;
 
-    if (isStatementType(typeToGet)) {
-        for (const auto&[stmtNo, eType]: db->stmtTypeTable)
-            if (eType == typeToGet)
-                result.insert(ProgramElement::createStatement(typeToGet, stmtNo));
-    }
     switch (typeToGet) {
+        case ElementType::Statement:
+        case ElementType::Read:
+        case ElementType::Print:
+        case ElementType::Call:
+        case ElementType::While:
+        case ElementType::If:
+        case ElementType::Assignment: {
+            for (const auto&[stmtNo, eType] : db->stmtTypeTable)
+                if (eType == typeToGet)
+                    result.insert(ProgramElement::createStatement(typeToGet, stmtNo));
+            break;
+        }
         case ElementType::Variable: {
             for (const std::string& var: db->variables)
                 result.insert(ProgramElement::createVariable(var));
@@ -130,6 +154,8 @@ std::set<ProgramElement> PkbGetter::getEntity(const ElementType &typeToGet) cons
 
 std::set<ProgramElement> PkbGetter::getLeftSide(const RelationshipType& r, const ProgramElement &rightSide,
                                                 const ElementType &typeToGet) const {
+    if (!isExists(rightSide)) return {};
+
     std::set<ProgramElement> result;
 
     switch (r) {
@@ -150,7 +176,11 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const RelationshipType& r, const
                 }
                 for (const int& stmtNo : stmtNos)
                     result.insert(ProgramElement::createStatement(typeToGet, stmtNo));
-            }
+                break;
+            } else if (typeToGet == ElementType::Procedure) {
+                for (const std::string& proc : db->varToModifyProcTable.at(rightSide.string_value))
+                    result.insert(ProgramElement::createProcedure(proc));
+            } else assert(false);
             break;
         }
         case RelationshipType::Uses: {
@@ -170,7 +200,10 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const RelationshipType& r, const
                 }
                 for (const int& stmtNo : stmtNos)
                     result.insert(ProgramElement::createStatement(typeToGet, stmtNo));
-            }
+            } else if (typeToGet == ElementType::Procedure) {
+            for (const std::string& proc : db->varToUsesProcTable.at(rightSide.string_value))
+                result.insert(ProgramElement::createProcedure(proc));
+            } else assert(false);
             break;
         }
         case RelationshipType::Follows: {
@@ -223,6 +256,7 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const RelationshipType& r, const
 
 std::set<ProgramElement> PkbGetter::getRightSide(const RelationshipType& r, const ProgramElement &leftSide,
                                                  const ElementType &typeToGet) const {
+    if (!isExists(leftSide)) return {};
     std::set<ProgramElement> result;
     switch (r) {
         case RelationshipType::Modifies: {
