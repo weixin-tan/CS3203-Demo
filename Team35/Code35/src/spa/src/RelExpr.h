@@ -6,7 +6,7 @@
 
 class RelExpr {
 private:
-	Operator operator;
+	Operator op;
 	RelFactor relFactorOne;
 	RelFactor relFactorTwo;
 public:
@@ -14,7 +14,7 @@ public:
 	Operator getOperator() const;
 	RelFactor getRelFactorOne() const;
 	RelFactor getRelFactorTwo() const;
-	void setOperator(Operator operator);
+	void setOperator(Operator op);
 	void setRelFactorOne(RelFactor relFactorOne);
 	void setRelFactorTwo(RelFactor relFactorTwo);
 };

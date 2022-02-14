@@ -5,23 +5,23 @@ CondExpr::CondExpr() {
 }
 
 Operator CondExpr::getOperator() const {
-	return this->operator;
+	return this->op;
 }
 
 CondExpr CondExpr::getCondExpr() const {
-	return this->condExpr;
+	return *condExpr;
 }
 
 RelExpr CondExpr::getRelExpr() const {
 	return this->relExpr;
 }
 
-void CondExpr::setOperator(Operator operator) {
-	this->operator = operator;
+void CondExpr::setOperator(Operator op) {
+	this->op = op;
 }
 
 void CondExpr::setCondExpr(CondExpr condExpr) {
-	this->condExpr = condExpr;
+	this->condExpr = &condExpr;
 }
 
 void CondExpr::setRelExpr(RelExpr relExpr) {

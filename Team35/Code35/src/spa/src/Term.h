@@ -6,15 +6,15 @@
 
 class Term {
 private:
-	Operator operator;
-	Term term;
+	Operator op;
+	Term* term;
 	Factor factor;
 public:
 	Term();
 	Operator getOperator() const;
 	Term getTerm() const;
 	Factor getFactor() const;
-	void setOperator(Operator operator);
+	void setOperator(Operator op);
 	void setTerm(Term term);
 	void setFactor(Factor factor);
 };

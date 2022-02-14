@@ -16,8 +16,8 @@ Token Factor::getConstValue() const {
 	return this->constValue;
 }
 
-Expr Factor::getExpr() const {
-	return *expr;
+Expr* Factor::getExpr() const {
+	return expr;
 }
 
 void Factor::setType(FactorType type) {
@@ -32,6 +32,6 @@ void Factor::setConstValue(Token constValue) {
 	this->constValue = constValue;
 }
 
-void Factor::setExpr(Expr expr) {
-	this->expr = &expr;
+void Factor::setExpr(Expr* expr) {
+	this->expr = expr;
 }

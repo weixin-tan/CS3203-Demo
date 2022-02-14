@@ -5,7 +5,7 @@ RelExpr::RelExpr() {
 }
 
 Operator RelExpr::getOperator() const {
-	return this->operator;
+	return this->op;
 }
 
 RelFactor RelExpr::getRelFactorOne() const {
@@ -16,8 +16,8 @@ RelFactor RelExpr::getRelFactorTwo() const {
 	return this->relFactorTwo;
 }
 
-void RelExpr::setOperator(Operator operator) {
-	this->operator = operator;
+void RelExpr::setOperator(Operator op) {
+	this->op = op;
 }
 
 void RelExpr::setRelFactorOne(RelFactor relFactorOne) {

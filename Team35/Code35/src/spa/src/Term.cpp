@@ -5,23 +5,23 @@ Term::Term() {
 }
 
 Operator Term::getOperator() const {
-	return this->operator;
+	return this->op;
 }
 
 Term Term::getTerm() const {
-	return this->term;
+	return *term;
 }
 
 Factor Term::getFactor() const {
 	return this->factor;
 }
 
-void Term::setOperator(Operator operator) {
-	this->operator = operator;
+void Term::setOperator(Operator op) {
+	this->op = op;
 }
 
 void Term::setTerm(Term term) {
-	this->term = term;
+	this->term = &term;
 }
 
 void Term::setFactor(Factor factor) {

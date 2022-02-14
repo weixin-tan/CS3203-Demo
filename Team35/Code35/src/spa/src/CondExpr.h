@@ -6,15 +6,15 @@
 
 class CondExpr {
 private:
-	Operator operator;
-	CondExpr condExpr;
+	Operator op;
+	CondExpr* condExpr;
 	RelExpr relExpr;
 public:
 	CondExpr();
 	Operator getOperator() const;
 	CondExpr getCondExpr() const;
 	RelExpr getRelExpr() const;
-	void setOperator(Operator operator);
+	void setOperator(Operator op);
 	void setCondExpr(CondExpr condExpr);
 	void setRelExpr(RelExpr relExpr);
 };

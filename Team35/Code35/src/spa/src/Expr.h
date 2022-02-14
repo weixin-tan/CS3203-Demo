@@ -6,15 +6,15 @@
 
 class Expr {
 private:
-	Operator operator;
-	Expr expr;
+	Operator op;
+	Expr *expr;
 	Term term;
 public:
 	Expr();
 	Operator getOperator() const;
 	Expr getExpr() const;
 	Term getTerm() const;
-	void setOperator(Operator operator);
+	void setOperator(Operator op);
 	void setExpr(Expr expr);
 	void setTerm(Term term);
 };

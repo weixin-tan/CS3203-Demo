@@ -5,23 +5,23 @@ Expr::Expr() {
 }
 
 Operator Expr::getOperator() const {
-	return this->operator;
+	return this->op;
 }
 
 Expr Expr::getExpr() const {
-	return this->expr;
+	return *expr;
 }
 
 Term Expr::getTerm() const {
 	return this->term;
 }
 
-void Expr::setOperator(Operator operator) {
-	this->operator = operator;
+void Expr::setOperator(Operator op) {
+	this->op = op;
 }
 
 void Expr::setExpr(Expr expr) {
-	this->expr = expr;
+	this->expr = &expr;
 }
 
 void Expr::setTerm(Term term) {
