@@ -1,9 +1,8 @@
 #include "Term.h"
+#include "Operator.h"
 
 #ifndef EXPR_H
 #define EXPR_H
-
-enum Operator{PLUS, MINUS};
 
 class Expr {
 private:

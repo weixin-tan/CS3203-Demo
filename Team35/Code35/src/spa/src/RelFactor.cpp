@@ -4,7 +4,7 @@ RelFactor::RelFactor() {
 
 }
 
-Type RelFactor::getType() const {
+FactorType RelFactor::getType() const {
 	return this->type;
 }
 
@@ -20,7 +20,7 @@ Expr RelFactor::getExpr() const {
 	return this->expr;
 }
 
-void RelFactor::setType(Type type) {
+void RelFactor::setType(FactorType type) {
 	this->type = type;
 }
 

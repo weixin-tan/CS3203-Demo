@@ -1,23 +1,22 @@
 #include "Expr.h"
+#include "FactorType.h"
 
 #ifndef RELFACTOR_H
 #define RELFACTOR_H
 
-enum Type{VAR, CONST, EXPR};
-
 class RelFactor {
 private:
-	Type type;
+	FactorType type;
 	Token varName;
 	Token constValue;
 	Expr expr;
 public:
 	RelFactor();
-	Type getType() const;
+	FactorType getType() const;
 	Token getVarName() const;
 	Token getConstValue() const;
 	Expr getExpr() const;
-	void setType(Type type);
+	void setType(FactorType type);
 	void setVarName(Token varName);
 	void setConstValue(Token constValue);
 	void setExpr(Expr expr);

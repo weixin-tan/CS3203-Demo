@@ -1,11 +1,10 @@
 #include "Factor.h"
-#include "Expr.h"
 
 Factor::Factor() {
 
 }
 
-Type Factor::getType() const {
+FactorType Factor::getType() const {
 	return this->type;
 }
 
@@ -18,10 +17,10 @@ Token Factor::getConstValue() const {
 }
 
 Expr Factor::getExpr() const {
-	return this->*expr;
+	return *expr;
 }
 
-void Factor::setType(Type type) {
+void Factor::setType(FactorType type) {
 	this->type = type;
 }
 

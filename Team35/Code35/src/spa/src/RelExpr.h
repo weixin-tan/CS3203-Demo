@@ -1,9 +1,8 @@
 #include "RelFactor.h"
+#include "Operator.h"
 
 #ifndef RELEXPR_H
 #define RELEXPR_H
-
-enum Operator{GREATER, GEQ, LESSER, LEQ, EQUAL, NOT_EQUAL};
 
 class RelExpr {
 private:

@@ -1,9 +1,8 @@
 #include "RelExpr.h"
+#include "Operator.h"
 
 #ifndef CONDEXPR_H
 #define CONDEXPR_H
-
-enum Operator{AND, OR};
 
 class CondExpr {
 private:

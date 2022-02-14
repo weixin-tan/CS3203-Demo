@@ -40,7 +40,7 @@ Procedure ConcreteSyntax::parseProcedure(std::queue<Token> &tokensQueue) {
 		stmt_count++;
 	}
 
-	stmtLst.setContainerType(kprocedure);
+	stmtLst.SetContainerType(kprocedure);
 	procedure.setStmtLst(stmtLst);
 	procedure.setSize(stmt_count);
 	return procedure;
@@ -105,7 +105,7 @@ Expr ConcreteSyntax::parseExprRecursion(std::stack<Token> &exprStack) {
 		if (exprStack.top().type == LEFT_BRACE) {
 			closure--;
 		}
-		if ((closure == 0) && ((exprStack.top().type == PLUS) || (exprStack.top().type == MINUS))) {
+		if ((closure == 0) && ((exprStack.top().type == ADD) || (exprStack.top().type == SUBTRACT))) {
 			break;
 		}
 		termQueue.push(exprStack.top());

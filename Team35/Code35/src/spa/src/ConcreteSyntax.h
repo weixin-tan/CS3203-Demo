@@ -3,6 +3,8 @@
 #include "Program.h"
 #include "Expr.h"
 #include "CondExpr.h"
+#include "Operator.h"
+#include "FactorType.h"
 
 class ConcreteSyntax {
 public:
@@ -15,9 +17,9 @@ public:
 	Expr parseExprRecursion(std::stack<Token> &exprStack);
 	Term parseTerm(std::queue<Token> &termQueue);
 	Factor parseFactor(std::queue<Token> &factorQueue);
-	Statement parseWhile(std::queue &tokensQueue);
-	CondExpr parseCondExpr(std::queue &tokensQueue);
-	CondExpr parseCondExprRecursion(std::queue &condExprQueue);
+	Statement parseWhile(std::queue<Token> &tokensQueue);
+	CondExpr parseCondExpr(std::queue<Token> &tokensQueue);
+	CondExpr parseCondExprRecursion(std::queue<Token> &condExprQueue);
 	RelExpr parseRelExpr(std::queue<Token> &relExprQueue);
 	RelFactor parseRelFactor(std::queue<Token> &relFactorQueue);
 	Statement parseIf(std::queue<Token>& tokensQueue);

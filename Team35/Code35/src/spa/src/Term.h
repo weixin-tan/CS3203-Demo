@@ -1,9 +1,8 @@
 #include "Factor.h"
+#include "Operator.h"
 
 #ifndef TERM_H
 #define TERM_H
-
-enum Operator{PLUS, MINUS};
 
 class Term {
 private:
