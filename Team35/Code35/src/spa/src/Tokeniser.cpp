@@ -50,6 +50,14 @@ Token Tokeniser::tokeniser(std::string input) {
     }
 }
 
+
+std::string Tokeniser::printToken(Token token){
+    std::string string_type = ToString(token.getToken());
+    std::string string_id   = token.getId();
+    std::string output      = "(" + string_type + ", " + string_id + ")";
+    return output;
+}
+
 std::queue<Token> Tokeniser::putInQueue(std::string input) {
     std::queue<Token> tqueue;
     std::stringstream checker(input);
@@ -61,12 +69,6 @@ std::queue<Token> Tokeniser::putInQueue(std::string input) {
     return tqueue;
 }
 
-std::string Tokeniser::printToken(Token token){
-    std::string string_type = ToString(token.getToken());
-    std::string string_id   = token.getId();
-    std::string output      = "(" + string_type + ", " + string_id + ")";
-    return output;
-}
 
 /*
 std::string Tokeniser::tokenPrinter(Tokeniser t) {
