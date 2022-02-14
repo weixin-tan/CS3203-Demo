@@ -1,10 +1,11 @@
-#include "Token.h";
+#include "Token.h"
 
 #ifndef FACTOR_H
 #define FACTOR_H
 
 enum Type{VAR, CONST, EXPR};
 
+class Expr;
 class Factor {
 private:
 	Type type;
