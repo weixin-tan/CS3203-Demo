@@ -5,12 +5,13 @@
 
 enum Type{VAR, CONST, EXPR};
 
+class Expr;
 class Factor {
 private:
 	Type type;
 	Token varName;
 	Token constValue;
-	Expr expr;
+	Expr* expr;
 public:
 	Factor();
 	Type getType() const;
