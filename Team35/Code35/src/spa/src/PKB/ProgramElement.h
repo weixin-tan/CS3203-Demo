@@ -24,6 +24,7 @@ class ProgramElement {
   static ProgramElement createConstant(int constant_value);
 
   bool operator<(const ProgramElement& r) const;
+  bool operator==(const ProgramElement& r) const;
 };
 
 #endif //SPA_TEAM35_CODE35_SRC_SPA_SRC_PKB_PROGRAMELEMENT_H_

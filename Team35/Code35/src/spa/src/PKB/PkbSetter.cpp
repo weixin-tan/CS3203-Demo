@@ -5,12 +5,12 @@
 
 
 const std::map<StatementType, ElementType> PkbSetter::spTypeToElementTypeTable = {
-    {StatementType::kassign_stmt, ElementType::Assignment},
-    {StatementType::kprint_stmt,  ElementType::Print},
-    {StatementType::kcall_stmt,   ElementType::Call},
-    {StatementType::kif_stmt,     ElementType::If},
-    {StatementType::kwhile_stmt,  ElementType::While},
-    {StatementType::kread_stmt,   ElementType::Read}
+    {StatementType::kassign_stmt, ElementType::kAssignment},
+    {StatementType::kprint_stmt,  ElementType::kPrint},
+    {StatementType::kcall_stmt,   ElementType::kCall},
+    {StatementType::kif_stmt,     ElementType::kIf},
+    {StatementType::kwhile_stmt,  ElementType::kWhile},
+    {StatementType::kread_stmt,   ElementType::kRead}
 };
 
 PkbSetter::PkbSetter(DB *db) : db(db) {}

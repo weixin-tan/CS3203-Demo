@@ -12,16 +12,16 @@ ProgramElement ProgramElement::createStatement(ElementType element_type, int stm
 }
 
 ProgramElement ProgramElement::createProcedure(const std::string& procedure_name) {
-  return {ElementType::Procedure, ProgramElement::null_integer_value, procedure_name};
+  return {ElementType::kProcedure, ProgramElement::null_integer_value, procedure_name};
 }
 
 ProgramElement ProgramElement::createConstant(int constant_value) {
-  return {ElementType::Constant, constant_value, ProgramElement::null_string_value};
+  return {ElementType::kConstant, constant_value, ProgramElement::null_string_value};
 }
 
 ProgramElement ProgramElement::createVariable(const std::string& variable_name) {
   assert(!variable_name.empty());
-  return {ElementType::Variable, ProgramElement::null_integer_value, variable_name};
+  return {ElementType::kVariable, ProgramElement::null_integer_value, variable_name};
 }
 
 bool ProgramElement::operator<(const ProgramElement& r) const {
@@ -30,4 +30,10 @@ bool ProgramElement::operator<(const ProgramElement& r) const {
   if (integer_value != r.integer_value)
     return integer_value < r.integer_value;
   return string_value < r.string_value;
+}
+
+bool ProgramElement::operator==(const ProgramElement& r) const {
+    return element_type == r.element_type
+        && integer_value == r.integer_value
+        && string_value == r.string_value;
 }

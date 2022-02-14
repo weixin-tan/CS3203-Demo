@@ -1,11 +1,11 @@
 #include "ElementType.h"
 
 bool isStatementType(const ElementType& element_type) {
-  return element_type == Statement
-      || element_type == Read
-      || element_type == Print
-      || element_type == Call
-      || element_type == While
-      || element_type == If
-      || element_type == Assignment;
+  return element_type == ElementType::kStatement
+      || element_type == ElementType::kRead
+      || element_type == ElementType::kPrint
+      || element_type == ElementType::kCall
+      || element_type == ElementType::kWhile
+      || element_type == ElementType::kIf
+      || element_type == ElementType::kAssignment;
 }
