@@ -8,7 +8,6 @@ RelationshipRef::RelationshipRef(RelationshipType rType, Entity leftEntity, Enti
 
 RelationshipRef::RelationshipRef(RelationshipType rType, Entity leftEntity, Entity rightEntity, Entity AssignmentEntity){
   assert(rType == RelationshipType::Pattern);
-  assert(AssignmentEntity.eType == EntityType::Assignment);
   RelationshipRef::rType = rType;
   RelationshipRef::leftEntity = leftEntity;
   RelationshipRef::rightEntity = rightEntity;
@@ -21,4 +20,7 @@ std::string RelationshipRef::toString() {
          << leftEntity.toString() << " rightEntity " << rightEntity.toString() << std::endl;
 
   return buffer.str();
+}
+bool RelationshipRef::operator==(const RelationshipRef &r1) {
+  return rType == r1.rType && leftEntity == r1.leftEntity && rightEntity == r1.rightEntity && AssignmentEntity == r1.AssignmentEntity;
 }

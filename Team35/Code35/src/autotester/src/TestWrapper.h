@@ -6,7 +6,7 @@
 #include <list>
 
 #include "PKB/PKB.h"
-#include "Convertor.h"
+#include "SP.h"
 
 // include your other headers here
 #include "AbstractWrapper.h"
@@ -15,7 +15,7 @@
 class TestWrapper : public AbstractWrapper {
  private:
   PKB pkb;
-  Convertor convertor;
+  SP sp;
   QPSMainLogic* qpsMainLogic;
  public:
   // default constructor
