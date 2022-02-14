@@ -9,5 +9,5 @@ ProcedureLst Program::getProcedureLst() const {
 }
 
 void Program::setProcedureLst(ProcedureLst procedure_lst) {
-	this->getProcedureLst = procedure_lst;
+	this->procedure_lst = procedure_lst;
 }

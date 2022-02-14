@@ -9,7 +9,7 @@ Procedure ProcedureLst::getProcedureAtIndex(int index) const {
 	return this->procedures.at(index);
 }
 
-std::size_type ProcedureLst::getSize() const {
+std::size_t ProcedureLst::getSize() const {
 	return this->procedures.size();
 }
 

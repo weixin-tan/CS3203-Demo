@@ -10,7 +10,7 @@ private:
 public:
 	ProcedureLst();
 	Procedure getProcedureAtIndex(int index) const;
-	std::size_type getSize() const;
+	std::size_t getSize() const;
 	void setNextProcedure(Procedure procedure);
 };
 
