@@ -186,12 +186,15 @@ std::vector<std::string> extractVariablesToSelect(const std::string& s){
 
 std::vector<std::string> extractSuchThatClauses(const std::string& s){
   std::vector<std::string> returnList;
-  std::string clausesString = splitVariablesAndClauses(s)[1];
-  std::vector<std::string> clausesList = splitPatternAndSuchThatClauses(clausesString);
+  std::vector<std::string> everythingList = splitVariablesAndClauses(s);
+  if (everythingList.size() == 2) {
+    std::string clausesString = everythingList[1];
+    std::vector<std::string> clausesList = splitPatternAndSuchThatClauses(clausesString);
 
-  for (const auto& stmt:clausesList){
-    if (!isPattern(stmt)){
-      returnList.push_back(stmt);
+    for (const auto &stmt : clausesList) {
+      if (!isPattern(stmt)) {
+        returnList.push_back(stmt);
+      }
     }
   }
   return returnList;
@@ -199,12 +202,15 @@ std::vector<std::string> extractSuchThatClauses(const std::string& s){
 
 std::vector<std::string> extractPatternClauses(const std::string& s){
   std::vector<std::string> returnList;
-  std::string clausesString = splitVariablesAndClauses(s)[1];
-  std::vector<std::string> clausesList = splitPatternAndSuchThatClauses(clausesString);
+  std::vector<std::string> everythingList = splitVariablesAndClauses(s);
+  if (everythingList.size() == 2) {
+    std::string clausesString = splitVariablesAndClauses(s)[1];
+    std::vector<std::string> clausesList = splitPatternAndSuchThatClauses(clausesString);
 
-  for (const auto& stmt:clausesList){
-    if (isPattern(stmt)){
-      returnList.push_back(stmt);
+    for (const auto &stmt : clausesList) {
+      if (isPattern(stmt)) {
+        returnList.push_back(stmt);
+      }
     }
   }
   return returnList;
