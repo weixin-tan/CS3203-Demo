@@ -78,17 +78,25 @@ TEST_CASE("test basic boolean methods"){
     REQUIRE(isStringWithinWildCard(quotationident2) == false);
   }
 
+  SECTION("checking isStmtRef"){
+    REQUIRE(isStmtRef(ident2));
+    REQUIRE(isStmtRef(wildcard1));
+    REQUIRE(isStmtRef(integer1));
+  }
 
+  SECTION("checking isEntRef"){
+    REQUIRE(isEntRef(ident3));
+    REQUIRE(isEntRef(wildcard1));
+    REQUIRE(isEntRef(quotationident2));
+    REQUIRE(!(isEntRef(integer1)));
+  }
 }
 /*
 METHODS TO TEST
-bool isStmtRef(const std::string& s);
-bool isEntRef(const std::string& s);
-
-bool checkDesignEntitySynonyms(std::vector<std::string> sArr);
 bool isSelect(const std::string& s);
 bool isPattern(const std::string& s);
 
+ bool checkDesignEntitySynonyms(std::vector<std::string> sArr);
 bool checkRelRefList(std::vector<std::string> s);
 bool checkPatternList(std::vector<std::string> patternList, std::unordered_map<std::string, Entity>* entityMap);
 bool entityMapContains(const std::string& s, std::unordered_map<std::string, Entity>* entityMap);
