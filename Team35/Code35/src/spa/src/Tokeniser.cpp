@@ -71,6 +71,32 @@ std::queue<Token> Tokeniser::putInQueue(std::string input) {
 }
  */
 
+std::vector<std::string> Spacer(std::string input){
+    std::stringstream ss;
+    ss.str(input);
+    std::string segment;
+    std::vector<std::string> seglist;
+
+    while(std::getline(ss, segment, '=')){
+        seglist.push_back(segment);
+    }
+    return seglist;
+}
+
+std::string Convertor(std::vector<std::string> vectorString){
+    std::ostringstream vts;
+    std::vector<std::string> vec;
+
+    if (!vec.empty()){
+        // Convert all but the last element to avoid a trailing ","
+        std::copy(vec.begin(), vec.end()-1,
+                  std::ostream_iterator<std::string>(vts, ", "));
+        // Now add the last element with no delimiter
+        vts << vec.back();
+    }
+    return vts.str();
+}
+
 std::queue<Token> Tokeniser ::putInQueue(std::string input) {
     std::queue<Token> tqueue;
     std::stringstream checker(input);
