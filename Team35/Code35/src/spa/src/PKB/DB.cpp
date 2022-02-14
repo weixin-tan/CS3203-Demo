@@ -16,4 +16,6 @@ DB::DB() :
   parentToChildTable(),
   stmtToProcedureCalled(),
   stmtPreceding(),
-  stmtFollowing() {}
+  stmtFollowing(),
+  constantToStmtTable(),
+  constants() {}

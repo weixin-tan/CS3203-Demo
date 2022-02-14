@@ -19,6 +19,7 @@ public:
     std::set<ProgramElement> getRelationshipStatements(const RelationshipType& r) const;
     std::set<ProgramElement> getLeftSide(const RelationshipType& r, const ProgramElement &rightSide, const ElementType &typeToGet) const;
     std::set<ProgramElement> getRightSide(const RelationshipType& r, const ProgramElement &leftSide, const ElementType &typeToGet) const;
+    std::set<ProgramElement> getAssignmentGivenPattern(const ProgramElement& pattern) const; // TODO: temporary pattern
 };
 
 #endif //SPA_PKBGETTER_H

@@ -27,10 +27,12 @@ struct DB {
   std::map<int, std::string> stmtToProcedureCalled;
   std::map<int, int> stmtPreceding;
   std::map<int, int> stmtFollowing;
+  std::map<int, std::set<int>> constantToStmtTable;
 
   // entity tables
   std::set<std::string> variables;
   std::set<std::string> procedures;
+  std::set<int> constants;
 
  public:
   DB();
