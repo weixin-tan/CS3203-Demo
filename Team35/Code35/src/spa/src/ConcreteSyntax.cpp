@@ -79,18 +79,27 @@ Statement ConcreteSyntax::parseAssign(std::queue<Token> &tokensQueue) {
 	tokensQueue.pop();
 	// equals sign
 	tokensQueue.pop();
+
 	// Iteration 1 only passing vector of string
-	assignStmt.expr = ConcreteSyntax::parseExprString(tokensQueue);
+	std::vector<std::vector<std::string>> resultString;
+	resultString = ConcreteSyntax::parseExprString(tokensQueue);
+	assignStmt.expr = resultString[0];
+	// pass constant
+	assignStmt.constant = resultString[1];
 	// semicolon
 	tokensQueue.pop();
 	return assignStmt;
 }
 
-std::vector<std::string> ConcreteSyntax::parseExprString(std::queue<Token>& tokensQueue) {
-	std::vector<std::string> result;
-	while (tokensQueue.front().type != TokenType::SEMICOLON) {
-		if (tokensQueue.front().type == TokenType::NAME) {
-			result.push_back(tokensQueue.front().getId());
+// for iteration 1
+std::vector<std::vector<std::string>> ConcreteSyntax::parseExprString(std::queue<Token>& tokensQueue) {
+	std::vector<std::vector<std::string>> result;
+	while (tokensQueue.front().getToken() != TokenType::SEMICOLON) {
+		if (tokensQueue.front().getToken() == TokenType::NAME) {
+			result[0].push_back(tokensQueue.front().getId());
+		}
+		if (tokensQueue.front().getToken() == TokenType::INTEGER) {
+			result[1].push_back(tokensQueue.front().getId());
 		}
 		tokensQueue.pop();
 	}
@@ -216,8 +225,13 @@ Statement ConcreteSyntax::parseWhile(std::queue<Token> &tokensQueue) {
 	tokensQueue.pop();
 	// remove left_brace
 	tokensQueue.pop();
+
 	// Iteration 1 only passing vector of string
-	whileStmt.cond_expr = ConcreteSyntax::parseExprString(tokensQueue);
+	std::vector<std::vector<std::string>> resultString;
+	resultString = ConcreteSyntax::parseCondExprString(tokensQueue);
+	whileStmt.cond_expr = resultString[0];
+	// pass constant
+	whileStmt.constant = resultString[1];
 
 	// parse stmtLst
 	// remove left_curly
@@ -237,6 +251,37 @@ Statement ConcreteSyntax::parseWhile(std::queue<Token> &tokensQueue) {
 	whileStmt.while_stmt_list = &stmtLst;
 	whileStmt.stmt_no = stmt_count;
 	return whileStmt;
+}
+
+// parse cond_expr String for Iteration 1
+std::vector<std::vector<std::string>> ConcreteSyntax::parseCondExprString(std::queue<Token>& tokensQueue) {
+	std::vector<std::vector<std::string>> result;
+	int closure = 1;
+	while (closure != 0) {
+		if (tokensQueue.front().getToken() == TokenType::LEFT_BRACE) {
+			closure++;
+		}
+		if (tokensQueue.front().getToken() == TokenType::RIGHT_BRACE) {
+			if (closure == 1) {
+				closure--;
+				// remove right_brace
+				tokensQueue.pop();
+				break;
+			}
+			else {
+				closure--;
+			}
+		}
+		if (tokensQueue.front().getToken() == TokenType::NAME) {
+			result[0].push_back(tokensQueue.front().getId());
+		}
+		if (tokensQueue.front().getToken() == TokenType::INTEGER) {
+			result[1].push_back(tokensQueue.front().getId());
+		}
+
+		tokensQueue.pop();
+	}
+	return result;
 }
 
 // parse cond_expr
@@ -385,8 +430,13 @@ Statement ConcreteSyntax::parseIf(std::queue<Token> &tokensQueue) {
 	tokensQueue.pop();
 	// remove left_brace
 	tokensQueue.pop();
+
 	// Iteration 1 only passing vector of string
-	ifStmt.cond_expr = ConcreteSyntax::parseExprString(tokensQueue);
+	std::vector<std::vector<std::string>> resultString;
+	resultString = ConcreteSyntax::parseCondExprString(tokensQueue);
+	ifStmt.cond_expr = resultString[0];
+	// pass constant
+	ifStmt.constant = resultString[1];
 
 	// parse then stmtLst
 	// remove then_keyword
