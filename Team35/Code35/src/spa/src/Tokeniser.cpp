@@ -83,6 +83,18 @@ std::vector<std::string> Spacer(std::string input){
     return seglist;
 }
 
+std::vector<std::string> SpacerSemicolon(std::string input){
+    std::stringstream ss;
+    ss.str(input);
+    std::string segment;
+    std::vector<std::string> seglist;
+
+    while(std::getline(ss, segment, ';')){
+        seglist.push_back(segment);
+    }
+    return seglist;
+}
+
 std::string Convertor(std::vector<std::string> vectorString){
     std::ostringstream vts;
     std::vector<std::string> vec;

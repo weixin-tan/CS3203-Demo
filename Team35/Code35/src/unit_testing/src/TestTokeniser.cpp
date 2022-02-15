@@ -31,6 +31,6 @@ TEST_CASE("test basic boolean methods") {
     string falsequotationident1 = "\"123\"";
     string falsequotationident2 = "\"$@!\"";
 
-    
+
 
 }
