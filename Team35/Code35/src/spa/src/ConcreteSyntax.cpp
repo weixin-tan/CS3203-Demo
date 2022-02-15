@@ -184,7 +184,8 @@ Factor ConcreteSyntax::parseFactor(std::queue<Token> &factorQueue) {
 			factorExprStack.pop();
 		}
 
-		factor.setExpr(&parseExprRecursion(exprStack));
+		// comment out as not needed for Iteration 1
+		// factor.setExpr(&parseExprRecursion(exprStack));
 		factor.setType(FactorType::EXPR);
 	}
 	else if (factorQueue.front().getToken() == TokenType::NAME) {
