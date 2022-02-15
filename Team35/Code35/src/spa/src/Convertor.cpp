@@ -82,6 +82,8 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 	case ContainerType::kwhile:
 		current_statement.while_stmt_no = container_num;
 		break;
+	case ContainerType::kprocedure:
+		break;
 	}
 
 	//push the value into the stack
@@ -122,6 +124,12 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 		break;
 	
 		//Recursively read the inner statement stack. 	
+	case StatementType::kprocedure_stmt:
+		//TODO: Throw some error or return
+		break;
+
+	case StatementType::knone:
+		break;
 	}
 
 	return current_statement; 
