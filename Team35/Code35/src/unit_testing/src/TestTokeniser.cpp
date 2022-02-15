@@ -10,7 +10,7 @@
 
 using namespace std;
 
-TEST_CASE("test basic boolean methods") {
+TEST_CASE("test basic token methods") {
     string ident1 = "a";
     string ident2 = "a1";
     string ident3 = "abcdefg";
