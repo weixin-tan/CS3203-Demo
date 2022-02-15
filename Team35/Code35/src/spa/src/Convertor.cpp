@@ -15,12 +15,15 @@ Convertor::Convertor(PkbSetter* pkb_setter) {
 }
 
 // Reads the procedurelist and calls a statemnet list reader for each procedure in the list.
-void Convertor::ProcedureReader(std::vector<Procedure> procedurelist) {
+std::vector<std::vector<ParsedStatement>> Convertor::ProcedureReader(std::vector<Procedure> procedurelist) {
+	std::vector<std::vector<ParsedStatement>> results; 
+
 	for (int i = 0; i < procedurelist.size(); i++) {
 		curr_procedure = procedurelist[i].getProcName();
-		StatementListReader(procedurelist[i].getStmtLst(), -1);
+		results.push_back(StatementListReader(procedurelist[i].getStmtLst(), -1));
 		
 	}
+	return results;
 }
 
 // FOR TESTING, THE RETURN TYPE IS SUPPOSED TO BE VOID (TO SIMULATE PASSING TO PKB)
@@ -79,6 +82,8 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 	case ContainerType::kwhile:
 		current_statement.while_stmt_no = container_num;
 		break;
+	case ContainerType::kprocedure:
+		break;
 	}
 
 	//push the value into the stack
@@ -119,6 +124,12 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 		break;
 	
 		//Recursively read the inner statement stack. 	
+	case StatementType::kprocedure_stmt:
+		//TODO: Throw some error or return
+		break;
+
+	case StatementType::knone:
+		break;
 	}
 
 	return current_statement; 
