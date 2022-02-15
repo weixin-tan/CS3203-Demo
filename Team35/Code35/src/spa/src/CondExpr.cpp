@@ -4,8 +4,8 @@ CondExpr::CondExpr() {
 
 }
 
-Operator CondExpr::getOperator() const {
-	return this->op;
+TokenType CondExpr::getOperator() const {
+	return this->tokenType;
 }
 
 CondExpr CondExpr::getCondExpr() const {
@@ -16,8 +16,8 @@ RelExpr CondExpr::getRelExpr() const {
 	return this->relExpr;
 }
 
-void CondExpr::setOperator(Operator op) {
-	this->op = op;
+void CondExpr::setOperator(TokenType tokenType) {
+	this->tokenType = tokenType;
 }
 
 void CondExpr::setCondExpr(CondExpr condExpr) {

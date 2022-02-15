@@ -1,20 +1,20 @@
 #include "Factor.h"
-#include "Operator.h"
+#include "TokenType.h"
 
 #ifndef TERM_H
 #define TERM_H
 
 class Term {
 private:
-	Operator op;
+	TokenType tokenType;
 	Term* term;
 	Factor factor;
 public:
 	Term();
-	Operator getOperator() const;
+	TokenType getOperator() const;
 	Term getTerm() const;
 	Factor getFactor() const;
-	void setOperator(Operator op);
+	void setOperator(TokenType tokenType);
 	void setTerm(Term term);
 	void setFactor(Factor factor);
 };

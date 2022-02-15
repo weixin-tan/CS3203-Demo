@@ -33,7 +33,7 @@ Procedure ConcreteSyntax::parseProcedure(std::queue<Token> &tokensQueue) {
 
 	int stmt_count = 1;
 
-	while (tokensQueue.front().type != RIGHT_CURLY) {
+	while (tokensQueue.front().getToken() != TokenType::RIGHT_CURLY) {
 		Statement temp_statement = ConcreteSyntax::parseStmt(tokensQueue);
 		temp_statement.stmt_no = stmt_count;
 		stmtLst.setNextStmt(temp_statement);
@@ -48,22 +48,22 @@ Procedure ConcreteSyntax::parseProcedure(std::queue<Token> &tokensQueue) {
 
 Statement ConcreteSyntax::parseStmt(std::queue<Token> &tokensQueue) {
 
-	if (tokensQueue.front().type == READ_KEYWORD) {
+	if (tokensQueue.front().getToken() == TokenType::READ_KEYWORD) {
 		return ConcreteSyntax::parseRead(tokensQueue);
 	}
-	else if (tokensQueue.front().type == PRINT_KEYWORD) {
+	else if (tokensQueue.front().getToken() == TokenType::PRINT_KEYWORD) {
 		return ConcreteSyntax::parsePrint(tokensQueue);
 	}
-	else if (tokensQueue.front().type == CALL_KEYWORD) {
+	else if (tokensQueue.front().getToken() == TokenType::CALL_KEYWORD) {
 		return ConcreteSyntax::parseCall(tokensQueue);
 	}
-	else if (tokensQueue.front().type == WHILE_KEYWORD) {
+	else if (tokensQueue.front().getToken() == TokenType::WHILE_KEYWORD) {
 		return ConcreteSyntax::parseWhile(tokensQueue);
 	}
-	else if (tokensQueue.front().type == IF_KEYWORD) {
+	else if (tokensQueue.front().getToken() == TokenType::IF_KEYWORD) {
 		return ConcreteSyntax::parseIf(tokensQueue);
 	}
-	else if (tokensQueue.front().type == NAME) {
+	else if (tokensQueue.front().getToken() == TokenType::NAME) {
 		return ConcreteSyntax::parseAssign(tokensQueue);
 	}
 }
@@ -79,16 +79,28 @@ Statement ConcreteSyntax::parseAssign(std::queue<Token> &tokensQueue) {
 	tokensQueue.pop();
 	// equals sign
 	tokensQueue.pop();
-	assignStmt.expr = ConcreteSyntax::parseExpr(tokensQueue);
+	// Iteration 1 only passing vector of string
+	assignStmt.expr = ConcreteSyntax::parseExprString(tokensQueue);
 	// semicolon
 	tokensQueue.pop();
 	return assignStmt;
 }
 
+std::vector<std::string> ConcreteSyntax::parseExprString(std::queue<Token>& tokensQueue) {
+	std::vector<std::string> result;
+	while (tokensQueue.front().type != TokenType::SEMICOLON) {
+		if (tokensQueue.front().type == TokenType::NAME) {
+			result.push_back(tokensQueue.front().getId());
+		}
+		tokensQueue.pop();
+	}
+	return result;
+}
+
 // parseExpr takes inorder, returns reverse
 Expr ConcreteSyntax::parseExpr(std::queue<Token> &tokensQueue) {
 	std::stack<Token> exprStack;
-	while (tokensQueue.front().type != SEMICOLON) {
+	while (tokensQueue.front().getToken() != TokenType::SEMICOLON) {
 		exprStack.push(tokensQueue.front());
 		tokensQueue.pop();
 	}
@@ -101,13 +113,13 @@ Expr ConcreteSyntax::parseExprRecursion(std::stack<Token> &exprStack) {
 	std::queue<Token> termQueue;
 	int closure = 0;
 	while (!exprStack.empty()) {
-		if (exprStack.top().type == RIGHT_BRACE) {
+		if (exprStack.top().getToken() == TokenType::RIGHT_BRACE) {
 			closure++;
 		}
-		if (exprStack.top().type == LEFT_BRACE) {
+		if (exprStack.top().getToken() == TokenType::LEFT_BRACE) {
 			closure--;
 		}
-		if ((closure == 0) && ((exprStack.top().type == Operator::ADD) || (exprStack.top().type == Operator::SUBTRACT))) {
+		if ((closure == 0) && ((exprStack.top().getToken() == TokenType::ADD) || (exprStack.top().getToken() == TokenType::SUBTRACT))) {
 			break;
 		}
 		termQueue.push(exprStack.top());
@@ -116,7 +128,7 @@ Expr ConcreteSyntax::parseExprRecursion(std::stack<Token> &exprStack) {
 	expr.setTerm(ConcreteSyntax::parseTerm(termQueue));
 
 	if (!exprStack.empty()) {
-		expr.setOperator(exprStack.top());
+		expr.setOperator(exprStack.top().getToken());
 		exprStack.pop();
 		expr.setExpr(ConcreteSyntax::parseExprRecursion(exprStack));
 	}
@@ -129,13 +141,13 @@ Term ConcreteSyntax::parseTerm(std::queue<Token> &termQueue) {
 	std::queue<Token> factorQueue;
 	int closure = 0;
 	while (!termQueue.empty()) {
-		if (termQueue.front().type == LEFT_BRACE) {
+		if (termQueue.front().getToken() == TokenType::LEFT_BRACE) {
 			closure++;
 		}
-		if (termQueue.front().type == RIGHT_BRACE) {
+		if (termQueue.front().getToken() == TokenType::RIGHT_BRACE) {
 			closure--;
 		}
-		if ((closure == 0) && ((termQueue.front().type == Operator::MULTIPLY) || (termQueue.front().type == Operator::DIVIDE) || (termQueue.front().type == MODULO))) {
+		if ((closure == 0) && ((termQueue.front().getToken() == TokenType::MULTIPLY) || (termQueue.front().getToken() == TokenType::DIVIDE) || (termQueue.front().getToken() == TokenType::MODULO))) {
 			break;
 		}
 		factorQueue.push(termQueue.front());
@@ -144,7 +156,7 @@ Term ConcreteSyntax::parseTerm(std::queue<Token> &termQueue) {
 	term.setFactor(ConcreteSyntax::parseFactor(factorQueue));
 	
 	if (!termQueue.empty()) {
-		term.setOperator(termQueue.front());
+		term.setOperator(termQueue.front().getToken());
 		termQueue.pop();
 		term.setTerm(ConcreteSyntax::parseTerm(termQueue));
 	}
@@ -154,7 +166,7 @@ Term ConcreteSyntax::parseTerm(std::queue<Token> &termQueue) {
 // parseFactor takes reverse, returns reverse
 Factor ConcreteSyntax::parseFactor(std::queue<Token> &factorQueue) {
 	Factor factor;
-	if (factorQueue.front().type == RIGHT_BRACE) {
+	if (factorQueue.front().getToken() == TokenType::RIGHT_BRACE) {
 		// remove right_brace
 		factorQueue.pop();
 		// intermediate stack
@@ -175,12 +187,12 @@ Factor ConcreteSyntax::parseFactor(std::queue<Token> &factorQueue) {
 		factor.setExpr(&parseExprRecursion(exprStack));
 		factor.setType(FactorType::EXPR);
 	}
-	else if (factorQueue.front().type == NAME) {
+	else if (factorQueue.front().getToken() == TokenType::NAME) {
 		factor.setVarName(factorQueue.front());
 		factor.setType(FactorType::VAR);
 		factorQueue.pop();
 	}
-	else if (factorQueue.front().type == INTEGER) {
+	else if (factorQueue.front().getToken() == TokenType::INTEGER) {
 		factor.setConstValue(factorQueue.front());
 		factor.setType(FactorType::CONST);
 		factorQueue.pop();
@@ -203,14 +215,15 @@ Statement ConcreteSyntax::parseWhile(std::queue<Token> &tokensQueue) {
 	tokensQueue.pop();
 	// remove left_brace
 	tokensQueue.pop();
-	whileStmt.cond_expr = ConcreteSyntax::parseCondExpr(tokensQueue);
+	// Iteration 1 only passing vector of string
+	whileStmt.cond_expr = ConcreteSyntax::parseExprString(tokensQueue);
 
 	// parse stmtLst
 	// remove left_curly
 	tokensQueue.pop();
 	StmtLst stmtLst;
 	int stmt_count = 1;
-	while (tokensQueue.front().type != RIGHT_CURLY) {
+	while (tokensQueue.front().getToken() != TokenType::RIGHT_CURLY) {
 		Statement temp_statement = ConcreteSyntax::parseStmt(tokensQueue);
 		temp_statement.stmt_no = stmt_count;
 		stmtLst.setNextStmt(temp_statement);
@@ -230,10 +243,10 @@ CondExpr ConcreteSyntax::parseCondExpr(std::queue<Token> &tokensQueue) {
 	std::queue<Token> condExprQueue;
 	int closure = 1;
 	while (closure != 0) {
-		if (tokensQueue.front().type == LEFT_BRACE) {
+		if (tokensQueue.front().getToken() == TokenType::LEFT_BRACE) {
 			closure++;
 		}
-		if (tokensQueue.front().type == RIGHT_BRACE) {
+		if (tokensQueue.front().getToken() == TokenType::RIGHT_BRACE) {
 			if (closure == 1) {
 				closure--;
 				// remove right_brace
@@ -256,20 +269,20 @@ CondExpr ConcreteSyntax::parseCondExprRecursion(std::queue<Token> &condExprQueue
 	std::queue<Token> relExprQueue;
 	int closure = 0;
 	while (!condExprQueue.empty()) {
-		if (condExprQueue.front().type == LEFT_BRACE) {
+		if (condExprQueue.front().getToken() == TokenType::LEFT_BRACE) {
 			closure++;
 			condExprQueue.pop();
 			continue;
 		}
-		if (condExprQueue.front().type == RIGHT_BRACE) {
+		if (condExprQueue.front().getToken() == TokenType::RIGHT_BRACE) {
 			closure--;
 			condExprQueue.pop();
 			continue;
 		}
-		if (condExprQueue.front().type == Operator::NOT) {
+		if (condExprQueue.front().getToken() == TokenType::NOT) {
 			continue;
 		}
-		if ((closure == 0) && ((condExprQueue.front().type == Operator::AND) || (condExprQueue.front().type == Operator::OR))) {
+		if ((closure == 0) && ((condExprQueue.front().getToken() == TokenType::AND) || (condExprQueue.front().getToken() == TokenType::OR))) {
 			break;
 		}
 		relExprQueue.push(condExprQueue.front());
@@ -278,7 +291,7 @@ CondExpr ConcreteSyntax::parseCondExprRecursion(std::queue<Token> &condExprQueue
 	condExpr.setRelExpr(ConcreteSyntax::parseRelExpr(relExprQueue));
 
 	if (!condExprQueue.empty()) {
-		condExpr.setOperator(condExprQueue.front());
+		condExpr.setOperator(condExprQueue.front().getToken());
 		condExprQueue.pop();
 		condExpr.setCondExpr(ConcreteSyntax::parseCondExprRecursion(condExprQueue));
 	}
@@ -294,15 +307,15 @@ RelExpr ConcreteSyntax::parseRelExpr(std::queue<Token> &relExprQueue) {
 
 	// set rel_factor one
 	while (!relExprQueue.empty()) {
-		if (relExprQueue.front().type == LEFT_BRACE) {
+		if (relExprQueue.front().getToken() == TokenType::LEFT_BRACE) {
 			closure++;
 		}
-		if (relExprQueue.front().type == RIGHT_BRACE) {
+		if (relExprQueue.front().getToken() == TokenType::RIGHT_BRACE) {
 			closure--;
 		}
-		if ((closure == 0) && ((relExprQueue.front().type == Operator::GREATER) || (relExprQueue.front().type == Operator::GEQ)
-				|| (relExprQueue.front().type == Operator::LESSER) || (relExprQueue.front().type == Operator::LEQ)
-				|| (relExprQueue.front().type == Operator::EQUAL) || (relExprQueue.front().type == Operator::NOT_EQUAL))) {
+		if ((closure == 0) && ((relExprQueue.front().getToken() == TokenType::GREATER) || (relExprQueue.front().getToken() == TokenType::GEQ)
+				|| (relExprQueue.front().getToken() == TokenType::LESSER) || (relExprQueue.front().getToken() == TokenType::LEQ)
+				|| (relExprQueue.front().getToken() == TokenType::EQUAL) || (relExprQueue.front().getToken() == TokenType::NOT_EQUAL))) {
 			break;
 		}
 		relFactorOneQueue.push(relExprQueue.front());
@@ -310,26 +323,27 @@ RelExpr ConcreteSyntax::parseRelExpr(std::queue<Token> &relExprQueue) {
 	}
 	relExpr.setRelFactorOne(ConcreteSyntax::parseRelFactor(relFactorOneQueue));
 
-	relExpr.setOperator(relExprQueue.front());
+	relExpr.setOperator(relExprQueue.front().getToken());
 	relExprQueue.pop();
 
 	// set rel_factor two
 	while (!relExprQueue.empty()) {
-		if (relExprQueue.front().type == LEFT_BRACE) {
+		if (relExprQueue.front().getToken() == TokenType::LEFT_BRACE) {
 			closure++;
 		}
-		if (relExprQueue.front().type == RIGHT_BRACE) {
+		if (relExprQueue.front().getToken() == TokenType::RIGHT_BRACE) {
 			closure--;
 		}
-		if ((closure == 0) && ((relExprQueue.front().type == Operator::GREATER) || (relExprQueue.front().type == Operator::GEQ)
-			|| (relExprQueue.front().type == Operator::LESSER) || (relExprQueue.front().type == Operator::LEQ)
-			|| (relExprQueue.front().type == Operator::EQUAL) || (relExprQueue.front().type == Operator::NOT_EQUAL))) {
+		if ((closure == 0) && ((relExprQueue.front().getToken() == TokenType::GREATER) || (relExprQueue.front().getToken() == TokenType::GEQ)
+			|| (relExprQueue.front().getToken() == TokenType::LESSER) || (relExprQueue.front().getToken() == TokenType::LEQ)
+			|| (relExprQueue.front().getToken() == TokenType::EQUAL) || (relExprQueue.front().getToken() == TokenType::NOT_EQUAL))) {
 			break;
 		}
 		relFactorTwoQueue.push(relExprQueue.front());
 		relExprQueue.pop();
 	}
 	relExpr.setRelFactorTwo(ConcreteSyntax::parseRelFactor(relFactorTwoQueue));
+	return relExpr;
 }
 
 // parse rel_factor
@@ -344,12 +358,12 @@ RelFactor ConcreteSyntax::parseRelFactor(std::queue<Token> &relFactorQueue) {
 		relFactor.setExpr(parseExprRecursion(exprStack));
 		relFactor.setType(FactorType::EXPR);
 	}
-	else if (relFactorQueue.front().type == NAME) {
+	else if (relFactorQueue.front().getToken() == TokenType::NAME) {
 		relFactor.setVarName(relFactorQueue.front());
 		relFactor.setType(FactorType::VAR);
 		relFactorQueue.pop();
 	}
-	else if (relFactorQueue.front().type == INTEGER) {
+	else if (relFactorQueue.front().getToken() == TokenType::INTEGER) {
 		relFactor.setConstValue(relFactorQueue.front());
 		relFactor.setType(FactorType::CONST);
 		relFactorQueue.pop();
@@ -370,7 +384,8 @@ Statement ConcreteSyntax::parseIf(std::queue<Token> &tokensQueue) {
 	tokensQueue.pop();
 	// remove left_brace
 	tokensQueue.pop();
-	ifStmt.cond_expr = ConcreteSyntax::parseCondExpr(tokensQueue);
+	// Iteration 1 only passing vector of string
+	ifStmt.cond_expr = ConcreteSyntax::parseExprString(tokensQueue);
 
 	// parse then stmtLst
 	// remove then_keyword
@@ -379,7 +394,7 @@ Statement ConcreteSyntax::parseIf(std::queue<Token> &tokensQueue) {
 	tokensQueue.pop();
 	StmtLst stmtLst;
 	int stmt_count = 1;
-	while (tokensQueue.front().type != RIGHT_CURLY) {
+	while (tokensQueue.front().getToken() != TokenType::RIGHT_CURLY) {
 		Statement temp_statement = ConcreteSyntax::parseStmt(tokensQueue);
 		temp_statement.stmt_no = stmt_count;
 		stmtLst.setNextStmt(temp_statement);
@@ -399,7 +414,7 @@ Statement ConcreteSyntax::parseIf(std::queue<Token> &tokensQueue) {
 	tokensQueue.pop();
 	StmtLst stmtLstElse;
 	int stmt_count_else = 1;
-	while (tokensQueue.front().type != RIGHT_CURLY) {
+	while (tokensQueue.front().getToken() != TokenType::RIGHT_CURLY) {
 		Statement temp_statement = ConcreteSyntax::parseStmt(tokensQueue);
 		temp_statement.stmt_no = stmt_count_else;
 		stmtLstElse.setNextStmt(temp_statement);
@@ -425,7 +440,10 @@ Statement ConcreteSyntax::parseRead(std::queue<Token>& tokensQueue) {
 	readStmt.statement_type = StatementType::kread_stmt;
 	// remove read_keyword
 	tokensQueue.pop();
-	readStmt.var_name = tokensQueue.front().getId();
+	// Iteration 1 only passing vector of string
+	std::vector<std::string> result;
+	result.push_back(tokensQueue.front().getId());
+	readStmt.var_name = result;
 	// remove var_name
 	tokensQueue.pop();
 	// remove semicolon
@@ -440,7 +458,10 @@ Statement ConcreteSyntax::parsePrint(std::queue<Token>& tokensQueue) {
 	printStmt.statement_type = StatementType::kprint_stmt;
 	// remove print_keyword
 	tokensQueue.pop();
-	printStmt.var_name = tokensQueue.front().getId();
+	// Iteration 1 only passing vector of string
+	std::vector<std::string> result;
+	result.push_back(tokensQueue.front().getId());
+	printStmt.var_name = result;
 	// remove var_name
 	tokensQueue.pop();
 	// remove semicolon

@@ -1,20 +1,20 @@
 #include "RelExpr.h"
-#include "Operator.h"
+#include "TokenType.h"
 
 #ifndef CONDEXPR_H
 #define CONDEXPR_H
 
 class CondExpr {
 private:
-	Operator op;
+	TokenType tokenType;
 	CondExpr* condExpr;
 	RelExpr relExpr;
 public:
 	CondExpr();
-	Operator getOperator() const;
+	TokenType getOperator() const;
 	CondExpr getCondExpr() const;
 	RelExpr getRelExpr() const;
-	void setOperator(Operator op);
+	void setOperator(TokenType tokenType);
 	void setCondExpr(CondExpr condExpr);
 	void setRelExpr(RelExpr relExpr);
 };

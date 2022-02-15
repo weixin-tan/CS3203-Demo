@@ -4,8 +4,8 @@ Expr::Expr() {
 
 }
 
-Operator Expr::getOperator() const {
-	return this->op;
+TokenType Expr::getOperator() const {
+	return this->tokenType;
 }
 
 Expr Expr::getExpr() const {
@@ -16,8 +16,8 @@ Term Expr::getTerm() const {
 	return this->term;
 }
 
-void Expr::setOperator(Operator op) {
-	this->op = op;
+void Expr::setOperator(TokenType tokenType) {
+	this->tokenType = tokenType;
 }
 
 void Expr::setExpr(Expr expr) {

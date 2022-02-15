@@ -4,8 +4,8 @@ RelExpr::RelExpr() {
 
 }
 
-Operator RelExpr::getOperator() const {
-	return this->op;
+TokenType RelExpr::getOperator() const {
+	return this->tokenType;
 }
 
 RelFactor RelExpr::getRelFactorOne() const {
@@ -16,8 +16,8 @@ RelFactor RelExpr::getRelFactorTwo() const {
 	return this->relFactorTwo;
 }
 
-void RelExpr::setOperator(Operator op) {
-	this->op = op;
+void RelExpr::setOperator(TokenType tokenType) {
+	this->tokenType = tokenType;
 }
 
 void RelExpr::setRelFactorOne(RelFactor relFactorOne) {

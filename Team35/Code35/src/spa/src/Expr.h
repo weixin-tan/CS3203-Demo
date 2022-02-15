@@ -1,20 +1,20 @@
 #include "Term.h"
-#include "Operator.h"
+#include "TokenType.h"
 
 #ifndef EXPR_H
 #define EXPR_H
 
 class Expr {
 private:
-	Operator op;
+	TokenType tokenType;
 	Expr *expr;
 	Term term;
 public:
 	Expr();
-	Operator getOperator() const;
+	TokenType getOperator() const;
 	Expr getExpr() const;
 	Term getTerm() const;
-	void setOperator(Operator op);
+	void setOperator(TokenType tokenType);
 	void setExpr(Expr expr);
 	void setTerm(Term term);
 };

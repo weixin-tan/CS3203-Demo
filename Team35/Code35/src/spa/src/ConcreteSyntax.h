@@ -3,7 +3,7 @@
 #include "Program.h"
 #include "Expr.h"
 #include "CondExpr.h"
-#include "Operator.h"
+#include "TokenType.h"
 #include "FactorType.h"
 
 class ConcreteSyntax {
@@ -26,4 +26,6 @@ public:
 	Statement parseRead(std::queue<Token>& tokensQueue);
 	Statement parsePrint(std::queue<Token>& tokensQueue);
 	Statement parseCall(std::queue<Token>& tokensQueue);
+
+	std::vector<std::string> parseExprString(std::queue<Token>& tokensQueue);
 };

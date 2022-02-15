@@ -1,20 +1,20 @@
 #include "RelFactor.h"
-#include "Operator.h"
+#include "TokenType.h"
 
 #ifndef RELEXPR_H
 #define RELEXPR_H
 
 class RelExpr {
 private:
-	Operator op;
+	TokenType tokenType;
 	RelFactor relFactorOne;
 	RelFactor relFactorTwo;
 public:
 	RelExpr();
-	Operator getOperator() const;
+	TokenType getOperator() const;
 	RelFactor getRelFactorOne() const;
 	RelFactor getRelFactorTwo() const;
-	void setOperator(Operator op);
+	void setOperator(TokenType tokenType);
 	void setRelFactorOne(RelFactor relFactorOne);
 	void setRelFactorTwo(RelFactor relFactorTwo);
 };

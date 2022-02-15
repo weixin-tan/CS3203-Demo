@@ -4,8 +4,8 @@ Term::Term() {
 
 }
 
-Operator Term::getOperator() const {
-	return this->op;
+TokenType Term::getOperator() const {
+	return this->tokenType;
 }
 
 Term Term::getTerm() const {
@@ -16,8 +16,8 @@ Factor Term::getFactor() const {
 	return this->factor;
 }
 
-void Term::setOperator(Operator op) {
-	this->op = op;
+void Term::setOperator(TokenType tokenType) {
+	this->tokenType = tokenType;
 }
 
 void Term::setTerm(Term term) {
