@@ -4,6 +4,10 @@
 
 #include "Token.h"
 
+Token::Token() {
+
+}
+
 Token::Token(TokenType type, std::string id) {
     Token::type = type;
     Token::id = id;

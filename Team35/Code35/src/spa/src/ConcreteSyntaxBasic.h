@@ -4,6 +4,7 @@
 #include "Procedure.h"
 #include "Statement.h"
 #include "Token.h"
+#include "TokenType.h"
 
 class ConcreteSyntaxBasic {
 public:
