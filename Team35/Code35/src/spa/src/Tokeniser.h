@@ -24,6 +24,7 @@ public:
     std::string printToken(Token token);
     std::vector<std::string> Spacer(std::string input);
     std::string Convertor(std::vector<std::string> vectorString);
+    std::vector<std::string> SpacerSemicolon(std::string input);
 
 };
 
