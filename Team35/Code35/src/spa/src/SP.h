@@ -18,5 +18,7 @@ public:
 
 	void Parse(std::string filename);
 	
+	Procedure procedure; 
+	std::queue<Token> tokenQueue;
 };
 
