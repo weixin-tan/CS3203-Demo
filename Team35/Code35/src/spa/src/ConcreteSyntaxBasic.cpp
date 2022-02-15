@@ -18,7 +18,7 @@ Procedure ConcreteSyntaxBasic::parseProcedure(std::queue<Token> tokensQueue) {
 
 	int stmt_count = 1;
 
-	while (tokensQueue.front().type != TokenType::RIGHT_CURLY) {
+	while (tokensQueue.front().type != RIGHT_CURLY) {
 		Statement temp_statement = ConcreteSyntaxBasic::parseStmt(tokensQueue);
 		temp_statement.stmt_no = stmt_count;
 		stmtLst.setNextStmt(temp_statement);
@@ -31,7 +31,7 @@ Procedure ConcreteSyntaxBasic::parseProcedure(std::queue<Token> tokensQueue) {
 }
 
 Statement ConcreteSyntaxBasic::parseStmt(std::queue<Token> &tokensQueue) {
-	if (tokensQueue.front().type == TokenType::NAME) {
+	if (tokensQueue.front().type == NAME) {
 		return ConcreteSyntaxBasic::parseAssign(tokensQueue);
 	}
 }
@@ -55,8 +55,8 @@ Statement ConcreteSyntaxBasic::parseAssign(std::queue<Token> &tokensQueue) {
 
 std::vector<std::string> ConcreteSyntaxBasic::parseExpr(std::queue<Token> &tokensQueue) {
 	std::vector<std::string> result;
-	while (tokensQueue.front().type != TokenType::SEMICOLON) {
-		if (tokensQueue.front().type == TokenType::NAME) {
+	while (tokensQueue.front().type != SEMICOLON) {
+		if (tokensQueue.front().type == NAME) {
 			result.push_back(tokensQueue.front().getId());
 		}
 		tokensQueue.pop();
