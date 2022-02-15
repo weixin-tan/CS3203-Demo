@@ -9,7 +9,6 @@
 #include <queue>
 #include <sstream>
 #include "Token.h"
-#include "TokenType.h"
 
 class Tokeniser {
 public:

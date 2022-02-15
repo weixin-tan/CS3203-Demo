@@ -6,12 +6,12 @@
 #define SPA_TOKEN_H
 
 #include <string>
-#include "TokenType.h"
+
+//enum
+enum TokenType{LETTER, DIGIT, NAME,  SPECIALCHAR, SEMICOLON, RIGHT_CURLY, LEFT_CURLY};
 
 class Token {
 public:
-    Token();
-
     //constructor
     Token(TokenType type, std::string id);
 
