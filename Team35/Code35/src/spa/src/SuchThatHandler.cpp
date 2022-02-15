@@ -1,73 +1,157 @@
 #include "SuchThatHandler.h"
 
-SuchThatHandler::SuchThatHandler(PkbGetter* pg) {
+//Constructor
+SuchThatHandler::SuchThatHandler(PkbGetter *pg) {
   SuchThatHandler::pg = pg;
 }
 
-std::vector<Result> SuchThatHandler::processClause(const std::vector<Clause>& clauses) const {
-  std::vector<Result> results;
-  for(const Clause& c : clauses) {
-    std::vector<Entity> entityToFindList = c.entityToFindList;
-    Entity entityToFind = entityToFindList.front(); // For basic Modifies
-    std::vector<RelationshipRef> refList = c.refList;
-    std::vector<Entity> resultEntities;
-    // Handle queries with no such that or pattern clauses
-    if (refList.empty()) {
-      resultEntities = getEntity(entityToFind.eType);
-      auto* result = new Result(resultEntities);
-      results.push_back(*result);
-      continue;
-    }
+//Handles Such That relationships
+Result SuchThatHandler::handleSuchThat(Entity entityToGet, RelationshipRef relRef) {
+  RelationshipType relType = relRef.rType;
+  Entity left = relRef.leftEntity;
+  Entity right = relRef.rightEntity;
 
-    RelationshipRef ref = refList.front(); // For basic Modifies
-    RelationshipType refType = ref.rType;
-    Entity left = ref.leftEntity;
-    Entity right = ref.rightEntity;
+  if (left != entityToGet && right != entityToGet) { //If both sides are not the entity being searched for
+    return handleBoolCheck(entityToGet, relRef);
+  } else if (left == entityToGet) { //If left side is the entity being searched for
+    return handleLeftSide(entityToGet, right, relType);
+  } else if (right == entityToGet) { //If right side is the entity being searched for
+    return handleRightSide(entityToGet, left, relType);
+  } else {
+    return {};
+  }
+}
 
+//Get all instances of the searched entity based on whether the relationship exists in PKB
+Result SuchThatHandler::handleBoolCheck(Entity entityToGet, RelationshipRef relRef) {
+  bool check;
+  Entity left = relRef.leftEntity;
+  Entity right = relRef.rightEntity;
+  std::vector<Entity> checkEntities;
 
-    if (left == entityToFind && right == entityToFind) {
-      //Do nothing for now
-    } else if (right.eType == EntityType::Wildcard && left == entityToFind) {
-      // Handle wildcard for modifies
-      // Only handles for all Modifies statement for now
-      resultEntities = getRelationshipStatements(refType);
-    } else if (left == entityToFind) {
-      resultEntities = getLeftSide(refType, right, entityToFind.eType);
-    } else if (right == entityToFind) {
-      resultEntities = getRightSide(refType, left, entityToFind.eType);
+  if (relRef.leftEntity.eType == EntityType::Wildcard) { //Case where the left side is a wildcard
+    Result r = handleRightSide(right, left, relRef.rType);
+    checkEntities = r.getResultEntities();
+    /*
+    //Modifies and Uses cannot have a wildcard on the left side
+    assert(("Cannot be Modifies or Uses!",
+        (relRef.rType != RelationshipType::Modifies && relRef.rType != RelationshipType::Uses)));
+
+    //Account for both cases where it is either a FixedInteger or any statement type
+    if (right.eType == EntityType::FixedInteger) {
+      right.eType = EntityType::Statement;
+      checkEntities = pg->getLeftSide(relRef.rType, right, EntityType::Statement);
     } else {
-      bool check = isRelationship(refType, left, right);
-      if (check) {
-        resultEntities = getEntity(entityToFind.eType);
+      //Get all instances of the right entity from PKB and iterate to check if there are any statements that fit
+      std::vector<Entity> iterables = pg->getEntity(right.eType);
+      if (!iterables.empty()) {
+        for (const Entity& e : iterables) {
+          checkEntities = pg->getLeftSide(relRef.rType, e, EntityType::Statement);
+          if (!checkEntities.empty()) {
+            break;
+          }
+        }
       }
     }
-    auto* result = new Result(resultEntities);
-    results.push_back(*result);
+    */
+    check = !checkEntities.empty();
+
+  } else if (relRef.rightEntity.eType == EntityType::Wildcard) { //Case where the right side is a wildcard
+    Result r = handleLeftSide(left, right, relRef.rType);
+    checkEntities = r.getResultEntities();
+      /*
+    //Account for both cases where it is either a FixedInteger or any statement type
+    if (left.eType == EntityType::FixedInteger) {
+      left.eType = EntityType::Statement;
+      //Different entity types on RHS based on relationship type
+      if (relRef.rType == RelationshipType::Modifies || relRef.rType == RelationshipType::Uses) {
+        checkEntities = pg->getRightSide(relRef.rType, left, EntityType::Variable);
+      } else {
+        checkEntities = pg->getRightSide(relRef.rType, left, EntityType::Statement);
+      }
+    } else {
+      //Get all instances of the left entity from PKB and iterate to check if there are any statements that fit
+      std::vector<Entity> iterables = pg->getEntity(left.eType);
+      if (!iterables.empty()) {
+        for (const Entity& e : iterables) {
+          checkEntities = pg->getRightSide(relRef.rType, e, EntityType::Statement);
+          if (!checkEntities.empty()) {
+            break;
+          }
+        }
+      }
+    }
+    */
+    check = !checkEntities.empty();
+
+  } else {
+    check = pg->isRelationship(relRef.rType, relRef.leftEntity, relRef.rightEntity);
   }
-  return results;
+
+  // If conditions are met return all entities belonging to the type requested and if not, return empty Result
+  if (check) {
+    std::vector<Entity> resultEntities = pg->getEntity(entityToGet.eType);
+    return Result(resultEntities);
+  } else {
+    return {};
+  }
 }
 
-bool SuchThatHandler::isRelationship(RelationshipType r, const Entity& e1, const Entity& e2) const {
-  bool isRel = pg->isRelationship(r, e1, e2);
-  return isRel;
+//If the entity being searched for is on the left side, find all instances that match the conditions
+Result SuchThatHandler::handleLeftSide(Entity entityToGet, Entity rightEntity, RelationshipType relType) {
+  std::vector<Entity> resultEntities;
+
+  if (relType == RelationshipType::Modifies || relType == RelationshipType::Uses) {
+    if (rightEntity.eType == EntityType::FixedString) {
+      rightEntity.eType = EntityType::Variable;
+      resultEntities = pg->getLeftSide(relType, rightEntity, entityToGet.eType);
+    } else if (rightEntity.eType == EntityType::Variable || rightEntity.eType == EntityType::Wildcard) {
+      std::vector<Entity> iterables = pg->getEntity(EntityType::Variable);
+      for (const Entity& e : iterables) {
+        std::vector<Entity> getEntities = pg->getLeftSide(relType, e, entityToGet.eType);
+        resultEntities.insert(resultEntities.end(), getEntities.begin(), getEntities.end());
+      }
+    } else {
+      assert(false);
+    }
+  } else if (relType == RelationshipType::Follows || relType == RelationshipType::FollowsT
+      || relType == RelationshipType::Parent || relType == RelationshipType::ParentT) {
+    if (rightEntity.eType == EntityType::FixedInteger) {
+      rightEntity.eType = EntityType::Statement;
+      resultEntities = pg->getLeftSide(relType, rightEntity, entityToGet.eType);
+    } else {
+      if (rightEntity.eType == EntityType::Wildcard) {
+        rightEntity.eType = EntityType::Statement;
+      }
+      std::vector<Entity> iterables = pg->getEntity(rightEntity.eType);
+      for (const Entity& e : iterables) {
+          std::vector<Entity> getEntities = pg->getLeftSide(relType, e, entityToGet.eType);
+          resultEntities.insert(resultEntities.end(), getEntities.begin(), getEntities.end());
+      }
+    }
+  } else {
+    assert(false);
+  }
+  return Result(resultEntities);
 }
 
-std::vector<Entity> SuchThatHandler::getEntity(EntityType typeToGet) const {
-  std::vector<Entity> resultEntities = pg->getEntity(typeToGet);
-  return resultEntities;
-}
+Result SuchThatHandler::handleRightSide(Entity entityToGet, Entity leftEntity, RelationshipType relType) {
+  std::vector<Entity> resultEntities;
 
-std::vector<Entity> SuchThatHandler::getRelationshipStatements(RelationshipType r) const {
-  std::vector<Entity> resultEntities = pg->getRelationshipStatements(r);
-  return resultEntities;
-}
+  if (relType == RelationshipType::Modifies || relType == RelationshipType::Uses) {
+    assert(("Cannot be Wildcard for Modifies and Uses!", leftEntity.eType != EntityType::Wildcard));
+  }
 
-std::vector<Entity> SuchThatHandler::getLeftSide(RelationshipType r, const Entity& rightSide, EntityType typeToGet) const {
-  std::vector<Entity> resultEntities = pg->getLeftSide(r, rightSide, typeToGet);
-  return resultEntities;
-}
+  if (leftEntity.eType == EntityType::FixedInteger || leftEntity.eType == EntityType::Wildcard) {
+    leftEntity.eType = EntityType::Statement;
+    resultEntities = pg->getRightSide(relType, leftEntity, entityToGet.eType);
+  } else {
+    std::vector<Entity> iterables = pg->getEntity(leftEntity.eType);
+    for (const Entity &e: iterables) {
+      std::vector<Entity> getEntities = pg->getRightSide(relType, e, entityToGet.eType);
+      resultEntities.insert(resultEntities.end(), getEntities.begin(), getEntities.end());
+    }
+  }
 
-std::vector<Entity> SuchThatHandler::getRightSide(RelationshipType r, const Entity& leftSide, EntityType typeToGet) const {
-  std::vector<Entity> resultEntities = pg->getRightSide(r, leftSide, typeToGet);
-  return resultEntities;
+  return Result(resultEntities);
 }
