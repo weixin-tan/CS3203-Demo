@@ -18,7 +18,12 @@ void SP::Parse(std::string filename) {
 	tokenQueue = tokeniser.putInQueue(buffer.str());
 	
 	// Create Procedure
-	procedure = concrete.parseProcedure(tokenQueue);
+	try {
+		procedure = concrete.parseProcedure(tokenQueue);
+	}
+	catch (const std::invalid_argument& e) {
+		terminate;
+	}
 
 	// Push back the procedure to the procedure list
 	procedureLst.push_back(procedure);
