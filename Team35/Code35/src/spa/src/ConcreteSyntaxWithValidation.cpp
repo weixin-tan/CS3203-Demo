@@ -23,7 +23,7 @@ Program ConcreteSyntaxWithValidation::parseProgram(std::queue<Token> tokensQueue
 	return program;
 }
 
-Procedure ConcreteSyntaxWithValidation::parseProcedure(std::queue<Token>& tokensQueue) {
+Procedure ConcreteSyntaxWithValidation::parseProcedure(std::queue<Token> tokensQueue) {
 	// procedure_keyword
 	if (tokensQueue.front().getToken() != TokenType::PROCEDURE_KEYWORD) {
 		throw std::invalid_argument("Missing procedure keyword.");
