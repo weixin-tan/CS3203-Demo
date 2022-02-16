@@ -12,7 +12,7 @@ void SP::Parse(std::string filename) {
 	std::ifstream t(filename);
 	std::stringstream buffer;
 	buffer << t.rdbuf();
-	std::vector<Procedure> procedureLst;
+	ProcedureLst procedureLst;
 
 	// Creating the queue of tokens
 	tokenQueue = tokeniser.putInQueue(buffer.str());
@@ -26,7 +26,7 @@ void SP::Parse(std::string filename) {
 	}
 
 	// Push back the procedure to the procedure list
-	procedureLst.push_back(procedure);
+	procedureLst.setNextProcedure(procedure);
 
 	// Convert the procedure
 	convertor.ProcedureReader(procedureLst);
