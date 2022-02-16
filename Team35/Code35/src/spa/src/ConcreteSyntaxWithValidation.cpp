@@ -25,15 +25,15 @@ Program ConcreteSyntaxWithValidation::parseProgram(std::queue<Token> tokensQueue
 
 Procedure ConcreteSyntaxWithValidation::parseProcedure(std::queue<Token> tokensQueue) {
 	// procedure_keyword
-	if (tokensQueue.front().getToken() != TokenType::PROCEDURE_KEYWORD) {
+	/*if (tokensQueue.front().getToken() != TokenType::PROCEDURE_KEYWORD) {
 		throw std::invalid_argument("Missing procedure keyword.");
-	}
+	}*/
 	tokensQueue.pop();
 
 	// procedure name
-	if (tokensQueue.front().getToken() != TokenType::NAME) {
+	/*if (tokensQueue.front().getToken() != TokenType::NAME) {
 		throw std::invalid_argument("Missing procedure name.");
-	}
+	}*/
 	tokensQueue.pop();
 
 	// left_curly
@@ -152,9 +152,9 @@ Statement ConcreteSyntaxWithValidation::parseAssign(std::queue<Token>& tokensQue
 	tokensQueue.pop();
 
 	// equals sign
-	if (tokensQueue.front().getToken() != TokenType::EQUAL) {
+	/*if (tokensQueue.front().getToken() != TokenType::EQUAL) {
 		throw std::invalid_argument("Missing equal sign.");
-	}
+	}*/
 	tokensQueue.pop();
 
 	// Iteration 1 only passing vector of string
@@ -181,6 +181,10 @@ Statement ConcreteSyntaxWithValidation::parseAssign(std::queue<Token>& tokensQue
 // for iteration 1
 std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseExprString(std::queue<Token>& tokensQueue) {
 	std::vector<std::vector<std::string>> result;
+	std::vector<std::string> exprVector;
+	std::vector<std::string> constVector;
+	result.push_back(exprVector);
+	result.push_back(constVector);
 	while (tokensQueue.front().getToken() != TokenType::SEMICOLON) {
 		if (tokensQueue.front().getToken() == TokenType::NAME) {
 			result[0].push_back(tokensQueue.front().getId());
@@ -199,7 +203,8 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseExprStr
 			;
 		}
 		else {
-			throw std::invalid_argument("Invalid symbol in expression.");
+			// throw std::invalid_argument("Invalid symbol in expression.");
+			;
 		}
 		tokensQueue.pop();
 	}
@@ -369,6 +374,10 @@ Statement ConcreteSyntaxWithValidation::parseWhile(std::queue<Token>& tokensQueu
 // parse cond_expr String for Iteration 1
 std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseCondExprString(std::queue<Token>& tokensQueue) {
 	std::vector<std::vector<std::string>> result;
+	std::vector<std::string> exprVector;
+	std::vector<std::string> constVector;
+	result.push_back(exprVector);
+	result.push_back(constVector);
 	int closure = 1;
 	while (closure != 0) {
 		if (tokensQueue.front().getToken() == TokenType::LEFT_BRACE) {
