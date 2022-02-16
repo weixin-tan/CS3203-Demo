@@ -22,7 +22,7 @@ void SP::Parse(std::string filename) {
 		procedure = concrete.parseProcedure(tokenQueue);
 	}
 	catch (const std::invalid_argument& e) {
-		terminate;
+		std::terminate();
 	}
 
 	// Push back the procedure to the procedure list
