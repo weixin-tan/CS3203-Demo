@@ -4,6 +4,7 @@
 #include "ElementType.h"
 #include <string>
 
+// TODO: split into proper subclasses
 class ProgramElement {
  public:
   static const int null_integer_value = -1;
@@ -21,7 +22,9 @@ class ProgramElement {
   static ProgramElement createStatement(ElementType element_type, int stmt_no);
   static ProgramElement createProcedure(const std::string& procedure_name);
   static ProgramElement createVariable(const std::string& variable_name);
-  static ProgramElement createConstant(int constant_value);
+  static ProgramElement createConstant(const std::string& constant_value);  // use string to avoid overflow
+
+  std::string toString() const;
 
   bool operator<(const ProgramElement& r) const;
   bool operator==(const ProgramElement& r) const;

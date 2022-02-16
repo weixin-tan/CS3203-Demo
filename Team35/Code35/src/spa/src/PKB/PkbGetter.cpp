@@ -21,13 +21,13 @@ bool PkbGetter::isExists(const ProgramElement& elementToCheck) const {
     if (ElementType::kVariable == elementToCheck.element_type)
         return db->variables.count(elementToCheck.string_value);
     if (ElementType::kConstant == elementToCheck.element_type)
-        return db->constants.count(elementToCheck.integer_value);
+        return db->constants.count(elementToCheck.string_value);
     assert(false);
 }
 
 PkbGetter::PkbGetter(DB* db) : db(db) {}
 
-bool PkbGetter::isRelationship(const RelationshipType& r, const ProgramElement &leftSide, const ProgramElement &rightSide) const {
+bool PkbGetter::isRelationship(const RelationshipType& r, const ProgramElement& leftSide, const ProgramElement& rightSide) const {
     if (!isExists(leftSide) || !isExists(rightSide)) return false;
 
     bool result = false;
@@ -119,7 +119,7 @@ std::set<ProgramElement> PkbGetter::getRelationshipStatements(const Relationship
     return result;
 }
 
-std::set<ProgramElement> PkbGetter::getEntity(const ElementType &typeToGet) const {
+std::set<ProgramElement> PkbGetter::getEntity(const ElementType& typeToGet) const {
     std::set<ProgramElement> result;
 
     switch (typeToGet) {
@@ -146,7 +146,7 @@ std::set<ProgramElement> PkbGetter::getEntity(const ElementType &typeToGet) cons
             break;
         }
         case ElementType::kConstant: {
-            for (const int& c : db->constants)
+            for (const std::string& c : db->constants)
                 result.insert(ProgramElement::createConstant(c));
             break;
         }
@@ -158,8 +158,8 @@ std::set<ProgramElement> PkbGetter::getEntity(const ElementType &typeToGet) cons
     return result;
 }
 
-std::set<ProgramElement> PkbGetter::getLeftSide(const RelationshipType& r, const ProgramElement &rightSide,
-                                                const ElementType &typeToGet) const {
+std::set<ProgramElement> PkbGetter::getLeftSide(const RelationshipType& r, const ProgramElement& rightSide,
+                                                const ElementType& typeToGet) const {
     if (!isExists(rightSide)) return {};
 
     std::set<ProgramElement> result;
@@ -171,14 +171,14 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const RelationshipType& r, const
             assert(rightSide.element_type == ElementType::kVariable || rightSide.element_type == ElementType::kConstant);
 
             if (rightSide.element_type == ElementType::kConstant) {
-                for (const int& stmtNo : db->constantToStmtTable[rightSide.integer_value])
+                for (const int& stmtNo : db->constantToStmtTable.at(rightSide.string_value))
                     result.insert(ProgramElement::createStatement(typeToGet, stmtNo));
                 break;
             }
 
             if (isStatementType(typeToGet)) {
                 std::set<int> stmtNos;
-                for (const int &stmtNo : db->varToModifyStmtTable.at(rightSide.string_value)) {
+                for (const int& stmtNo : db->varToModifyStmtTable.at(rightSide.string_value)) {
                     int curStmtNo = stmtNo;
                     // do not revisit statements visited
                     while (curStmtNo != ParsedStatement::default_null_stmt_no && stmtNos.find(curStmtNo) == stmtNos.end()) {
@@ -202,7 +202,7 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const RelationshipType& r, const
 
             if (isStatementType(typeToGet)) {
                 std::set<int> stmtNos;
-                for (const int &stmtNo : db->varToUsesStmtTable.at(rightSide.string_value)) {
+                for (const int& stmtNo : db->varToUsesStmtTable.at(rightSide.string_value)) {
                     int curStmtNo = stmtNo;
                     // do not revisit statements visited
                     while (curStmtNo != ParsedStatement::default_null_stmt_no && stmtNos.find(curStmtNo) == stmtNos.end()) {
@@ -214,8 +214,8 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const RelationshipType& r, const
                 for (const int& stmtNo : stmtNos)
                     result.insert(ProgramElement::createStatement(typeToGet, stmtNo));
             } else if (typeToGet == ElementType::kProcedure) {
-            for (const std::string& proc : db->varToUsesProcTable.at(rightSide.string_value))
-                result.insert(ProgramElement::createProcedure(proc));
+                for (const std::string& proc : db->varToUsesProcTable.at(rightSide.string_value))
+                    result.insert(ProgramElement::createProcedure(proc));
             } else assert(false);
             break;
         }
@@ -267,8 +267,8 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const RelationshipType& r, const
     return result;
 }
 
-std::set<ProgramElement> PkbGetter::getRightSide(const RelationshipType& r, const ProgramElement &leftSide,
-                                                 const ElementType &typeToGet) const {
+std::set<ProgramElement> PkbGetter::getRightSide(const RelationshipType& r, const ProgramElement& leftSide,
+                                                 const ElementType& typeToGet) const {
     if (!isExists(leftSide)) return {};
     std::set<ProgramElement> result;
     switch (r) {
@@ -283,7 +283,7 @@ std::set<ProgramElement> PkbGetter::getRightSide(const RelationshipType& r, cons
                 for (const int& childStmtNo: db->parentToChildTable.at(leftSide.integer_value))
                     result.merge(getRightSide(r, ProgramElement::createStatement(ElementType::kStatement, childStmtNo), typeToGet));
             } else if (leftSide.element_type == ElementType::kProcedure) {
-                for (const std::string& var : db->modifyProcToVarTable[leftSide.string_value])
+                for (const std::string& var : db->modifyProcToVarTable.at(leftSide.string_value))
                     result.insert(ProgramElement::createVariable(var));
             } else assert(false);
             break;
@@ -299,7 +299,7 @@ std::set<ProgramElement> PkbGetter::getRightSide(const RelationshipType& r, cons
                 for (const int& childStmtNo: db->parentToChildTable.at(leftSide.integer_value))
                     result.merge(getRightSide(r, ProgramElement::createStatement(ElementType::kStatement, childStmtNo), typeToGet));
             } else if (leftSide.element_type == ElementType::kProcedure) {
-                for (const std::string& var : db->usesProcToVarTable[leftSide.string_value])
+                for (const std::string& var : db->usesProcToVarTable.at(leftSide.string_value))
                     result.insert(ProgramElement::createVariable(var));
             } else assert(false);
             break;
@@ -351,6 +351,16 @@ std::set<ProgramElement> PkbGetter::getRightSide(const RelationshipType& r, cons
     return result;
 }
 
-std::set<ProgramElement> PkbGetter::getAssignmentGivenPattern(const ProgramElement &pattern) const {
-    return getLeftSide(RelationshipType::Modifies, pattern, ElementType::kAssignment);
+// TODO: temporary, expression currently is just a constant or variable used
+std::set<ProgramElement> PkbGetter::getAssignmentGivenExpression(const ProgramElement& expression) const {
+    return getLeftSide(RelationshipType::Modifies, expression, ElementType::kAssignment);
+}
+
+std::set<ProgramElement> PkbGetter::getAssignmentGivenVariableAndExpression(const ProgramElement& variable, const ProgramElement& expression) const {
+    std::set<ProgramElement> result;
+    std::set<ProgramElement> assignments = getAssignmentGivenExpression(expression);
+    for (const auto& assignment : assignments)
+        if (getRightSide(RelationshipType::Modifies, assignment, ElementType::kVariable).count(variable) != 0)
+            result.insert(assignment);
+    return result;
 }

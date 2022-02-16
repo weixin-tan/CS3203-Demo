@@ -47,10 +47,9 @@ void PkbSetter::handleStatementType(const ParsedStatement& parsedStatement) {
 }
 
 void PkbSetter::handleConstants(const ParsedStatement& statement) {
-    for (const std::string& constant_string : statement.constant) {
-        int constant = std::stoi(constant_string);
-        db->constantToStmtTable[constant].insert(statement.stmt_no);
-        db->constants.insert(constant);
+    for (const std::string& c : statement.constant) {
+        db->constantToStmtTable[c].insert(statement.stmt_no);
+        db->constants.insert(c);
     }
 }
 

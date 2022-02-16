@@ -15,13 +15,17 @@ ProgramElement ProgramElement::createProcedure(const std::string& procedure_name
   return {ElementType::kProcedure, ProgramElement::null_integer_value, procedure_name};
 }
 
-ProgramElement ProgramElement::createConstant(int constant_value) {
-  return {ElementType::kConstant, constant_value, ProgramElement::null_string_value};
+ProgramElement ProgramElement::createConstant(const std::string& constant_value) {
+  return {ElementType::kConstant, ProgramElement::null_integer_value, constant_value};
 }
 
 ProgramElement ProgramElement::createVariable(const std::string& variable_name) {
   assert(!variable_name.empty());
   return {ElementType::kVariable, ProgramElement::null_integer_value, variable_name};
+}
+
+std::string ProgramElement::toString() const {
+    return (isStatementType(element_type) ? std::to_string(integer_value) : string_value);
 }
 
 bool ProgramElement::operator<(const ProgramElement& r) const {
