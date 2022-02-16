@@ -14,7 +14,7 @@ TEST_CASE("SP round 0 iteration test") {
 	PKB pkb = PKB();
 	Convertor convertor = Convertor(pkb.getSetter());
 	Tokeniser tokeniser = Tokeniser();
-	ConcreteSyntaxBasic concrete = ConcreteSyntaxBasic();
+	ConcreteSyntaxWithValidation concrete = ConcreteSyntaxWithValidation();
 	
 	std::ifstream t("iter0.txt");
 	std::stringstream buffer;
