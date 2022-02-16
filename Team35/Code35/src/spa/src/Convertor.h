@@ -23,7 +23,7 @@ public:
 
 	Convertor(PkbSetter* pkb_setter);
 
-	std::vector<std::vector<ParsedStatement>> Convertor::ProcedureReader(ProcedureLst procedurelist);
+	std::vector<std::vector<ParsedStatement>> ProcedureReader(ProcedureLst procedurelist);
 
 	std::vector<ParsedStatement> StatementListReader(StmtLst statement_list, int container_number);
 	
