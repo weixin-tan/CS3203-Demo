@@ -115,6 +115,12 @@ std::vector<std::string> extractDesignEntityAndSynonyms(const std::string& s){
       returnList.push_back(frontDesignEntityAndSynonym[i]);
     }
   }
+
+  if (returnList.size() != 2){
+    std::vector<std::string> emptyList;
+    return emptyList;
+  }
+
   for(int i=1; i<laterSynonymsList.size(); i++){
     tempString = stripString(laterSynonymsList[i]);
     if (!tempString.empty()){
