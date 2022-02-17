@@ -3,7 +3,6 @@
 #include "PKB.h"
 
 #include "catch.hpp"
-using namespace std;
 
 
 TEST_CASE("PKB Basic") {
@@ -236,4 +235,143 @@ TEST_CASE("PKB Basic") {
             }
         }
     }
+    SECTION("Uses") {
+        RelationshipType relationshipType = RelationshipType::Uses;
+        SECTION("isRelationship") {
+            SECTION("Assignment Variable") {
+                REQUIRE(pkb_getter->isRelationship(RelationshipType::Uses, ProgramElement::createStatement(ElementType::kAssignment, 2), ProgramElement::createVariable("x")));
+
+                REQUIRE(!pkb_getter->isRelationship(RelationshipType::Uses, ProgramElement::createStatement(ElementType::kAssignment, 2), ProgramElement::createVariable("y")));
+            }
+            SECTION("If Variable") {
+                REQUIRE(pkb_getter->isRelationship(RelationshipType::Uses, ProgramElement::createStatement(ElementType::kIf, 6), ProgramElement::createVariable("z")));
+            }
+            SECTION("While Variable") {
+                REQUIRE(pkb_getter->isRelationship(RelationshipType::Uses, ProgramElement::createStatement(ElementType::kWhile, 4), ProgramElement::createVariable("x")));
+
+                REQUIRE(pkb_getter->isRelationship(RelationshipType::Uses, ProgramElement::createStatement(ElementType::kWhile, 4), ProgramElement::createVariable("z")));
+            }
+            SECTION("Statement Variable") {
+                REQUIRE(pkb_getter->isRelationship(RelationshipType::Uses, ProgramElement::createStatement(ElementType::kStatement, 2), ProgramElement::createVariable("x")));
+
+                REQUIRE(pkb_getter->isRelationship(RelationshipType::Uses, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createVariable("x")));
+
+                REQUIRE(pkb_getter->isRelationship(RelationshipType::Uses, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createVariable("z")));
+
+                REQUIRE(pkb_getter->isRelationship(RelationshipType::Uses, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createVariable("y")));
+            }
+            SECTION("Procedure Variable") {
+                REQUIRE(pkb_getter->isRelationship(RelationshipType::Uses, ProgramElement::createProcedure("f"), ProgramElement::createVariable("x")));
+            }
+        }
+        SECTION("getLeftSide") {
+            SECTION("Assignment given Variable") {
+                std::set<ProgramElement> result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createVariable("x"), ElementType::kAssignment);
+
+                std::set<ProgramElement> expected = {
+                        ProgramElement::createStatement(ElementType::kAssignment, 2),
+                        ProgramElement::createStatement(ElementType::kAssignment, 4),
+                };
+
+                REQUIRE(result == expected);
+            }
+            SECTION("Print given Variable") {
+                std::set<ProgramElement> result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createVariable("x"), ElementType::kPrint);
+
+                std::set<ProgramElement> expected = {
+                        ProgramElement::createStatement(ElementType::kPrint, 11),
+                };
+
+                REQUIRE(result == expected);
+            }
+            SECTION("If given Variable") {
+                std::set<ProgramElement> result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createVariable("z"), ElementType::kIf);
+
+                std::set<ProgramElement> expected = {
+                        ProgramElement::createStatement(ElementType::kIf, 6),
+                };
+
+                REQUIRE(result == expected);
+            }
+            SECTION("While given Variable") {
+                std::set<ProgramElement> result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createVariable("z"), ElementType::kWhile);
+
+                std::set<ProgramElement> expected = {
+                        ProgramElement::createStatement(ElementType::kIf, 4),
+                };
+
+                REQUIRE(result == expected);
+            }
+            SECTION("Statements given Variable") {
+                std::set<ProgramElement> result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createVariable("z"), ElementType::kStatement);
+
+                std::set<ProgramElement> expected = {
+                        ProgramElement::createStatement(ElementType::kStatement, 4),
+                        ProgramElement::createStatement(ElementType::kStatement, 6),
+                };
+
+                REQUIRE(result == expected);
+
+                result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createVariable("x"), ElementType::kStatement);
+
+                expected = {
+                        ProgramElement::createStatement(ElementType::kStatement, 2),
+                        ProgramElement::createStatement(ElementType::kStatement, 4),
+                        ProgramElement::createStatement(ElementType::kStatement, 11),
+                };
+
+                REQUIRE(result == expected);
+            }
+        }
+        SECTION("getRightSide") {
+            SECTION("Variables given Assignment") {
+                std::set<ProgramElement> result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::kAssignment, 2), ElementType::kVariable);
+                std::set<ProgramElement> expected = {ProgramElement::createVariable("x")};
+
+                REQUIRE(result == expected);
+            }
+            SECTION("Variables given If") {
+                std::set<ProgramElement> result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::kIf, 6), ElementType::kVariable);
+                std::set<ProgramElement> expected = {ProgramElement::createVariable("z")};
+
+                REQUIRE(result == expected);
+            }
+            SECTION("Variables given While") {
+                std::set<ProgramElement> result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::kWhile, 4), ElementType::kVariable);
+                std::set<ProgramElement> expected = {ProgramElement::createVariable("z"), ProgramElement::createVariable("x")};
+
+                REQUIRE(result == expected);
+            }
+            SECTION("Variables given Statement") {
+                std::set<ProgramElement> result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::kStatement, 2), ElementType::kVariable);
+                std::set<ProgramElement> expected = {ProgramElement::createVariable("z"), ProgramElement::createVariable("x")};
+
+                REQUIRE(result == expected);
+
+                result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::kStatement, 4), ElementType::kVariable);
+                expected = {ProgramElement::createVariable("z"), ProgramElement::createVariable("x")};
+
+                REQUIRE(result == expected);
+
+                result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::kStatement, 6), ElementType::kVariable);
+                expected = {ProgramElement::createVariable("z")};
+
+                REQUIRE(result == expected);
+
+                result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::kStatement, 11), ElementType::kVariable);
+                expected = {ProgramElement::createVariable("x")};
+
+                REQUIRE(result == expected);
+            }
+            SECTION("Variables given Procedure") {
+                std::set<ProgramElement> result = pkb_getter->getRightSide(relationshipType, ProgramElement::createProcedure("f"), ElementType::kVariable);
+                std::set<ProgramElement> expected = {ProgramElement::createVariable("z"), ProgramElement::createVariable("x")};
+
+                REQUIRE(result == expected);
+            }
+        }
+    }
+    // TODO: Follows and FollowsT
+    // TODO: Parents and ParentsT
+    // TODO: Pattern
 }
