@@ -2,14 +2,14 @@
 
 Result::Result() = default;
 
-Result::Result(std::vector<Entity> entities) {
-  Result::resultEntities = entities;
+Result::Result(std::set <ProgramElement> programElements) {
+    Result::programElements = programElements;
 }
 
-void Result::appendResultEntity(const Entity& e) {
-  resultEntities.push_back(e);
+void Result::insertProgramElement(ProgramElement e) {
+    programElements.insert(e);
 }
 
-std::vector<Entity> Result::getResultEntities() {
-    return resultEntities;
+std::set<ProgramElement> Result::getProgramElements() {
+    return programElements;
 }
