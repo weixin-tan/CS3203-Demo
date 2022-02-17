@@ -119,57 +119,144 @@ TEST_CASE("testing valid queries on parseQuery"){
 
 TEST_CASE("invalid querys"){
   QueryProcessor qp = QueryProcessor();
-  std::string s1 = "magic x; Select x"; //invalid declaration
-  std::string s2 = "variable 2a, x; Select x"; // invalid name
-  std::string s3 = "variable x; Select 2a"; // invalid name
-  std::string s4 = "variable x Select x"; // missing semicolon
-  std::string s5 = "variable x, v a; Select x "; // missing comma
-  std::string s6 = "variable v x; Select x"; // missing comma
-  std::string s7 = "variable x; Select x such that Uses(v, 3)"; //no declaration of v
-  std::string s8 = "variable x; Select x Uses(x, 3)"; //no such that
-  std::string s9 = "variable x; Select x such that Magic(v, 3)"; //no such relref as Magic
-  std::string s10 = "variable x; assign a; Select a such that pattern a (\"x+1\", _)"; // left side invalid
-  std::string s11 = "variable x; assign a; Select a such that pattern a (_, tough)"; // right side invalid
-  std::string s12 = "variable x; assign a; Select a such that pattern a (_ _)"; // no comma
-  std::string s13 = "variable x; Select x such that Uses(x 3)"; //no comma
-  std::string s14 = "variable x; Select x such that Uses(\"something long\", 3)"; //no declaration of v
-  std::string s15 = "variable x; assign a; Select x such that a (v, \"x\")"; //missing pattern
-  std::string s16 = "variable x; Select x such that (x, 1)"; //missing relref
-  
-  vector<Clause> s1_output = qp.parsePQL(s1);
-  vector<Clause> s2_output = qp.parsePQL(s2);
-  vector<Clause> s3_output = qp.parsePQL(s3);
-  vector<Clause> s4_output = qp.parsePQL(s4);
-  vector<Clause> s5_output = qp.parsePQL(s5);
-  vector<Clause> s6_output = qp.parsePQL(s6);
-  vector<Clause> s7_output = qp.parsePQL(s7);
-  vector<Clause> s8_output = qp.parsePQL(s8);
-  vector<Clause> s9_output = qp.parsePQL(s9);
-  vector<Clause> s10_output = qp.parsePQL(s10);
-  vector<Clause> s11_output = qp.parsePQL(s11);
-  vector<Clause> s12_output = qp.parsePQL(s12);
-  vector<Clause> s13_output = qp.parsePQL(s13);
-  vector<Clause> s14_output = qp.parsePQL(s14);
-  vector<Clause> s15_output = qp.parsePQL(s15);
-  vector<Clause> s16_output = qp.parsePQL(s16);
+  std::string invalidWord1 = "magic v; Select v"; //invalid declaration
+  std::string invalidWord2 = "variable v; Select v such that Magic(v, 3)"; //invalid rel ref
+  std::string invalidWord3 = "variable v; assign a; Select v such that Magic a(v, _)"; //invalid pattern word
+  std::string invalidWord4 = "variable v; assign a; Select v such that pattern Magic(v, _)"; //invalid pattern assignment
 
-  SECTION("test"){
-    REQUIRE(s1_output.empty());
-    REQUIRE(s2_output.empty());
-    REQUIRE(s3_output.empty());
-    REQUIRE(s4_output.empty());
-    REQUIRE(s5_output.empty());
-    REQUIRE(s6_output.empty());
-    REQUIRE(s7_output.empty());
-    REQUIRE(s8_output.empty());
-    REQUIRE(s9_output.empty());
-    REQUIRE(s10_output.empty());
-    REQUIRE(s11_output.empty());
-    REQUIRE(s12_output.empty());
-    REQUIRE(s13_output.empty());
-    REQUIRE(s14_output.empty());
-    REQUIRE(s15_output.empty());
-    REQUIRE(s16_output.empty());
+  std::string invalidEntity1 = "variable 2a, x; Select x"; // invalid name
+  std::string invalidEntity2 = "variable x; Select 2a"; // invalid name
+  std::string invalidEntity3 = "variable x; assign a; Select a such that pattern a (\"x+1\", _)"; // left side invalid
+  std::string invalidEntity4 = "variable x; assign a; Select a such that pattern a (123, _)"; // left side invalid
+  std::string invalidEntity5 = "variable x; assign a; Select a such that pattern a (_, v)"; // right side invalid
+  std::string invalidEntity6 = "variable x; assign a; Select x such that Follows(\"x\", x)"; // left side invalid
+  std::string invalidEntity7 = "variable x; assign a; Select x such that Parent*(1, \"x\")"; // right side invalid
+  std::string invalidEntity8 = "variable x; assign a; Select x such that Uses(x, 1)"; // right side invalid
+
+  std::string missingComma1 = "variable x Select x"; // missing semicolon
+  std::string missingComma2 = "variable x, v a; Select x "; // missing comma
+  std::string missingComma3 = "variable v x; Select x"; // missing comma
+  std::string missingComma4 = "variable x; assign a; Select a such that pattern a (_ _)"; // no comma
+  std::string missingComma5 = "variable x; Select x such that Uses(x 3)"; //no comma
+
+  std::string missingKeyWords1 = "variable x; Select x such that Uses(v, 3)"; //no declaration of v
+  std::string missingKeyWords2 = "variable x; assign a; Select x a (v, \"x\")"; //missing pattern
+  std::string missingKeyWords3 = "variable x; assign a; Select x pattern "; //missing pattern stuff
+  std::string missingKeyWords4 = "variable x; Select x such that (x, 1)"; //missing relref
+  std::string missingKeyWords5 = "variable x; Select x Uses(x, 3)"; //missing such that
+  std::string missingKeyWords6 = "variable x; x such that Uses(x, 4)"; //missing pattern
+  std::string missingKeyWords7 = "variable x; Select x such that";
+
+  std::string wronglyCapitalize1 = "Assign a; while w; Select a such that Parent* (w, a) pattern a (\"count\", _)";
+  std::string wronglyCapitalize2 = "assign a; While w; Select a such that Parent* (w, a) pattern a (\"count\", _)";
+  std::string wronglyCapitalize3 = "assign a; while w; select a such that Parent* (w, a) pattern a (\"count\", _)";
+  std::string wronglyCapitalize4 = "assign a; while w; Select A such that Parent* (w, a) pattern a (\"count\", _)";
+  std::string wronglyCapitalize5 = "assign a; while w; Select a Such that Parent* (w, a) pattern a (\"count\", _)";
+  std::string wronglyCapitalize6 = "assign a; while w; Select a such That Parent* (w, a) pattern a (\"count\", _)";
+  std::string wronglyCapitalize7 = "assign a; while w; Select a such that parent* (w, a) pattern a (\"count\", _)";
+  std::string wronglyCapitalize8 = "assign a; while w; Select a such that Parent* (w, a) Pattern a (\"count\", _)";
+
+  vector<Clause> invalidWordOutput1 = qp.parsePQL(invalidWord1);
+  vector<Clause> invalidWordOutput2 = qp.parsePQL(invalidWord2);
+  vector<Clause> invalidWordOutput3 = qp.parsePQL(invalidWord3);
+  vector<Clause> invalidWordOutput4 = qp.parsePQL(invalidWord4);
+
+  vector<Clause> invalidEntityOutput1 = qp.parsePQL(invalidEntity1);
+  vector<Clause> invalidEntityOutput2 = qp.parsePQL(invalidEntity2);
+  vector<Clause> invalidEntityOutput3 = qp.parsePQL(invalidEntity3);
+  vector<Clause> invalidEntityOutput4 = qp.parsePQL(invalidEntity4);
+  vector<Clause> invalidEntityOutput5 = qp.parsePQL(invalidEntity5);
+  vector<Clause> invalidEntityOutput6 = qp.parsePQL(invalidEntity6);
+  vector<Clause> invalidEntityOutput7 = qp.parsePQL(invalidEntity7);
+  vector<Clause> invalidEntityOutput8 = qp.parsePQL(invalidEntity8);
+
+  vector<Clause> missingCommaOutput1 = qp.parsePQL(missingComma1);
+  vector<Clause> missingCommaOutput2 = qp.parsePQL(missingComma2);
+  vector<Clause> missingCommaOutput3 = qp.parsePQL(missingComma3);
+  vector<Clause> missingCommaOutput4 = qp.parsePQL(missingComma4);
+  vector<Clause> missingCommaOutput5 = qp.parsePQL(missingComma5);
+
+  vector<Clause> missingKeyWordsOutput1 = qp.parsePQL(missingKeyWords1);
+  vector<Clause> missingKeyWordsOutput2 = qp.parsePQL(missingKeyWords2);
+  vector<Clause> missingKeyWordsOutput3 = qp.parsePQL(missingKeyWords3);
+  vector<Clause> missingKeyWordsOutput4 = qp.parsePQL(missingKeyWords4);
+  vector<Clause> missingKeyWordsOutput5 = qp.parsePQL(missingKeyWords5);
+  vector<Clause> missingKeyWordsOutput6 = qp.parsePQL(missingKeyWords6);
+  vector<Clause> missingKeyWordsOutput7 = qp.parsePQL(missingKeyWords7);
+
+  vector<Clause> wronglyCapitalizeOutput1 = qp.parsePQL(wronglyCapitalize1);
+  vector<Clause> wronglyCapitalizeOutput2 = qp.parsePQL(wronglyCapitalize2);
+  vector<Clause> wronglyCapitalizeOutput3 = qp.parsePQL(wronglyCapitalize3);
+  vector<Clause> wronglyCapitalizeOutput4 = qp.parsePQL(wronglyCapitalize4);
+  vector<Clause> wronglyCapitalizeOutput5 = qp.parsePQL(wronglyCapitalize5);
+  vector<Clause> wronglyCapitalizeOutput6 = qp.parsePQL(wronglyCapitalize6);
+  vector<Clause> wronglyCapitalizeOutput7 = qp.parsePQL(wronglyCapitalize7);
+  vector<Clause> wronglyCapitalizeOutput8 = qp.parsePQL(wronglyCapitalize8);
+
+  SECTION("Invalid Word"){
+    REQUIRE(invalidWordOutput1.empty());
+    REQUIRE(invalidWordOutput2.empty());
+    REQUIRE(invalidWordOutput3.empty());
+    REQUIRE(invalidWordOutput4.empty());
+  }
+  SECTION("Invalid Entity"){
+    REQUIRE(invalidEntityOutput1.empty());
+    REQUIRE(invalidEntityOutput2.empty());
+    REQUIRE(invalidEntityOutput3.empty());
+    REQUIRE(invalidEntityOutput4.empty());
+    REQUIRE(invalidEntityOutput5.empty());
+    REQUIRE(invalidEntityOutput6.empty());
+    REQUIRE(invalidEntityOutput7.empty());
+    REQUIRE(invalidEntityOutput8.empty());
+  }
+  SECTION("missing Commas"){
+    REQUIRE(missingCommaOutput1.empty());
+    REQUIRE(missingCommaOutput2.empty());
+    REQUIRE(missingCommaOutput3.empty());
+    REQUIRE(missingCommaOutput4.empty());
+    REQUIRE(missingCommaOutput5.empty());
+  }
+  SECTION("missing KeyWords"){
+    REQUIRE(missingKeyWordsOutput1.empty());
+    REQUIRE(missingKeyWordsOutput2.empty());
+    REQUIRE(missingKeyWordsOutput3.empty());
+    REQUIRE(missingKeyWordsOutput4.empty());
+    REQUIRE(missingKeyWordsOutput5.empty());
+    REQUIRE(missingKeyWordsOutput6.empty());
+    REQUIRE(missingKeyWordsOutput7.empty());
+  }
+  SECTION("wrongly capitalize"){
+    REQUIRE(wronglyCapitalizeOutput1.empty());
+    REQUIRE(wronglyCapitalizeOutput2.empty());
+    REQUIRE(wronglyCapitalizeOutput3.empty());
+    REQUIRE(wronglyCapitalizeOutput4.empty());
+    REQUIRE(wronglyCapitalizeOutput5.empty());
+    REQUIRE(wronglyCapitalizeOutput6.empty());
+    REQUIRE(wronglyCapitalizeOutput7.empty());
+    REQUIRE(wronglyCapitalizeOutput8.empty());
+  }
+}
+
+TEST_CASE("trippy queries"){
+  QueryProcessor qp = QueryProcessor();
+  string s1 = "read read; while while; if if; variable variable; Select read such that Uses(while, if)";
+  string s2 = "assign Uses; variable Modifies; Select Uses pattern Uses (Modifies, _)";
+  string s3 = "variable Select; Select Select such that Uses(Select, _)";
+  string s4 = "variable such; Select such such that Uses(such, _)";
+  string s5 = "variable that; Select that such that Uses(that, _)";
+  string s6 = "variable such; Select such pattern such(such, _)";
+  string s7 = "variable that; Select that pattern that(that, _)";
+  string s8 = "variable pattern; Select pattern pattern pattern (_, \"x\")";
+
+  SECTION("test that trippy queries are valid"){
+    REQUIRE(!qp.parsePQL(s1).empty());
+    REQUIRE(!qp.parsePQL(s2).empty());
+    REQUIRE(!qp.parsePQL(s3).empty());
+    REQUIRE(!qp.parsePQL(s4).empty());
+    REQUIRE(!qp.parsePQL(s5).empty());
+    REQUIRE(!qp.parsePQL(s6).empty());
+    REQUIRE(!qp.parsePQL(s7).empty());
+    REQUIRE(!qp.parsePQL(s8).empty());
   }
 }
 
