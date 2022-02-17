@@ -247,6 +247,7 @@ TEST_CASE("trippy queries"){
   string s6 = "variable such; Select such pattern such(such, _)";
   string s7 = "variable that; Select that pattern that(that, _)";
   string s8 = "variable pattern; Select pattern pattern pattern (_, \"x\")";
+  string s9 = "assign suchthat; Select suchthat such that Follows*(6,suchthat)";
 
   SECTION("test that trippy queries are valid"){
     REQUIRE(!qp.parsePQL(s1).empty());
@@ -257,6 +258,7 @@ TEST_CASE("trippy queries"){
     REQUIRE(!qp.parsePQL(s6).empty());
     REQUIRE(!qp.parsePQL(s7).empty());
     REQUIRE(!qp.parsePQL(s8).empty());
+    REQUIRE(!qp.parsePQL(s9).empty());
   }
 }
 
