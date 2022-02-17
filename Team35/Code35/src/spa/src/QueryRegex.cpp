@@ -106,13 +106,20 @@ bool checkDesignEntitySynonyms(std::vector<std::string> sArr) {
 
 std::vector<std::string> extractDesignEntityAndSynonyms(const std::string& s){
   std::vector<std::string> returnList;
-  std::vector<std::string> temp = splitString(s,",");
-  std::vector<std::string> temp2 = splitString(temp.front(), " ");
-  for(int i=0; i<temp2.size(); i++){
-    returnList.push_back(temp2[i]);
+  std::vector<std::string> laterSynonymsList = splitString(s, ",");
+  std::vector<std::string> frontDesignEntityAndSynonym = splitString(laterSynonymsList.front(), " ");
+  std::string tempString;
+  for(int i=0; i<frontDesignEntityAndSynonym.size(); i++){
+    tempString = stripString(frontDesignEntityAndSynonym[i]);
+    if (!tempString.empty()){
+      returnList.push_back(frontDesignEntityAndSynonym[i]);
+    }
   }
-  for(int i=1; i<temp.size(); i++){
-    returnList.push_back(temp[i]);
+  for(int i=1; i<laterSynonymsList.size(); i++){
+    tempString = stripString(laterSynonymsList[i]);
+    if (!tempString.empty()){
+      returnList.push_back(stripString(laterSynonymsList[i]));
+    }
   }
   return returnList;
 }
