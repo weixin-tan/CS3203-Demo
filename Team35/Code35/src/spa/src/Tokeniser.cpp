@@ -26,26 +26,26 @@ bool Tokeniser::isAlphabet(const std::string &str) {
 Token Tokeniser::tokeniser(std::string input) {
     if(input.length()==1){
         if(isNumber(input)){
-            Token t = Token(DIGIT, input);
+            Token t = Token(TokenType::DIGIT, input);
             return t;
         } else if(isAlphabet(input)){
-            Token t = Token(LETTER, input);
+            Token t = Token(TokenType::LETTER, input);
             return t;
         } else if (input == ";"){
-            Token t = Token(SEMICOLON, input);
+            Token t = Token(TokenType::SEMICOLON, input);
             return t;
         } else if (input == "}") {
-            Token t = Token(RIGHT_CURLY, input);
+            Token t = Token(TokenType::RIGHT_CURLY, input);
             return t;
         } else if (input == "{") {
-            Token t = Token(LEFT_CURLY, input);
+            Token t = Token(TokenType::LEFT_CURLY, input);
             return t;
         } else {
-            Token t = Token(SPECIALCHAR, input);
+            Token t = Token(TokenType::SPECIALCHAR, input);
             return t;
         }
     } else {
-        Token t = Token(NAME, input);
+        Token t = Token(TokenType::NAME, input);
         return t;
     }
 }

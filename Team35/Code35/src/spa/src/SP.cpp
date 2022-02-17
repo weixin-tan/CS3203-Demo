@@ -12,7 +12,23 @@ void SP::Parse(std::string filename) {
 	std::ifstream t(filename);
 	std::stringstream buffer;
 	buffer << t.rdbuf();
-	std::vector<Procedure> procedureLst;
-	procedureLst.push_back(concrete.parseProcedure(tokeniser.putInQueue(buffer.str())));
+	ProcedureLst procedureLst;
+
+	// Creating the queue of tokens
+	tokenQueue = tokeniser.putInQueue(buffer.str());
+	
+	// Create Procedure
+	try {
+		procedure = concrete.parseProcedure(tokenQueue);
+	}
+	catch (const std::invalid_argument& e) {
+		std::terminate();
+	}
+
+	// Push back the procedure to the procedure list
+	procedureLst.setNextProcedure(procedure);
+
+	// Convert the procedure
 	convertor.ProcedureReader(procedureLst);
 }
+
