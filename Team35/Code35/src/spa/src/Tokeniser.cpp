@@ -44,9 +44,34 @@ Token Tokeniser::tokeniser(std::string input) {
             Token t = Token(SPECIALCHAR, input);
             return t;
         }
+        //to prevent forbidden naming
     } else if(input == "DIGIT" || input == "LETTER" || input == "SEMICOLON" ||
                 input == "RIGHT_CURLY" || input == "LEFT_CURLY" || input == "SPECIALCHAR"){
         Token t = Token(NAME, input);
+        return t;
+    }else if (input == "READ"){
+        Token t = Token(READ, input);
+        return t;
+    }else if (input == "PRINT"){
+        Token t = Token(PRINT, input);
+        return t;
+    }else if (input == "CALL"){
+        Token t = Token(CALL, input);
+        return t;
+    }else if (input == "WHILE"){
+        Token t = Token(WHILE, input);
+        return t;
+    }else if (input == "IF"){
+        Token t = Token(IF, input);
+        return t;
+    }else if (input == "PROCEDURE"){
+        Token t = Token(PROCEDURE, input);
+        return t;
+    }else if (input == "THEN"){
+        Token t = Token(THEN, input);
+        return t;
+    }else if (input == "ELSE"){
+        Token t = Token(ELSE, input);
         return t;
     }else{
         Token t = Token(NAME, input);
