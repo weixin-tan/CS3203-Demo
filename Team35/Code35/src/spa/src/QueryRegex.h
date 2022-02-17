@@ -25,6 +25,7 @@ std::vector<std::string> extractDesignEntityAndSynonyms(const std::string& s);
 
 bool isSelect(const std::string& s);
 bool isPattern(const std::string& s);
+bool existSuchThat(const std::string& s);
 std::vector<std::string> splitVariablesAndClauses(const std::string& s);
 std::vector<std::string> splitPatternAndSuchThatClauses(std::string s);
 std::vector<std::string> extractVariablesToSelect(const std::string& s);

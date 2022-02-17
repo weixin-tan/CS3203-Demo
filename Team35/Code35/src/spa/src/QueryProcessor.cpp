@@ -76,9 +76,6 @@ Entity QueryProcessor::findRelationshipEntity(const std::string& s, std::unorder
   }else if(isQuotationIdent(s)){
     std::string s2 = s.substr(1, s.length() - 2);
     return Entity(EntityType::FixedString, s2);
-  }else if(isStringWithinWildCard(s)){
-    std::string s2 = s.substr(2, s.length() - 4);
-    return Entity(EntityType::FixedStringWithinWildcard, s2);
   }else{
     // this entity is NULL -> invalid
     return Entity(EntityType::Null, s);
@@ -89,12 +86,27 @@ RelationshipRef QueryProcessor::createPatternObject(std::vector<std::string> pat
   RelationshipType rType = RelationshipType::Pattern;
   Entity assignmentEntity = findRelationshipEntity(patternList[0], entityMap);
   Entity leftEntity = findRelationshipEntity(patternList[1], entityMap);
-  Entity rightEntity = findRelationshipEntity(patternList[2], entityMap);
+  Entity rightEntity = createExpressionEntity(patternList[2]);
 
   if (assignmentEntity.eType == EntityType::Null || leftEntity.eType == EntityType::Null || rightEntity.eType == EntityType::Null){
     return RelationshipRef(RelationshipType::Null , leftEntity, rightEntity);
   }else {
     return RelationshipRef(rType, leftEntity, rightEntity, assignmentEntity);
+  }
+}
+
+Entity QueryProcessor::createExpressionEntity(const std::string &s) {
+  if(isWildCard(s)){
+    return Entity(EntityType::Wildcard, "_");
+  }else if(isQuotationIdent(s)){
+    std::string s2 = s.substr(1, s.length() - 2);
+    return Entity(EntityType::FixedString, s2);
+  }else if(isStringWithinWildCard(s)){
+    std::string s2 = s.substr(2, s.length() - 4);
+    return Entity(EntityType::FixedStringWithinWildcard, s2);
+  }else{
+    // this entity is NULL -> invalid
+    return Entity(EntityType::Null, s);
   }
 }
 
@@ -119,6 +131,12 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
       std::vector<std::string> variablesToSelect = extractVariablesToSelect(selectStmt);
       std::vector<std::string> SuchThatClauses = extractSuchThatClauses(selectStmt);
       std::vector<std::string> PatternClauses = extractPatternClauses(selectStmt);
+
+      if (existSuchThat(selectStmt)){
+        isValid = isValid && (SuchThatClauses.size() > 0);
+      }else{
+        isValid = isValid && (SuchThatClauses.empty());
+      }
 
       for (const auto& s: variablesToSelect){
         isValid = isValid && isIdent(s) && (entityMap.find(s) != entityMap.end());

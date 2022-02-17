@@ -275,3 +275,13 @@ std::string removePattern(const std::string& s){
 bool entityMapContains(const std::string& s, std::unordered_map<std::string, Entity>* entityMap){
   return (*entityMap).find(s) != (*entityMap).end();
 }
+bool existSuchThat(const std::string &s) {
+  long suchPosition = s.find("such");
+  long thatPosition = s.find("that");
+  std::string whitespace = stripString(s.substr(suchPosition+4, thatPosition - suchPosition - 4));
+  if (suchPosition != std::string::npos and thatPosition != std::string::npos){
+    return whitespace.empty() && suchPosition < thatPosition;
+  }else{
+    return false;
+  }
+}
