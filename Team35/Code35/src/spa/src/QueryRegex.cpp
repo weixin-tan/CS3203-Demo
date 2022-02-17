@@ -76,7 +76,7 @@ std::vector<std::string> extractDeclaration(const std::string& s){
   std::vector<std::string> returnList;
   std::vector<std::string> stmtList = splitDeclarationAndSelect(s);
   for (const std::string& stmt: stmtList){
-    if (stmt.find("Select") == std::string::npos){
+    if (stmt.find("Select") != 0){
       // select does not exist in the statement
       returnList.push_back(stmt);
     }
@@ -138,12 +138,68 @@ bool isPattern(const std::string& s){
   return s.find("pattern") == 0;
 }
 
+bool existSuchThat(const std::string &s) {
+  std::vector<long> mylist = findSuchThatClause(s);
+  long suchPosition = mylist[0];
+  long thatPosition = mylist[1];
+  if ((suchPosition == std::string::npos || thatPosition == std::string::npos)){
+    return false;
+  }else{
+    return thatPosition - suchPosition - 4 > 0;
+  }
+}
+
+long findPatternClause(const std::string& s){
+  long selectLength = 6;
+  long patternLength = 7;
+  long temp;
+  std::string placeholder;
+  long patternPosition = s.find("pattern");
+
+  if (stripString(s.substr(selectLength, patternPosition-selectLength)).empty()){
+    //find a new pattern
+    placeholder = s.substr (patternPosition+patternLength, s.size() - patternPosition);
+    temp = placeholder.find("pattern");
+    if (temp != std::string::npos){
+      patternPosition = temp + patternPosition + patternLength;
+    }
+  }
+  return patternPosition;
+}
+
+std::vector<long> findSuchThatClause(const std::string& s){
+  std::vector<long> returnList;
+  long suchLength = 4;
+  long temp;
+  long suchPosition = s.find("such");
+  long thatPosition = s.find("that");
+  if ((suchPosition == std::string::npos || thatPosition == std::string::npos)){
+    returnList.push_back(std::string::npos);
+    returnList.push_back(std::string::npos);
+  }else if (stripString(s.substr(suchPosition+4, thatPosition - suchPosition - 4)).empty() &&  suchPosition < thatPosition){
+    returnList.push_back(suchPosition);
+    returnList.push_back(thatPosition);
+  }else{
+    if (suchPosition < thatPosition){
+      temp = suchPosition;
+    }else{
+      temp = thatPosition;
+    }
+    returnList = findSuchThatClause(s.substr(temp+suchLength, s.size() - temp));
+    returnList[0] = returnList[0] + temp + suchLength;
+    returnList[1] = returnList[1] + temp + suchLength;
+  }
+  return returnList;
+}
+
 std::vector<std::string> splitVariablesAndClauses(const std::string& s){
   std::vector<std::string> returnList;
   std::string varString;
   std::string clauseString;
-  long suchThatPosition = s.find("such");
-  long patternPosition = s.find("pattern");
+  std::string placeholder;
+  long suchThatPosition = findSuchThatClause(s)[0];
+  long patternPosition = findPatternClause(s);
+
   if ((suchThatPosition == std::string::npos) && (patternPosition == std::string::npos)){
     returnList.push_back(s);
   }else if (suchThatPosition == std::string::npos){
@@ -173,11 +229,12 @@ std::vector<std::string> splitVariablesAndClauses(const std::string& s){
 
 std::vector<std::string> splitPatternAndSuchThatClauses(std::string s){
   std::vector<std::string> returnList;
-  long suchThatPosition = s.find("such");
-  long patternPosition = s.find("that");
-  if (suchThatPosition != std::string::npos){
+  std::vector<long> mylist = findSuchThatClause(s);
+  long suchPosition = mylist[0];
+  long thatPosition = mylist[1];
+  if (suchPosition != std::string::npos){
     // remove such that
-    s = s.substr(0, suchThatPosition) + s.substr(patternPosition+4, s.length() - patternPosition-4);
+    s = s.substr(0, suchPosition) + s.substr(thatPosition+4, s.length() - thatPosition-4);
   }
   std::vector<std::string> wordsList = splitString(s, ")");
   for (int i=0; i<wordsList.size(); i=i+1){
@@ -274,14 +331,4 @@ std::string removePattern(const std::string& s){
 
 bool entityMapContains(const std::string& s, std::unordered_map<std::string, Entity>* entityMap){
   return (*entityMap).find(s) != (*entityMap).end();
-}
-bool existSuchThat(const std::string &s) {
-  long suchPosition = s.find("such");
-  long thatPosition = s.find("that");
-  std::string whitespace = stripString(s.substr(suchPosition+4, thatPosition - suchPosition - 4));
-  if (suchPosition != std::string::npos and thatPosition != std::string::npos){
-    return whitespace.empty() && suchPosition < thatPosition;
-  }else{
-    return false;
-  }
 }

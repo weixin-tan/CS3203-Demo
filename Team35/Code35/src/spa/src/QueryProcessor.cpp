@@ -139,7 +139,7 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
       }
 
       for (const auto& s: variablesToSelect){
-        isValid = isValid && isIdent(s) && (entityMap.find(s) != entityMap.end());
+        isValid = isValid && isIdent(s) && entityMapContains(s, &entityMap);
         if (isValid){
           newClause.appendEntityToFind(entityMap[s]);
         }
