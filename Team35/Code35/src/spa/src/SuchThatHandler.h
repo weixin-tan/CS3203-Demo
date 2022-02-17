@@ -4,17 +4,16 @@
 
 #include <vector>
 #include "Entity.h"
-#include "Type.h"
-#include "Clause.h"
-#include "Result.h"
 #include "PKB/PkbGetter.h"
+#include "RelationshipRef.h"
+#include "Result.h"
 
 class SuchThatHandler {
 private:
   PkbGetter* pg;
 
   Result handleBoolCheck(Entity entityToGet, RelationshipRef relRef);
-  Result handleLeftSide(Entity entityToGet, Entity rightEntity, RelationshipType relType);
+  Result handleLeftSide(const Entity& entityToGet, const Entity& rightEntity, RelationshipType relType);
   Result handleRightSide(Entity entityToGet, Entity leftEntity, RelationshipType relType);
 public:
   explicit SuchThatHandler(PkbGetter* pg);
