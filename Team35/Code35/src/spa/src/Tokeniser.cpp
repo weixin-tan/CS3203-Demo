@@ -44,7 +44,11 @@ Token Tokeniser::tokeniser(std::string input) {
             Token t = Token(SPECIALCHAR, input);
             return t;
         }
-    } else {
+    } else if(input == "DIGIT" || input == "LETTER" || input == "SEMICOLON" ||
+                input == "RIGHT_CURLY" || input == "LEFT_CURLY" || input == "SPECIALCHAR"){
+        Token t = Token(NAME, input);
+        return t;
+    }else{
         Token t = Token(NAME, input);
         return t;
     }
