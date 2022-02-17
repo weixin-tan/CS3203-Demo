@@ -132,7 +132,7 @@ TEST_CASE("Case 2") {
 	StmtLst whileStmtLst1;
 	whileStmtLst1.SetContainerType(ContainerType::kwhile);
 
-	whileStmtLst1.setNextStmt(Statement(5, StatementType::kread_stmt, { "x" }, {}, {}, "f", {}, nullptr, nullptr, nullptr));
+	whileStmtLst1.setNextStmt(Statement(5, StatementType::kread_stmt, { "z" }, {}, {}, "f", {}, nullptr, nullptr, nullptr));
 	whileStmtLst1.setNextStmt(Statement(6, StatementType::kif_stmt, {}, {}, { "z" }, "f", { "10" }, &ifThenStmtLst1, &ifElseStmtLst1, nullptr));
 
 	stmt_cont.setNextStmt(Statement(1, StatementType::kassign_stmt, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
@@ -142,7 +142,7 @@ TEST_CASE("Case 2") {
 
 	//Creating the procedure
 	Procedure procedure2;
-	procedure2.setProcName("procedure 2");
+	procedure2.setProcName("f");
 	procedure2.setSize(10);
 	procedure2.setStmtLst(stmt_cont);
 
@@ -178,8 +178,6 @@ TEST_CASE("Case 2") {
 	ParsedStatement parsed_statement8 = results[7];
 	ParsedStatement parsed_statement9 = results[8];
 	ParsedStatement parsed_statement10 = results[9];
-
-
 
 	//"Checking if statement number is correct")
 	REQUIRE(parsed_statement1.stmt_no == 1);
@@ -223,12 +221,27 @@ TEST_CASE("Case 2") {
 	REQUIRE(parsed_statement6.var_used[0] == "z");
 
 
-	/*
-	SECTION("Checking if the procedure is correct") {
-		REQUIRE(parsed_statement1.procedure_called == "procedure 1");
-		REQUIRE(parsed_statement2.procedure_called == "procedure 1");
-	}
-	*/
+	//"Checking if the procedure is correct")
+	REQUIRE(parsed_statement1.procedure_name == "f");
+	REQUIRE(parsed_statement2.procedure_name == "f");
+	REQUIRE(parsed_statement3.procedure_name == "f");
+	REQUIRE(parsed_statement5.procedure_name == "f");
+	REQUIRE(parsed_statement4.procedure_name == "f");
+	REQUIRE(parsed_statement6.procedure_name == "f");
+	REQUIRE(parsed_statement7.procedure_name == "f");
+	REQUIRE(parsed_statement8.procedure_name == "f");
+	REQUIRE(parsed_statement9.procedure_name == "f");
+	REQUIRE(parsed_statement10.procedure_name == "f");
+
+	// Checking if the variables modified is correct.
+	REQUIRE(parsed_statement1.var_modified[0] == "x");
+	REQUIRE(parsed_statement2.var_modified[0] == "y");
+	REQUIRE(parsed_statement3.var_modified[0] == "x");
+	REQUIRE(parsed_statement5.var_modified[0] == "z");
+	REQUIRE(parsed_statement7.var_modified[0] == "x");
+	REQUIRE(parsed_statement8.var_modified[0] == "z");
+	REQUIRE(parsed_statement9.var_modified[0] == "y");
+	REQUIRE(parsed_statement10.var_modified[0] == "z");
 
 	//"Checking if the preceding is correct") {
 	REQUIRE(parsed_statement1.preceding == ParsedStatement::default_null_stmt_no);
@@ -242,6 +255,14 @@ TEST_CASE("Case 2") {
 	REQUIRE(parsed_statement9.preceding == ParsedStatement::default_null_stmt_no);
 	REQUIRE(parsed_statement10.preceding == 9);
 	
-
+	// CHecking if the constant is correct
+	REQUIRE(parsed_statement1.constant[0] == "5");
+	REQUIRE(parsed_statement3.constant[0] == "5");
+	REQUIRE(parsed_statement4.constant[0] == "4");
+	REQUIRE(parsed_statement6.constant[0] == "10");
+	REQUIRE(parsed_statement7.constant[0] == "100");
+	REQUIRE(parsed_statement8.constant[0] == "5");
+	REQUIRE(parsed_statement9.constant[0] == "100");
+	REQUIRE(parsed_statement10.constant[0] == "0");
 }
 
