@@ -3,7 +3,7 @@
 //
 
 #include "Tokeniser.h"
-
+#include <iostream>
 
 Tokeniser::Tokeniser() {
 
@@ -24,30 +24,27 @@ bool Tokeniser::isAlphabet(const std::string &str) {
 }
 
 Token Tokeniser::tokeniser(std::string input) {
-    if(input.length()==1){
-        if(isNumber(input)){
+    if(input.length()==1) {
+        if (isNumber(input)) {
             Token t = Token(TokenType::DIGIT, input);
             return t;
-        } else if(isAlphabet(input)){
-            Token t = Token(TokenType::LETTER, input);
+        } else if (isAlphabet(input)) {
+            Token t = Token(TokenType::NAME, input);
             return t;
         } else if (input == ";"){
-            Token t = Token(TokenType::SEMICOLON, input);
-            return t;
-        } else if (input == " ;"){
             Token t = Token(TokenType::SEMICOLON, input);
             return t;
         } else if (input == "}") {
             Token t = Token(TokenType::RIGHT_CURLY, input);
             return t;
-        } else if (input == " }") {
-            Token t = Token(TokenType::RIGHT_CURLY, input);
-            return t;
         } else if (input == "{") {
             Token t = Token(TokenType::LEFT_CURLY, input);
             return t;
-        } else if (input == " {") {
-            Token t = Token(TokenType::LEFT_CURLY, input);
+        } else if (input == "(") {
+            Token t = Token(TokenType::LEFT_BRACE, input);
+            return t;
+        } else if (input == ")") {
+            Token t = Token(TokenType::RIGHT_BRACE, input);
             return t;
         } else {
             Token t = Token(TokenType::SPECIALCHAR, input);
@@ -55,32 +52,35 @@ Token Tokeniser::tokeniser(std::string input) {
         }
         //to prevent forbidden naming
     } else if(input == "DIGIT" || input == "LETTER" || input == "SEMICOLON" ||
-                input == "RIGHT_CURLY" || input == "LEFT_CURLY" || input == "SPECIALCHAR"){
+              input == "RIGHT_CURLY" || input == "LEFT_CURLY" || input == "SPECIALCHAR"){
         Token t = Token(TokenType::NAME, input);
         return t;
-    }else if (input == "READ_KEYWORD"){
+    }else if (input == "read"){
         Token t = Token(TokenType::READ_KEYWORD, input);
         return t;
-    }else if (input == "PRINT_KEYWORD"){
+    }else if (input == "print"){
         Token t = Token(TokenType::PRINT_KEYWORD, input);
         return t;
-    }else if (input == "CALL_KEYWORD"){
+    }else if (input == "call"){
         Token t = Token(TokenType::CALL_KEYWORD, input);
         return t;
-    }else if (input == "WHILE_KEYWORD"){
+    }else if (input == "while"){
         Token t = Token(TokenType::WHILE_KEYWORD, input);
         return t;
-    }else if (input == "IF_KEYWORD"){
+    }else if (input == "if"){
         Token t = Token(TokenType::IF_KEYWORD, input);
         return t;
-    }else if (input == "PROCEDURE_KEYWORD"){
+    }else if (input == "procedure"){
         Token t = Token(TokenType::PROCEDURE_KEYWORD, input);
         return t;
-    }else if (input == "THEN_KEYWORD"){
+    }else if (input == "then"){
         Token t = Token(TokenType::THEN_KEYWORD, input);
         return t;
-    }else if (input == "ELSE_KEYWORD"){
+    }else if (input == "else") {
         Token t = Token(TokenType::ELSE_KEYWORD, input);
+        return t;
+    } else if (isNumber(input)) {
+        Token t = Token(TokenType::DIGIT, input);
         return t;
     }else{
         Token t = Token(TokenType::NAME, input);
@@ -150,29 +150,96 @@ std::string Convertor(std::vector<std::string> vectorString){
 std::queue<Token> Tokeniser ::putInQueue(std::string input) {
     std::queue<Token> tqueue;
     std::stringstream checker(input);
-    std::string temp;
-    while(getline(checker, temp, ' ')){
-        if(temp == ToString(TokenType::SEMICOLON)){
-            break;
-        } else {
-            Token t = tokeniser(temp);
-            tqueue.push(t);
+    std::string line;
+    while (getline(checker, line, '\n')) {
+        std::string trimmedLine = trim(line);
+        std::string spacedTrimmedLine = addSpace(line);
+        std::stringstream phraseChecker(spacedTrimmedLine);
+        std::string phrase;
+        while (getline(phraseChecker, phrase, ' ')) {
+            if (phrase == "") {
+                continue;
+            } else {
+                Token t = tokeniser(phrase);
+                tqueue.push(t);
+            }
         }
     }
     return tqueue;
-
 }
 
-/*
-std::string test = "procedure f {";
-Tokeniser t;
-std::queue<Token> tq = t.putInQueue(test);
-*/
+std::string Tokeniser::lTrim(std::string s) {
+    size_t start = s.find_first_not_of(" ");
+    return (start == std::string::npos) ? "" : s.substr(start) ;
+}
 
+std::string Tokeniser::rTrim(std::string s) {
+    size_t end = s.find_last_not_of(" ");
+    return (end ==  std::string::npos) ? "" : s.substr(0, end + 1);
+}
 
-/*
-std::string Tokeniser::tokenPrinter(Tokeniser t) {
-    cout << "(" << t.getType() << " , " << t.getId() << ")"<< endl;
-} */
+std::string Tokeniser::trim(std::string s) {
+    return lTrim(rTrim(s));
+}
 
+std::string Tokeniser::addSpace(std::string s) {
+    std::vector<char> spaceList;
+    spaceList.push_back(';');
+    spaceList.push_back('(');
+    spaceList.push_back(')');
+    spaceList.push_back('{');
+    spaceList.push_back('}');
+    spaceList.push_back('/');
+    spaceList.push_back('*');
+    spaceList.push_back('%');
+    spaceList.push_back('-');
+    spaceList.push_back('+');
+    spaceList.push_back('!');
+    spaceList.push_back('=');
+    spaceList.push_back('>');
+    spaceList.push_back('<');
+    spaceList.push_back('&');
+    spaceList.push_back('|');
 
+    std::string returnString = "";
+    for (int i = 0; i < s.length(); i++) {
+        char check = s[i];
+        bool edit = false;
+        for (const auto& spaceToken : spaceList) {
+            if (s[i] == spaceToken) {
+                char next = s[i + 1];
+                if (s[i] == '!' || s[i] == '=' || s[i] == '>' || s[i] == '<') {
+                    if (next == '=') {
+                        returnString = returnString + " " + check + next + " ";
+                        i++;
+                        edit = true;
+                        break;
+                    }
+                }
+                if (s[i] == '&') {
+                    if (next == '&') {
+                        returnString = returnString + " " + check + next + " ";
+                        i++;
+                        edit = true;
+                        break;
+                    }
+                }
+                if (s[i] == '|') {
+                    if (next == '|') {
+                        returnString = returnString + " " + check + next + " ";
+                        i++;
+                        edit = true;
+                        break;
+                    }
+                }
+                returnString = returnString + " " + check + " ";
+                edit = true;
+                break;
+            }
+        }
+        if (!edit) {
+            returnString = returnString + check;
+        }
+    }
+    return returnString;
+}
