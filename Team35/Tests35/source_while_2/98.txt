@@ -1,0 +1,7 @@
+procedure main { 
+while ((!(x!=alpha))||(!(0<2))) {
+while ((alpha<0)||(!(1>2))) {
+print y;
+}
+}
+}

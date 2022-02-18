@@ -1,0 +1,19 @@
+procedure main { 
+if ((!(z==y))||(1!=z)) then {
+while ((1<=z)||(z==y)) {
+if ((2>=charlie)&&(!(1!=1))) then {
+print y;
+} else {
+x=z%0-x%z;
+}
+}
+} else {
+while ((!(y<=alpha))||(!(charlie==2))) {
+if ((!(2!=0))&&(!(0==z))) then {
+read bravo;
+} else {
+read alpha;
+}
+}
+}
+}

@@ -1,0 +1,7 @@
+procedure main { 
+if ((!(2<1))||(0!=charlie)) then {
+y=charlie*y+x/bravo;
+} else {
+print y;
+}
+}

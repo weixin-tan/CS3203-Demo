@@ -1,0 +1,7 @@
+procedure main { 
+if ((x==2)&&(!(charlie>=1))) then {
+bravo=y*2-alpha%bravo;
+} else {
+x=z*0-1*alpha;
+}
+}

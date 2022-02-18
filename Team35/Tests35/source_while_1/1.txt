@@ -1,0 +1,5 @@
+procedure main { 
+while ((x>2)||(0<=alpha)) {
+y=alpha/z-z/x;
+}
+}

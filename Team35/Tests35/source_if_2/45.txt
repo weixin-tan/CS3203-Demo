@@ -1,0 +1,11 @@
+procedure main { 
+if ((!(y<x))||(!(x==alpha))) then {
+while ((charlie==2)||(2==2)) {
+print bravo;
+}
+} else {
+while ((!(bravo<z))||(!(x!=x))) {
+print x;
+}
+}
+}

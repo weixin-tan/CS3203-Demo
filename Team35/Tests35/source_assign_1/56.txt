@@ -1,0 +1,3 @@
+procedure main { 
+x=alpha/z-0%alpha;
+}

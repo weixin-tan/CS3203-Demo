@@ -1,0 +1,7 @@
+procedure main { 
+if ((!(bravo<=2))&&(z>charlie)) then {
+read bravo;
+} else {
+print z;
+}
+}

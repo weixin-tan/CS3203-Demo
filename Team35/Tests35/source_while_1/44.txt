@@ -1,0 +1,5 @@
+procedure main { 
+while ((1!=0)||(!(z<=0))) {
+bravo=z%y+y%bravo;
+}
+}

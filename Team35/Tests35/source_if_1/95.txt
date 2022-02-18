@@ -1,0 +1,7 @@
+procedure main { 
+if ((y>x)&&(!(bravo!=alpha))) then {
+print alpha;
+} else {
+alpha=bravo%bravo+y*x;
+}
+}

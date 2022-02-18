@@ -1,0 +1,15 @@
+procedure main { 
+while ((!(x>=charlie))||(0!=1)) {
+while ((!(x==x))&&(y>x)) {
+if ((y>=z)&&(!(bravo!=bravo))) then {
+while ((alpha<2)||(!(x<=z))) {
+read alpha;
+}
+} else {
+while ((z>alpha)&&(!(1>bravo))) {
+alpha=0%alpha+0*charlie;
+}
+}
+}
+}
+}

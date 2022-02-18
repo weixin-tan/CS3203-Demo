@@ -1,0 +1,7 @@
+procedure main { 
+if ((!(0>charlie))&&(!(x>y))) then {
+print y;
+} else {
+read charlie;
+}
+}

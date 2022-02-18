@@ -1,0 +1,13 @@
+procedure main { 
+if ((!(y>=z))&&(0==bravo)) then {
+if ((!(2!=y))&&(z!=z)) then {
+read bravo;
+} else {
+y=0*1-0%y;
+}
+} else {
+while ((1>y)&&(charlie<x)) {
+read charlie;
+}
+}
+}

@@ -1,0 +1,7 @@
+procedure main { 
+if ((!(z<2))||(!(2==x))) then {
+print charlie;
+} else {
+print alpha;
+}
+}

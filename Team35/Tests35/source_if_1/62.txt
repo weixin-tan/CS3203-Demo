@@ -1,0 +1,7 @@
+procedure main { 
+if ((x>alpha)||(!(1!=bravo))) then {
+print z;
+} else {
+print bravo;
+}
+}

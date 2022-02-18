@@ -1,0 +1,5 @@
+procedure main { 
+while ((!(y>0))||(!(1<=2))) {
+z=charlie*bravo-alpha/2;
+}
+}

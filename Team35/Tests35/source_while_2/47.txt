@@ -1,0 +1,7 @@
+procedure main { 
+while ((!(y<2))||(2>=0)) {
+while ((!(bravo>=2))&&(!(0<=2))) {
+print y;
+}
+}
+}

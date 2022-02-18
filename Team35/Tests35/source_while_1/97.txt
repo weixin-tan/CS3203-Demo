@@ -1,0 +1,5 @@
+procedure main { 
+while ((!(x!=y))||(!(2<=1))) {
+read y;
+}
+}

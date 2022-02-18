@@ -1,0 +1,7 @@
+procedure main { 
+if ((2>=charlie)&&(!(1!=1))) then {
+print y;
+} else {
+x=z%0-x%z;
+}
+}

@@ -1,0 +1,11 @@
+procedure main { 
+if ((x==0)&&(z>1)) then {
+while ((!(0>=bravo))||(2>y)) {
+y=y/2+1*z;
+}
+} else {
+while ((0<z)||(!(1<z))) {
+bravo=z/charlie-0%z;
+}
+}
+}

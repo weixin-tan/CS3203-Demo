@@ -1,0 +1,5 @@
+procedure main { 
+while ((z>alpha)&&(!(1>bravo))) {
+alpha=0%alpha+0*charlie;
+}
+}

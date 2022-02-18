@@ -1,0 +1,7 @@
+procedure main { 
+if ((!(charlie>=z))||(!(1==z))) then {
+bravo=y/2+z/bravo;
+} else {
+read x;
+}
+}

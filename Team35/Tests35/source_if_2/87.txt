@@ -1,0 +1,11 @@
+procedure main { 
+if ((!(x==bravo))||(!(charlie>bravo))) then {
+while ((!(y>=bravo))||(2>1)) {
+alpha=bravo/bravo-x*y;
+}
+} else {
+while ((bravo<bravo)||(!(0!=1))) {
+print z;
+}
+}
+}

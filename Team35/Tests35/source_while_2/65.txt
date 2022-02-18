@@ -1,0 +1,9 @@
+procedure main { 
+while ((!(charlie<charlie))&&(!(y==y))) {
+if ((!(y>x))||(bravo!=2)) then {
+bravo=0*0-y%0;
+} else {
+alpha=2*bravo-z*2;
+}
+}
+}

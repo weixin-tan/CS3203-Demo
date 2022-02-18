@@ -1,0 +1,7 @@
+procedure main { 
+if ((!(2>bravo))&&(y<charlie)) then {
+alpha=2%x-y%alpha;
+} else {
+x=1/x-bravo%z;
+}
+}

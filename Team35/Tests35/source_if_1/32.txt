@@ -1,0 +1,7 @@
+procedure main { 
+if ((!(charlie<=x))&&(charlie>=2)) then {
+x=2%z-alpha%bravo;
+} else {
+read y;
+}
+}

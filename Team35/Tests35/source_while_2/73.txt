@@ -1,0 +1,9 @@
+procedure main { 
+while ((!(bravo>z))&&(2<=1)) {
+if ((!(bravo>1))||(!(z!=z))) then {
+print bravo;
+} else {
+print bravo;
+}
+}
+}

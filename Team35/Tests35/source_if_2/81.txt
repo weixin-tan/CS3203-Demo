@@ -1,0 +1,13 @@
+procedure main { 
+if ((!(charlie!=1))&&(!(bravo==bravo))) then {
+while ((x>=charlie)&&(!(charlie<=bravo))) {
+print charlie;
+}
+} else {
+if ((!(bravo<=2))&&(z>charlie)) then {
+read bravo;
+} else {
+print z;
+}
+}
+}

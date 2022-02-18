@@ -1,0 +1,13 @@
+procedure main { 
+if ((!(x!=alpha))||(!(bravo!=1))) then {
+while ((z<=0)||(x!=2)) {
+print y;
+}
+} else {
+if ((!(y==z))||(0!=alpha)) then {
+print charlie;
+} else {
+print z;
+}
+}
+}

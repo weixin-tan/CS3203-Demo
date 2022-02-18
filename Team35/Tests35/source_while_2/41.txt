@@ -1,0 +1,7 @@
+procedure main { 
+while ((!(1!=y))&&(2>2)) {
+while ((y>y)||(0<=alpha)) {
+print z;
+}
+}
+}

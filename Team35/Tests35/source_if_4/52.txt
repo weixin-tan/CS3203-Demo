@@ -1,0 +1,27 @@
+procedure main { 
+if ((!(charlie<1))||(y>=bravo)) then {
+while ((0<=0)&&(!(x<0))) {
+if ((y==1)||(!(0!=z))) then {
+if ((alpha==y)||(alpha!=0)) then {
+read y;
+} else {
+print charlie;
+}
+} else {
+if ((0<=charlie)&&(charlie<alpha)) then {
+bravo=charlie*x-x/1;
+} else {
+print z;
+}
+}
+}
+} else {
+while ((y==x)&&(0!=charlie)) {
+while ((charlie!=charlie)&&(!(charlie>=y))) {
+while ((!(0!=2))||(x<x)) {
+print x;
+}
+}
+}
+}
+}

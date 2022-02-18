@@ -1,0 +1,9 @@
+procedure main { 
+while ((!(charlie==2))||(alpha>=alpha)) {
+if ((!(z==2))&&(1!=x)) then {
+read x;
+} else {
+print y;
+}
+}
+}

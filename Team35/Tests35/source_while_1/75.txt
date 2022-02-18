@@ -1,0 +1,5 @@
+procedure main { 
+while ((!(z>=1))||(!(x>=1))) {
+alpha=y%bravo-alpha*0;
+}
+}

@@ -1,0 +1,13 @@
+procedure main { 
+while ((z<z)||(!(bravo>=y))) {
+if ((1>x)||(y>y)) then {
+while ((alpha>1)&&(z==2)) {
+y=y%bravo-0*1;
+}
+} else {
+while ((!(0>=bravo))||(2>y)) {
+y=y/2+1*z;
+}
+}
+}
+}

@@ -1,0 +1,7 @@
+procedure main { 
+if ((alpha<1)&&(alpha<y)) then {
+read x;
+} else {
+alpha=bravo%bravo+y*x;
+}
+}

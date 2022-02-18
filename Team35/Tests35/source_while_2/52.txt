@@ -1,0 +1,7 @@
+procedure main { 
+while ((!(charlie==bravo))&&(!(alpha<=alpha))) {
+while ((1>y)&&(charlie<x)) {
+read charlie;
+}
+}
+}

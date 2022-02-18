@@ -1,0 +1,7 @@
+procedure main { 
+if ((alpha==y)||(alpha!=0)) then {
+read y;
+} else {
+print charlie;
+}
+}

@@ -1,0 +1,5 @@
+procedure main { 
+while ((alpha!=2)&&(!(bravo>=1))) {
+print alpha;
+}
+}

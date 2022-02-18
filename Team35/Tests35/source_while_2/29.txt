@@ -1,0 +1,7 @@
+procedure main { 
+while ((bravo>=1)&&(0<=0)) {
+while ((2<=bravo)||(1>=alpha)) {
+x=bravo/alpha+1%1;
+}
+}
+}

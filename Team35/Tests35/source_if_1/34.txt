@@ -1,0 +1,7 @@
+procedure main { 
+if ((1>charlie)&&(charlie==2)) then {
+print bravo;
+} else {
+print y;
+}
+}

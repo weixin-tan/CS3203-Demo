@@ -1,0 +1,3 @@
+procedure main { 
+bravo=1*y-alpha%alpha;
+}

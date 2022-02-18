@@ -1,0 +1,5 @@
+procedure main { 
+while ((!(1>y))||(1<charlie)) {
+print z;
+}
+}

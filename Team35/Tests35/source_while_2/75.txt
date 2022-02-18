@@ -1,0 +1,7 @@
+procedure main { 
+while ((2<=2)&&(1!=0)) {
+while ((!(y<0))||(!(z!=z))) {
+charlie=1/charlie+z*y;
+}
+}
+}

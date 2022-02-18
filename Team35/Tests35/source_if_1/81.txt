@@ -1,0 +1,7 @@
+procedure main { 
+if ((bravo<charlie)&&(!(bravo>=0))) then {
+print charlie;
+} else {
+print y;
+}
+}

@@ -1,0 +1,5 @@
+procedure main { 
+while ((0>=alpha)&&(!(charlie>alpha))) {
+bravo=alpha%bravo+y%bravo;
+}
+}

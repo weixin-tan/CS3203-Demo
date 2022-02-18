@@ -1,0 +1,7 @@
+procedure main { 
+if ((x>2)||(y>=charlie)) then {
+print z;
+} else {
+z=z/z-x%1;
+}
+}

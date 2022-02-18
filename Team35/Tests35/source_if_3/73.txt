@@ -1,0 +1,29 @@
+procedure main { 
+if ((!(bravo>1))||(1<charlie)) then {
+if ((!(y<charlie))||(!(charlie<0))) then {
+if ((!(1<=bravo))||(charlie>y)) then {
+print z;
+} else {
+print x;
+}
+} else {
+if ((!(2!=charlie))&&(!(x>=alpha))) then {
+print z;
+} else {
+print bravo;
+}
+}
+} else {
+if ((!(alpha>0))||(alpha>=0)) then {
+while ((!(y!=alpha))&&(!(alpha==z))) {
+print alpha;
+}
+} else {
+if ((charlie<=y)||(alpha==y)) then {
+read x;
+} else {
+read x;
+}
+}
+}
+}

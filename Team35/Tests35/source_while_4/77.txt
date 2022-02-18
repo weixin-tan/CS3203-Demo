@@ -1,0 +1,11 @@
+procedure main { 
+while ((2>=x)||(2!=0)) {
+while ((!(1<=1))&&(bravo==charlie)) {
+while ((x>=y)&&(!(alpha==bravo))) {
+while ((!(2==0))||(bravo>alpha)) {
+read alpha;
+}
+}
+}
+}
+}

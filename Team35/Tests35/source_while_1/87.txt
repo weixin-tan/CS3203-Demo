@@ -1,0 +1,5 @@
+procedure main { 
+while ((alpha>1)&&(z==2)) {
+y=y%bravo-0*1;
+}
+}

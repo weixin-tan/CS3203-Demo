@@ -1,0 +1,5 @@
+procedure main { 
+while ((!(1<charlie))||(!(y>bravo))) {
+read z;
+}
+}

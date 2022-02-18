@@ -1,0 +1,3 @@
+procedure main { 
+y=y/charlie-z%x;
+}

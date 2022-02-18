@@ -1,0 +1,3 @@
+procedure main { 
+z=1/0-1%bravo;
+}

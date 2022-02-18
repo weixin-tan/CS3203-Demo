@@ -1,0 +1,17 @@
+procedure main { 
+while ((y>=bravo)&&(bravo<=z)) {
+if ((charlie==y)||(charlie>0)) then {
+if ((!(charlie>=z))||(!(1==z))) then {
+bravo=y/2+z/bravo;
+} else {
+read x;
+}
+} else {
+if ((!(2>1))&&(!(z==bravo))) then {
+y=x%x-x%2;
+} else {
+bravo=bravo/y-z%x;
+}
+}
+}
+}

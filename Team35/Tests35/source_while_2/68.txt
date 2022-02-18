@@ -1,0 +1,7 @@
+procedure main { 
+while ((x>=y)||(charlie<z)) {
+while ((alpha>=x)||(bravo==0)) {
+charlie=2/bravo+1*bravo;
+}
+}
+}

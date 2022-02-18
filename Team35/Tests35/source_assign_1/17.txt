@@ -1,0 +1,3 @@
+procedure main { 
+alpha=2*2-z%z;
+}

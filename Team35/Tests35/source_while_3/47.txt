@@ -1,0 +1,11 @@
+procedure main { 
+while ((2!=alpha)&&(alpha==x)) {
+while ((!(x==x))&&(0>=bravo)) {
+if ((alpha<=bravo)||(!(alpha==charlie))) then {
+charlie=1%2-z*2;
+} else {
+read x;
+}
+}
+}
+}

@@ -1,0 +1,11 @@
+procedure main { 
+if ((x>=2)||(!(2==charlie))) then {
+while ((!(1<charlie))||(0<2)) {
+read alpha;
+}
+} else {
+while ((x>2)||(0<=alpha)) {
+y=alpha/z-z/x;
+}
+}
+}

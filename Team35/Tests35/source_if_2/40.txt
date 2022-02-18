@@ -1,0 +1,11 @@
+procedure main { 
+if ((y>alpha)||(1>y)) then {
+while ((x>2)||(0<=alpha)) {
+y=alpha/z-z/x;
+}
+} else {
+while ((alpha<x)&&(!(charlie!=x))) {
+alpha=alpha%bravo+2*bravo;
+}
+}
+}

@@ -1,0 +1,15 @@
+procedure main { 
+if ((!(y==z))||(!(2>1))) then {
+if ((x>2)||(y>=charlie)) then {
+print z;
+} else {
+z=z/z-x%1;
+}
+} else {
+if ((!(y>x))||(bravo!=2)) then {
+bravo=0*0-y%0;
+} else {
+alpha=2*bravo-z*2;
+}
+}
+}
