@@ -46,6 +46,33 @@ Token Tokeniser::tokeniser(std::string input) {
         } else if (input == ")") {
             Token t = Token(TokenType::RIGHT_BRACE, input);
             return t;
+        } else if (input == "!") {
+            Token t = Token(TokenType::NOT, input);
+            return t;
+        } else if (input == "=") {
+            Token t = Token(TokenType::EQUAL, input);
+            return t;
+        } else if (input == "+") {
+            Token t = Token(TokenType::ADD, input);
+            return t;
+        } else if (input == "-") {
+            Token t = Token(TokenType::SUBTRACT, input);
+            return t;
+        } else if (input == "*") {
+            Token t = Token(TokenType::MULTIPLY, input);
+            return t;
+        } else if (input == "/") {
+            Token t = Token(TokenType::DIVIDE, input);
+            return t;
+        } else if (input == "%") {
+            Token t = Token(TokenType::MODULO, input);
+            return t;
+        } else if (input == ">") {
+            Token t = Token(TokenType::GREATER, input);
+            return t;
+        } else if (input == "<") {
+            Token t = Token(TokenType::LESSER, input);
+            return t;
         } else {
             Token t = Token(TokenType::SPECIALCHAR, input);
             return t;
@@ -79,7 +106,22 @@ Token Tokeniser::tokeniser(std::string input) {
     }else if (input == "else") {
         Token t = Token(TokenType::ELSE_KEYWORD, input);
         return t;
-    } else if (isNumber(input)) {
+    }else if (input == "&&") {
+        Token t = Token(TokenType::AND, input);
+        return t;
+    }else if (input == "||") {
+        Token t = Token(TokenType::OR, input);
+        return t;
+    }else if (input == "!=") {
+        Token t = Token(TokenType::NOT_EQUAL, input);
+        return t;
+    }else if (input == ">=") {
+        Token t = Token(TokenType::GEQ, input);
+        return t;
+    }else if (input == "<=") {
+        Token t = Token(TokenType::LEQ, input);
+        return t;
+    }else if (isNumber(input)) {
         Token t = Token(TokenType::DIGIT, input);
         return t;
     }else{
