@@ -17,7 +17,6 @@ std::vector<Result> QPSHandler::processClause(const std::vector<Clause> &clauses
 
     if (refList.empty()) {
       result = handleNoRelationshipRef(entityToFind);
-      result.setEntityToFind(entityToFind);
       results.push_back(result);
       continue;
     }
@@ -29,8 +28,6 @@ std::vector<Result> QPSHandler::processClause(const std::vector<Clause> &clauses
       } else {
         result = suchThatHandler->handleSuchThat(entityToFind, r);
       }
-      result.setEntityToFind(entityToFind);
-      result.setRelationshipRef(r);
       results.push_back(result);
     }
   }
@@ -38,7 +35,10 @@ std::vector<Result> QPSHandler::processClause(const std::vector<Clause> &clauses
 }
 
 Result QPSHandler::handleNoRelationshipRef(const Entity& entityToFind) const {
+  Result result;
   ElementType elementTypeToGet = EntityToElementConverter::extractElementType(entityToFind);
   std::set<ProgramElement> resultElements = pg->getEntity(elementTypeToGet);
-  return Result(resultElements);
+  result.setNoClauseElements(resultElements);
+  result.setResultEntity(entityToFind);
+  return result;
 }

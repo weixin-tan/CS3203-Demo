@@ -2,7 +2,7 @@
 #include "Type.h"
 
 Entity::Entity() {
-    Entity::eType = EntityType::Wildcard;
+    Entity::eType = EntityType::Null;
 }
 
 Entity::Entity(EntityType eType, std::string name) {

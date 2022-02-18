@@ -4,22 +4,67 @@
 
 Result::Result() = default;
 
-Result::Result(std::set <ProgramElement> programElements) {
-    Result::programElements = std::move(programElements);
+void Result::setNoClauseElements(std::set<ProgramElement> elements) {
+  Result::noClauseElements = elements;
 }
 
-void Result::setRelationshipRef(const RelationshipRef& r) {
-    Result::relRef.rType = r.rType;
-    Result::relRef.leftEntity = r.leftEntity;
-    Result::relRef.rightEntity = r.rightEntity;
+void Result::setSuchThatElements(std::set<std::pair<ProgramElement, ProgramElement>> elements) {
+    Result::suchThatElements = elements;
 }
 
-void Result::setEntityToFind(const Entity& e) {
-    Result::entityToFind.eType = e.eType;
-    Result::entityToFind.name = e.name;
+void Result::setPatternElements(std::set<ProgramElement> elements) {
+  Result::patternElements = elements;
 }
 
-std::set<ProgramElement> Result::getProgramElements() {
-    return programElements;
+void Result::setResultEntity(Entity entityToGet) {
+  Result::resultEntity = entityToGet;
 }
 
+void Result::setLeftSuchThatEntity(Entity left) {
+  Result::leftSuchThatEntity = left;
+}
+
+void Result::setRightSuchThatEntity(Entity right) {
+  Result::rightSuchThatEntity = right;
+}
+
+void Result::setAssignEntity(Entity assign) {
+  Result::assignEntity = assign;
+}
+
+std::set<ProgramElement> Result::getNoClauseElements() {
+    return Result::noClauseElements;
+}
+
+std::set<ProgramElement> Result::getPatternElements() {
+  return Result::patternElements;
+}
+
+std::set<std::pair < ProgramElement, ProgramElement>> Result::getSuchThatElements() {
+  return Result::suchThatElements;
+}
+
+Entity Result::getResultEntity() {
+    return Result::resultEntity;
+}
+
+Entity Result::getLeftSuchThatEntity() {
+    return Result::leftSuchThatEntity;
+}
+
+Entity Result::getRightSuchThatEntity() {
+    return Result::rightSuchThatEntity;
+}
+
+Entity Result::getAssignEntity() {
+    return Result::assignEntity;
+}
+
+bool Result::allSuchThatAndPatternEntitiesNull() {
+    if (Result::leftSuchThatEntity.eType == EntityType::Null && Result::rightSuchThatEntity.eType == EntityType::Null
+    && Result::assignEntity.eType == EntityType::Null) {
+      return true;
+    } else {
+      return false;
+    }
+}

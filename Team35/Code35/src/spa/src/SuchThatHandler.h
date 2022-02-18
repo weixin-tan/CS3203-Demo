@@ -1,7 +1,7 @@
 #ifndef SPA_SUCHTHATHANDLER_H
 #define SPA_SUCHTHATHANDLER_H
 
-
+#include <utility>
 #include <vector>
 #include "Entity.h"
 #include "PKB/PkbGetter.h"
@@ -11,10 +11,13 @@
 class SuchThatHandler {
 private:
   PkbGetter* pg;
-
+  const bool LEFT = true;
+  const bool RIGHT = false;
   Result handleBoolCheck(const Entity& entityToGet, const RelationshipRef& relRef);
   Result handleLeftSide(const Entity& entityToGet, const Entity& rightEntity, RelationshipType relType);
   Result handleRightSide(const Entity& entityToGet, const Entity& leftEntity, RelationshipType relType);
+  std::set<std::pair<ProgramElement, ProgramElement>> getFixedEntityPairs(RelationshipType relType, const Entity& givenEntity, ElementType t, bool direction);
+  std::set<std::pair<ProgramElement, ProgramElement>> getAllCombinationsOfPairs(RelationshipType relType, const Entity& givenEntity, ElementType t, bool direction);
 public:
   explicit SuchThatHandler(PkbGetter* pg);
   Result handleSuchThat(const Entity& entityToGet, const RelationshipRef& relRef);

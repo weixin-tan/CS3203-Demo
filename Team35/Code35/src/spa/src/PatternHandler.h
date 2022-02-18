@@ -10,10 +10,10 @@ class PatternHandler {
 private:
   PkbGetter* pg;
 
-  Result handleDoubleWildcard(const Entity& entityToGet);
-  Result handleLeftWildcard(const Entity& entityToGet, const Entity& rightEntity, const Entity& assignEntity);
-  Result handleRightWildcard(const Entity& entityToGet, const Entity& leftEntity, const Entity& assignEntity);
-  Result handleNoWildcard(const Entity& entityToGet, const Entity& rightEntity, const Entity& leftEntity, const Entity& assignEntity);
+  Result handleDoubleWildcard();
+  Result handleLeftWildcard(const Entity& rightEntity);
+  Result handleRightWildcard(const Entity& leftEntity);
+  Result handleNoWildcard(const Entity& rightEntity, const Entity& leftEntity);
 public:
   explicit PatternHandler(PkbGetter* pg);
   Result handlePattern(const Entity& entityToGet, const RelationshipRef& relRef);
