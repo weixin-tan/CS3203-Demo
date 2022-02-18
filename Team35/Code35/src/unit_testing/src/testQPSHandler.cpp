@@ -3,6 +3,7 @@
 #include "SuchThatHandler.h"
 #include "QueryProcessor.h"
 #include "QPSMainLogic.h"
+#include "EntityToElementConverter.h"
 
 TEST_CASE("QPS Handler") {
     PKB pkb = PKB();
@@ -129,7 +130,7 @@ TEST_CASE("QPS Handler") {
 //        for (Result r1 : r) {
 //
 //        }
-        */
+
 
         Clause c2;
 
@@ -174,7 +175,8 @@ TEST_CASE("QPS Handler") {
             cout << e.toString() << "1\n";
         }
         cout << fin.getResultEntities().size();
-
+            */
+        EntityTo
 
     }
 

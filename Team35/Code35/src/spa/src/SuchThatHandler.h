@@ -12,12 +12,12 @@ class SuchThatHandler {
 private:
   PkbGetter* pg;
 
-  Result handleBoolCheck(Entity entityToGet, RelationshipRef relRef);
+  Result handleBoolCheck(const Entity& entityToGet, const RelationshipRef& relRef);
   Result handleLeftSide(const Entity& entityToGet, const Entity& rightEntity, RelationshipType relType);
-  Result handleRightSide(Entity entityToGet, Entity leftEntity, RelationshipType relType);
+  Result handleRightSide(const Entity& entityToGet, const Entity& leftEntity, RelationshipType relType);
 public:
   explicit SuchThatHandler(PkbGetter* pg);
-  Result handleSuchThat(Entity entityToGet, RelationshipRef relRef);
+  Result handleSuchThat(const Entity& entityToGet, const RelationshipRef& relRef);
 };
 
 

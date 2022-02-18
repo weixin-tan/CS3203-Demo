@@ -7,7 +7,7 @@ SuchThatHandler::SuchThatHandler(PkbGetter *pg) {
 }
 
 //Handles Such That relationships
-Result SuchThatHandler::handleSuchThat(Entity entityToGet, RelationshipRef relRef) {
+Result SuchThatHandler::handleSuchThat(const Entity& entityToGet, const RelationshipRef& relRef) {
   RelationshipType relType = relRef.rType;
   Entity left = relRef.leftEntity;
   Entity right = relRef.rightEntity;
@@ -24,7 +24,7 @@ Result SuchThatHandler::handleSuchThat(Entity entityToGet, RelationshipRef relRe
 }
 
 //Get all instances of the searched entity based on whether the relationship exists in PKB
-Result SuchThatHandler::handleBoolCheck(Entity entityToGet, RelationshipRef relRef) {
+Result SuchThatHandler::handleBoolCheck(const Entity& entityToGet, const RelationshipRef& relRef) {
   bool check;
   Entity left = relRef.leftEntity;
   Entity right = relRef.rightEntity;
@@ -100,7 +100,7 @@ Result SuchThatHandler::handleLeftSide(const Entity& entityToGet, const Entity& 
   return Result(resultElements);
 }
 
-Result SuchThatHandler::handleRightSide(Entity entityToGet, Entity leftEntity, RelationshipType relType) {
+Result SuchThatHandler::handleRightSide(const Entity& entityToGet, const Entity& leftEntity, RelationshipType relType) {
   std::set<ProgramElement> resultElements;
   ElementType elementTypeToGet = EntityToElementConverter::extractElementType(entityToGet);
 

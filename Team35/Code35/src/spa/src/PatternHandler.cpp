@@ -11,7 +11,7 @@ Result PatternHandler::handlePattern(const Entity& entityToGet, const Relationsh
   Entity left = relRef.leftEntity;
   Entity right = relRef.rightEntity;
   Entity assign = relRef.AssignmentEntity;
-  
+
   if (left.eType == EntityType::Wildcard && right.eType == EntityType::Wildcard) {
     return handleDoubleWildcard(entityToGet);
   } else if (left.eType == EntityType::Wildcard) {
