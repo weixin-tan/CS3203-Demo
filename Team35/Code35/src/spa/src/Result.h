@@ -3,15 +3,19 @@
 
 #include <set>
 #include "ProgramElement.h"
+#include "RelationshipRef.h"
 
 class Result {
  private:
   std::set<ProgramElement> programElements = {};
+  RelationshipRef relRef;
+  Entity entityToFind;
  public:
   Result();
   explicit Result(std::set<ProgramElement> programElements);
-  void insertProgramElement(ProgramElement e);
   std::set<ProgramElement> getProgramElements();
+  void setRelationshipRef(const RelationshipRef& r);
+  void setEntityToFind(const Entity& e);
 };
 
 

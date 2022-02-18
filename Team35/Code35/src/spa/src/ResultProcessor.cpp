@@ -4,16 +4,16 @@
 ResultProcessor::ResultProcessor() = default;
 
 Result ResultProcessor::processResults(std::vector<Result> results) {
-  std::vector<Entity> resultEntities;
+  std::set<ProgramElement> resultElements;
   if (results.size() == 2) {
-    std::vector<Entity> r1 = results[0].getResultEntities();
-      std::vector<Entity> r2 = results[1].getResultEntities();
-    for (Entity e : r1) {
-      if (std::find(r2.begin(), r2.end(), e) !=r2.end()) {
-        resultEntities.push_back(e);
+    std::set<ProgramElement> set1 = results[0].getProgramElements();
+    std::set<ProgramElement> set2 = results[1].getProgramElements();
+    for (const auto& e : set1) {
+      if (set2.count(e)) {
+        resultElements.insert(e);
       }
     }
-    return Result(resultEntities);
+    return Result(resultElements);
   } else {
     return results.front();
   }

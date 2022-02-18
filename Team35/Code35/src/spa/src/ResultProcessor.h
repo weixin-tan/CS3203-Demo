@@ -3,6 +3,7 @@
 
 
 #include "Result.h"
+#include <vector>
 
 class ResultProcessor {
  public:
