@@ -8,7 +8,7 @@
 #include <stack>
 #include "StmtLst.h"
 #include "Procedure.h"
-
+#include "ProcedureLst.h"
 #include <PKB/PkbSetter.h>
 
 class Convertor {
@@ -17,12 +17,12 @@ class Convertor {
 public:
 
 	PkbSetter* pkb_setter;
-	static std::string curr_procedure;
-	std::stack<int> nestedstack;
+	static std::string curr_procedure_name;
+	static std::vector<ParsedStatement> finalResults;
 
 	Convertor(PkbSetter* pkb_setter);
 
-	void ProcedureReader(std::vector<Procedure> procedurelist);
+	std::vector<std::vector<ParsedStatement>> ProcedureReader(ProcedureLst procedurelist);
 
 	std::vector<ParsedStatement> StatementListReader(StmtLst statement_list, int container_number);
 	

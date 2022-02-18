@@ -17,10 +17,9 @@ std::string Entity::toString() {
 }
 
 bool Entity::operator==(const Entity &e1) const {
-  if(eType == e1.eType && name == e1.name) {
-    return true;
-  } else {
-    return false;
-  }
+  return eType == e1.eType && name == e1.name;
 }
 
+bool Entity::operator!=(const Entity &e1) const {
+  return eType != e1.eType && name != e1.name;
+}

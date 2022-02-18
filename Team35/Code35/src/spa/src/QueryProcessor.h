@@ -16,6 +16,7 @@ private:
   static RelationshipRef createRelationshipObject(std::vector<std::string> relRefList, std::unordered_map<std::string, Entity>* entityMap);
   static Entity findRelationshipEntity(const std::string& s, std::unordered_map<std::string, Entity>* entityMap);
   static RelationshipRef createPatternObject(std::vector<std::string> patternList, std::unordered_map<std::string, Entity>* entityMap);
+  static Entity createExpressionEntity(const std::string &s);
 };
 
 #endif //SPA_SRC_SPA_SRC_QUERYPROCESSOR_H_

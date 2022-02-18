@@ -9,16 +9,16 @@ QPSMainLogic* QPSMainLogic::getInstance(PkbGetter* pg) {
   if (!instance) { // Makes sure only one instance of the class is generated.
     instance = new QPSMainLogic(pg);
   }
-  // Insert Logging statement that instance has already been generated
+
   return instance;
 }
 
 // Constructor
 QPSMainLogic::QPSMainLogic(PkbGetter* pg) {
-  queryProcessor = new QueryProcessor();
-  suchThatHandler = new SuchThatHandler(pg);
-  resultProcessor = new ResultProcessor();
-  resultFormatter = new ResultFormatter();
+  QPSMainLogic::queryProcessor = new QueryProcessor();
+  QPSMainLogic::qpsHandler = new QPSHandler(pg);
+  QPSMainLogic::resultProcessor = new ResultProcessor();
+  QPSMainLogic::resultFormatter = new ResultFormatter();
 }
 
 //main function
@@ -36,7 +36,7 @@ std::vector<Clause> QPSMainLogic::callParser(std::string query) {
 }
 
 std::vector<Result> QPSMainLogic::callHandler(std::vector<Clause> clauses) {
-  std::vector<Result> matchingEntities = suchThatHandler->processClause(clauses);
+  std::vector<Result> matchingEntities = qpsHandler->processClause(clauses);
   return matchingEntities;
 }
 
@@ -46,6 +46,6 @@ Result QPSMainLogic::callProcessor(std::vector<Result> matchingEntities) {
 }
 
 std::list<std::string> QPSMainLogic::callFormatter(Result processedEntities) {
-    std::list<std::string> finalResult = resultFormatter->formatResult(processedEntities);
+  std::list<std::string> finalResult = resultFormatter->formatResult(processedEntities);
   return finalResult;
 }

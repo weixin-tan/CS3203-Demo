@@ -1,19 +1,17 @@
 #ifndef SPA_RESULT_H
 #define SPA_RESULT_H
 
-
-#include <vector>
-#include "Entity.h"
+#include <set>
+#include "ProgramElement.h"
 
 class Result {
+ private:
+  std::set<ProgramElement> programElements = {};
  public:
   Result();
-  explicit Result(std::vector<Entity> entities);
-
-  std::vector<Entity> resultEntities = {};
-
-  void appendResultEntity(const Entity& e);
-  std::vector<Entity> getResultEntities();
+  explicit Result(std::set<ProgramElement> programElements);
+  void insertProgramElement(ProgramElement e);
+  std::set<ProgramElement> getProgramElements();
 };
 
 

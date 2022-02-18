@@ -4,23 +4,20 @@
 
 #include <vector>
 #include "Entity.h"
-#include "Type.h"
-#include "Clause.h"
-#include "Result.h"
 #include "PKB/PkbGetter.h"
+#include "RelationshipRef.h"
+#include "Result.h"
 
 class SuchThatHandler {
- public:
-  explicit SuchThatHandler(PkbGetter* pg);
-
+private:
   PkbGetter* pg;
 
-  std::vector<Result> processClause(const std::vector<Clause>& clauses) const;
-  bool isRelationship(RelationshipType r, const Entity& e1, const Entity& e2) const;
-  std::vector<Entity> getEntity(EntityType typeToGet) const;
-  std::vector<Entity> getRelationshipStatements(RelationshipType r) const;
-  std::vector<Entity> getLeftSide(RelationshipType r, const Entity& rightSide, EntityType typeToGet) const;
-  std::vector<Entity> getRightSide(RelationshipType r, const Entity& leftSide, EntityType typeToGet) const;
+  Result handleBoolCheck(Entity entityToGet, RelationshipRef relRef);
+  Result handleLeftSide(const Entity& entityToGet, const Entity& rightEntity, RelationshipType relType);
+  Result handleRightSide(Entity entityToGet, Entity leftEntity, RelationshipType relType);
+public:
+  explicit SuchThatHandler(PkbGetter* pg);
+  Result handleSuchThat(Entity entityToGet, RelationshipRef relRef);
 };
 
 
