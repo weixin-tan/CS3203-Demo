@@ -31,17 +31,17 @@ TEST_CASE("PKB Basic") {
 //}
 
     std::vector<ParsedStatement> statements = {
-            ParsedStatement(1, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"}, {},  ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
-            ParsedStatement(2, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {"x"}, {"y"},{}, ParsedStatement::default_procedure_name, 1),
-            ParsedStatement(3, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"},{}, ParsedStatement::default_procedure_name, 2),
-            ParsedStatement(4, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kwhile_stmt, ParsedStatement::default_pattern, "f", {"x"}, {},{}, ParsedStatement::default_procedure_name, 3),
+            ParsedStatement(1, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"}, {"5"},  ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
+            ParsedStatement(2, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {"x"}, {"y"}, {}, ParsedStatement::default_procedure_name, 1),
+            ParsedStatement(3, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"}, {"5"}, ParsedStatement::default_procedure_name, 2),
+            ParsedStatement(4, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kwhile_stmt, ParsedStatement::default_pattern, "f", {"x"}, {}, {"4"}, ParsedStatement::default_procedure_name, 3),
             ParsedStatement(5, ParsedStatement::default_null_stmt_no, 4, StatementType::kread_stmt, ParsedStatement::default_pattern, "f", {}, {"z"}, {},ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
-            ParsedStatement(6, ParsedStatement::default_null_stmt_no, 4, StatementType::kif_stmt, ParsedStatement::default_pattern, "f", {"z"}, {},{}, ParsedStatement::default_procedure_name, 5),
-            ParsedStatement(7, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"},{}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
-            ParsedStatement(8, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"z"},{}, ParsedStatement::default_procedure_name, 7),
-            ParsedStatement(9, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"y"},{}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
-            ParsedStatement(10, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"z"},{}, ParsedStatement::default_procedure_name, 9),
-            ParsedStatement(11, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kread_stmt, ParsedStatement::default_pattern, "f", {"x"}, {},{}, ParsedStatement::default_procedure_name, 4),
+            ParsedStatement(6, ParsedStatement::default_null_stmt_no, 4, StatementType::kif_stmt, ParsedStatement::default_pattern, "f", {"z"}, {}, {"10"}, ParsedStatement::default_procedure_name, 5),
+            ParsedStatement(7, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"}, {"100"}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
+            ParsedStatement(8, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"z"}, {"5"}, ParsedStatement::default_procedure_name, 7),
+            ParsedStatement(9, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"y"}, {"100"}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
+            ParsedStatement(10, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"z"}, {"0"}, ParsedStatement::default_procedure_name, 9),
+            ParsedStatement(11, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kread_stmt, ParsedStatement::default_pattern, "f", {"x"}, {}, {}, ParsedStatement::default_procedure_name, 4),
     };
 
     for (const ParsedStatement& parsed_statement : statements)
@@ -566,5 +566,36 @@ TEST_CASE("PKB Basic") {
             REQUIRE(result == expected);
         }
     }
-    // TODO: Pattern
+    SECTION("Pattern") {
+        std::set<ProgramElement> result;
+        std::set<ProgramElement> expected;
+        SECTION("LHS wildcard") {
+            result = pkb_getter->getAssignmentGivenExpression(ProgramElement::createVariable("x"));
+            expected = {
+                    ProgramElement::createStatement(ElementType::kAssignment, 2),
+            };
+            REQUIRE(result == expected);
+
+            result = pkb_getter->getAssignmentGivenExpression(ProgramElement::createConstant("5"));
+            expected = {
+                    ProgramElement::createStatement(ElementType::kAssignment, 1),
+                    ProgramElement::createStatement(ElementType::kAssignment, 3),
+                    ProgramElement::createStatement(ElementType::kAssignment, 8),
+            };
+            REQUIRE(result == expected);
+        }
+        SECTION("LHS variable") {
+            result = pkb_getter->getAssignmentGivenVariableAndExpression(ProgramElement::createVariable("y"), ProgramElement::createVariable("x"));
+            expected = {
+                    ProgramElement::createStatement(ElementType::kAssignment, 2),
+            };
+            REQUIRE(result == expected);
+
+            result = pkb_getter->getAssignmentGivenVariableAndExpression(ProgramElement::createVariable("x"), ProgramElement::createConstant("100"));
+            expected = {
+                    ProgramElement::createStatement(ElementType::kAssignment, 7),
+            };
+            REQUIRE(result == expected);
+        }
+    }
 }
