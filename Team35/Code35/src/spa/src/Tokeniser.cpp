@@ -34,10 +34,19 @@ Token Tokeniser::tokeniser(std::string input) {
         } else if (input == ";"){
             Token t = Token(TokenType::SEMICOLON, input);
             return t;
+        } else if (input == " ;"){
+            Token t = Token(TokenType::SEMICOLON, input);
+            return t;
         } else if (input == "}") {
             Token t = Token(TokenType::RIGHT_CURLY, input);
             return t;
+        } else if (input == " }") {
+            Token t = Token(TokenType::RIGHT_CURLY, input);
+            return t;
         } else if (input == "{") {
+            Token t = Token(TokenType::LEFT_CURLY, input);
+            return t;
+        } else if (input == " {") {
             Token t = Token(TokenType::LEFT_CURLY, input);
             return t;
         } else {
@@ -154,7 +163,11 @@ std::queue<Token> Tokeniser ::putInQueue(std::string input) {
 
 }
 
-
+/*
+std::string test = "procedure f {";
+Tokeniser t;
+std::queue<Token> tq = t.putInQueue(test);
+*/
 
 
 /*
