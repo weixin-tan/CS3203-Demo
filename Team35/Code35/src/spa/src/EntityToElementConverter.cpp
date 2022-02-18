@@ -1,7 +1,3 @@
-//
-// Created by viv on 18/2/2022.
-//
-
 #include <cassert>
 #include "EntityToElementConverter.h"
 
@@ -38,12 +34,23 @@ ElementType EntityToElementConverter::extractElementType(const Entity& e) {
 
 ProgramElement EntityToElementConverter::fixedEntityConverter(const Entity &e) {
   switch (e.eType) {
-      case EntityType::FixedString:
-        return ProgramElement::createVariable(e.name);
-      case EntityType::FixedInteger:
+    case EntityType::FixedString:
+      return ProgramElement::createVariable(e.name);
+    case EntityType::FixedInteger:
+      return ProgramElement::createStatement(ElementType::kStatement, std::stoi(e.name));
+    case EntityType::FixedStringWithinWildcard:
+      if (isInteger(e.name)) {
         return ProgramElement::createStatement(ElementType::kStatement, std::stoi(e.name));
-      default:
-        assert(false);
+      } else {
+        return ProgramElement::createVariable(e.name);
+      }
+    default:
+      assert(false);
   }
 }
 
+bool EntityToElementConverter::isInteger(std::string s) {
+  std::string::const_iterator it = s.begin();
+  while (it != s.end() && std::isdigit(*it)) ++it;
+  return !s.empty() && it == s.end();
+}
