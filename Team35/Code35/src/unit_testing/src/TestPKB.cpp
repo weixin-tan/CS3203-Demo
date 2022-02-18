@@ -450,6 +450,121 @@ TEST_CASE("PKB Basic") {
             REQUIRE(result == expected);
         }
     }
-    // TODO: Parents and ParentsT
+    SECTION("Parent") {
+        RelationshipType relationshipType = RelationshipType::Parent;
+        std::set<ProgramElement> result;
+        std::set<ProgramElement> expected;
+        SECTION("isRelationship") {
+            REQUIRE(pkb_getter->isRelationship(relationshipType, ProgramElement::createStatement(ElementType::kWhile, 4), ProgramElement::createStatement(kIf, 6)));
+            REQUIRE(pkb_getter->isRelationship(relationshipType, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createStatement(kStatement, 6)));
+            REQUIRE(pkb_getter->isRelationship(relationshipType, ProgramElement::createStatement(ElementType::kWhile, 4), ProgramElement::createStatement(kRead, 5)));
+            REQUIRE(pkb_getter->isRelationship(relationshipType, ProgramElement::createStatement(ElementType::kIf, 6), ProgramElement::createStatement(kAssignment, 9)));
+            REQUIRE(!pkb_getter->isRelationship(relationshipType, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createStatement(ElementType::kStatement, 7)));
+        }
+        SECTION("getLeftSide") {
+            result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createStatement(ElementType::kStatement, 9), ElementType::kStatement);
+            expected = {ProgramElement::createStatement(ElementType::kStatement, 6)};
+            REQUIRE(result == expected);
+
+            result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createStatement(ElementType::kAssignment, 7), ElementType::kIf);
+            expected = {ProgramElement::createStatement(ElementType::kIf, 6)};
+            REQUIRE(result == expected);
+
+            result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createStatement(ElementType::kIf, 6), ElementType::kWhile);
+            expected = {ProgramElement::createStatement(ElementType::kWhile, 4)};
+            REQUIRE(result == expected);
+        }
+        SECTION("getRightSide") {
+            result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::kStatement, 4), ElementType::kStatement);
+            expected = {
+                    ProgramElement::createStatement(ElementType::kStatement, 6),
+                    ProgramElement::createStatement(ElementType::kStatement, 5),
+            };
+            REQUIRE(result == expected);
+
+            result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::kStatement, 6), ElementType::kAssignment);
+            expected = {
+                    ProgramElement::createStatement(ElementType::kAssignment, 7),
+                    ProgramElement::createStatement(ElementType::kAssignment, 8),
+                    ProgramElement::createStatement(ElementType::kAssignment, 9),
+                    ProgramElement::createStatement(ElementType::kAssignment, 10),
+            };
+            REQUIRE(result == expected);
+
+            result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::kWhile, 4), ElementType::kIf);
+            expected = {
+                    ProgramElement::createStatement(ElementType::kIf, 6),
+            };
+            REQUIRE(result == expected);
+        }
+    }
+    SECTION("ParentT") {
+        RelationshipType relationshipType = RelationshipType::ParentT;
+        std::set<ProgramElement> result;
+        std::set<ProgramElement> expected;
+
+        SECTION("isRelationship") {
+            REQUIRE(pkb_getter->isRelationship(RelationshipType::ParentT, ProgramElement::createStatement(ElementType::kWhile, 4), ProgramElement::createStatement(ElementType::kAssignment, 7)));
+            REQUIRE(pkb_getter->isRelationship(RelationshipType::ParentT, ProgramElement::createStatement(ElementType::kWhile, 4), ProgramElement::createStatement(ElementType::kStatement, 8)));
+            REQUIRE(pkb_getter->isRelationship(RelationshipType::ParentT, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createStatement(ElementType::kAssignment, 9)));
+            REQUIRE(pkb_getter->isRelationship(RelationshipType::ParentT, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createStatement(ElementType::kStatement, 10)));
+        }
+        SECTION("getLeftSide") {
+            result = pkb_getter->getLeftSide(RelationshipType::ParentT, ProgramElement::createStatement(ElementType::kAssignment, 9), ElementType::kStatement);
+            expected = {
+                    ProgramElement::createStatement(ElementType::kStatement, 4),
+                    ProgramElement::createStatement(ElementType::kStatement, 6),
+            };
+            REQUIRE(result == expected);
+
+            result = pkb_getter->getLeftSide(RelationshipType::ParentT, ProgramElement::createStatement(ElementType::kStatement, 8), ElementType::kWhile);
+            expected = {
+                    ProgramElement::createStatement(ElementType::kWhile, 4),
+            };
+            REQUIRE(result == expected);
+
+            result = pkb_getter->getLeftSide(RelationshipType::ParentT, ProgramElement::createStatement(ElementType::kAssignment, 7), ElementType::kIf);
+            expected = {
+                    ProgramElement::createStatement(ElementType::kIf, 6),
+            };
+            REQUIRE(result == expected);
+        }
+        SECTION("getRightSide") {
+            result = pkb_getter->getRightSide(RelationshipType::ParentT, ProgramElement::createStatement(ElementType::kWhile, 4), ElementType::kStatement);
+            expected = {
+                    ProgramElement::createStatement(ElementType::kStatement, 5),
+                    ProgramElement::createStatement(ElementType::kStatement, 6),
+                    ProgramElement::createStatement(ElementType::kStatement, 7),
+                    ProgramElement::createStatement(ElementType::kStatement, 8),
+                    ProgramElement::createStatement(ElementType::kStatement, 9),
+                    ProgramElement::createStatement(ElementType::kStatement, 10),
+            };
+            REQUIRE(result == expected);
+
+            result = pkb_getter->getRightSide(RelationshipType::ParentT, ProgramElement::createStatement(ElementType::kStatement, 4), ElementType::kAssignment);
+            expected = {
+                    ProgramElement::createStatement(ElementType::kAssignment, 7),
+                    ProgramElement::createStatement(ElementType::kAssignment, 8),
+                    ProgramElement::createStatement(ElementType::kAssignment, 9),
+                    ProgramElement::createStatement(ElementType::kAssignment, 10),
+            };
+            REQUIRE(result == expected);
+
+            result = pkb_getter->getRightSide(RelationshipType::ParentT, ProgramElement::createStatement(ElementType::kStatement, 4), ElementType::kIf);
+            expected = {
+                    ProgramElement::createStatement(ElementType::kIf, 6),
+            };
+            REQUIRE(result == expected);
+
+            result = pkb_getter->getRightSide(RelationshipType::ParentT, ProgramElement::createStatement(ElementType::kStatement, 6), ElementType::kStatement);
+            expected = {
+                    ProgramElement::createStatement(ElementType::kAssignment, 7),
+                    ProgramElement::createStatement(ElementType::kAssignment, 8),
+                    ProgramElement::createStatement(ElementType::kAssignment, 9),
+                    ProgramElement::createStatement(ElementType::kAssignment, 10),
+            };
+            REQUIRE(result == expected);
+        }
+    }
     // TODO: Pattern
 }
