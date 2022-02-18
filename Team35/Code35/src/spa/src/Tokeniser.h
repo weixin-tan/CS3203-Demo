@@ -22,6 +22,10 @@ public:
     Token tokeniser(std::string input);
     //std::string tokenPrinter(Tokeniser t);
     std::queue<Token> putInQueue (std::string input);
+    std::string printToken(Token token);
+    std::vector<std::string> Spacer(std::string input);
+    std::string Convertor(std::vector<std::string> vectorString);
+    std::vector<std::string> SpacerSemicolon(std::string input);
 
 };
 
