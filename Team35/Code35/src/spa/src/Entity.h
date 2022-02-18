@@ -15,6 +15,7 @@ public:
 
   std::string toString();
   bool operator==(const Entity & e1) const;
+  bool operator!=(const Entity & e1) const;
 };
 
 

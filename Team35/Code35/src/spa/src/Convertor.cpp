@@ -8,19 +8,32 @@
 #include <PKB/PkbSetter.h>
 #include "Procedure.h"
 
-std::string Convertor::curr_procedure = "no_procedure";
 
+std::string Convertor::curr_procedure_name = "no_procedure";
+std::vector<ParsedStatement> Convertor::finalResults;
 Convertor::Convertor(PkbSetter* pkb_setter) {
 	this->pkb_setter = pkb_setter;
 }
 
 // Reads the procedurelist and calls a statemnet list reader for each procedure in the list.
-void Convertor::ProcedureReader(std::vector<Procedure> procedurelist) {
-	for (int i = 0; i < procedurelist.size(); i++) {
-		curr_procedure = procedurelist[i].getProcName();
-		StatementListReader(procedurelist[i].getStmtLst(), -1);
-		
+std::vector<std::vector<ParsedStatement>> Convertor::ProcedureReader(ProcedureLst procedurelist) {
+	std::vector<std::vector<ParsedStatement>> results;
+
+	for (int i = 0; i < procedurelist.getSize(); i++) {
+		Procedure curr_procedure = procedurelist.getProcedureAtIndex(i);
+		curr_procedure_name = curr_procedure.getProcName();
+
+		results.push_back(StatementListReader(procedurelist.getProcedureAtIndex(i).getStmtLst(), -1));
+
+		// TODO: Sending the statement list to the PKB - should be removed 
+		for (const ParsedStatement i : finalResults) {
+			pkb_setter->insertStmt(i);
+		}
+
+		//resetting the final results
+		finalResults = std::vector<ParsedStatement>();
 	}
+	return results;
 }
 
 // FOR TESTING, THE RETURN TYPE IS SUPPOSED TO BE VOID (TO SIMULATE PASSING TO PKB)
@@ -33,23 +46,15 @@ std::vector<ParsedStatement> Convertor::StatementListReader(StmtLst statement_li
 	ContainerType containertype = statement_list.GetContainerType();
 
 	//creating new stack and pushing in -1 line number. 
+	std::stack<int> nestedstack;
 	nestedstack.push(-1);
-
-	// FOR TESTING(TEMPORARY)
-	std::vector<ParsedStatement> results; 
-
 
 // Reading every statement in the container. 
 	for (int i = 0; i < statement_list.getSize(); i++) {
-		results.push_back(this->readStatement(statement_list.getStmtAtIndex(i), containertype, nestedstack, container_number));
+		finalResults.push_back(this->readStatement(statement_list.getStmtAtIndex(i), containertype, nestedstack, container_number));
 	}
 
-	// TODO: Sending the statement list to the PKB - should be removed 
-	for (const ParsedStatement i : results) {
-		pkb_setter->insertStmt(i);
-	}
-
-	return results;
+	return finalResults;
 }
 
 // Reads and converts the statement into a parsedStatement object.
@@ -66,7 +71,7 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 
 	ParsedStatement current_statement; 
 	current_statement.stmt_no = stmt.stmt_no;
-	current_statement.procedure_name = curr_procedure;
+	current_statement.procedure_name = curr_procedure_name;
 	current_statement.preceding = nestedstack.top();
 	current_statement.statement_type = stmt.statement_type;
 
@@ -79,6 +84,8 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 	case ContainerType::kwhile:
 		current_statement.while_stmt_no = container_num;
 		break;
+	case ContainerType::kprocedure:
+		break;
 	}
 
 	//push the value into the stack
@@ -89,6 +96,7 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 	case StatementType::kassign_stmt: 
 		current_statement.var_modified = stmt.var_name;
 		current_statement.var_used = stmt.expr;
+		current_statement.constant = stmt.constant;
 		break;
 		//Pattern recogniser here
 	case StatementType::kread_stmt:
@@ -99,6 +107,7 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 		break;
 	case StatementType::kif_stmt:
 		current_statement.var_used = stmt.cond_expr;
+		current_statement.constant = stmt.constant;
 
 		// In this case, if statement will have 2 statement lists (if and then) 
 		this->StatementListReader(*stmt.ifthen_stmt_list, stmt.stmt_no);
@@ -107,6 +116,7 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 	
 	case StatementType::kwhile_stmt:
 		current_statement.var_used = stmt.cond_expr;
+		current_statement.constant = stmt.constant;
 		//In this case, this statement will a while statement list. 
 		this->StatementListReader(*stmt.while_stmt_list, stmt.stmt_no);
 		break;
@@ -116,6 +126,12 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 		break;
 	
 		//Recursively read the inner statement stack. 	
+	case StatementType::kprocedure_stmt:
+		//TODO: Throw some error or return
+		break;
+
+	case StatementType::knone:
+		break;
 	}
 
 	return current_statement; 

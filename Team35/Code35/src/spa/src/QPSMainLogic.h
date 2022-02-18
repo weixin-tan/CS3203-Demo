@@ -4,10 +4,10 @@
 
 #include <string>
 #include "QueryProcessor.h"
-#include "SuchThatHandler.h"
 #include "Result.h"
 #include "ResultProcessor.h"
 #include "ResultFormatter.h"
+#include "QPSHandler.h"
 
 class QPSMainLogic {
  public:
@@ -20,7 +20,7 @@ class QPSMainLogic {
   QPSMainLogic& operator = (const QPSMainLogic&); // Make assignment operator private
   static QPSMainLogic* instance; // The instance of QPSMainLogic will be stored here
   QueryProcessor* queryProcessor;
-  SuchThatHandler* suchThatHandler;
+  QPSHandler* qpsHandler;
   ResultProcessor* resultProcessor;
   ResultFormatter* resultFormatter;
 

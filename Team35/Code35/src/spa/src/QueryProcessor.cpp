@@ -2,6 +2,11 @@
 
 QueryProcessor::QueryProcessor()= default;
 
+/**
+ * Create entities from strings in designEntityArr and add them in entityMap
+ * @param designEntityArr List where the first element is a design-entity and the rest are synonym
+ * @param entityMap entityMap to add entity objects to
+ */
 void QueryProcessor::createDeclarationObjects(std::vector<std::string> designEntityArr, std::unordered_map<std::string, Entity>* entityMap){
   std::vector<Entity> returnList;
   std::string designEntity = designEntityArr[0];
@@ -37,6 +42,12 @@ void QueryProcessor::createDeclarationObjects(std::vector<std::string> designEnt
   }
 }
 
+/**
+ * Create relationship objects from strings and returns a RelationshipRef object
+ * @param relRefList List where the first element is a relRef and the rest are either stmtRef or entRef
+ * @param entityMap entityMap to reference entity objects from
+ * @return Created RelationshipRef object
+ */
 RelationshipRef QueryProcessor::createRelationshipObject(std::vector<std::string> relRefList, std::unordered_map<std::string, Entity>* entityMap){
   std::string relStr = relRefList[0];
   RelationshipType rType;
@@ -66,6 +77,12 @@ RelationshipRef QueryProcessor::createRelationshipObject(std::vector<std::string
   }
 }
 
+/**
+ * Creates a entity object based on the string
+ * @param s string representing a stmtRef or entRef
+ * @param entityMap entityMap to reference entity objects from
+ * @return Created Entity object
+ */
 Entity QueryProcessor::findRelationshipEntity(const std::string& s, std::unordered_map<std::string, Entity>* entityMap){
   if (entityMapContains(s, entityMap)){
     return (*entityMap)[s];
@@ -73,6 +90,42 @@ Entity QueryProcessor::findRelationshipEntity(const std::string& s, std::unorder
     return Entity(EntityType::Wildcard, "_");
   }else if(isInteger(s)){
     return Entity(EntityType::FixedInteger, s);
+  }else if(isQuotationIdent(s)){
+    std::string s2 = s.substr(1, s.length() - 2);
+    return Entity(EntityType::FixedString, s2);
+  }else{
+    // this entity is NULL -> invalid
+    return Entity(EntityType::Null, s);
+  }
+}
+
+/**
+ * Create Pattern relationship objects from strings and returns a RelationshipRef object
+ * @param patternList List where the first element is a syn-assign, the second element is a stmtRef or entRef and the third element is an expression
+ * @param entityMap entityMap to reference entity objects from
+ * @return Created Pattern RelationshipRef object
+ */
+RelationshipRef QueryProcessor::createPatternObject(std::vector<std::string> patternList, std::unordered_map<std::string, Entity>* entityMap){
+  RelationshipType rType = RelationshipType::Pattern;
+  Entity assignmentEntity = findRelationshipEntity(patternList[0], entityMap);
+  Entity leftEntity = findRelationshipEntity(patternList[1], entityMap);
+  Entity rightEntity = createExpressionEntity(patternList[2]);
+
+  if (assignmentEntity.eType == EntityType::Null || leftEntity.eType == EntityType::Null || rightEntity.eType == EntityType::Null){
+    return RelationshipRef(RelationshipType::Null , leftEntity, rightEntity);
+  }else {
+    return RelationshipRef(rType, leftEntity, rightEntity, assignmentEntity);
+  }
+}
+
+/**
+ * Create expression entity object from strings
+ * @param s string represeting an expression
+ * @return Created Entity object
+ */
+Entity QueryProcessor::createExpressionEntity(const std::string &s) {
+  if(isWildCard(s)){
+    return Entity(EntityType::Wildcard, "_");
   }else if(isQuotationIdent(s)){
     std::string s2 = s.substr(1, s.length() - 2);
     return Entity(EntityType::FixedString, s2);
@@ -85,19 +138,11 @@ Entity QueryProcessor::findRelationshipEntity(const std::string& s, std::unorder
   }
 }
 
-RelationshipRef QueryProcessor::createPatternObject(std::vector<std::string> patternList, std::unordered_map<std::string, Entity>* entityMap){
-  RelationshipType rType = RelationshipType::Pattern;
-  Entity assignmentEntity = findRelationshipEntity(patternList[0], entityMap);
-  Entity leftEntity = findRelationshipEntity(patternList[1], entityMap);
-  Entity rightEntity = findRelationshipEntity(patternList[2], entityMap);
-
-  if (assignmentEntity.eType == EntityType::Null || leftEntity.eType == EntityType::Null || rightEntity.eType == EntityType::Null){
-    return RelationshipRef(RelationshipType::Null , leftEntity, rightEntity);
-  }else {
-    return RelationshipRef(rType, leftEntity, rightEntity, assignmentEntity);
-  }
-}
-
+/**
+ * Translate query string into a list of clauses
+ * @param parsePQL query string
+ * @return a list of clauses representing the query
+ */
 std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
   bool isValid = true;
   std::vector<Clause> clauseList;
@@ -120,8 +165,14 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
       std::vector<std::string> SuchThatClauses = extractSuchThatClauses(selectStmt);
       std::vector<std::string> PatternClauses = extractPatternClauses(selectStmt);
 
+      if (existSuchThat(selectStmt)){
+        isValid = isValid && (SuchThatClauses.size() > 0);
+      }else{
+        isValid = isValid && (SuchThatClauses.empty());
+      }
+
       for (const auto& s: variablesToSelect){
-        isValid = isValid && isIdent(s) && (entityMap.find(s) != entityMap.end());
+        isValid = isValid && isIdent(s) && entityMapContains(s, &entityMap);
         if (isValid){
           newClause.appendEntityToFind(entityMap[s]);
         }

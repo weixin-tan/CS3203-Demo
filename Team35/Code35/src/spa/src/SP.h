@@ -1,22 +1,25 @@
 #pragma once
 
 #include "Tokeniser.h"
-#include "ConcreteSyntaxBasic.h"
+#include "ConcreteSyntaxWithValidation.h"
 #include "Convertor.h"
 #include <PKB/PkbSetter.h>
 #include <iostream>
 #include <fstream>
+#include <stdexcept>
 
 class SP {
 
 public:
 	Tokeniser tokeniser;
-	ConcreteSyntaxBasic concrete;
+	ConcreteSyntaxWithValidation concrete;
 	Convertor convertor;
 	
 	SP(PkbSetter* pkb_setter);
 
 	void Parse(std::string filename);
 	
+	Procedure procedure; 
+	std::queue<Token> tokenQueue;
 };
 

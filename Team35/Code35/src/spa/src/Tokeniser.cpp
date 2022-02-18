@@ -26,55 +26,55 @@ bool Tokeniser::isAlphabet(const std::string &str) {
 Token Tokeniser::tokeniser(std::string input) {
     if(input.length()==1){
         if(isNumber(input)){
-            Token t = Token(DIGIT, input);
+            Token t = Token(TokenType::DIGIT, input);
             return t;
         } else if(isAlphabet(input)){
-            Token t = Token(LETTER, input);
+            Token t = Token(TokenType::LETTER, input);
             return t;
         } else if (input == ";"){
-            Token t = Token(SEMICOLON, input);
+            Token t = Token(TokenType::SEMICOLON, input);
             return t;
         } else if (input == "}") {
-            Token t = Token(RIGHT_CURLY, input);
+            Token t = Token(TokenType::RIGHT_CURLY, input);
             return t;
         } else if (input == "{") {
-            Token t = Token(LEFT_CURLY, input);
+            Token t = Token(TokenType::LEFT_CURLY, input);
             return t;
         } else {
-            Token t = Token(SPECIALCHAR, input);
+            Token t = Token(TokenType::SPECIALCHAR, input);
             return t;
         }
         //to prevent forbidden naming
     } else if(input == "DIGIT" || input == "LETTER" || input == "SEMICOLON" ||
                 input == "RIGHT_CURLY" || input == "LEFT_CURLY" || input == "SPECIALCHAR"){
-        Token t = Token(NAME, input);
+        Token t = Token(TokenType::NAME, input);
         return t;
-    }else if (input == "READ"){
-        Token t = Token(READ, input);
+    }else if (input == "READ_KEYWORD"){
+        Token t = Token(TokenType::READ_KEYWORD, input);
         return t;
-    }else if (input == "PRINT"){
-        Token t = Token(PRINT, input);
+    }else if (input == "PRINT_KEYWORD"){
+        Token t = Token(TokenType::PRINT_KEYWORD, input);
         return t;
-    }else if (input == "CALL"){
-        Token t = Token(CALL, input);
+    }else if (input == "CALL_KEYWORD"){
+        Token t = Token(TokenType::CALL_KEYWORD, input);
         return t;
-    }else if (input == "WHILE"){
-        Token t = Token(WHILE, input);
+    }else if (input == "WHILE_KEYWORD"){
+        Token t = Token(TokenType::WHILE_KEYWORD, input);
         return t;
-    }else if (input == "IF"){
-        Token t = Token(IF, input);
+    }else if (input == "IF_KEYWORD"){
+        Token t = Token(TokenType::IF_KEYWORD, input);
         return t;
-    }else if (input == "PROCEDURE"){
-        Token t = Token(PROCEDURE, input);
+    }else if (input == "PROCEDURE_KEYWORD"){
+        Token t = Token(TokenType::PROCEDURE_KEYWORD, input);
         return t;
-    }else if (input == "THEN"){
-        Token t = Token(THEN, input);
+    }else if (input == "THEN_KEYWORD"){
+        Token t = Token(TokenType::THEN_KEYWORD, input);
         return t;
-    }else if (input == "ELSE"){
-        Token t = Token(ELSE, input);
+    }else if (input == "ELSE_KEYWORD"){
+        Token t = Token(TokenType::ELSE_KEYWORD, input);
         return t;
     }else{
-        Token t = Token(NAME, input);
+        Token t = Token(TokenType::NAME, input);
         return t;
     }
 }
@@ -143,7 +143,7 @@ std::queue<Token> Tokeniser ::putInQueue(std::string input) {
     std::stringstream checker(input);
     std::string temp;
     while(getline(checker, temp, ' ')){
-        if(temp == ToString(SEMICOLON)){
+        if(temp == ToString(TokenType::SEMICOLON)){
             break;
         } else {
             Token t = tokeniser(temp);

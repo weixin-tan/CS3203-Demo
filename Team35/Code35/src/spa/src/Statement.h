@@ -9,15 +9,15 @@
 
 class StmtLst;
 
-class StatementContainer;
-
-class StatementContainer;
-
-class StatementContainer;
-
 class Statement {
 public:
 	Statement();
+
+	Statement(int stmt_no, StatementType statement_type,
+		std::vector<std::string> var_name, std::vector<std::string> expr,
+		std::vector<std::string> cond_expr, std::string proc_name,
+		std::vector<std::string> constant, StmtLst* ifthen_stmt_list,
+		StmtLst* ifelse_stmt_list, StmtLst* while_stmt_list);
 
 	int stmt_no;
 
@@ -35,11 +35,8 @@ public:
 	// for call statements
 	std::string proc_name;
 
-
-
-
-
-
+	//for Constant variables
+	std::vector<std::string> constant; 
 
 	// for then, else, while statements. 
 	StmtLst* ifthen_stmt_list;
