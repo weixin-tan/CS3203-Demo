@@ -371,7 +371,85 @@ TEST_CASE("PKB Basic") {
             }
         }
     }
-    // TODO: Follows and FollowsT
+    SECTION("Follows") {
+        SECTION("isRelationship") {
+            REQUIRE(pkb_getter->isRelationship(RelationshipType::Follows, ProgramElement::createStatement(ElementType::kAssignment, 7), ProgramElement::createStatement(ElementType::kAssignment, 8)));
+            REQUIRE(pkb_getter->isRelationship(RelationshipType::Follows, ProgramElement::createStatement(ElementType::kWhile, 4), ProgramElement::createStatement(ElementType::kAssignment, 11)));
+            REQUIRE(pkb_getter->isRelationship(RelationshipType::Follows, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createStatement(ElementType::kStatement, 11)));
+            REQUIRE(!pkb_getter->isRelationship(RelationshipType::Follows, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createStatement(ElementType::kStatement, 5)));
+        }
+        SECTION("getLeftSide") {
+            std::set<ProgramElement> result = pkb_getter->getLeftSide(RelationshipType::Follows, ProgramElement::createStatement(ElementType::kStatement, 11), ElementType::kStatement);
+            std::set<ProgramElement> expected = {ProgramElement::createStatement(ElementType::kStatement, 4)};
+            REQUIRE(result == expected);
+
+            result = pkb_getter->getLeftSide(RelationshipType::Follows, ProgramElement::createStatement(ElementType::kStatement, 11), ElementType::kWhile);
+            expected = {ProgramElement::createStatement(ElementType::kWhile, 4)};
+            REQUIRE(result == expected);
+
+            result = pkb_getter->getLeftSide(RelationshipType::Follows, ProgramElement::createStatement(ElementType::kStatement, 1), ElementType::kStatement);
+            REQUIRE(result.empty());
+        }
+        SECTION("getRightSide") {
+            std::set<ProgramElement> result = pkb_getter->getRightSide(RelationshipType::Follows, ProgramElement::createStatement(ElementType::kStatement, 4), ElementType::kStatement);
+            std::set<ProgramElement> expected = {ProgramElement::createStatement(ElementType::kStatement, 11)};
+            REQUIRE(result == expected);
+
+            result = pkb_getter->getRightSide(RelationshipType::Follows, ProgramElement::createStatement(ElementType::kStatement, 4), ElementType::kPrint);
+            expected = {ProgramElement::createStatement(ElementType::kPrint, 11)};
+            REQUIRE(result == expected);
+
+            result = pkb_getter->getRightSide(RelationshipType::Follows, ProgramElement::createStatement(ElementType::kStatement, 1), ElementType::kStatement);
+            expected = {ProgramElement::createStatement(ElementType::kStatement, 2)};
+            REQUIRE(result == expected);
+        }
+    }
+    SECTION("FollowsT") {
+        SECTION("isRelationship") {
+            REQUIRE(pkb_getter->isRelationship(RelationshipType::FollowsT, ProgramElement::createStatement(ElementType::kAssignment, 7), ProgramElement::createStatement(ElementType::kAssignment, 8)));
+            REQUIRE(pkb_getter->isRelationship(RelationshipType::FollowsT, ProgramElement::createStatement(ElementType::kWhile, 4), ProgramElement::createStatement(ElementType::kAssignment, 11)));
+            REQUIRE(pkb_getter->isRelationship(RelationshipType::FollowsT, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createStatement(ElementType::kStatement, 11)));
+            REQUIRE(!pkb_getter->isRelationship(RelationshipType::FollowsT, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createStatement(ElementType::kStatement, 5)));
+            REQUIRE(pkb_getter->isRelationship(RelationshipType::FollowsT, ProgramElement::createStatement(ElementType::kStatement, 1), ProgramElement::createStatement(ElementType::kStatement, 11)));
+            REQUIRE(pkb_getter->isRelationship(RelationshipType::FollowsT, ProgramElement::createStatement(ElementType::kAssignment, 1), ProgramElement::createStatement(ElementType::kStatement, 11)));
+            REQUIRE(pkb_getter->isRelationship(RelationshipType::FollowsT, ProgramElement::createStatement(ElementType::kStatement, 5), ProgramElement::createStatement(ElementType::kIf, 6)));
+        }
+        SECTION("getLeftSide") {
+            std::set<ProgramElement> result = pkb_getter->getLeftSide(RelationshipType::FollowsT, ProgramElement::createStatement(ElementType::kStatement, 11), ElementType::kAssignment);
+            std::set<ProgramElement> expected = {
+                    ProgramElement::createStatement(ElementType::kAssignment, 1),
+                    ProgramElement::createStatement(ElementType::kAssignment, 2),
+                    ProgramElement::createStatement(ElementType::kAssignment, 3),
+            };
+            REQUIRE(result == expected);
+
+            result = pkb_getter->getLeftSide(RelationshipType::FollowsT, ProgramElement::createStatement(ElementType::kStatement, 11), ElementType::kStatement);
+            expected = {
+                    ProgramElement::createStatement(ElementType::kStatement, 1),
+                    ProgramElement::createStatement(ElementType::kStatement, 2),
+                    ProgramElement::createStatement(ElementType::kStatement, 3),
+                    ProgramElement::createStatement(ElementType::kStatement, 4),
+            };
+            REQUIRE(result == expected);
+        }
+        SECTION("getRightSide") {
+            std::set<ProgramElement> result = pkb_getter->getRightSide(RelationshipType::FollowsT, ProgramElement::createStatement(ElementType::kStatement, 1), ElementType::kAssignment);
+            std::set<ProgramElement> expected = {
+                    ProgramElement::createStatement(ElementType::kAssignment, 2),
+                    ProgramElement::createStatement(ElementType::kAssignment, 3),
+            };
+            REQUIRE(result == expected);
+
+            result = pkb_getter->getRightSide(RelationshipType::FollowsT, ProgramElement::createStatement(ElementType::kStatement, 1), ElementType::kStatement);
+            expected = {
+                    ProgramElement::createStatement(ElementType::kStatement, 2),
+                    ProgramElement::createStatement(ElementType::kStatement, 3),
+                    ProgramElement::createStatement(ElementType::kStatement, 4),
+                    ProgramElement::createStatement(ElementType::kStatement, 11),
+            };
+            REQUIRE(result == expected);
+        }
+    }
     // TODO: Parents and ParentsT
     // TODO: Pattern
 }
