@@ -133,6 +133,9 @@ Token Tokeniser::tokeniser(std::string input) {
     }
 }
 
+void updateType(Token token, TokenType newType){
+    token.type = newType;
+}
 
 std::string Tokeniser::printToken(Token token){
     std::string string_type = ToString(token.getToken());
@@ -251,7 +254,7 @@ std::string Tokeniser::addSpace(std::string s) {
         char check = s[i];
         bool edit = false;
         for (const auto& spaceToken : spaceList) {
-            if (s[i] == spaceToken) {
+            if (s[i] == spaceToken && i <= s.length()) { //todo: check for last position
                 char next = s[i + 1];
                 if (s[i] == '!' || s[i] == '=' || s[i] == '>' || s[i] == '<') {
                     if (next == '=') {
