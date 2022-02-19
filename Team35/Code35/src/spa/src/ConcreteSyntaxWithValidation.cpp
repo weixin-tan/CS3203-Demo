@@ -51,8 +51,7 @@ Procedure ConcreteSyntaxWithValidation::parseProcedure(std::queue<Token> tokensQ
 		throw;
 	}
 	stmtLst.SetContainerType(ContainerType::kprocedure);
-	procedure.setStmtLst(stmtLst);
-	procedure.setSize(stmt_count);
+	procedure.setStmtLst(stmtLst);	procedure.setSize(stmt_count);
 	return procedure;
 }
 

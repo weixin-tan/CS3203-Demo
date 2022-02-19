@@ -7,7 +7,7 @@
 #include <filesystem>
 
 
-TEST_CASE("SP round 0 iteration test") {
+/*TEST_CASE("SP round 0 iteration test") {
 
 	using std::filesystem::current_path;
 
@@ -64,7 +64,7 @@ TEST_CASE("SP round 0 iteration test") {
 	REQUIRE(parsed_statement2.procedure_called == "f");
 	REQUIRE(parsed_statement3.procedure_called == "f");
 	*/
-}
+
 
 TEST_CASE("SP round 1 basic iteration test") {
 
@@ -79,7 +79,10 @@ TEST_CASE("SP round 1 basic iteration test") {
 	std::stringstream buffer;
 	buffer << t.rdbuf();
 	ProcedureLst procedureLst;
-	procedureLst.setNextProcedure(concrete.parseProcedure(tokeniser.putInQueue(buffer.str())));
+	// Creating the queue of tokens
+	std::queue<Token> tokenQueue = tokeniser.putInQueue(buffer.str());
+	Procedure parsedProcedure = concrete.parseProcedure(tokenQueue);
+	procedureLst.setNextProcedure(parsedProcedure);
 	std::vector<std::vector<ParsedStatement>> resultsLst = convertor.ProcedureReader(procedureLst);
 
 	std::vector<ParsedStatement> results = resultsLst[0];
