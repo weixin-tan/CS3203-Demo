@@ -27,7 +27,6 @@ public:
     std::string rTrim(std::string s);
     std::string trim(std::string s);
     std::string addSpace(std::string s);
-    void updateType(Token &token, TokenType newType);
     std::queue<Token> forbiddenWord(std::queue<Token> inputQueue);
 
 };
