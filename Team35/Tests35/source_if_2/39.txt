@@ -1,0 +1,15 @@
+procedure main { 
+if ((!(0==x))||(!(2<=z))) then {
+if ((1>=0)&&(0<1)) then {
+y=y/2-alpha%0;
+} else {
+read alpha;
+}
+} else {
+if ((0<=z)&&(y<=charlie)) then {
+print z;
+} else {
+x=alpha*1-z*0;
+}
+}
+}

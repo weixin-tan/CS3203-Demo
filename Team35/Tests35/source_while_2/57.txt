@@ -1,0 +1,9 @@
+procedure main { 
+while ((!(0<0))&&(0>=1)) {
+if ((!(2>=2))&&(!(2==charlie))) then {
+read bravo;
+} else {
+read alpha;
+}
+}
+}

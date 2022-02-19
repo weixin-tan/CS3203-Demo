@@ -1,0 +1,9 @@
+procedure main { 
+while ((bravo<y)||(1==1)) {
+if ((bravo>=x)||(alpha==y)) then {
+read alpha;
+} else {
+read alpha;
+}
+}
+}

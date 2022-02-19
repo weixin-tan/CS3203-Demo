@@ -1,0 +1,3 @@
+procedure main { 
+alpha=x%bravo-bravo*1;
+}

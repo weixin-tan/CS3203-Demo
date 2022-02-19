@@ -1,0 +1,5 @@
+procedure main { 
+while ((y<2)&&(alpha!=alpha)) {
+read x;
+}
+}

@@ -1,0 +1,5 @@
+procedure main { 
+while ((0<z)||(!(1<z))) {
+bravo=z/charlie-0%z;
+}
+}

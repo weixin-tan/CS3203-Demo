@@ -1,0 +1,9 @@
+procedure main { 
+while ((!(z>=1))&&(z==z)) {
+if ((!(0<=x))||(y>=y)) then {
+print bravo;
+} else {
+z=z*2+1*1;
+}
+}
+}

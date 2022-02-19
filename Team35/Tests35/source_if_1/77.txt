@@ -1,0 +1,7 @@
+procedure main { 
+if ((x==bravo)&&(!(bravo<=0))) then {
+print charlie;
+} else {
+z=1*0-x*charlie;
+}
+}

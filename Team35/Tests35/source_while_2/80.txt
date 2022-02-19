@@ -1,0 +1,7 @@
+procedure main { 
+while ((0<=2)||(!(charlie!=z))) {
+while ((charlie!=2)||(y>=bravo)) {
+print y;
+}
+}
+}

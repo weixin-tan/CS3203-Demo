@@ -1,0 +1,13 @@
+procedure main { 
+while ((0!=charlie)&&(!(2>=z))) {
+if ((!(z<=alpha))||(2!=alpha)) then {
+while ((1>=y)&&(!(2<y))) {
+alpha=1*z+bravo*1;
+}
+} else {
+while ((2>=1)||(!(1<x))) {
+print y;
+}
+}
+}
+}

@@ -1,0 +1,3 @@
+procedure main { 
+charlie=0/alpha+x*y;
+}

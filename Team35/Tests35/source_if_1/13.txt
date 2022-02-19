@@ -1,0 +1,7 @@
+procedure main { 
+if ((0<=z)&&(y<=charlie)) then {
+print z;
+} else {
+x=alpha*1-z*0;
+}
+}

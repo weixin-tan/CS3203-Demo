@@ -1,0 +1,5 @@
+procedure main { 
+while ((y<=x)||(!(bravo==1))) {
+read bravo;
+}
+}

@@ -1,0 +1,5 @@
+procedure main { 
+while ((!(y==charlie))&&(!(bravo!=0))) {
+read z;
+}
+}

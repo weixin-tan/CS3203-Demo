@@ -1,0 +1,15 @@
+procedure main { 
+if ((z<y)||(0==x)) then {
+while ((y>2)||(0>1)) {
+while ((!(bravo>=2))&&(!(0<=2))) {
+print y;
+}
+}
+} else {
+while ((!(y<2))||(2>=0)) {
+while ((!(bravo>=2))&&(!(0<=2))) {
+print y;
+}
+}
+}
+}

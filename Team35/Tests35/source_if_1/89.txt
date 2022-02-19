@@ -1,0 +1,7 @@
+procedure main { 
+if ((!(1>=bravo))||(bravo!=0)) then {
+bravo=charlie*x-x/1;
+} else {
+read bravo;
+}
+}

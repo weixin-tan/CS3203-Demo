@@ -1,0 +1,7 @@
+procedure main { 
+if ((x==z)&&(1!=y)) then {
+read x;
+} else {
+z=z*2+1*1;
+}
+}

@@ -1,0 +1,13 @@
+procedure main { 
+if ((y>charlie)&&(!(z>=alpha))) then {
+while ((!(0==2))&&(!(z>alpha))) {
+read bravo;
+}
+} else {
+if ((y>x)&&(!(bravo!=alpha))) then {
+print alpha;
+} else {
+alpha=bravo%bravo+y*x;
+}
+}
+}

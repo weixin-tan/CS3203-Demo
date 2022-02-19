@@ -1,0 +1,37 @@
+procedure main { 
+if ((!(1>=z))||(2<=1)) then {
+while ((!(y>=z))&&(x>=charlie)) {
+if ((y>alpha)||(1>y)) then {
+while ((x>2)||(0<=alpha)) {
+y=alpha/z-z/x;
+}
+} else {
+while ((alpha<x)&&(!(charlie!=x))) {
+alpha=alpha%bravo+2*bravo;
+}
+}
+}
+} else {
+if ((!(2>2))||(!(x>2))) then {
+if ((x==1)&&(!(bravo>0))) then {
+if ((2<z)||(!(alpha>=alpha))) then {
+y=y*alpha-0/y;
+} else {
+x=1*bravo+y/y;
+}
+} else {
+if ((!(x>2))||(!(alpha>x))) then {
+read bravo;
+} else {
+read y;
+}
+}
+} else {
+while ((!(charlie!=bravo))&&(alpha<=x)) {
+while ((!(y!=alpha))&&(2<=bravo)) {
+read alpha;
+}
+}
+}
+}
+}

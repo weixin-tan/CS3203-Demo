@@ -1,0 +1,5 @@
+procedure main { 
+while ((2>alpha)&&(!(0!=charlie))) {
+read charlie;
+}
+}

@@ -1,0 +1,9 @@
+procedure main { 
+while ((y==x)&&(0!=charlie)) {
+while ((charlie!=charlie)&&(!(charlie>=y))) {
+while ((!(0!=2))||(x<x)) {
+print x;
+}
+}
+}
+}

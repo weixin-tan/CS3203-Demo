@@ -1,0 +1,7 @@
+procedure main { 
+while ((!(z>z))||(1>=charlie)) {
+while ((x<z)||(!(y>=alpha))) {
+print y;
+}
+}
+}

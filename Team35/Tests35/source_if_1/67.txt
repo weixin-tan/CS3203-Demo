@@ -1,0 +1,7 @@
+procedure main { 
+if ((!(y==z))||(0!=alpha)) then {
+print charlie;
+} else {
+print z;
+}
+}

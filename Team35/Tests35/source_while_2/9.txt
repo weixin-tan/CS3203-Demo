@@ -1,0 +1,7 @@
+procedure main { 
+while ((!(z<=bravo))&&(!(bravo!=z))) {
+while ((0<z)||(!(1<z))) {
+bravo=z/charlie-0%z;
+}
+}
+}

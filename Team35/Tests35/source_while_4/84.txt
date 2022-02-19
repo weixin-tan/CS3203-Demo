@@ -1,0 +1,11 @@
+procedure main { 
+while ((!(2>=bravo))&&(2>alpha)) {
+while ((!(alpha!=0))&&(bravo>1)) {
+while ((y!=x)&&(!(1>=alpha))) {
+while ((!(2<0))&&(!(1!=2))) {
+print alpha;
+}
+}
+}
+}
+}

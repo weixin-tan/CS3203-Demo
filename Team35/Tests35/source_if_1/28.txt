@@ -1,0 +1,7 @@
+procedure main { 
+if ((charlie<x)||(x>=bravo)) then {
+print bravo;
+} else {
+read alpha;
+}
+}

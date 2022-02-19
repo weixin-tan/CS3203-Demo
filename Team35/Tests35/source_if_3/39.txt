@@ -1,0 +1,17 @@
+procedure main { 
+if ((!(bravo>y))||(!(charlie>y))) then {
+while ((2>=y)||(y>=x)) {
+if ((!(1<=bravo))&&(y>=y)) then {
+y=y*2+2/bravo;
+} else {
+read charlie;
+}
+}
+} else {
+while ((0<=2)||(!(charlie!=z))) {
+while ((charlie!=2)||(y>=bravo)) {
+print y;
+}
+}
+}
+}

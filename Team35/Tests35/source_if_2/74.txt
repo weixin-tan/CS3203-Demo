@@ -1,0 +1,15 @@
+procedure main { 
+if ((z<=1)&&(!(alpha==charlie))) then {
+if ((!(2!=y))&&(z!=z)) then {
+read bravo;
+} else {
+y=0*1-0%y;
+}
+} else {
+if ((!(bravo<=x))&&(bravo!=bravo)) then {
+print charlie;
+} else {
+print charlie;
+}
+}
+}

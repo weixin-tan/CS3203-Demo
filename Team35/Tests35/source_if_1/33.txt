@@ -1,0 +1,7 @@
+procedure main { 
+if ((y<y)||(x==y)) then {
+read z;
+} else {
+print alpha;
+}
+}

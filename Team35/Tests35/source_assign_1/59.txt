@@ -1,0 +1,3 @@
+procedure main { 
+z=bravo/2+x%z;
+}

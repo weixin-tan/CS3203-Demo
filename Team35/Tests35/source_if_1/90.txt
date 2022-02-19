@@ -1,0 +1,7 @@
+procedure main { 
+if ((alpha>=charlie)||(!(bravo==bravo))) then {
+print z;
+} else {
+alpha=z*alpha+bravo%1;
+}
+}

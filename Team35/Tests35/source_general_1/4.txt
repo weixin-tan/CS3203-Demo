@@ -1,0 +1,78 @@
+procedure main { 
+while ((!(1!=y))&&(2>2)) {
+while ((y>y)||(0<=alpha)) {
+print z;
+}
+}
+if ((z<y)&&(y!=0)) then {
+print alpha;
+} else {
+z=bravo*alpha-x%bravo;
+}
+if ((!(1==bravo))&&(bravo!=charlie)) then {
+if ((x==2)&&(!(charlie>=1))) then {
+bravo=y*2-alpha%bravo;
+} else {
+x=z*0-1*alpha;
+}
+} else {
+while ((!(y>=bravo))&&(!(alpha==0))) {
+read y;
+}
+}
+if ((bravo>charlie)||(alpha==1)) then {
+while ((0<alpha)||(z>1)) {
+print bravo;
+}
+} else {
+if ((!(bravo<=y))||(charlie==z)) then {
+charlie=z*2+z%x;
+} else {
+bravo=1*charlie-charlie%x;
+}
+}
+while ((x<2)&&(alpha>=2)) {
+while ((alpha!=z)&&(charlie>=x)) {
+print y;
+}
+}
+print z;
+charlie=bravo/z-2*charlie;
+if ((!(0<1))||(!(1==1))) then {
+while ((!(2>x))&&(!(0<=z))) {
+while ((!(z>=1))||(!(x>=1))) {
+alpha=y%bravo-alpha*0;
+}
+}
+} else {
+if ((0!=charlie)||(!(alpha>=bravo))) then {
+while ((y<=x)||(!(bravo==1))) {
+read bravo;
+}
+} else {
+while ((bravo>x)&&(2==z)) {
+read y;
+}
+}
+}
+if ((!(x>=2))&&(0!=0)) then {
+if ((1>x)||(y>y)) then {
+while ((alpha>1)&&(z==2)) {
+y=y%bravo-0*1;
+}
+} else {
+while ((!(0>=bravo))||(2>y)) {
+y=y/2+1*z;
+}
+}
+} else {
+while ((x<2)&&(alpha>=2)) {
+while ((alpha!=z)&&(charlie>=x)) {
+print y;
+}
+}
+}
+while ((charlie==2)||(2==2)) {
+print bravo;
+}
+}

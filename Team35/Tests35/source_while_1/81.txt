@@ -1,0 +1,5 @@
+procedure main { 
+while ((2>=1)||(!(1<x))) {
+print y;
+}
+}

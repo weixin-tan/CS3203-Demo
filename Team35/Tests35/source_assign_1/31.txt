@@ -1,0 +1,3 @@
+procedure main { 
+y=alpha*0+charlie%2;
+}

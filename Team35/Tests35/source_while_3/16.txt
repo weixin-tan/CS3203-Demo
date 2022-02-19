@@ -1,0 +1,9 @@
+procedure main { 
+while ((z>1)&&(!(1!=1))) {
+while ((alpha!=y)&&(bravo<=y)) {
+while ((x==alpha)&&(charlie!=alpha)) {
+bravo=1/2-x*0;
+}
+}
+}
+}

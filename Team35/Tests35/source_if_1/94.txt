@@ -1,0 +1,7 @@
+procedure main { 
+if ((!(bravo==0))||(!(alpha!=x))) then {
+print z;
+} else {
+y=0*1-0%y;
+}
+}

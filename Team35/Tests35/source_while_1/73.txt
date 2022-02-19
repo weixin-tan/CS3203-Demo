@@ -1,0 +1,5 @@
+procedure main { 
+while ((2!=1)&&(!(x!=bravo))) {
+x=z*0+bravo/z;
+}
+}

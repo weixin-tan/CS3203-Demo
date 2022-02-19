@@ -1,0 +1,5 @@
+procedure main { 
+while ((alpha!=z)&&(charlie>=x)) {
+print y;
+}
+}

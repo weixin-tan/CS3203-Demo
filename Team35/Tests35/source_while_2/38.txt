@@ -1,0 +1,9 @@
+procedure main { 
+while ((!(alpha<=1))&&(!(bravo>=charlie))) {
+if ((!(y>=bravo))&&(z==0)) then {
+x=2%1+0%x;
+} else {
+print z;
+}
+}
+}

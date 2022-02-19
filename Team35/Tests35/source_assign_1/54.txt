@@ -1,0 +1,3 @@
+procedure main { 
+z=y/0+alpha%1;
+}

@@ -1,0 +1,5 @@
+procedure main { 
+while ((!(z==bravo))||(!(alpha==0))) {
+read bravo;
+}
+}
