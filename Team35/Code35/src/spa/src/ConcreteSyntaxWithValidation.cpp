@@ -151,10 +151,10 @@ Statement ConcreteSyntaxWithValidation::parseAssign(std::queue<Token>& tokensQue
 	assignStmt.var_name = result;
 	tokensQueue.pop();
 
-	// equals sign
-	/*if (tokensQueue.front().getToken() != TokenType::EQUAL) {
+	// assign sign
+	if (tokensQueue.front().getToken() != TokenType::ASSIGN) {
 		throw std::invalid_argument("Missing equal sign.");
-	}*/
+	}
 	tokensQueue.pop();
 
 	// Iteration 1 only passing vector of string
