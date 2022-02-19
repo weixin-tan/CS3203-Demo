@@ -188,8 +188,6 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseExprStr
 	std::vector<std::vector<std::string>> result;
 	std::vector<std::string> exprVector;
 	std::vector<std::string> constVector;
-	result.push_back(exprVector);
-	result.push_back(constVector);
 	while (tokensQueue.front().getToken() != TokenType::SEMICOLON) {
 		if (tokensQueue.front().getToken() == TokenType::NAME) {
 			result[0].push_back(tokensQueue.front().getId());
@@ -213,6 +211,8 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseExprStr
 		}
 		tokensQueue.pop();
 	}
+	result.push_back(exprVector);
+	result.push_back(constVector);
 	return result;
 }
 
@@ -381,8 +381,6 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseCondExp
 	std::vector<std::vector<std::string>> result;
 	std::vector<std::string> exprVector;
 	std::vector<std::string> constVector;
-	result.push_back(exprVector);
-	result.push_back(constVector);
 	int closure = 1;
 	while (closure != 0) {
 		if (tokensQueue.front().getToken() == TokenType::LEFT_BRACE) {
@@ -421,6 +419,8 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseCondExp
 
 		tokensQueue.pop();
 	}
+	result.push_back(exprVector);
+	result.push_back(constVector);
 	return result;
 }
 
