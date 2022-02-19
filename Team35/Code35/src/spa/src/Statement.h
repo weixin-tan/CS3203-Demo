@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 #include "StatementType.h"
 #include "StmtLst.h"
 
@@ -15,8 +16,8 @@ public:
 	Statement(int stmt_no, StatementType statement_type,
 		std::vector<std::string> var_name, std::vector<std::string> expr,
 		std::vector<std::string> cond_expr, std::string proc_name,
-		std::vector<std::string> constant, StmtLst ifthen_stmt_list,
-		StmtLst ifelse_stmt_list, StmtLst while_stmt_list);
+		std::vector<std::string> constant, StmtLst* ifthen_stmt_list,
+		StmtLst* ifelse_stmt_list, std::shared_ptr<StmtLst> while_stmt_list);
 
 	int stmt_no;
 
@@ -38,9 +39,9 @@ public:
 	std::vector<std::string> constant; 
 
 	// for then, else, while statements. 
-	StmtLst ifthen_stmt_list;
-	StmtLst ifelse_stmt_list;
-	StmtLst while_stmt_list;
+	StmtLst* ifthen_stmt_list;
+	StmtLst* ifelse_stmt_list;
+	std::shared_ptr<StmtLst> while_stmt_list;
 
 };
 #endif
