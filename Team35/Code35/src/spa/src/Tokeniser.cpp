@@ -50,7 +50,7 @@ Token Tokeniser::tokeniser(std::string input) {
             Token t = Token(TokenType::NOT, input);
             return t;
         } else if (input == "=") {
-            Token t = Token(TokenType::EQUAL, input);
+            Token t = Token(TokenType::ASSIGN, input);
             return t;
         } else if (input == "+") {
             Token t = Token(TokenType::ADD, input);
@@ -120,6 +120,9 @@ Token Tokeniser::tokeniser(std::string input) {
         return t;
     }else if (input == "<=") {
         Token t = Token(TokenType::LEQ, input);
+        return t;
+    }else if (input == "==") {
+        Token t = Token(TokenType::EQUAL, input);
         return t;
     }else if (isNumber(input)) {
         Token t = Token(TokenType::DIGIT, input);
