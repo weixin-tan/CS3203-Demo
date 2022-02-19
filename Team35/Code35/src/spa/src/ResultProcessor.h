@@ -8,7 +8,7 @@
 class ResultProcessor {
  public:
   ResultProcessor();
-  std::set<ProgramElement> ResultProcessor::processResults(std::vector<Result> results);
+  std::set<ProgramElement> processResults(std::vector<Result> results);
 };
 
 
