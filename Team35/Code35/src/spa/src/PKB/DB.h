@@ -6,6 +6,7 @@
 #include <string>
 #include "../Type.h"
 #include "../ParsedStatement.h"
+#include "ElementType.h"
 
 // just a dataclass to hold all the tables
 struct DB {
@@ -20,16 +21,18 @@ struct DB {
   std::map<std::string, std::set<std::string>> usesProcToVarTable;
   std::map<std::string, std::set<int>> varToUsesStmtTable;
   std::map<std::string, std::set<std::string>> varToUsesProcTable;
-  std::map<int, EntityType> stmtTypeTable;
+  std::map<int, ElementType> stmtTypeTable;
   std::map<int, std::set<int>> parentToChildTable;
   std::map<int, int> childToParentTable;
   std::map<int, std::string> stmtToProcedureCalled;
   std::map<int, int> stmtPreceding;
   std::map<int, int> stmtFollowing;
+  std::map<std::string, std::set<int>> constantToStmtTable;
 
   // entity tables
   std::set<std::string> variables;
   std::set<std::string> procedures;
+  std::set<std::string> constants;
 
  public:
   DB();

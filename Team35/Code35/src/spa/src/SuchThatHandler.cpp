@@ -1,4 +1,5 @@
 #include "SuchThatHandler.h"
+#include "EntityToElementConverter.h"
 
 //Constructor
 SuchThatHandler::SuchThatHandler(PkbGetter *pg) {
@@ -6,152 +7,166 @@ SuchThatHandler::SuchThatHandler(PkbGetter *pg) {
 }
 
 //Handles Such That relationships
-Result SuchThatHandler::handleSuchThat(Entity entityToGet, RelationshipRef relRef) {
+Result SuchThatHandler::handleSuchThat(const Entity& entityToGet, const RelationshipRef& relRef) {
+  Result result;
   RelationshipType relType = relRef.rType;
   Entity left = relRef.leftEntity;
   Entity right = relRef.rightEntity;
 
-  if (left != entityToGet && right != entityToGet) { //If both sides are not the entity being searched for
-    return handleBoolCheck(entityToGet, relRef);
+  if (left == entityToGet && right == entityToGet) {
+      //Iteration 1 has no cases where both sides are the same result and so empty Result is appropriate
   } else if (left == entityToGet) { //If left side is the entity being searched for
-    return handleLeftSide(entityToGet, right, relType);
+    result = handleLeftSide(entityToGet, right, relType);
   } else if (right == entityToGet) { //If right side is the entity being searched for
-    return handleRightSide(entityToGet, left, relType);
+    result = handleRightSide(entityToGet, left, relType);
   } else {
-    return {};
+    result = handleBoolCheck(entityToGet, relRef); //If both sides are not the entity being searched for
   }
+
+  result.setLeftSuchThatEntity(left);
+  result.setRightSuchThatEntity(right);
+  result.setResultEntity(entityToGet);
+  return result;
 }
 
 //Get all instances of the searched entity based on whether the relationship exists in PKB
-Result SuchThatHandler::handleBoolCheck(Entity entityToGet, RelationshipRef relRef) {
+Result SuchThatHandler::handleBoolCheck(const Entity& entityToGet, const RelationshipRef& relRef) {
+  Result result;
   bool check;
   Entity left = relRef.leftEntity;
   Entity right = relRef.rightEntity;
-  std::vector<Entity> checkEntities;
+  std::set<std::pair<ProgramElement, ProgramElement>> checkElements;
+  ElementType elementTypeToGet = EntityToElementConverter::extractElementType(entityToGet);
 
-  if (relRef.leftEntity.eType == EntityType::Wildcard) { //Case where the left side is a wildcard
+  if (left.eType == EntityType::Wildcard) { //Case where the left side is a wildcard
     Result r = handleRightSide(right, left, relRef.rType);
-    checkEntities = r.getResultEntities();
-    /*
-    //Modifies and Uses cannot have a wildcard on the left side
-    assert(("Cannot be Modifies or Uses!",
-        (relRef.rType != RelationshipType::Modifies && relRef.rType != RelationshipType::Uses)));
-
-    //Account for both cases where it is either a FixedInteger or any statement type
-    if (right.eType == EntityType::FixedInteger) {
-      right.eType = EntityType::Statement;
-      checkEntities = pg->getLeftSide(relRef.rType, right, EntityType::Statement);
-    } else {
-      //Get all instances of the right entity from PKB and iterate to check if there are any statements that fit
-      std::vector<Entity> iterables = pg->getEntity(right.eType);
-      if (!iterables.empty()) {
-        for (const Entity& e : iterables) {
-          checkEntities = pg->getLeftSide(relRef.rType, e, EntityType::Statement);
-          if (!checkEntities.empty()) {
-            break;
-          }
-        }
-      }
-    }
-    */
-    check = !checkEntities.empty();
-
-  } else if (relRef.rightEntity.eType == EntityType::Wildcard) { //Case where the right side is a wildcard
+    checkElements = r.getSuchThatElements();
+    check = !checkElements.empty();
+  } else if (right.eType == EntityType::Wildcard) { //Case where the right side is a wildcard
     Result r = handleLeftSide(left, right, relRef.rType);
-    checkEntities = r.getResultEntities();
-      /*
-    //Account for both cases where it is either a FixedInteger or any statement type
-    if (left.eType == EntityType::FixedInteger) {
-      left.eType = EntityType::Statement;
-      //Different entity types on RHS based on relationship type
-      if (relRef.rType == RelationshipType::Modifies || relRef.rType == RelationshipType::Uses) {
-        checkEntities = pg->getRightSide(relRef.rType, left, EntityType::Variable);
-      } else {
-        checkEntities = pg->getRightSide(relRef.rType, left, EntityType::Statement);
-      }
-    } else {
-      //Get all instances of the left entity from PKB and iterate to check if there are any statements that fit
-      std::vector<Entity> iterables = pg->getEntity(left.eType);
-      if (!iterables.empty()) {
-        for (const Entity& e : iterables) {
-          checkEntities = pg->getRightSide(relRef.rType, e, EntityType::Statement);
-          if (!checkEntities.empty()) {
-            break;
-          }
-        }
-      }
-    }
-    */
-    check = !checkEntities.empty();
-
+    checkElements = r.getSuchThatElements();
+    check = !checkElements.empty();
+  } else if (left.eType == EntityType::FixedInteger && (right.eType == EntityType::FixedString || right.eType == EntityType::FixedInteger)) {
+    ProgramElement leftElement = EntityToElementConverter::fixedEntityConverter(left);
+    ProgramElement rightElement = EntityToElementConverter::fixedEntityConverter(right);
+    check = pg->isRelationship(relRef.rType, leftElement, rightElement);
   } else {
-    check = pg->isRelationship(relRef.rType, relRef.leftEntity, relRef.rightEntity);
+    Result r = handleLeftSide(left, right, relRef.rType);
+    checkElements = r.getSuchThatElements();
+    check = !checkElements.empty();
   }
 
   // If conditions are met return all entities belonging to the type requested and if not, return empty Result
   if (check) {
-    std::vector<Entity> resultEntities = pg->getEntity(entityToGet.eType);
-    return Result(resultEntities);
+    std::set<ProgramElement> resultElements = pg->getEntity(elementTypeToGet);
+    result.setSuchThatElements(checkElements);
+    result.setNoClauseElements(resultElements);
+    return result;
   } else {
     return {};
   }
 }
 
 //If the entity being searched for is on the left side, find all instances that match the conditions
-Result SuchThatHandler::handleLeftSide(Entity entityToGet, Entity rightEntity, RelationshipType relType) {
-  std::vector<Entity> resultEntities;
+Result SuchThatHandler::handleLeftSide(const Entity& entityToGet, const Entity& rightEntity, RelationshipType relType) {
+  Result result;
+  std::set<std::pair<ProgramElement, ProgramElement>> resultPairs;
+  ElementType elementTypeToGet = EntityToElementConverter::extractElementType(entityToGet);
 
   if (relType == RelationshipType::Modifies || relType == RelationshipType::Uses) {
     if (rightEntity.eType == EntityType::FixedString) {
-      rightEntity.eType = EntityType::Variable;
-      resultEntities = pg->getLeftSide(relType, rightEntity, entityToGet.eType);
+      resultPairs = getFixedEntityPairs(relType, rightEntity, elementTypeToGet, LEFT);
     } else if (rightEntity.eType == EntityType::Variable || rightEntity.eType == EntityType::Wildcard) {
-      std::vector<Entity> iterables = pg->getEntity(EntityType::Variable);
-      for (const Entity& e : iterables) {
-        std::vector<Entity> getEntities = pg->getLeftSide(relType, e, entityToGet.eType);
-        resultEntities.insert(resultEntities.end(), getEntities.begin(), getEntities.end());
-      }
+      resultPairs = getAllCombinationsOfPairs(relType, rightEntity, elementTypeToGet, LEFT);
     } else {
       assert(false);
     }
   } else if (relType == RelationshipType::Follows || relType == RelationshipType::FollowsT
       || relType == RelationshipType::Parent || relType == RelationshipType::ParentT) {
     if (rightEntity.eType == EntityType::FixedInteger) {
-      rightEntity.eType = EntityType::Statement;
-      resultEntities = pg->getLeftSide(relType, rightEntity, entityToGet.eType);
+      resultPairs = getFixedEntityPairs(relType, rightEntity, elementTypeToGet, LEFT);
     } else {
-      if (rightEntity.eType == EntityType::Wildcard) {
-        rightEntity.eType = EntityType::Statement;
-      }
-      std::vector<Entity> iterables = pg->getEntity(rightEntity.eType);
-      for (const Entity& e : iterables) {
-          std::vector<Entity> getEntities = pg->getLeftSide(relType, e, entityToGet.eType);
-          resultEntities.insert(resultEntities.end(), getEntities.begin(), getEntities.end());
-      }
+      resultPairs = getAllCombinationsOfPairs(relType, rightEntity, elementTypeToGet, LEFT);
     }
   } else {
     assert(false);
   }
-  return Result(resultEntities);
+  result.setSuchThatElements(resultPairs);
+  return result;
 }
 
-Result SuchThatHandler::handleRightSide(Entity entityToGet, Entity leftEntity, RelationshipType relType) {
-  std::vector<Entity> resultEntities;
+Result SuchThatHandler::handleRightSide(const Entity& entityToGet, const Entity& leftEntity, RelationshipType relType) {
+  Result result;
+  std::set<std::pair<ProgramElement, ProgramElement>> resultPairs;
+  ElementType elementTypeToGet = EntityToElementConverter::extractElementType(entityToGet);
 
   if (relType == RelationshipType::Modifies || relType == RelationshipType::Uses) {
     assert(("Cannot be Wildcard for Modifies and Uses!", leftEntity.eType != EntityType::Wildcard));
   }
 
-  if (leftEntity.eType == EntityType::FixedInteger || leftEntity.eType == EntityType::Wildcard) {
-    leftEntity.eType = EntityType::Statement;
-    resultEntities = pg->getRightSide(relType, leftEntity, entityToGet.eType);
+  if (leftEntity.eType == EntityType::FixedInteger) {
+    resultPairs = getFixedEntityPairs(relType, leftEntity, elementTypeToGet, RIGHT);
   } else {
-    std::vector<Entity> iterables = pg->getEntity(leftEntity.eType);
-    for (const Entity &e: iterables) {
-      std::vector<Entity> getEntities = pg->getRightSide(relType, e, entityToGet.eType);
-      resultEntities.insert(resultEntities.end(), getEntities.begin(), getEntities.end());
+    resultPairs = getAllCombinationsOfPairs(relType, leftEntity, elementTypeToGet, RIGHT);
+  }
+
+  result.setSuchThatElements(resultPairs);
+  return result;
+}
+
+std::set<std::pair<ProgramElement, ProgramElement>>
+SuchThatHandler::getFixedEntityPairs(RelationshipType relType, const Entity& givenEntity, ElementType t, bool direction) {
+  std::set<std::pair<ProgramElement, ProgramElement>> finalResult;
+  std::set<ProgramElement> pkbResult;
+  ProgramElement programElement = EntityToElementConverter::fixedEntityConverter(givenEntity);
+
+  if (direction == LEFT) {
+    pkbResult = pg->getLeftSide(relType, programElement, t);
+    for (const auto& e : pkbResult) {
+      std::pair <ProgramElement, ProgramElement> combination (e, programElement);
+      finalResult.insert(combination);
+    }
+  } else {
+    pkbResult = pg->getRightSide(relType, programElement, t);
+    for (const auto& e : pkbResult) {
+      std::pair <ProgramElement, ProgramElement> combination (programElement, e);
+      finalResult.insert(combination);
+    }
+  }
+  return finalResult;
+}
+
+std::set<std::pair<ProgramElement, ProgramElement>>
+SuchThatHandler::getAllCombinationsOfPairs(RelationshipType relType, const Entity& givenEntity, ElementType t, bool direction) {
+  std::set<std::pair<ProgramElement, ProgramElement>> finalResult;
+  std::set<ProgramElement> pkbResult;
+  ElementType elementToIterate;
+
+  if (direction == LEFT && (relType == RelationshipType::Modifies || relType == RelationshipType::Uses)) {
+    elementToIterate = ElementType::kVariable;
+  } else {
+    if (givenEntity.eType == EntityType::Wildcard) {
+      elementToIterate = ElementType::kStatement;
+    } else {
+      elementToIterate = EntityToElementConverter::extractElementType(givenEntity);
     }
   }
 
-  return Result(resultEntities);
+  std::set<ProgramElement> iterables = pg->getEntity(elementToIterate);
+  for (const ProgramElement& e : iterables) {
+    if (direction == LEFT) {
+      pkbResult = pg->getLeftSide(relType, e, t);
+      for (const auto& r : pkbResult) {
+        std::pair <ProgramElement, ProgramElement> combination (r, e);
+        finalResult.insert(combination);
+      }
+    } else {
+      pkbResult = pg->getRightSide(relType, e, t);
+      for (const auto& r : pkbResult) {
+        std::pair <ProgramElement, ProgramElement> combination (e, r);
+        finalResult.insert(combination);
+      }
+    }
+  }
+  return finalResult;
 }

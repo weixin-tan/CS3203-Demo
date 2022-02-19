@@ -1,67 +1,77 @@
 #include "PatternHandler.h"
-
+#include "EntityToElementConverter.h"
 
 PatternHandler::PatternHandler(PkbGetter* pg) {
   PatternHandler::pg = pg;
 }
 
-Result PatternHandler::handlePattern(Entity entityToGet, RelationshipRef relRef) {
+Result PatternHandler::handlePattern(const Entity& entityToGet, const RelationshipRef& relRef) {
   assert(("This must be a pattern relationship!\n", relRef.rType == RelationshipType::Pattern));
 
   Entity left = relRef.leftEntity;
   Entity right = relRef.rightEntity;
   Entity assign = relRef.AssignmentEntity;
-
-  if (entityToGet != assign) {
-
-  }
+  Result result;
 
   if (left.eType == EntityType::Wildcard && right.eType == EntityType::Wildcard) {
-    return handleDoubleWildcard(entityToGet);
+    result = handleDoubleWildcard();
   } else if (left.eType == EntityType::Wildcard) {
-    return handleLeftWildcard(entityToGet, right, assign);
+    result = handleLeftWildcard(right);
   } else if (right.eType == EntityType::Wildcard) {
-    return handleRightWildcard(entityToGet, left, assign);
+    result = handleRightWildcard(left);
   } else {
-    return handleNoWildcard(entityToGet, right, left, assign);
+    result = handleNoWildcard(right, left);
   }
 
+  result.setNoClauseElements(pg->getEntity(ElementType::kAssignment));
+  result.setAssignEntity(assign);
+  result.setResultEntity(entityToGet);
+  return result;
 }
 
-Result PatternHandler::handleDoubleWildcard(Entity entityToGet) {
-  std::vector<Entity> resultEntities = pg->getEntity(EntityType::Assignment);
-  return Result(resultEntities);
+Result PatternHandler::handleDoubleWildcard() {
+  Result result;
+  std::set<ProgramElement> resultElements = pg->getEntity(ElementType::kAssignment);
+  result.setPatternElements(resultElements);
+  return result;
 }
 
-Result PatternHandler::handleLeftWildcard(Entity entityToGet, Entity rightEntity, Entity assignEntity) {
+Result PatternHandler::handleLeftWildcard(const Entity& rightEntity) {
   assert(rightEntity.eType == EntityType::FixedStringWithinWildcard); //Iteration 1
-  std::string name = rightEntity.name;
-  //TODO
-  //Doesnt handle constants
-  rightEntity.eType = EntityType::Variable;
-  std::vector<Entity> resultEntities = pg->getLeftSide(RelationshipType::Uses, rightEntity, EntityType::Assignment);
-  return Result(resultEntities);
+  Result result;
+  ProgramElement rightElement = EntityToElementConverter::fixedEntityConverter(rightEntity);
+  std::set<ProgramElement> resultElements = pg->getLeftSide(RelationshipType::Uses, rightElement, ElementType::kAssignment);
+  result.setPatternElements(resultElements);
+  return result;
 }
 
-Result PatternHandler::handleRightWildcard(Entity entityToGet, Entity leftEntity, Entity assignEntity) {
-  std::vector<Entity> resultEntities;
+Result PatternHandler::handleRightWildcard(const Entity& leftEntity) {
+  Result result;
+  std::set<ProgramElement> resultElements;
   if (leftEntity.eType == EntityType::FixedString) {
-    leftEntity.eType = EntityType::Variable;
-    resultEntities = pg->getLeftSide(RelationshipType::Modifies, leftEntity, EntityType::Assignment);
-    return Result(resultEntities);
+    ProgramElement leftElement = EntityToElementConverter::fixedEntityConverter(leftEntity);
+    resultElements = pg->getLeftSide(RelationshipType::Modifies, leftElement, ElementType::kAssignment);
   } else if (leftEntity.eType == EntityType::Variable) {
-    resultEntities = pg->getEntity(EntityType::Assignment);
+    resultElements = pg->getEntity(ElementType::kAssignment);
   } else {
     assert(false);
   }
-  return Result(resultEntities);
+  result.setPatternElements(resultElements);
+  return result;
 }
 
-Result PatternHandler::handleNoWildcard(Entity entityToGet, Entity rightEntity, Entity leftEntity, Entity assignEntity) {
-  std::vector<Entity> left = handleRightWildcard(entityToGet, leftEntity, assignEntity).getResultEntities();
-  std::vector<Entity> right = handleLeftWildcard(entityToGet, rightEntity, assignEntity).getResultEntities();
-  //TODO
-  //Combine them and return value
+Result PatternHandler::handleNoWildcard(const Entity& rightEntity, const Entity& leftEntity) {
+  Result result;
+  std::set<ProgramElement> left = handleRightWildcard(leftEntity).getPatternElements();
+  std::set<ProgramElement> right = handleLeftWildcard(rightEntity).getPatternElements();
+  std::set<ProgramElement> resultElements;
 
-  return Result();
+  for (const auto& e : left) {
+    if (right.count(e)) {
+      resultElements.insert(e);
+    }
+  }
+
+  result.setPatternElements(resultElements);
+  return result;
 }
