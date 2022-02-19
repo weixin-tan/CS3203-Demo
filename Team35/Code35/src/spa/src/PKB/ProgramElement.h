@@ -11,9 +11,10 @@ public:
     static const std::string null_string_value;
 
 public:
+    // TODO: put back const
     ElementType element_type;
-    const int integer_value;
-    const std::string string_value;
+    int integer_value;
+    std::string string_value;
 
 private:
     ProgramElement(ElementType element_type, int integer_value, const std::string& string_value);
