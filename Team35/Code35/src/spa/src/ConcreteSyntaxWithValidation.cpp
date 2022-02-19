@@ -24,16 +24,19 @@ Program ConcreteSyntaxWithValidation::parseProgram(std::queue<Token> tokensQueue
 }
 
 Procedure ConcreteSyntaxWithValidation::parseProcedure(std::queue<Token> tokensQueue) {
+	Procedure procedure;
+
 	// procedure_keyword
-	/*if (tokensQueue.front().getToken() != TokenType::PROCEDURE_KEYWORD) {
+	if (tokensQueue.front().getToken() != TokenType::PROCEDURE_KEYWORD) {
 		throw std::invalid_argument("Missing procedure keyword.");
-	}*/
+	}
 	tokensQueue.pop();
 
 	// procedure name
-	/*if (tokensQueue.front().getToken() != TokenType::NAME) {
+	if (tokensQueue.front().getToken() != TokenType::NAME) {
 		throw std::invalid_argument("Missing procedure name.");
-	}*/
+	}
+	procedure.setProcName(tokensQueue.front().getId());
 	tokensQueue.pop();
 
 	// left_curly
@@ -42,7 +45,6 @@ Procedure ConcreteSyntaxWithValidation::parseProcedure(std::queue<Token> tokensQ
 	}
 	tokensQueue.pop();
 
-	Procedure procedure;
 	StmtLst stmtLst;
 	try {
 		stmtLst = ConcreteSyntaxWithValidation::parseStmtLst(tokensQueue);
@@ -53,6 +55,9 @@ Procedure ConcreteSyntaxWithValidation::parseProcedure(std::queue<Token> tokensQ
 	stmtLst.SetContainerType(ContainerType::kprocedure);
 	procedure.setStmtLst(stmtLst);
 	procedure.setSize(stmt_count);
+
+	stmt_count = 0;
+
 	return procedure;
 }
 
