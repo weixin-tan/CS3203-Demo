@@ -52,6 +52,7 @@ std::set<ProgramElement> ResultProcessor::processResults(std::vector<Result> res
         }
       }
     }
+    return emptyResultElements; // In case something goes wrong.
   } else if (results.size() == 2) {
     Result patternResult;
     Result suchThatResult;

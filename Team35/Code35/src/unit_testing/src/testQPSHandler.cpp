@@ -1,6 +1,5 @@
 #include "catch.hpp"
 #include "PKB.h"
-#include "SuchThatHandler.h"
 #include "QueryProcessor.h"
 #include "QPSMainLogic.h"
 #include "EntityToElementConverter.h"
@@ -8,10 +7,9 @@
 TEST_CASE("QPS Handler") {
     PKB pkb = PKB();
     QPSMainLogic* qr = QPSMainLogic::getInstance(pkb.getGetter());
-    SuchThatHandler st = SuchThatHandler(pkb.getGetter());
     QueryProcessor qp = QueryProcessor();
 
-    //procedure f {
+//procedure f {
 //  x = 5;  // 1
 //  y = x;  // 2
 //  x = 5;  // 3
@@ -25,21 +23,25 @@ TEST_CASE("QPS Handler") {
 //      z = 0;  // 10
 //    }
 //  }
+//  print x; // 11
 //}
 
     std::vector<ParsedStatement> statements = {
-      ParsedStatement(1, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"}, {},  ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
-      ParsedStatement(2, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {"x"}, {"y"},{}, ParsedStatement::default_procedure_name, 1),
-      ParsedStatement(3, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"},{}, ParsedStatement::default_procedure_name, 2),
-      ParsedStatement(4, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kwhile_stmt, ParsedStatement::default_pattern, "f", {"x"}, {},{}, ParsedStatement::default_procedure_name, 3),
-      ParsedStatement(5, ParsedStatement::default_null_stmt_no, 4, StatementType::kread_stmt, ParsedStatement::default_pattern, "f", {}, {"z"}, {},ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
-      ParsedStatement(6, ParsedStatement::default_null_stmt_no, 4, StatementType::kif_stmt, ParsedStatement::default_pattern, "f", {"z"}, {},{}, ParsedStatement::default_procedure_name, 5),
-      ParsedStatement(7, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"},{}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
-      ParsedStatement(8, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"z"},{}, ParsedStatement::default_procedure_name, 7),
-      ParsedStatement(9, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"y"},{}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
-      ParsedStatement(10, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"z"},{}, ParsedStatement::default_procedure_name, 9),
+            ParsedStatement(1, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"}, {"5"},  ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
+            ParsedStatement(2, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {"x"}, {"y"}, {}, ParsedStatement::default_procedure_name, 1),
+            ParsedStatement(3, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"}, {"5"}, ParsedStatement::default_procedure_name, 2),
+            ParsedStatement(4, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kwhile_stmt, ParsedStatement::default_pattern, "f", {"x"}, {}, {"4"}, ParsedStatement::default_procedure_name, 3),
+            ParsedStatement(5, ParsedStatement::default_null_stmt_no, 4, StatementType::kread_stmt, ParsedStatement::default_pattern, "f", {}, {"z"}, {},ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
+            ParsedStatement(6, ParsedStatement::default_null_stmt_no, 4, StatementType::kif_stmt, ParsedStatement::default_pattern, "f", {"z"}, {}, {"10"}, ParsedStatement::default_procedure_name, 5),
+            ParsedStatement(7, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"}, {"100"}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
+            ParsedStatement(8, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"z"}, {"5"}, ParsedStatement::default_procedure_name, 7),
+            ParsedStatement(9, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"y"}, {"100"}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
+            ParsedStatement(10, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"z"}, {"0"}, ParsedStatement::default_procedure_name, 9),
+            ParsedStatement(11, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kread_stmt, ParsedStatement::default_pattern, "f", {"x"}, {}, {}, ParsedStatement::default_procedure_name, 4),
     };
 
+    for (const ParsedStatement& parsed_statement : statements)
+        pkb.getSetter()->insertStmt(parsed_statement);
     for (const ParsedStatement& parsed_statement : statements)
         pkb.getSetter()->insertStmt(parsed_statement);
     SECTION("HANDLER") {
@@ -108,15 +110,15 @@ TEST_CASE("QPS Handler") {
         //vector<Clause> c = qp.parsePQL(modifiesOne);
 
 
-        /*
+
         std::string t = "assign a; variable v;\n Select v such that Follows (a, _)";
         std::string t1 = "stmt s; Select s";
-        std::list<std::string> s4 = qr->parse(noneTwo);
+        std::list<std::string> s4 = qr->parse(t1);
         cout << "asd";
         for (std::string s : s4) {
           cout << "four: " << s << "\n";
         }
-        */
+
 
         REQUIRE(1 == 1);
         /*
@@ -176,7 +178,6 @@ TEST_CASE("QPS Handler") {
         }
         cout << fin.getResultEntities().size();
             */
-        EntityTo
 
     }
 

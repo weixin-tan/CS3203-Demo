@@ -9,13 +9,10 @@ class EntityToElementConverter {
  private:
   EntityToElementConverter();
 
-  //static bool isInteger(std::string s);
-
  public:
   static ElementType extractElementType(const Entity& e);
   static ProgramElement fixedEntityConverter(const Entity& e);
   static bool isInteger(std::string s);
-
 
 };
 
