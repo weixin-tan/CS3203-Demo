@@ -45,11 +45,7 @@ std::set<ProgramElement> ResultProcessor::processResults(std::vector<Result> res
         }
         return resultElements;
       } else {
-        if (resultPairs.empty()) {
-          return emptyResultElements;
-        } else {
-          return onlyResult.getNoClauseElements();
-        }
+        return onlyResult.getNoClauseElements();
       }
     }
     return emptyResultElements; // In case something goes wrong.

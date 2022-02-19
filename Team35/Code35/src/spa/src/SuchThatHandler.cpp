@@ -50,6 +50,8 @@ Result SuchThatHandler::handleBoolCheck(const Entity& entityToGet, const Relatio
     ProgramElement leftElement = EntityToElementConverter::fixedEntityConverter(left);
     ProgramElement rightElement = EntityToElementConverter::fixedEntityConverter(right);
     check = pg->isRelationship(relRef.rType, leftElement, rightElement);
+    std::pair<ProgramElement, ProgramElement> fixedPair(leftElement, rightElement);
+    checkElements.insert(fixedPair);
   } else {
     Result r = handleLeftSide(left, right, relRef.rType);
     checkElements = r.getSuchThatElements();
