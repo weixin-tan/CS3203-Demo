@@ -25,14 +25,14 @@ class Result {
   void setLeftSuchThatEntity(Entity left);
   void setRightSuchThatEntity(Entity right);
   void setAssignEntity(Entity assign);
-  std::set<ProgramElement> getNoClauseElements() const;
-  std::set<std::pair<ProgramElement, ProgramElement>> getSuchThatElements() const;
-  std::set<ProgramElement> getPatternElements() const;
-  Entity getResultEntity() const;
-  Entity getLeftSuchThatEntity() const;
-  Entity getRightSuchThatEntity() const;
-  Entity getAssignEntity() const;
-  bool allSuchThatAndPatternEntitiesNull() const;
+  std::set<ProgramElement> getNoClauseElements();
+  std::set<std::pair<ProgramElement, ProgramElement>> getSuchThatElements();
+  std::set<ProgramElement> getPatternElements();
+  Entity getResultEntity();
+  Entity getLeftSuchThatEntity();
+  Entity getRightSuchThatEntity();
+  Entity getAssignEntity();
+  bool allSuchThatAndPatternEntitiesNull();
 };
 
 

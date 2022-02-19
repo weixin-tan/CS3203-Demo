@@ -32,35 +32,35 @@ void Result::setAssignEntity(Entity assign) {
   Result::assignEntity = assign;
 }
 
-std::set<ProgramElement> Result::getNoClauseElements() const {
+std::set<ProgramElement> Result::getNoClauseElements() {
     return Result::noClauseElements;
 }
 
-std::set<ProgramElement> Result::getPatternElements() const {
+std::set<ProgramElement> Result::getPatternElements() {
   return Result::patternElements;
 }
 
-std::set<std::pair < ProgramElement, ProgramElement>> Result::getSuchThatElements() const {
+std::set<std::pair < ProgramElement, ProgramElement>> Result::getSuchThatElements() {
   return Result::suchThatElements;
 }
 
-Entity Result::getResultEntity() const {
+Entity Result::getResultEntity() {
     return Result::resultEntity;
 }
 
-Entity Result::getLeftSuchThatEntity() const {
+Entity Result::getLeftSuchThatEntity() {
     return Result::leftSuchThatEntity;
 }
 
-Entity Result::getRightSuchThatEntity() const {
+Entity Result::getRightSuchThatEntity() {
     return Result::rightSuchThatEntity;
 }
 
-Entity Result::getAssignEntity() const {
+Entity Result::getAssignEntity() {
     return Result::assignEntity;
 }
 
-bool Result::allSuchThatAndPatternEntitiesNull() const {
+bool Result::allSuchThatAndPatternEntitiesNull() {
     if (Result::leftSuchThatEntity.eType == EntityType::Null && Result::rightSuchThatEntity.eType == EntityType::Null
     && Result::assignEntity.eType == EntityType::Null) {
       return true;
