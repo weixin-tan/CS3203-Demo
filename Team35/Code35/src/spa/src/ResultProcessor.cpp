@@ -71,20 +71,93 @@ std::set<ProgramElement> ResultProcessor::processResults(std::vector<Result> res
       return emptyResultElements;
     }
 
+    std::set<std::pair<ProgramElement, ProgramElement>> resultPairs = suchThatResult.getSuchThatElements();
+    std::set<ProgramElement> patternElements = patternResult.getPatternElements();
+    std::set<ProgramElement> extractLeftEntity;
+    std::set<ProgramElement> extractRightEntity;
+    std::set<ProgramElement> finalResult;
+
+    for (const auto& r : resultPairs) {
+      extractLeftEntity.insert(r.first);
+      extractRightEntity.insert(r.second);
+    }
+
     if (resultEntity == patternResult.getAssignEntity() && resultEntity == suchThatResult.getLeftSuchThatEntity()) {
+      //Return all left such that entity
+      for (const auto& e : extractLeftEntity) {
+        if (patternElements.count(e)) {
+          finalResult.insert(e);
+        }
+      }
+      return finalResult;
 
     } else if (resultEntity == patternResult.getAssignEntity() && resultEntity == suchThatResult.getRightSuchThatEntity()){
+      //Return all right such that entity
+      for (const auto& e : extractRightEntity) {
+        if (patternElements.count(e)) {
+          finalResult.insert(e);
+        }
+      }
+      return finalResult;
 
-    } else if (resultEntity == patternResult.getAssignEntity()) {
+    } else if (resultEntity == patternResult.getAssignEntity()) { // Not equal to left and right such that entities
+      //Return all pattern entities
+      return patternElements;
 
     } else if (resultEntity != patternResult.getAssignEntity() && resultEntity == suchThatResult.getLeftSuchThatEntity()) {
 
+      if (patternResult.getAssignEntity() == suchThatResult.getRightSuchThatEntity()) {
+        for (const auto& e : resultPairs) {
+          if (patternElements.count(e.second)) {
+            finalResult.insert(e.first);
+          }
+        }
+        return finalResult;
+      } else {
+        return extractLeftEntity;
+      }
+
     } else if (resultEntity != patternResult.getAssignEntity() && resultEntity == suchThatResult.getRightSuchThatEntity()) {
 
-    } else { // All three don't match
+      if (patternResult.getAssignEntity() == suchThatResult.getLeftSuchThatEntity()) {
+        for (const auto& e : resultPairs) {
+          if (patternElements.count(e.first)) {
+            finalResult.insert(e.second);
+          }
+        }
+        return finalResult;
+      } else {
+        return extractRightEntity;
+      }
 
+    } else { // All three don't match result entity
+
+      if (patternResult.getAssignEntity() == suchThatResult.getLeftSuchThatEntity()) {
+        for (const auto& e : resultPairs) {
+          if (patternElements.count(e.first)) {
+            finalResult.insert(e.second);
+          }
+        }
+        if (!finalResult.empty()) {
+          return suchThatResult.getNoClauseElements();
+        } else {
+          return emptyResultElements;
+        }
+      } else if (patternResult.getAssignEntity() == suchThatResult.getRightSuchThatEntity()) {
+        for (const auto& e : resultPairs) {
+          if (patternElements.count(e.second)) {
+            finalResult.insert(e.first);
+          }
+        }
+        if (!finalResult.empty()) {
+          return suchThatResult.getNoClauseElements();
+        } else {
+          return emptyResultElements;
+        }
+      } else {
+        return suchThatResult.getNoClauseElements();
+      }
     }
-
 
   } else {
       return emptyResultElements;

@@ -3,10 +3,9 @@
 
 ResultFormatter::ResultFormatter() = default;
 
-std::list<std::string> ResultFormatter::formatResult(Result finalResult) {
-  std::set<ProgramElement> resultElements= finalResult.getProgramElements();
+std::list<std::string> ResultFormatter::formatResult(const std::set<ProgramElement>& finalResult) {
   std::list<std::string> result;
-  for(const ProgramElement& e : resultElements) {
+  for(const ProgramElement& e : finalResult) {
     if(e.integer_value == ProgramElement::null_integer_value) {
       result.push_back(e.string_value);
     } else {
