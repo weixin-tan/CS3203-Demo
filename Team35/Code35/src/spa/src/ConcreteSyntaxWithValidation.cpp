@@ -194,7 +194,7 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseExprStr
 		if (tokensQueue.front().getToken() == TokenType::NAME) {
 			result[0].push_back(tokensQueue.front().getId());
 		}
-		else if (tokensQueue.front().getToken() == TokenType::INTEGER) {
+		else if ((tokensQueue.front().getToken() == TokenType::INTEGER) || (tokensQueue.front().getToken() == TokenType::DIGIT)){
 			result[1].push_back(tokensQueue.front().getId());
 		}
 		// other valid symbols in expr
@@ -403,7 +403,7 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseCondExp
 		else if (tokensQueue.front().getToken() == TokenType::NAME) {
 			result[0].push_back(tokensQueue.front().getId());
 		}
-		else if (tokensQueue.front().getToken() == TokenType::INTEGER) {
+		else if ((tokensQueue.front().getToken() == TokenType::INTEGER) || (tokensQueue.front().getToken() == TokenType::DIGIT)) {
 			result[1].push_back(tokensQueue.front().getId());
 		}
 		// invalid symbols in cond_expr
