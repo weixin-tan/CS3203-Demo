@@ -7,7 +7,7 @@
 #include <filesystem>
 
 
-/*TEST_CASE("SP round 0 iteration test") {
+TEST_CASE("SP round 0 iteration test") {
 
 	using std::filesystem::current_path;
 
@@ -64,7 +64,7 @@
 	REQUIRE(parsed_statement2.procedure_called == "f");
 	REQUIRE(parsed_statement3.procedure_called == "f");
 	*/
-
+}
 
 TEST_CASE("SP round 1 basic iteration test") {
 
