@@ -133,12 +133,18 @@ TEST_CASE("Case 2") {
 	whileStmtLst1.SetContainerType(ContainerType::kwhile);
 
 	whileStmtLst1.setNextStmt(Statement(5, StatementType::kread_stmt, { "z" }, {}, {}, "f", {}, nullptr, nullptr, nullptr));
-	whileStmtLst1.setNextStmt(Statement(6, StatementType::kif_stmt, {}, {}, { "z" }, "f", { "10" }, &ifThenStmtLst1, &ifElseStmtLst1, nullptr));
+	std::shared_ptr<StmtLst> SP_ifThenStmtLst1 = std::make_shared<StmtLst>(ifThenStmtLst1);
+	std::shared_ptr<StmtLst> SP_ifElseStmtLst1 = std::make_shared<StmtLst>(ifElseStmtLst1);
+	
+	whileStmtLst1.setNextStmt(Statement(6, StatementType::kif_stmt, {}, {}, { "z" }, "f", { "10" }, SP_ifThenStmtLst1, SP_ifElseStmtLst1, nullptr));
+
+	std::shared_ptr<StmtLst> SP_whileStmtLst1 = std::make_shared<StmtLst>(whileStmtLst1);
+
 
 	stmt_cont.setNextStmt(Statement(1, StatementType::kassign_stmt, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
 	stmt_cont.setNextStmt(Statement(2, StatementType::kassign_stmt, { "y" }, { "x" }, {}, "f", {}, nullptr, nullptr, nullptr));
 	stmt_cont.setNextStmt(Statement(3, StatementType::kassign_stmt, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
-	stmt_cont.setNextStmt(Statement(4, StatementType::kwhile_stmt, {}, {}, { "x" }, "f", { "4" }, nullptr, nullptr, &whileStmtLst1));
+	stmt_cont.setNextStmt(Statement(4, StatementType::kwhile_stmt, {}, {}, { "x" }, "f", { "4" }, nullptr, nullptr, SP_whileStmtLst1));
 
 	//Creating the procedure
 	Procedure procedure2;

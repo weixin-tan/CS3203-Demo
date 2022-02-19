@@ -110,15 +110,15 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 		current_statement.constant = stmt.constant;
 
 		// In this case, if statement will have 2 statement lists (if and then) 
-		this->StatementListReader(*stmt.ifthen_stmt_list, stmt.stmt_no);
-		this->StatementListReader(*stmt.ifelse_stmt_list, stmt.stmt_no);
+		this->StatementListReader(*stmt.ifthen_stmt_list.get(), stmt.stmt_no);
+		this->StatementListReader(*stmt.ifelse_stmt_list.get(), stmt.stmt_no);
 		break;
 	
 	case StatementType::kwhile_stmt:
 		current_statement.var_used = stmt.cond_expr;
 		current_statement.constant = stmt.constant;
 		//In this case, this statement will a while statement list. 
-		this->StatementListReader(*stmt.while_stmt_list, stmt.stmt_no);
+		this->StatementListReader(*stmt.while_stmt_list.get(), stmt.stmt_no);
 		break;
 
 	case StatementType::kcall_stmt:
