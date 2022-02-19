@@ -613,7 +613,8 @@ Statement ConcreteSyntaxWithValidation::parseIf(std::queue<Token>& tokensQueue) 
 	}
 	// set then stmtLst
 	stmtLst.SetContainerType(ContainerType::kifthen);
-	ifStmt.ifthen_stmt_list = &stmtLst;
+	std::shared_ptr<StmtLst> p1 = std::make_shared<StmtLst>(stmtLst);
+	ifStmt.ifthen_stmt_list = p1;
 
 	// parse else stmtLst
 	// remove else_keyword
@@ -636,7 +637,8 @@ Statement ConcreteSyntaxWithValidation::parseIf(std::queue<Token>& tokensQueue) 
 	}
 	// set else stmtLst
 	stmtLstElse.SetContainerType(ContainerType::kifelse);
-	ifStmt.ifelse_stmt_list = &stmtLstElse;
+	std::shared_ptr<StmtLst> p2 = std::make_shared<StmtLst>(stmtLstElse);
+	ifStmt.ifelse_stmt_list = p2;
 
 	return ifStmt;
 }
