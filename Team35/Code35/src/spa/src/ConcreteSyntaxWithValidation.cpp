@@ -372,7 +372,8 @@ Statement ConcreteSyntaxWithValidation::parseWhile(std::queue<Token>& tokensQueu
 		throw;
 	}
 	stmtLst.SetContainerType(ContainerType::kwhile);
-	whileStmt.while_stmt_list = &stmtLst;
+	std::shared_ptr<StmtLst> p = std::make_shared<StmtLst>(stmtLst);
+	whileStmt.while_stmt_list = p;
 	return whileStmt;
 }
 
