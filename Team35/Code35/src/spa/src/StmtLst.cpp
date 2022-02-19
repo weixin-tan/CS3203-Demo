@@ -1,5 +1,7 @@
 #include "StmtLst.h"
 
+class Statement;
+
 StmtLst::StmtLst() {
 	std::vector<Statement> s = {};
 	this->stmts = s;

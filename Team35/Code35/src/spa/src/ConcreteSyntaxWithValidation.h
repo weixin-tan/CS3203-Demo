@@ -1,6 +1,7 @@
 #include <queue>
 #include <stack>
 #include <stdexcept>
+#include <memory>
 #include "Program.h"
 #include "Expr.h"
 #include "CondExpr.h"

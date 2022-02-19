@@ -79,7 +79,10 @@ TEST_CASE("SP round 1 basic iteration test") {
 	std::stringstream buffer;
 	buffer << t.rdbuf();
 	ProcedureLst procedureLst;
-	procedureLst.setNextProcedure(concrete.parseProcedure(tokeniser.putInQueue(buffer.str())));
+	// Creating the queue of tokens
+	std::queue<Token> tokenQueue = tokeniser.putInQueue(buffer.str());
+	Procedure parsedProcedure = concrete.parseProcedure(tokenQueue);
+	procedureLst.setNextProcedure(parsedProcedure);
 	std::vector<std::vector<ParsedStatement>> resultsLst = convertor.ProcedureReader(procedureLst);
 
 	std::vector<ParsedStatement> results = resultsLst[0];

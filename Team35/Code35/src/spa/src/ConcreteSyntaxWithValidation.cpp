@@ -24,16 +24,19 @@ Program ConcreteSyntaxWithValidation::parseProgram(std::queue<Token> tokensQueue
 }
 
 Procedure ConcreteSyntaxWithValidation::parseProcedure(std::queue<Token> tokensQueue) {
+	Procedure procedure;
+
 	// procedure_keyword
-	/*if (tokensQueue.front().getToken() != TokenType::PROCEDURE_KEYWORD) {
+	if (tokensQueue.front().getToken() != TokenType::PROCEDURE_KEYWORD) {
 		throw std::invalid_argument("Missing procedure keyword.");
-	}*/
+	}
 	tokensQueue.pop();
 
 	// procedure name
-	/*if (tokensQueue.front().getToken() != TokenType::NAME) {
+	if (tokensQueue.front().getToken() != TokenType::NAME) {
 		throw std::invalid_argument("Missing procedure name.");
-	}*/
+	}
+	procedure.setProcName(tokensQueue.front().getId());
 	tokensQueue.pop();
 
 	// left_curly
@@ -42,7 +45,6 @@ Procedure ConcreteSyntaxWithValidation::parseProcedure(std::queue<Token> tokensQ
 	}
 	tokensQueue.pop();
 
-	Procedure procedure;
 	StmtLst stmtLst;
 	try {
 		stmtLst = ConcreteSyntaxWithValidation::parseStmtLst(tokensQueue);
@@ -53,6 +55,9 @@ Procedure ConcreteSyntaxWithValidation::parseProcedure(std::queue<Token> tokensQ
 	stmtLst.SetContainerType(ContainerType::kprocedure);
 	procedure.setStmtLst(stmtLst);
 	procedure.setSize(stmt_count);
+
+	stmt_count = 1;
+
 	return procedure;
 }
 
@@ -151,10 +156,10 @@ Statement ConcreteSyntaxWithValidation::parseAssign(std::queue<Token>& tokensQue
 	assignStmt.var_name = result;
 	tokensQueue.pop();
 
-	// equals sign
-	/*if (tokensQueue.front().getToken() != TokenType::EQUAL) {
+	// assign sign
+	if (tokensQueue.front().getToken() != TokenType::ASSIGN) {
 		throw std::invalid_argument("Missing equal sign.");
-	}*/
+	}
 	tokensQueue.pop();
 
 	// Iteration 1 only passing vector of string
@@ -189,7 +194,7 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseExprStr
 		if (tokensQueue.front().getToken() == TokenType::NAME) {
 			result[0].push_back(tokensQueue.front().getId());
 		}
-		else if (tokensQueue.front().getToken() == TokenType::INTEGER) {
+		else if ((tokensQueue.front().getToken() == TokenType::INTEGER) || (tokensQueue.front().getToken() == TokenType::DIGIT)){
 			result[1].push_back(tokensQueue.front().getId());
 		}
 		// other valid symbols in expr
@@ -367,7 +372,8 @@ Statement ConcreteSyntaxWithValidation::parseWhile(std::queue<Token>& tokensQueu
 		throw;
 	}
 	stmtLst.SetContainerType(ContainerType::kwhile);
-	whileStmt.while_stmt_list = &stmtLst;
+	std::shared_ptr<StmtLst> p = std::make_shared<StmtLst>(stmtLst);
+	whileStmt.while_stmt_list = p;
 	return whileStmt;
 }
 
@@ -397,7 +403,7 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseCondExp
 		else if (tokensQueue.front().getToken() == TokenType::NAME) {
 			result[0].push_back(tokensQueue.front().getId());
 		}
-		else if (tokensQueue.front().getToken() == TokenType::INTEGER) {
+		else if ((tokensQueue.front().getToken() == TokenType::INTEGER) || (tokensQueue.front().getToken() == TokenType::DIGIT)) {
 			result[1].push_back(tokensQueue.front().getId());
 		}
 		// invalid symbols in cond_expr
@@ -607,7 +613,8 @@ Statement ConcreteSyntaxWithValidation::parseIf(std::queue<Token>& tokensQueue) 
 	}
 	// set then stmtLst
 	stmtLst.SetContainerType(ContainerType::kifthen);
-	ifStmt.ifthen_stmt_list = &stmtLst;
+	std::shared_ptr<StmtLst> p1 = std::make_shared<StmtLst>(stmtLst);
+	ifStmt.ifthen_stmt_list = p1;
 
 	// parse else stmtLst
 	// remove else_keyword
@@ -630,7 +637,8 @@ Statement ConcreteSyntaxWithValidation::parseIf(std::queue<Token>& tokensQueue) 
 	}
 	// set else stmtLst
 	stmtLstElse.SetContainerType(ContainerType::kifelse);
-	ifStmt.ifelse_stmt_list = &stmtLstElse;
+	std::shared_ptr<StmtLst> p2 = std::make_shared<StmtLst>(stmtLstElse);
+	ifStmt.ifelse_stmt_list = p2;
 
 	return ifStmt;
 }
