@@ -133,7 +133,7 @@ Token Tokeniser::tokeniser(std::string input) {
     }
 }
 
-void updateType(Token token, TokenType newType){
+void Tokeniser::updateType(Token &token, TokenType newType){
     token.type = newType;
 }
 
@@ -195,7 +195,172 @@ std::string Convertor(std::vector<std::string> vectorString){
     return vts.str();
 }
 
+std::queue<Token> Tokeniser::forbiddenWord(std::queue<Token> inputQueue){
+    std::vector<Token> tempVec;
+    std::queue<Token> outputQueue;
+    while(!inputQueue.empty()){
+        tempVec.push_back(inputQueue.front());
+        inputQueue.pop();
+    }
+    for(int i = 0; i < tempVec.size()-1; i++){
+        if(tempVec[i].type == TokenType::PRINT_KEYWORD && tempVec[i+1].type == TokenType::EQUAL ||
+           (tempVec[i].type == TokenType::PRINT_KEYWORD && tempVec[i+1].type == TokenType::ADD) ||
+           (tempVec[i].type == TokenType::PRINT_KEYWORD && tempVec[i+1].type == TokenType::SUBTRACT) ||
+           (tempVec[i].type == TokenType::PRINT_KEYWORD && tempVec[i+1].type == TokenType::MULTIPLY) ||
+           (tempVec[i].type == TokenType::PRINT_KEYWORD && tempVec[i+1].type == TokenType::MODULO) ||
+           (tempVec[i].type == TokenType::PRINT_KEYWORD && tempVec[i+1].type == TokenType::DIVIDE) ||
+           (tempVec[i].type == TokenType::PRINT_KEYWORD && tempVec[i+1].type == TokenType::AND) ||
+           (tempVec[i].type == TokenType::PRINT_KEYWORD && tempVec[i+1].type == TokenType::OR) ||
+           (tempVec[i].type == TokenType::PRINT_KEYWORD && tempVec[i+1].type == TokenType::NOT) ||
+           (tempVec[i].type == TokenType::PRINT_KEYWORD && tempVec[i+1].type == TokenType::GREATER) ||
+           (tempVec[i].type == TokenType::PRINT_KEYWORD && tempVec[i+1].type == TokenType::GEQ) ||
+           (tempVec[i].type == TokenType::PRINT_KEYWORD && tempVec[i+1].type == TokenType::LESSER) ||
+           (tempVec[i].type == TokenType::PRINT_KEYWORD && tempVec[i+1].type == TokenType::LEQ) ||
+           (tempVec[i].type == TokenType::PRINT_KEYWORD && tempVec[i+1].type == TokenType::NOT_EQUAL) ||
+           (tempVec[i].type == TokenType::PRINT_KEYWORD && tempVec[i+1].type == TokenType::ASSIGN)
+        ){
+            updateType(tempVec[i],TokenType::NAME);
+        } else {
+            updateType(tempVec[i],TokenType::PRINT_KEYWORD);
+        }
+    }
+    for(int i = 0; i < tempVec.size()-1; i++){
+        if(
+           (tempVec[i].type == TokenType::READ_KEYWORD && tempVec[i+1].type == TokenType::ADD) ||
+           (tempVec[i].type == TokenType::READ_KEYWORD && tempVec[i+1].type == TokenType::SUBTRACT) ||
+           (tempVec[i].type == TokenType::READ_KEYWORD && tempVec[i+1].type == TokenType::MULTIPLY) ||
+           (tempVec[i].type == TokenType::READ_KEYWORD && tempVec[i+1].type == TokenType::MODULO) ||
+           (tempVec[i].type == TokenType::READ_KEYWORD && tempVec[i+1].type == TokenType::DIVIDE) ||
+           (tempVec[i].type == TokenType::READ_KEYWORD && tempVec[i+1].type == TokenType::AND) ||
+           (tempVec[i].type == TokenType::READ_KEYWORD && tempVec[i+1].type == TokenType::OR) ||
+           (tempVec[i].type == TokenType::READ_KEYWORD && tempVec[i+1].type == TokenType::NOT) ||
+           (tempVec[i].type == TokenType::READ_KEYWORD && tempVec[i+1].type == TokenType::GREATER) ||
+           (tempVec[i].type == TokenType::READ_KEYWORD && tempVec[i+1].type == TokenType::GEQ) ||
+           (tempVec[i].type == TokenType::READ_KEYWORD && tempVec[i+1].type == TokenType::LESSER) ||
+           (tempVec[i].type == TokenType::READ_KEYWORD && tempVec[i+1].type == TokenType::LEQ) ||
+           (tempVec[i].type == TokenType::READ_KEYWORD && tempVec[i+1].type == TokenType::EQUAL) ||
+           (tempVec[i].type == TokenType::READ_KEYWORD && tempVec[i+1].type == TokenType::NOT_EQUAL) ||
+           (tempVec[i].type == TokenType::READ_KEYWORD && tempVec[i+1].type == TokenType::ASSIGN)
+        ){
+            updateType(tempVec[i],TokenType::NAME);
+        } else {
+            updateType(tempVec[i],TokenType::READ_KEYWORD);
+        }
+    }
+    for(int i = 0; i < tempVec.size()-1; i++){
+        if(
+           (tempVec[i].type == TokenType::CALL_KEYWORD && tempVec[i+1].type == TokenType::ADD) ||
+           (tempVec[i].type == TokenType::CALL_KEYWORD && tempVec[i+1].type == TokenType::SUBTRACT) ||
+           (tempVec[i].type == TokenType::CALL_KEYWORD && tempVec[i+1].type == TokenType::MULTIPLY) ||
+           (tempVec[i].type == TokenType::CALL_KEYWORD && tempVec[i+1].type == TokenType::MODULO) ||
+           (tempVec[i].type == TokenType::CALL_KEYWORD && tempVec[i+1].type == TokenType::DIVIDE) ||
+           (tempVec[i].type == TokenType::CALL_KEYWORD && tempVec[i+1].type == TokenType::AND) ||
+           (tempVec[i].type == TokenType::CALL_KEYWORD && tempVec[i+1].type == TokenType::OR) ||
+           (tempVec[i].type == TokenType::CALL_KEYWORD && tempVec[i+1].type == TokenType::NOT) ||
+           (tempVec[i].type == TokenType::CALL_KEYWORD && tempVec[i+1].type == TokenType::GREATER) ||
+           (tempVec[i].type == TokenType::CALL_KEYWORD && tempVec[i+1].type == TokenType::GEQ) ||
+           (tempVec[i].type == TokenType::CALL_KEYWORD && tempVec[i+1].type == TokenType::LESSER) ||
+           (tempVec[i].type == TokenType::CALL_KEYWORD && tempVec[i+1].type == TokenType::LEQ) ||
+           (tempVec[i].type == TokenType::CALL_KEYWORD && tempVec[i+1].type == TokenType::EQUAL) ||
+           (tempVec[i].type == TokenType::CALL_KEYWORD && tempVec[i+1].type == TokenType::NOT_EQUAL) ||
+           (tempVec[i].type == TokenType::CALL_KEYWORD && tempVec[i+1].type == TokenType::ASSIGN)
+        ){
+            updateType(tempVec[i],TokenType::NAME);
+        } else {
+            updateType(tempVec[i],TokenType::CALL_KEYWORD);
+        }
+    }
+    for(int i = 0; i < tempVec.size()-1; i++){
+        if(tempVec[i].type == TokenType::WHILE_KEYWORD && tempVec[i+1].type == TokenType::LEFT_BRACE){
+            updateType(tempVec[i],TokenType::WHILE_KEYWORD);
+        } else {
+            updateType(tempVec[i],TokenType::NAME);
+        }
+    }
+    for(int i = 0; i < tempVec.size()-1; i++){
+        if(tempVec[i].type == TokenType::IF_KEYWORD && tempVec[i+1].type == TokenType::LEFT_BRACE){
+            updateType(tempVec[i],TokenType::IF_KEYWORD);
+        } else {
+            updateType(tempVec[i],TokenType::NAME);
+        }
+    }
+    for(int i = 0; i < tempVec.size()-1; i++){
+        if(
+           (tempVec[i].type == TokenType::PROCEDURE_KEYWORD && tempVec[i+1].type == TokenType::ADD) ||
+           (tempVec[i].type == TokenType::PROCEDURE_KEYWORD && tempVec[i+1].type == TokenType::SUBTRACT) ||
+           (tempVec[i].type == TokenType::PROCEDURE_KEYWORD && tempVec[i+1].type == TokenType::MULTIPLY) ||
+           (tempVec[i].type == TokenType::PROCEDURE_KEYWORD && tempVec[i+1].type == TokenType::MODULO) ||
+           (tempVec[i].type == TokenType::PROCEDURE_KEYWORD && tempVec[i+1].type == TokenType::DIVIDE) ||
+           (tempVec[i].type == TokenType::PROCEDURE_KEYWORD && tempVec[i+1].type == TokenType::AND) ||
+           (tempVec[i].type == TokenType::PROCEDURE_KEYWORD && tempVec[i+1].type == TokenType::OR) ||
+           (tempVec[i].type == TokenType::PROCEDURE_KEYWORD && tempVec[i+1].type == TokenType::NOT) ||
+           (tempVec[i].type == TokenType::PROCEDURE_KEYWORD && tempVec[i+1].type == TokenType::GREATER) ||
+           (tempVec[i].type == TokenType::PROCEDURE_KEYWORD && tempVec[i+1].type == TokenType::GEQ) ||
+           (tempVec[i].type == TokenType::PROCEDURE_KEYWORD && tempVec[i+1].type == TokenType::LESSER) ||
+           (tempVec[i].type == TokenType::PROCEDURE_KEYWORD && tempVec[i+1].type == TokenType::LEQ) ||
+           (tempVec[i].type == TokenType::PROCEDURE_KEYWORD && tempVec[i+1].type == TokenType::EQUAL) ||
+           (tempVec[i].type == TokenType::PROCEDURE_KEYWORD && tempVec[i+1].type == TokenType::NOT_EQUAL) ||
+           (tempVec[i].type == TokenType::PROCEDURE_KEYWORD && tempVec[i+1].type == TokenType::ASSIGN)
+                ){
+            updateType(tempVec[i],TokenType::NAME);
+        } else {
+            updateType(tempVec[i],TokenType::PROCEDURE_KEYWORD);
+        }
+    }
+    for(int i = 0; i < tempVec.size()-1; i++){
+        if(
+                (tempVec[i].type == TokenType::THEN_KEYWORD && tempVec[i+1].type == TokenType::ADD) ||
+                (tempVec[i].type == TokenType::THEN_KEYWORD && tempVec[i+1].type == TokenType::SUBTRACT) ||
+                (tempVec[i].type == TokenType::THEN_KEYWORD && tempVec[i+1].type == TokenType::MULTIPLY) ||
+                (tempVec[i].type == TokenType::THEN_KEYWORD && tempVec[i+1].type == TokenType::MODULO) ||
+                (tempVec[i].type == TokenType::THEN_KEYWORD && tempVec[i+1].type == TokenType::DIVIDE) ||
+                (tempVec[i].type == TokenType::THEN_KEYWORD && tempVec[i+1].type == TokenType::AND) ||
+                (tempVec[i].type == TokenType::THEN_KEYWORD && tempVec[i+1].type == TokenType::OR) ||
+                (tempVec[i].type == TokenType::THEN_KEYWORD && tempVec[i+1].type == TokenType::NOT) ||
+                (tempVec[i].type == TokenType::THEN_KEYWORD && tempVec[i+1].type == TokenType::GREATER) ||
+                (tempVec[i].type == TokenType::THEN_KEYWORD && tempVec[i+1].type == TokenType::GEQ) ||
+                (tempVec[i].type == TokenType::THEN_KEYWORD && tempVec[i+1].type == TokenType::LESSER) ||
+                (tempVec[i].type == TokenType::THEN_KEYWORD && tempVec[i+1].type == TokenType::LEQ) ||
+                (tempVec[i].type == TokenType::THEN_KEYWORD && tempVec[i+1].type == TokenType::EQUAL) ||
+                (tempVec[i].type == TokenType::THEN_KEYWORD && tempVec[i+1].type == TokenType::NOT_EQUAL) ||
+                (tempVec[i].type == TokenType::THEN_KEYWORD && tempVec[i+1].type == TokenType::ASSIGN)
+                ){
+            updateType(tempVec[i],TokenType::NAME);
+        } else {
+            updateType(tempVec[i],TokenType::THEN_KEYWORD);
+        }
+    }
+    for(int i = 0; i < tempVec.size()-1; i++){
+        if(
+                (tempVec[i].type == TokenType::ELSE_KEYWORD && tempVec[i+1].type == TokenType::ADD) ||
+                (tempVec[i].type == TokenType::ELSE_KEYWORD && tempVec[i+1].type == TokenType::SUBTRACT) ||
+                (tempVec[i].type == TokenType::ELSE_KEYWORD && tempVec[i+1].type == TokenType::MULTIPLY) ||
+                (tempVec[i].type == TokenType::ELSE_KEYWORD && tempVec[i+1].type == TokenType::MODULO) ||
+                (tempVec[i].type == TokenType::ELSE_KEYWORD && tempVec[i+1].type == TokenType::DIVIDE) ||
+                (tempVec[i].type == TokenType::ELSE_KEYWORD && tempVec[i+1].type == TokenType::AND) ||
+                (tempVec[i].type == TokenType::ELSE_KEYWORD && tempVec[i+1].type == TokenType::OR) ||
+                (tempVec[i].type == TokenType::ELSE_KEYWORD && tempVec[i+1].type == TokenType::NOT) ||
+                (tempVec[i].type == TokenType::ELSE_KEYWORD && tempVec[i+1].type == TokenType::GREATER) ||
+                (tempVec[i].type == TokenType::ELSE_KEYWORD && tempVec[i+1].type == TokenType::GEQ) ||
+                (tempVec[i].type == TokenType::ELSE_KEYWORD && tempVec[i+1].type == TokenType::LESSER) ||
+                (tempVec[i].type == TokenType::ELSE_KEYWORD && tempVec[i+1].type == TokenType::LEQ) ||
+                (tempVec[i].type == TokenType::ELSE_KEYWORD && tempVec[i+1].type == TokenType::EQUAL) ||
+                (tempVec[i].type == TokenType::ELSE_KEYWORD && tempVec[i+1].type == TokenType::NOT_EQUAL) ||
+                (tempVec[i].type == TokenType::ELSE_KEYWORD && tempVec[i+1].type == TokenType::ASSIGN)
+                ){
+            updateType(tempVec[i],TokenType::NAME);
+        } else {
+            updateType(tempVec[i],TokenType::ELSE_KEYWORD);
+        }
+    }
+    for(Token t : tempVec){
+        outputQueue.push(t);
+    }
+    return outputQueue;
+}
+
 std::queue<Token> Tokeniser ::putInQueue(std::string input) {
+    std::queue<Token> ansQueue;
     std::queue<Token> tqueue;
     std::stringstream checker(input);
     std::string line;
@@ -213,7 +378,10 @@ std::queue<Token> Tokeniser ::putInQueue(std::string input) {
             }
         }
     }
-    return tqueue;
+    ansQueue = forbiddenWord(tqueue);
+    //return tqueue;
+    return ansQueue;
+
 }
 
 std::string Tokeniser::lTrim(std::string s) {
