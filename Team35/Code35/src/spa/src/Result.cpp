@@ -5,31 +5,31 @@
 Result::Result() = default;
 
 void Result::setNoClauseElements(std::set<ProgramElement> elements) {
-  Result::noClauseElements = std::move(elements);
+  Result::noClauseElements = elements;
 }
 
 void Result::setSuchThatElements(std::set<std::pair<ProgramElement, ProgramElement>> elements) {
-    Result::suchThatElements = std::move(elements);
+    Result::suchThatElements = elements;
 }
 
 void Result::setPatternElements(std::set<ProgramElement> elements) {
-  Result::patternElements = std::move(elements);
+  Result::patternElements = elements;
 }
 
 void Result::setResultEntity(Entity entityToGet) {
-  Result::resultEntity = std::move(entityToGet);
+  Result::resultEntity = entityToGet;
 }
 
 void Result::setLeftSuchThatEntity(Entity left) {
-  Result::leftSuchThatEntity = std::move(left);
+  Result::leftSuchThatEntity = left;
 }
 
 void Result::setRightSuchThatEntity(Entity right) {
-  Result::rightSuchThatEntity = std::move(right);
+  Result::rightSuchThatEntity = right;
 }
 
 void Result::setAssignEntity(Entity assign) {
-  Result::assignEntity = std::move(assign);
+  Result::assignEntity = assign;
 }
 
 std::set<ProgramElement> Result::getNoClauseElements() const {
