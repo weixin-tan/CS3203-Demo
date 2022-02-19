@@ -56,7 +56,7 @@ Procedure ConcreteSyntaxWithValidation::parseProcedure(std::queue<Token> tokensQ
 	procedure.setStmtLst(stmtLst);
 	procedure.setSize(stmt_count);
 
-	stmt_count = 0;
+	stmt_count = 1;
 
 	return procedure;
 }
