@@ -18,4 +18,5 @@ DB::DB() :
   stmtPreceding(),
   stmtFollowing(),
   constantToStmtTable(),
+  usesStmtToConstantTable(),
   constants() {}

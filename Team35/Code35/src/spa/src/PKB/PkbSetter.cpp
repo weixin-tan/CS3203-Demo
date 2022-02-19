@@ -18,6 +18,8 @@ PkbSetter::PkbSetter(DB *db) : db(db) {}
 void PkbSetter::handleVariables(const ParsedStatement& parsedStatement) {
     for (const auto& var: parsedStatement.var_modified)
         db->variables.insert(var);
+    for (const auto& var: parsedStatement.var_used)
+        db->variables.insert(var);
 }
 
 void PkbSetter::handleProcedure(const ParsedStatement& parsedStatement) {
@@ -49,6 +51,7 @@ void PkbSetter::handleStatementType(const ParsedStatement& parsedStatement) {
 void PkbSetter::handleConstants(const ParsedStatement& statement) {
     for (const std::string& c : statement.constant) {
         db->constantToStmtTable[c].insert(statement.stmt_no);
+        db->usesStmtToConstantTable[statement.stmt_no].insert(c);
         db->constants.insert(c);
     }
 }

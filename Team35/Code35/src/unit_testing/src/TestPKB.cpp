@@ -41,7 +41,7 @@ TEST_CASE("PKB Basic") {
             ParsedStatement(8, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"z"}, {"5"}, ParsedStatement::default_procedure_name, 7),
             ParsedStatement(9, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"y"}, {"100"}, ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
             ParsedStatement(10, 6, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"z"}, {"0"}, ParsedStatement::default_procedure_name, 9),
-            ParsedStatement(11, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kread_stmt, ParsedStatement::default_pattern, "f", {"x"}, {}, {}, ParsedStatement::default_procedure_name, 4),
+            ParsedStatement(11, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kprint_stmt, ParsedStatement::default_pattern, "f", {"x"}, {}, {}, ParsedStatement::default_procedure_name, 4),
     };
 
     for (const ParsedStatement& parsed_statement : statements)
@@ -63,6 +63,7 @@ TEST_CASE("PKB Basic") {
                         ProgramElement::createStatement(ElementType::kStatement, 8),
                         ProgramElement::createStatement(ElementType::kStatement, 9),
                         ProgramElement::createStatement(ElementType::kStatement, 10),
+                        ProgramElement::createStatement(ElementType::kStatement, 11),
                 };
                 REQUIRE(result == expected);
             }
@@ -173,6 +174,7 @@ TEST_CASE("PKB Basic") {
                         pkb_getter->getLeftSide(RelationshipType::Modifies, ProgramElement::createVariable("z"), ElementType::kStatement);
                 std::set<ProgramElement> expected = {
                         ProgramElement::createStatement(ElementType::kStatement, 4),
+                        ProgramElement::createStatement(ElementType::kStatement, 5),
                         ProgramElement::createStatement(ElementType::kStatement, 6),
                         ProgramElement::createStatement(ElementType::kStatement, 8),
                         ProgramElement::createStatement(ElementType::kStatement, 10),
@@ -258,7 +260,7 @@ TEST_CASE("PKB Basic") {
 
                 REQUIRE(pkb_getter->isRelationship(RelationshipType::Uses, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createVariable("z")));
 
-                REQUIRE(pkb_getter->isRelationship(RelationshipType::Uses, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createVariable("y")));
+                REQUIRE(!pkb_getter->isRelationship(RelationshipType::Uses, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createVariable("y")));
             }
             SECTION("Procedure Variable") {
                 REQUIRE(pkb_getter->isRelationship(RelationshipType::Uses, ProgramElement::createProcedure("f"), ProgramElement::createVariable("x")));
@@ -270,7 +272,6 @@ TEST_CASE("PKB Basic") {
 
                 std::set<ProgramElement> expected = {
                         ProgramElement::createStatement(ElementType::kAssignment, 2),
-                        ProgramElement::createStatement(ElementType::kAssignment, 4),
                 };
 
                 REQUIRE(result == expected);
@@ -297,7 +298,7 @@ TEST_CASE("PKB Basic") {
                 std::set<ProgramElement> result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createVariable("z"), ElementType::kWhile);
 
                 std::set<ProgramElement> expected = {
-                        ProgramElement::createStatement(ElementType::kIf, 4),
+                        ProgramElement::createStatement(ElementType::kWhile, 4),
                 };
 
                 REQUIRE(result == expected);
@@ -344,7 +345,7 @@ TEST_CASE("PKB Basic") {
             }
             SECTION("Variables given Statement") {
                 std::set<ProgramElement> result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::kStatement, 2), ElementType::kVariable);
-                std::set<ProgramElement> expected = {ProgramElement::createVariable("z"), ProgramElement::createVariable("x")};
+                std::set<ProgramElement> expected = {ProgramElement::createVariable("x")};
 
                 REQUIRE(result == expected);
 
@@ -374,7 +375,7 @@ TEST_CASE("PKB Basic") {
     SECTION("Follows") {
         SECTION("isRelationship") {
             REQUIRE(pkb_getter->isRelationship(RelationshipType::Follows, ProgramElement::createStatement(ElementType::kAssignment, 7), ProgramElement::createStatement(ElementType::kAssignment, 8)));
-            REQUIRE(pkb_getter->isRelationship(RelationshipType::Follows, ProgramElement::createStatement(ElementType::kWhile, 4), ProgramElement::createStatement(ElementType::kAssignment, 11)));
+            REQUIRE(pkb_getter->isRelationship(RelationshipType::Follows, ProgramElement::createStatement(ElementType::kWhile, 4), ProgramElement::createStatement(ElementType::kPrint, 11)));
             REQUIRE(pkb_getter->isRelationship(RelationshipType::Follows, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createStatement(ElementType::kStatement, 11)));
             REQUIRE(!pkb_getter->isRelationship(RelationshipType::Follows, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createStatement(ElementType::kStatement, 5)));
         }
@@ -407,7 +408,7 @@ TEST_CASE("PKB Basic") {
     SECTION("FollowsT") {
         SECTION("isRelationship") {
             REQUIRE(pkb_getter->isRelationship(RelationshipType::FollowsT, ProgramElement::createStatement(ElementType::kAssignment, 7), ProgramElement::createStatement(ElementType::kAssignment, 8)));
-            REQUIRE(pkb_getter->isRelationship(RelationshipType::FollowsT, ProgramElement::createStatement(ElementType::kWhile, 4), ProgramElement::createStatement(ElementType::kAssignment, 11)));
+            REQUIRE(pkb_getter->isRelationship(RelationshipType::FollowsT, ProgramElement::createStatement(ElementType::kWhile, 4), ProgramElement::createStatement(ElementType::kPrint, 11)));
             REQUIRE(pkb_getter->isRelationship(RelationshipType::FollowsT, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createStatement(ElementType::kStatement, 11)));
             REQUIRE(!pkb_getter->isRelationship(RelationshipType::FollowsT, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createStatement(ElementType::kStatement, 5)));
             REQUIRE(pkb_getter->isRelationship(RelationshipType::FollowsT, ProgramElement::createStatement(ElementType::kStatement, 1), ProgramElement::createStatement(ElementType::kStatement, 11)));
@@ -556,7 +557,7 @@ TEST_CASE("PKB Basic") {
             };
             REQUIRE(result == expected);
 
-            result = pkb_getter->getRightSide(RelationshipType::ParentT, ProgramElement::createStatement(ElementType::kStatement, 6), ElementType::kStatement);
+            result = pkb_getter->getRightSide(RelationshipType::ParentT, ProgramElement::createStatement(ElementType::kStatement, 6), ElementType::kAssignment);
             expected = {
                     ProgramElement::createStatement(ElementType::kAssignment, 7),
                     ProgramElement::createStatement(ElementType::kAssignment, 8),

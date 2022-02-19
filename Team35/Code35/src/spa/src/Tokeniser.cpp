@@ -232,13 +232,18 @@ std::queue<Token> Tokeniser ::putInQueue(std::string input) {
         std::string trimmedLine = trim(line);
         std::string spacedTrimmedLine = addSpace(line);
         std::stringstream phraseChecker(spacedTrimmedLine);
+        std::string phrase1;
         std::string phrase;
-        while (getline(phraseChecker, phrase, ' ')) {
-            if (phrase == "") {
-                continue;
-            } else {
-                Token t = tokeniser(phrase);
-                tqueue.push(t);
+        while (getline(phraseChecker, phrase1, ' ')) {
+            std::stringstream tabChecker(phrase1);
+            while (getline(tabChecker, phrase, '\t')) {
+                if (phrase == "") {
+                    continue;
+                }
+                else {
+                    Token t = tokeniser(phrase);
+                    tqueue.push(t);
+                }
             }
         }
     }
@@ -249,12 +254,12 @@ std::queue<Token> Tokeniser ::putInQueue(std::string input) {
 }
 
 std::string Tokeniser::lTrim(std::string s) {
-    size_t start = s.find_first_not_of(" ");
+    size_t start = s.find_first_not_of(" \t");
     return (start == std::string::npos) ? "" : s.substr(start) ;
 }
 
 std::string Tokeniser::rTrim(std::string s) {
-    size_t end = s.find_last_not_of(" ");
+    size_t end = s.find_last_not_of(" \t");
     return (end ==  std::string::npos) ? "" : s.substr(0, end + 1);
 }
 

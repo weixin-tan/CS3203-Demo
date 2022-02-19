@@ -14,7 +14,7 @@ bool PkbGetter::isExists(const ProgramElement& elementToCheck) const {
     if (isStatementType(elementToCheck.element_type)) {
         int stmtNo = elementToCheck.integer_value;
         if (db->stmtTable.count(stmtNo) == 0) return false;
-        return isStatementTypeToGet(elementToCheck.element_type, db->stmtTypeTable.at(stmtNo));
+        return isStatementTypeToGet(elementToCheck.element_type, getStmtType(stmtNo));
     }
     if (ElementType::kProcedure == elementToCheck.element_type)
         return db->procedures.count(elementToCheck.string_value);
@@ -24,6 +24,99 @@ bool PkbGetter::isExists(const ProgramElement& elementToCheck) const {
         return db->constants.count(elementToCheck.string_value);
     assert(false);
 }
+
+// TODO: move this to db
+// TODO: maybe use custom map
+std::set<int> PkbGetter::getChildStmtNos(int parentStmtNo) const {
+    if (db->parentToChildTable.count(parentStmtNo) == 0)
+        return {};
+    return db->parentToChildTable.at(parentStmtNo);
+}
+
+std::set<std::string> PkbGetter::getModifiedVars(int parentStmtNo) const {
+    if (db->modifyStmtToVarTable.count(parentStmtNo) == 0)
+        return {};
+    return db->modifyStmtToVarTable.at(parentStmtNo);
+}
+
+std::set<int> PkbGetter::getModifiesStmtNosGivenVariable(const std::string& var) const {
+    if (db->varToModifyStmtTable.count(var) == 0)
+        return {};
+    return db->varToModifyStmtTable.at(var);
+}
+
+std::set<std::string> PkbGetter::getModifiesProcs(const std::string& var) const {
+    if (db->varToModifyProcTable.count(var) == 0)
+        return {};
+    return db->varToModifyProcTable.at(var);
+}
+
+std::set<std::string> PkbGetter::getVariableGivenModifyProc(const std::string& proc) const {
+    if (db->modifyProcToVarTable.count(proc) == 0)
+        return {};
+    return db->modifyProcToVarTable.at(proc);
+}
+
+std::set<std::string> PkbGetter::getUsedVars(int parentStmtNo) const {
+    if (db->usesStmtToVarTable.count(parentStmtNo) == 0)
+        return {};
+    return db->usesStmtToVarTable.at(parentStmtNo);
+}
+
+std::set<int> PkbGetter::getUsesStmtNosGivenVariable(const std::string& var) const {
+    if (db->varToUsesStmtTable.count(var) == 0)
+        return {};
+    return db->varToUsesStmtTable.at(var);
+}
+
+std::set<std::string> PkbGetter::getUsesProcs(const std::string& var) const {
+    if (db->varToUsesProcTable.count(var) == 0)
+        return {};
+    return db->varToUsesProcTable.at(var);
+}
+
+std::set<std::string> PkbGetter::getVariableGivenUsesProc(const std::string& proc) const {
+    if (db->usesProcToVarTable.count(proc) == 0)
+        return {};
+    return db->usesProcToVarTable.at(proc);
+}
+
+int PkbGetter::getParentStmtNo(int childStmtNo) const {
+    if (db->childToParentTable.count(childStmtNo) == 0)
+        return ParsedStatement::default_null_stmt_no;
+    return db->childToParentTable.at(childStmtNo);
+}
+
+int PkbGetter::getFollowingStmtNo(int stmtNo) const {
+    if (db->stmtFollowing.count(stmtNo) == 0)
+        return ParsedStatement::default_null_stmt_no;
+    return db->stmtFollowing.at(stmtNo);
+}
+
+int PkbGetter::getPrecedingStmtNo(int stmtNo) const {
+    if (db->stmtPreceding.count(stmtNo) == 0)
+        return ParsedStatement::default_null_stmt_no;
+    return db->stmtPreceding.at(stmtNo);
+}
+
+std::set<int> PkbGetter::getUsesStmtNosGivenConstant(const std::string& c) const {
+    if (db->constantToStmtTable.count(c) == 0)
+        return {};
+    return db->constantToStmtTable.at(c);
+}
+
+ElementType PkbGetter::getStmtType(int stmtNo) const {
+    if (db->stmtTypeTable.count(stmtNo) == 0)
+        assert(false);  // should've been caught
+    return db->stmtTypeTable.at(stmtNo);
+}
+
+std::set<std::string> PkbGetter::getUsedConstants(int stmtNo) const {
+    if (db->usesStmtToConstantTable.count(stmtNo) == 0)
+        return {};
+    return db->usesStmtToConstantTable.at(stmtNo);
+}
+
 
 PkbGetter::PkbGetter(DB* db) : db(db) {}
 
@@ -57,19 +150,19 @@ bool PkbGetter::isRelationship(const RelationshipType& r, const ProgramElement& 
         }
         case RelationshipType::Parent: {
             assert(isStatementType(leftSide.element_type) && isStatementType(rightSide.element_type));
-            result = db->childToParentTable.at(rightSide.integer_value) == leftSide.integer_value;
+            result = getParentStmtNo(rightSide.integer_value) == leftSide.integer_value;
             break;
         }
         case RelationshipType::Follows: {
             assert(isStatementType(leftSide.element_type) && isStatementType(rightSide.element_type));
-            result = db->stmtFollowing.at(rightSide.integer_value) == leftSide.integer_value;
+            result = getFollowingStmtNo(leftSide.integer_value) == rightSide.integer_value;
             break;
         }
         case RelationshipType::ParentT: {
             int targetStmtNo = leftSide.integer_value;
             int currentStmtNo = rightSide.integer_value;
             while (currentStmtNo != ParsedStatement::default_null_stmt_no) {
-                currentStmtNo = db->childToParentTable.at(currentStmtNo);
+                currentStmtNo = getParentStmtNo(currentStmtNo);
                 if (currentStmtNo == targetStmtNo) {
                     result = true;
                     break;
@@ -81,7 +174,7 @@ bool PkbGetter::isRelationship(const RelationshipType& r, const ProgramElement& 
             int targetStmtNo = leftSide.integer_value;
             int currentStmtNo = rightSide.integer_value;
             while (currentStmtNo != ParsedStatement::default_null_stmt_no) {
-                currentStmtNo = db->stmtFollowing.at(currentStmtNo);
+                currentStmtNo = getPrecedingStmtNo(currentStmtNo);
                 if (currentStmtNo == targetStmtNo) {
                     result = true;
                     break;
@@ -167,54 +260,54 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const RelationshipType& r, const
     switch (r) {
         case RelationshipType::Modifies: {
             assert(isStatementType(typeToGet) || typeToGet == ElementType::kProcedure);
-            // TODO: temporary allow constant, for pattern
-            assert(rightSide.element_type == ElementType::kVariable || rightSide.element_type == ElementType::kConstant);
-
-            if (rightSide.element_type == ElementType::kConstant) {
-                for (const int& stmtNo : db->constantToStmtTable.at(rightSide.string_value))
-                    result.insert(ProgramElement::createStatement(typeToGet, stmtNo));
-                break;
-            }
+            assert(rightSide.element_type == ElementType::kVariable);
 
             if (isStatementType(typeToGet)) {
                 std::set<int> stmtNos;
-                for (const int& stmtNo : db->varToModifyStmtTable.at(rightSide.string_value)) {
+                for (const int& stmtNo : getModifiesStmtNosGivenVariable(rightSide.string_value)) {
                     int curStmtNo = stmtNo;
                     // do not revisit statements visited
                     while (curStmtNo != ParsedStatement::default_null_stmt_no && stmtNos.find(curStmtNo) == stmtNos.end()) {
-                        if (isStatementTypeToGet(typeToGet, db->stmtTypeTable.at(curStmtNo)))
+                        if (isStatementTypeToGet(typeToGet, getStmtType(curStmtNo)))
                             stmtNos.insert(curStmtNo);
-                        curStmtNo = db->childToParentTable.at(curStmtNo);
+                        curStmtNo = getParentStmtNo(curStmtNo);
                     }
                 }
                 for (const int& stmtNo : stmtNos)
                     result.insert(ProgramElement::createStatement(typeToGet, stmtNo));
                 break;
             } else if (typeToGet == ElementType::kProcedure) {
-                for (const std::string& proc : db->varToModifyProcTable.at(rightSide.string_value))
+                for (const std::string& proc : getModifiesProcs(rightSide.string_value))
                     result.insert(ProgramElement::createProcedure(proc));
             } else assert(false);
             break;
         }
         case RelationshipType::Uses: {
             assert(isStatementType(typeToGet) || typeToGet == ElementType::kProcedure);
-            assert(rightSide.element_type == ElementType::kVariable);
+            assert(rightSide.element_type == ElementType::kVariable || rightSide.element_type == ElementType::kConstant);
+
+            // TODO: temporary allow constant, for pattern
+            if (rightSide.element_type == ElementType::kConstant) {
+                for (const int& stmtNo : getUsesStmtNosGivenConstant(rightSide.string_value))
+                    result.insert(ProgramElement::createStatement(typeToGet, stmtNo));
+                break;
+            }
 
             if (isStatementType(typeToGet)) {
                 std::set<int> stmtNos;
-                for (const int& stmtNo : db->varToUsesStmtTable.at(rightSide.string_value)) {
+                for (const int& stmtNo : getUsesStmtNosGivenVariable(rightSide.string_value)) {
                     int curStmtNo = stmtNo;
                     // do not revisit statements visited
                     while (curStmtNo != ParsedStatement::default_null_stmt_no && stmtNos.find(curStmtNo) == stmtNos.end()) {
-                        if (isStatementTypeToGet(typeToGet, db->stmtTypeTable.at(curStmtNo)))
+                        if (isStatementTypeToGet(typeToGet, getStmtType(curStmtNo)))
                             stmtNos.insert(curStmtNo);
-                        curStmtNo = db->childToParentTable.at(curStmtNo);
+                        curStmtNo = getParentStmtNo(curStmtNo);
                     }
                 }
                 for (const int& stmtNo : stmtNos)
                     result.insert(ProgramElement::createStatement(typeToGet, stmtNo));
             } else if (typeToGet == ElementType::kProcedure) {
-                for (const std::string& proc : db->varToUsesProcTable.at(rightSide.string_value))
+                for (const std::string& proc : getUsesProcs(rightSide.string_value))
                     result.insert(ProgramElement::createProcedure(proc));
             } else assert(false);
             break;
@@ -222,27 +315,27 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const RelationshipType& r, const
         case RelationshipType::Follows: {
             assert(isStatementType(rightSide.element_type) && isStatementType(typeToGet));
 
-            int targetStmtNo = db->stmtPreceding.at(rightSide.integer_value);
-            if (targetStmtNo != ParsedStatement::default_null_stmt_no && isStatementTypeToGet(typeToGet, db->stmtTypeTable.at(targetStmtNo)))
+            int targetStmtNo = getPrecedingStmtNo(rightSide.integer_value);
+            if (targetStmtNo != ParsedStatement::default_null_stmt_no && isStatementTypeToGet(typeToGet, getStmtType(targetStmtNo)))
                 result.insert(ProgramElement::createStatement(typeToGet, targetStmtNo));
             break;
         }
         case RelationshipType::Parent: {
             assert(isStatementType(rightSide.element_type) && isStatementType(typeToGet));
 
-            int targetStmtNo = db->childToParentTable.at(rightSide.integer_value);
-            if (targetStmtNo != ParsedStatement::default_null_stmt_no && isStatementTypeToGet(typeToGet, db->stmtTypeTable.at(targetStmtNo)))
+            int targetStmtNo = getParentStmtNo(rightSide.integer_value);
+            if (targetStmtNo != ParsedStatement::default_null_stmt_no && isStatementTypeToGet(typeToGet, getStmtType(targetStmtNo)))
                 result.insert(ProgramElement::createStatement(typeToGet, targetStmtNo));
             break;
         }
         case RelationshipType::FollowsT: {
             assert(isStatementType(rightSide.element_type) && isStatementType(typeToGet));
 
-            int currentStmtNo = db->stmtPreceding.at(rightSide.integer_value);
+            int currentStmtNo = getPrecedingStmtNo(rightSide.integer_value);
             while (currentStmtNo != ParsedStatement::default_null_stmt_no) {
-                if (isStatementTypeToGet(typeToGet, db->stmtTypeTable.at(currentStmtNo)))
+                if (isStatementTypeToGet(typeToGet, getStmtType(currentStmtNo)))
                     result.insert(ProgramElement::createStatement(typeToGet, currentStmtNo));
-                currentStmtNo = db->stmtPreceding.at(currentStmtNo);
+                currentStmtNo = getPrecedingStmtNo(currentStmtNo);
             }
 
             break;
@@ -250,11 +343,11 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const RelationshipType& r, const
         case RelationshipType::ParentT: {
             assert(isStatementType(rightSide.element_type) && isStatementType(typeToGet));
 
-            int currentStmtNo = db->childToParentTable.at(rightSide.integer_value);
+            int currentStmtNo = getParentStmtNo(rightSide.integer_value);
             while (currentStmtNo != ParsedStatement::default_null_stmt_no) {
-                if (isStatementTypeToGet(typeToGet, db->stmtTypeTable.at(currentStmtNo)))
+                if (isStatementTypeToGet(typeToGet, getStmtType(currentStmtNo)))
                     result.insert(ProgramElement::createStatement(typeToGet, currentStmtNo));
-                currentStmtNo = db->childToParentTable.at(currentStmtNo);
+                currentStmtNo = getParentStmtNo(currentStmtNo);
             }
 
             break;
@@ -277,13 +370,13 @@ std::set<ProgramElement> PkbGetter::getRightSide(const RelationshipType& r, cons
             assert(typeToGet == ElementType::kVariable);
 
             if (isStatementType(leftSide.element_type)) {
-                for (const std::string& var : db->modifyStmtToVarTable.at(leftSide.integer_value))
+                for (const std::string& var : getModifiedVars(leftSide.integer_value))
                     result.insert(ProgramElement::createVariable(var));
 
-                for (const int& childStmtNo: db->parentToChildTable.at(leftSide.integer_value))
+                for (const int& childStmtNo: getChildStmtNos(leftSide.integer_value))
                     result.merge(getRightSide(r, ProgramElement::createStatement(ElementType::kStatement, childStmtNo), typeToGet));
             } else if (leftSide.element_type == ElementType::kProcedure) {
-                for (const std::string& var : db->modifyProcToVarTable.at(leftSide.string_value))
+                for (const std::string& var : getVariableGivenModifyProc(leftSide.string_value))
                     result.insert(ProgramElement::createVariable(var));
             } else assert(false);
             break;
@@ -293,13 +386,13 @@ std::set<ProgramElement> PkbGetter::getRightSide(const RelationshipType& r, cons
             assert(typeToGet == ElementType::kVariable);
 
             if (isStatementType(leftSide.element_type)) {
-                for (const std::string& var : db->usesStmtToVarTable.at(leftSide.integer_value))
+                for (const std::string& var : getUsedVars(leftSide.integer_value))
                     result.insert(ProgramElement::createVariable(var));
 
-                for (const int& childStmtNo: db->parentToChildTable.at(leftSide.integer_value))
+                for (const int& childStmtNo: getChildStmtNos(leftSide.integer_value))
                     result.merge(getRightSide(r, ProgramElement::createStatement(ElementType::kStatement, childStmtNo), typeToGet));
             } else if (leftSide.element_type == ElementType::kProcedure) {
-                for (const std::string& var : db->usesProcToVarTable.at(leftSide.string_value))
+                for (const std::string& var : getVariableGivenUsesProc(leftSide.string_value))
                     result.insert(ProgramElement::createVariable(var));
             } else assert(false);
             break;
@@ -307,27 +400,27 @@ std::set<ProgramElement> PkbGetter::getRightSide(const RelationshipType& r, cons
         case RelationshipType::Follows: {
             assert(isStatementType(leftSide.element_type) && isStatementType(typeToGet));
 
-            int targetStmtNo = db->stmtFollowing.at(leftSide.integer_value);
-            if (targetStmtNo != ParsedStatement::default_null_stmt_no && isStatementTypeToGet(typeToGet, db->stmtTypeTable.at(targetStmtNo)))
+            int targetStmtNo = getFollowingStmtNo(leftSide.integer_value);
+            if (targetStmtNo != ParsedStatement::default_null_stmt_no && isStatementTypeToGet(typeToGet, getStmtType(targetStmtNo)))
                 result.insert(ProgramElement::createStatement(typeToGet, targetStmtNo));
             break;
         }
         case RelationshipType::Parent: {
             assert(isStatementType(leftSide.element_type) && isStatementType(typeToGet));
 
-            for (const int& targetStmtNo : db->parentToChildTable.at(leftSide.integer_value))
-                if (isStatementTypeToGet(typeToGet, db->stmtTypeTable.at(targetStmtNo)))
-                    result.insert(ProgramElement::createStatement(typeToGet, targetStmtNo));
+            for (const int& childStmtNo: getChildStmtNos(leftSide.integer_value))
+                if (isStatementTypeToGet(typeToGet, getStmtType(childStmtNo)))
+                    result.insert(ProgramElement::createStatement(typeToGet, childStmtNo));
             break;
         }
         case RelationshipType::FollowsT: {
             assert(isStatementType(leftSide.element_type) && isStatementType(typeToGet));
 
-            int currentStmtNo = db->stmtFollowing.at(leftSide.integer_value);
+            int currentStmtNo = getFollowingStmtNo(leftSide.integer_value);
             while (currentStmtNo != ParsedStatement::default_null_stmt_no) {
-                if (isStatementTypeToGet(typeToGet, db->stmtTypeTable.at(currentStmtNo)))
+                if (isStatementTypeToGet(typeToGet, getStmtType(currentStmtNo)))
                     result.insert(ProgramElement::createStatement(typeToGet, currentStmtNo));
-                currentStmtNo = db->stmtPreceding.at(currentStmtNo);
+                currentStmtNo = getFollowingStmtNo(currentStmtNo);
             }
 
             break;
@@ -335,8 +428,8 @@ std::set<ProgramElement> PkbGetter::getRightSide(const RelationshipType& r, cons
         case RelationshipType::ParentT: {
             assert(isStatementType(leftSide.element_type) && isStatementType(typeToGet));
 
-            for (const int& childStmtNo : db->parentToChildTable.at(leftSide.integer_value)) {
-                ElementType childStmtType = db->stmtTypeTable.at(childStmtNo);
+            for (const int& childStmtNo: getChildStmtNos(leftSide.integer_value)) {
+                ElementType childStmtType = getStmtType(childStmtNo);
                 if (isStatementTypeToGet(typeToGet, childStmtType))
                     result.insert(ProgramElement::createStatement(typeToGet, childStmtNo));
                 result.merge(getRightSide(r, ProgramElement::createStatement(childStmtType, childStmtNo), typeToGet));
@@ -353,7 +446,7 @@ std::set<ProgramElement> PkbGetter::getRightSide(const RelationshipType& r, cons
 
 // TODO: temporary, expression currently is just a constant or variable used
 std::set<ProgramElement> PkbGetter::getAssignmentGivenExpression(const ProgramElement& expression) const {
-    return getLeftSide(RelationshipType::Modifies, expression, ElementType::kAssignment);
+    return getLeftSide(RelationshipType::Uses, expression, ElementType::kAssignment);
 }
 
 std::set<ProgramElement> PkbGetter::getAssignmentGivenVariableAndExpression(const ProgramElement& variable, const ProgramElement& expression) const {

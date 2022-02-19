@@ -103,7 +103,7 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 		current_statement.var_modified = stmt.var_name;
 		break;
 	case StatementType::kprint_stmt:
-		current_statement.var_used = stmt.expr;
+		current_statement.var_used = stmt.var_name;
 		break;
 	case StatementType::kif_stmt:
 		current_statement.var_used = stmt.cond_expr;
