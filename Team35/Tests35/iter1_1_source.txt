@@ -1,0 +1,16 @@
+procedure	f	{
+  x = 5;
+  			   	y = x;
+  x = 5;
+  while (x 	> 4) {
+    read 		z;
+    if (z < 10) then	 {
+     x = 	100;
+     z = 	5;
+   } 	else {
+     	y = 		100;
+      z = 0;
+    	}
+  }
+  print x;
+}
