@@ -14,12 +14,14 @@ TEST_CASE("test basic boolean methods"){
   string ident4 = "a123456";
   string falseident1 = "$1";
   string falseident2 = "1bc";
+  string falseident3 = "0a";
 
   string integer1 = "1";
   string integer2 = "123456789012309830912";
   string falseinteger1 = "-1";
   string falseinteger2 = "1abc";
   string falseinteger3 = "$13";
+  string falseinteger4 = "a0123";
 
   string wildcard1 = "_";
   string falsewildcard1 = "__";
@@ -41,6 +43,7 @@ TEST_CASE("test basic boolean methods"){
     REQUIRE(isIdent(ident4) == true);
     REQUIRE(isIdent(falseident1) == false);
     REQUIRE(isIdent(falseident2) == false);
+    REQUIRE(isIdent(falseident3) == false);
   };
 
   SECTION("checking isInteger Method"){
@@ -49,6 +52,7 @@ TEST_CASE("test basic boolean methods"){
     REQUIRE(isInteger(falseinteger1) == false);
     REQUIRE(isInteger(falseinteger2) == false);
     REQUIRE(isInteger(falseinteger3) == false);
+    REQUIRE(isInteger(falseinteger4) == false);
   };
 
   SECTION("checking isWildCard Method"){
@@ -90,24 +94,65 @@ TEST_CASE("test basic boolean methods"){
     REQUIRE(isEntRef(quotationident2));
     REQUIRE(!(isEntRef(integer1)));
   }
+
+  SECTION("checking isSelect"){
+    REQUIRE(isSelect("Select something string"));
+    REQUIRE(!isSelect("fSelect wrong"));
+    REQUIRE(!isSelect("no such word"));
+    REQUIRE(!isSelect("select wrong capitalize"));
+  }
+
+  SECTION("checking isPattern"){
+    REQUIRE(isPattern("pattern some string"));
+    REQUIRE(!isPattern("ipattern wrong string"));
+    REQUIRE(!isPattern("Pattern wrong string"));
+    REQUIRE(!isPattern("no such word"));
+  }
+
+  SECTION("checking existsSuchThat"){
+    REQUIRE(existSuchThat("some string lalala such      \t\n that"));
+    REQUIRE(!existSuchThat("such wrong that"));
+    REQUIRE(!existSuchThat("that that such such such"));
+    REQUIRE(!existSuchThat("no string"));
+  }
+}
+
+TEST_CASE("test advanced boolean methods"){
+  SECTION("checking checkDesignEntitySynonyms"){
+    REQUIRE(checkDesignEntitySynonyms({"constant", "a", "b", "c"}));
+    REQUIRE(!checkDesignEntitySynonyms({"invalid", "a"}));
+    REQUIRE(!checkDesignEntitySynonyms({"variable", "1"}));
+  }
+
+  SECTION("checking checkRelRefList"){
+    REQUIRE(checkRelRefList({"Modifies", "x", "_"}));
+    REQUIRE(!checkRelRefList({"invalid", "x", "y"}));
+    REQUIRE(!checkRelRefList({"Uses", "1a", "y"}));
+    REQUIRE(!checkRelRefList({"Uses", "a", "_1"}));
+  }
 }
 /*
 METHODS TO TEST
-bool isSelect(const std::string& s);
-bool isPattern(const std::string& s);
-
- bool checkDesignEntitySynonyms(std::vector<std::string> sArr);
+bool checkPatternList(std::vector<std::string> patternList, std::unordered_map<std::string, Entity>* entityMap);
+  bool entityMapContains(const std::string& s, std::unordered_map<std::string, Entity>* entityMap);
+bool checkDesignEntitySynonyms(std::vector<std::string> sArr);
 bool checkRelRefList(std::vector<std::string> s);
 bool checkPatternList(std::vector<std::string> patternList, std::unordered_map<std::string, Entity>* entityMap);
 bool entityMapContains(const std::string& s, std::unordered_map<std::string, Entity>* entityMap);
 
+std::string extractStringFromQuotation(const std::string& s);
+std::string extractStringFromWildCard(const std::string& s);
 std::string stripString(std::string s);
+std::string removePattern(const std::string& s);
 std::vector<std::string> splitString(const std::string& s, const std::string& delimiter);
+long findPatternClause(const std::string& s);
+std::vector<long> findSuchThatClause(const std::string& s);
 
 std::vector<std::string> splitDeclarationAndSelect(const std::string& s);
 std::vector<std::string> extractSelect(const std::string& s);
 std::vector<std::string> extractDeclaration(const std::string& s);
 
+std::vector<std::string> splitStringBySpaces(const std::string& s);
 std::vector<std::string> extractDesignEntityAndSynonyms(const std::string& s);
 
 std::vector<std::string> splitVariablesAndClauses(const std::string& s);
@@ -117,6 +162,4 @@ std::vector<std::string> extractSuchThatClauses(const std::string& s);
 std::vector<std::string> extractPatternClauses(const std::string& s);
 
 std::vector<std::string> extractItemsInBrackets(const std::string& s);
-
-std::string removePattern(const std::string& s);
  */
