@@ -4,16 +4,19 @@
 
 #include "Tokeniser.h"
 #include <iostream>
+#include <regex>
 
 Tokeniser::Tokeniser() {
 
 }
 
 bool Tokeniser::isNumber(const std::string &str) {
-    for (char const &c : str) {
-        if (std::isdigit(c) == 0) return false;
+    if (str.length() == 1) {
+      return std::isdigit(str[0]);
+    } else {
+        std::regex intRegex("^[1-9][0-9]*$");
+        return std::regex_match(str, intRegex);
     }
-    return true;
 }
 
 bool Tokeniser::isAlphabet(const std::string &str) {
@@ -127,8 +130,11 @@ Token Tokeniser::tokeniser(std::string input) {
     }else if (isNumber(input)) {
         Token t = Token(TokenType::DIGIT, input);
         return t;
-    }else{
+    }else if (isName(input)) {
         Token t = Token(TokenType::NAME, input);
+        return t;
+    } else {
+        Token t = Token(TokenType::SPECIALCHAR, input);
         return t;
     }
 }
@@ -200,8 +206,8 @@ std::queue<Token> Tokeniser::forbiddenWord(std::queue<Token> inputQueue){
     }
 
     for (int i = 0; i < tempVec.size() - 1; i++) {
-        if (tempVec[i].type == TokenType::PRINT_KEYWORD || tempVec[i].type == TokenType::READ_KEYWORD
-        || tempVec[i].type == TokenType::CALL_KEYWORD || tempVec[i].type == TokenType::PROCEDURE_KEYWORD
+        if (tempVec[i].type == TokenType::CALL_KEYWORD
+        //|| tempVec[i].type == TokenType::PROCEDURE_KEYWORD
         || tempVec[i].type == TokenType::THEN_KEYWORD || tempVec[i].type == TokenType::ELSE_KEYWORD
         || tempVec[i].type == TokenType::WHILE_KEYWORD || tempVec[i].type == TokenType::IF_KEYWORD) {
           if (tempVec[i+1].type == TokenType::EQUAL || tempVec[i+1].type == TokenType::ADD
@@ -214,6 +220,24 @@ std::queue<Token> Tokeniser::forbiddenWord(std::queue<Token> inputQueue){
           || tempVec[i+1].type == TokenType::ASSIGN) {
               tempVec[i].type = TokenType::NAME;
           }
+        } else if(tempVec[i].type == TokenType::PRINT_KEYWORD || tempVec[i].type == TokenType::READ_KEYWORD
+                || tempVec[i].type == TokenType::PROCEDURE_KEYWORD ){
+            if(tempVec[i+1].type == TokenType::EQUAL || tempVec[i+1].type == TokenType::ADD
+               || tempVec[i+1].type == TokenType::SUBTRACT || tempVec[i+1].type == TokenType::MULTIPLY
+               || tempVec[i+1].type == TokenType::MODULO || tempVec[i+1].type == TokenType::DIVIDE
+               || tempVec[i+1].type == TokenType::AND || tempVec[i+1].type == TokenType::OR
+               || tempVec[i+1].type == TokenType::NOT || tempVec[i+1].type == TokenType::GREATER
+               || tempVec[i+1].type == TokenType::GEQ || tempVec[i+1].type == TokenType::LESSER
+               || tempVec[i+1].type == TokenType::LEQ || tempVec[i+1].type == TokenType::NOT_EQUAL
+               || tempVec[i+1].type == TokenType::ASSIGN){
+                tempVec[i].type = TokenType::NAME;
+            } else if(tempVec[i+1].type == TokenType::PRINT_KEYWORD
+                    || tempVec[i+1].type == TokenType::READ_KEYWORD
+                    || tempVec[i+1].type == TokenType::CALL_KEYWORD || tempVec[i+1].type == TokenType::PROCEDURE_KEYWORD
+                    || tempVec[i+1].type == TokenType::THEN_KEYWORD || tempVec[i+1].type == TokenType::ELSE_KEYWORD
+                    || tempVec[i+1].type == TokenType::WHILE_KEYWORD || tempVec[i+1].type == TokenType::IF_KEYWORD){
+                tempVec[i+1].type = TokenType::NAME;
+            }
         }
     }
 
@@ -327,4 +351,9 @@ std::string Tokeniser::addSpace(std::string s) {
         }
     }
     return returnString;
+}
+
+bool Tokeniser::isName(const std::string &str) {
+    std::regex nameRegex("^[a-zA-Z][A-Za-z0-9]*$");
+    return std::regex_match(str, nameRegex);
 }
