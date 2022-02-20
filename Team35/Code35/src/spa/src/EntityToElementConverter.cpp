@@ -1,4 +1,5 @@
 #include <cassert>
+#include <regex>
 #include "EntityToElementConverter.h"
 
 EntityToElementConverter::EntityToElementConverter() = default;
@@ -53,4 +54,13 @@ bool EntityToElementConverter::isInteger(std::string s) {
   std::string::const_iterator it = s.begin();
   while (it != s.end() && std::isdigit(*it)) ++it;
   return !s.empty() && it == s.end();
+}
+
+bool EntityToElementConverter::isValid(std::string s) {
+  std::regex validRegex("^[a-zA-Z][A-Za-z0-9]*$");
+  std::regex wildcardRegex("^[_]$");
+  bool match = std::regex_match(s, validRegex);
+  bool wildcardMatch = std::regex_match(s, wildcardRegex);
+  bool empty = (s == "");
+  return isInteger(s) || match || wildcardMatch || empty;
 }
