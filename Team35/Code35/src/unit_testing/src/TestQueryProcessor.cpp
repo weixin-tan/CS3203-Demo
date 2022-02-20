@@ -249,6 +249,8 @@ TEST_CASE("trippy queries"){
   string s8 = "variable pattern; Select pattern pattern pattern (_, \"x\")";
   string s9 = "assign suchthat; Select suchthat such that Follows*(6,suchthat)";
   string s10 = "variable\tv;\tSelect\tv\tsuch\tthat\tParent*(v, 3)";
+  string s11 = "assign a; Select a pattern a (\"\na\t\", _\"b\"_ )";
+  string s12 = "assign a; Select a pattern a (\"a\", _\n\"b\"\t_ )";
 
   SECTION("test that trippy queries are valid"){
     REQUIRE(!qp.parsePQL(s1).empty());
@@ -261,11 +263,14 @@ TEST_CASE("trippy queries"){
     REQUIRE(!qp.parsePQL(s8).empty());
     REQUIRE(!qp.parsePQL(s9).empty());
     REQUIRE(!qp.parsePQL(s10).empty());
+    REQUIRE(!qp.parsePQL(s11).empty());
+    REQUIRE(!qp.parsePQL(s12).empty());
+
   }
 }
 
-TEST_CASE("testing object creation"){
-
+TEST_CASE("testing site"){
+  cout << "hello running debug mode";
 }
 /*
 METHODS TO TEST
