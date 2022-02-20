@@ -40,7 +40,7 @@ ProgramElement EntityToElementConverter::fixedEntityConverter(const Entity &e) {
       return ProgramElement::createStatement(ElementType::kStatement, std::stoi(e.name));
     case EntityType::FixedStringWithinWildcard:
       if (isInteger(e.name)) {
-        return ProgramElement::createStatement(ElementType::kStatement, std::stoi(e.name));
+        return ProgramElement::createConstant(e.name);
       } else {
         return ProgramElement::createVariable(e.name);
       }

@@ -52,7 +52,7 @@ std::set<ProgramElement> ResultProcessor::processResults(std::vector<Result> res
   } else if (results.size() == 2) {
     Result patternResult;
     Result suchThatResult;
-    Entity resultEntity = suchThatResult.getResultEntity(); // Both results have the same result entity.
+
 
     if (results[0].getAssignEntity().eType == EntityType::Null && results[0].getRightSuchThatEntity().eType != EntityType::Null
     && results[0].getLeftSuchThatEntity().eType != EntityType::Null) {
@@ -62,6 +62,8 @@ std::set<ProgramElement> ResultProcessor::processResults(std::vector<Result> res
       suchThatResult = results[1];
       patternResult = results[0];
     }
+
+    Entity resultEntity = suchThatResult.getResultEntity(); // Both results have the same result entity.
 
     // Takes care of cases where left and right such that are the same as result element
     if (suchThatResult.getSuchThatElements().empty() || patternResult.getPatternElements().empty()) {
