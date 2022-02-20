@@ -1,7 +1,9 @@
 #include "ConcreteSyntaxWithValidation.h"
 
+// Statement count
 int stmt_count = 1;
 
+// Default constructor
 ConcreteSyntaxWithValidation::ConcreteSyntaxWithValidation() {
 
 }
@@ -23,6 +25,8 @@ Program ConcreteSyntaxWithValidation::parseProgram(std::queue<Token> tokensQueue
 	return program;
 }
 
+// Returns a Procedure object that can be further processed by Convertor.
+// tokensQueue is a queue of Token objects received from Tokeniser.
 Procedure ConcreteSyntaxWithValidation::parseProcedure(std::queue<Token> tokensQueue) {
 	Procedure procedure;
 
@@ -61,10 +65,12 @@ Procedure ConcreteSyntaxWithValidation::parseProcedure(std::queue<Token> tokensQ
 	return procedure;
 }
 
+// Returns a StmtLst object.
+// tokensQueue is a queue of Token objects.
 StmtLst ConcreteSyntaxWithValidation::parseStmtLst(std::queue<Token>& tokensQueue) {
 	StmtLst stmtLst;
 
-	// handle when procedure missing right curly
+	// right_curly
 	if (tokensQueue.empty()) {
 		throw std::invalid_argument("Missing right curly for procedure.");
 	}
@@ -85,8 +91,11 @@ StmtLst ConcreteSyntaxWithValidation::parseStmtLst(std::queue<Token>& tokensQueu
 	return stmtLst;
 }
 
+// Returns a Statement object.
+// tokensQueue is a queue of Token objects.
 Statement ConcreteSyntaxWithValidation::parseStmt(std::queue<Token>& tokensQueue) {
 
+	// check statement type
 	if (tokensQueue.front().getToken() == TokenType::READ_KEYWORD) {
 		try {
 			return ConcreteSyntaxWithValidation::parseRead(tokensQueue);
@@ -140,7 +149,10 @@ Statement ConcreteSyntaxWithValidation::parseStmt(std::queue<Token>& tokensQueue
 	}
 }
 
-// parseAssign
+// start for parsing assign
+
+// Returns a Statement object.
+// tokensQueue is a queue of Token objects.
 Statement ConcreteSyntaxWithValidation::parseAssign(std::queue<Token>& tokensQueue) {
 	Statement assignStmt;
 	assignStmt.stmt_no = stmt_count;
@@ -156,7 +168,7 @@ Statement ConcreteSyntaxWithValidation::parseAssign(std::queue<Token>& tokensQue
 	assignStmt.var_name = result;
 	tokensQueue.pop();
 
-	// assign sign
+	// single equal sign
 	if (tokensQueue.front().getToken() != TokenType::ASSIGN) {
 		throw std::invalid_argument("Missing equal sign.");
 	}
@@ -171,7 +183,6 @@ Statement ConcreteSyntaxWithValidation::parseAssign(std::queue<Token>& tokensQue
 		throw;
 	}
 	assignStmt.expr = resultString[0];
-	// pass constant
 	assignStmt.constant = resultString[1];
 	
 	// semicolon
@@ -183,13 +194,17 @@ Statement ConcreteSyntaxWithValidation::parseAssign(std::queue<Token>& tokensQue
 	return assignStmt;
 }
 
-// for iteration 1
+// for iteration 1.
+// Returns a vector of vector of strings.
+// tokensQueue is a queue of Token objects.
 std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseExprString(std::queue<Token>& tokensQueue) {
 	std::vector<std::vector<std::string>> result;
 	std::vector<std::string> exprVector;
 	std::vector<std::string> constVector;
 	result.push_back(exprVector);
 	result.push_back(constVector);
+
+	// stop when semicolon is reached
 	while (tokensQueue.front().getToken() != TokenType::SEMICOLON) {
 		if (tokensQueue.front().getToken() == TokenType::NAME) {
 			result[0].push_back(tokensQueue.front().getId());
@@ -208,14 +223,16 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseExprStr
 			;
 		}
 		else {
-			// throw std::invalid_argument("Invalid symbol in expression.");
-			;
+			throw std::invalid_argument("Invalid symbol in expression.");
 		}
 		tokensQueue.pop();
 	}
 	return result;
 }
 
+// not used for Iteration 1.
+// Returns a Expr object.
+// tokensQueue is a queue of Token objects.
 // parseExpr takes inorder, returns reverse
 Expr ConcreteSyntaxWithValidation::parseExpr(std::queue<Token>& tokensQueue) {
 	std::stack<Token> exprStack;
@@ -226,6 +243,9 @@ Expr ConcreteSyntaxWithValidation::parseExpr(std::queue<Token>& tokensQueue) {
 	return ConcreteSyntaxWithValidation::parseExprRecursion(exprStack);
 }
 
+// not used for Iteration 1.
+// Returns a Expr object.
+// exprStack is a stack of Token objects.
 // parseExprRecursion takes reverse, returns reverse
 Expr ConcreteSyntaxWithValidation::parseExprRecursion(std::stack<Token>& exprStack) {
 	Expr expr;
@@ -254,6 +274,9 @@ Expr ConcreteSyntaxWithValidation::parseExprRecursion(std::stack<Token>& exprSta
 	return expr;
 }
 
+// not used for Iteration 1.
+// Returns a Term object.
+// termQueue is a queue of Token objects.
 // parseTerm takes reverse, returns reverse
 Term ConcreteSyntaxWithValidation::parseTerm(std::queue<Token>& termQueue) {
 	Term term;
@@ -282,6 +305,9 @@ Term ConcreteSyntaxWithValidation::parseTerm(std::queue<Token>& termQueue) {
 	return term;
 }
 
+// not used for Iteration 1.
+// Returns a Factor object.
+// factorQueue is a queue of Token objects.
 // parseFactor takes reverse, returns reverse
 Factor ConcreteSyntaxWithValidation::parseFactor(std::queue<Token>& factorQueue) {
 	Factor factor;
@@ -320,12 +346,13 @@ Factor ConcreteSyntaxWithValidation::parseFactor(std::queue<Token>& factorQueue)
 	return factor;
 }
 
-// end of chaining parsers for parsing Assign
-// done
-
+// end of chaining methods for parsing Assign
 
 
 // start for parsing While
+
+// Returns a Statement object.
+// tokensQueue is a queue of Token objects.
 Statement ConcreteSyntaxWithValidation::parseWhile(std::queue<Token>& tokensQueue) {
 	Statement whileStmt;
 	whileStmt.stmt_no = stmt_count;
@@ -377,6 +404,8 @@ Statement ConcreteSyntaxWithValidation::parseWhile(std::queue<Token>& tokensQueu
 	return whileStmt;
 }
 
+// Returns a vector of vector of strings.
+// tokensQueue is a queue of Token objects.
 // parse cond_expr String for Iteration 1
 std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseCondExprString(std::queue<Token>& tokensQueue) {
 	std::vector<std::vector<std::string>> result;
@@ -385,6 +414,8 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseCondExp
 	result.push_back(exprVector);
 	result.push_back(constVector);
 	int closure = 1;
+
+	// stop when left_brace is reached
 	while (closure != 0) {
 		if (tokensQueue.front().getToken() == TokenType::LEFT_BRACE) {
 			closure++;
@@ -425,6 +456,9 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseCondExp
 	return result;
 }
 
+// not used for Iteration 1.
+// Returns a CondExpr object.
+// tokensQueue is a queue of Token objects.
 // parse cond_expr
 CondExpr ConcreteSyntaxWithValidation::parseCondExpr(std::queue<Token>& tokensQueue) {
 	std::queue<Token> condExprQueue;
@@ -450,6 +484,9 @@ CondExpr ConcreteSyntaxWithValidation::parseCondExpr(std::queue<Token>& tokensQu
 	return ConcreteSyntaxWithValidation::parseCondExprRecursion(condExprQueue);
 }
 
+// not used for Iteration 1.
+// Returns a CondExpr object.
+// condExprQueue is a queue of Token objects.
 // parse cond_expr recursive
 CondExpr ConcreteSyntaxWithValidation::parseCondExprRecursion(std::queue<Token>& condExprQueue) {
 	CondExpr condExpr;
@@ -485,6 +522,9 @@ CondExpr ConcreteSyntaxWithValidation::parseCondExprRecursion(std::queue<Token>&
 	return condExpr;
 }
 
+// not used for Iteration 1.
+// Returns a RelExpr object.
+// relExprQueue is a queue of Token objects.
 // parse rel_expr
 RelExpr ConcreteSyntaxWithValidation::parseRelExpr(std::queue<Token>& relExprQueue) {
 	RelExpr relExpr;
@@ -533,6 +573,9 @@ RelExpr ConcreteSyntaxWithValidation::parseRelExpr(std::queue<Token>& relExprQue
 	return relExpr;
 }
 
+// not used for Iteration 1.
+// Returns a RelFactor object.
+// relFactorQueue is a queue of Token objects.
 // parse rel_factor
 RelFactor ConcreteSyntaxWithValidation::parseRelFactor(std::queue<Token>& relFactorQueue) {
 	RelFactor relFactor;
@@ -559,9 +602,12 @@ RelFactor ConcreteSyntaxWithValidation::parseRelFactor(std::queue<Token>& relFac
 }
 
 // end for parsing While
-// done
+
 
 // start for parsing If/Else
+
+// Returns a Statement object.
+// tokensQueue is a queue of Token objects.
 Statement ConcreteSyntaxWithValidation::parseIf(std::queue<Token>& tokensQueue) {
 	Statement ifStmt;
 	ifStmt.stmt_no = stmt_count;
@@ -646,6 +692,9 @@ Statement ConcreteSyntaxWithValidation::parseIf(std::queue<Token>& tokensQueue) 
 // done
 
 // start for parsing Read
+
+// Returns a Statement object.
+// tokensQueue is a queue of Token objects.
 Statement ConcreteSyntaxWithValidation::parseRead(std::queue<Token>& tokensQueue) {
 	Statement readStmt;
 	readStmt.stmt_no = stmt_count;
@@ -675,6 +724,9 @@ Statement ConcreteSyntaxWithValidation::parseRead(std::queue<Token>& tokensQueue
 // end for parsing Read
 
 // start for parsing Print
+
+// Returns a Statement object.
+// tokensQueue is a queue of Token objects.
 Statement ConcreteSyntaxWithValidation::parsePrint(std::queue<Token>& tokensQueue) {
 	Statement printStmt;
 	printStmt.stmt_no = stmt_count;
@@ -703,8 +755,12 @@ Statement ConcreteSyntaxWithValidation::parsePrint(std::queue<Token>& tokensQueu
 }
 // end for parsing Print
 
-// not used for Iteration 1
+
 // start for parsing Call
+
+// not used for Iteration 1
+// Returns a Statement object.
+// tokensQueue is a queue of Token objects.
 Statement ConcreteSyntaxWithValidation::parseCall(std::queue<Token>& tokensQueue) {
 	Statement callStmt;
 	callStmt.stmt_no = stmt_count;
