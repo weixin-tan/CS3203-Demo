@@ -19,6 +19,7 @@ public:
     //methods
     bool isNumber(const std::string& str);
     bool isAlphabet(const std::string& str);
+    bool isName(const std::string& str);
     Token tokeniser(std::string input);
     //std::string tokenPrinter(Tokeniser t);
     std::queue<Token> putInQueue (std::string input);
@@ -28,6 +29,7 @@ public:
     std::string trim(std::string s);
     std::string addSpace(std::string s);
     std::queue<Token> forbiddenWord(std::queue<Token> inputQueue);
+
 
 };
 
