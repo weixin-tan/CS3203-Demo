@@ -206,7 +206,8 @@ std::queue<Token> Tokeniser::forbiddenWord(std::queue<Token> inputQueue){
     }
 
     for (int i = 0; i < tempVec.size() - 1; i++) {
-        if (tempVec[i].type == TokenType::CALL_KEYWORD || tempVec[i].type == TokenType::PROCEDURE_KEYWORD
+        if (tempVec[i].type == TokenType::CALL_KEYWORD
+        //|| tempVec[i].type == TokenType::PROCEDURE_KEYWORD
         || tempVec[i].type == TokenType::THEN_KEYWORD || tempVec[i].type == TokenType::ELSE_KEYWORD
         || tempVec[i].type == TokenType::WHILE_KEYWORD || tempVec[i].type == TokenType::IF_KEYWORD) {
           if (tempVec[i+1].type == TokenType::EQUAL || tempVec[i+1].type == TokenType::ADD
@@ -219,7 +220,8 @@ std::queue<Token> Tokeniser::forbiddenWord(std::queue<Token> inputQueue){
           || tempVec[i+1].type == TokenType::ASSIGN) {
               tempVec[i].type = TokenType::NAME;
           }
-        } else if(tempVec[i].type == TokenType::PRINT_KEYWORD || tempVec[i].type == TokenType::READ_KEYWORD ){
+        } else if(tempVec[i].type == TokenType::PRINT_KEYWORD || tempVec[i].type == TokenType::READ_KEYWORD
+                || tempVec[i].type == TokenType::PROCEDURE_KEYWORD ){
             if(tempVec[i+1].type == TokenType::EQUAL || tempVec[i+1].type == TokenType::ADD
                || tempVec[i+1].type == TokenType::SUBTRACT || tempVec[i+1].type == TokenType::MULTIPLY
                || tempVec[i+1].type == TokenType::MODULO || tempVec[i+1].type == TokenType::DIVIDE
