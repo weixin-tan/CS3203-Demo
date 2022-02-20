@@ -1,0 +1,65 @@
+1 - follows
+if ifs;
+Select ifs such that Follows (_, ifs)
+13, 18, 22, 27
+5000
+2 - followsT
+assign a;
+Select a such that Follows* (a, _)
+11, 20, 24, 31, 32
+5000
+3 - parent
+stmt s; while w;
+Select w such that Parent (s, w)
+19, 35, 42
+5000
+4 - parentT
+assign a; if ifs;
+Select ifs such that Parent* (ifs, a)
+2, 13, 18, 22, 27
+5000
+5 - uses
+assign a;
+Select a such that Uses (a, "z")
+4, 14, 20, 21, 24
+5000
+6 - modifies
+if ifs; variable v;
+Select ifs such that Modifies (ifs, v)
+2, 13, 18, 22, 27
+5000
+7 - pattern
+assign a;
+Select a pattern a ("z", _"0"_)
+17, 33, 39
+5000
+8 - follows and pattern
+stmt s; assign a;
+Select a such that Follows (a, s) pattern a (_, _"z"_)
+20, 24
+5000
+9 - followsT and pattern
+stmt s; assign a; variable v;
+Select a such that Follows* (a, s) pattern a (v, _"x"_)
+24, 31
+5000
+10 - parent and pattern
+assign a; if ifs; variable v;
+Select ifs such that Parent (_, ifs) pattern a (v, _"x"_)
+2, 22, 27
+5000
+11 - parentT and pattern
+assign a; while w; variable v;
+Select w such that Parent* (w, a) pattern a (v, _"x"_)
+1, 19, 38
+5000
+12 - uses and pattern
+print p; assign a; variable v; 
+Select a such that Uses (p, "x") pattern a (v, _"y"_)
+11, 17, 31, 32
+5000
+13 - modifies and pattern
+assign a; variable v;
+Select a such that Modifies (a, "y") pattern a (v, _"0"_)
+4, 14, 31
+5000

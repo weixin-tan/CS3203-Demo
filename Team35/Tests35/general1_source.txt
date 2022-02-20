@@ -1,0 +1,83 @@
+procedure main { 
+if ((!(y>=x))||(!(0<=1))) then {
+if ((!(y!=2))&&(!(0>0))) then {
+while ((z!=x)||(x==2)) {
+y=0%y-z%y;
+print z;
+}
+x=1%2-0%x;
+} else {
+print y;
+}
+} else {
+while ((x<=2)||(!(z==x))) {
+print y;
+read y;
+}
+if ((x>=2)&&(x>1)) then {
+read y;
+read z;
+} else {
+print z;
+read z;
+}
+}
+read z;
+if ((0!=z)||(z<=2)) then {
+while ((!(x==x))&&(y<=0)) {
+print y;
+}
+} else {
+if ((2<=0)||(y<z)) then {
+read x;
+print x;
+y=1/1+z*1;
+} else {
+print y;
+}
+read x;
+while ((!(1>0))||(z<=0)) {
+x=0*z-0%y;
+read y;
+}
+}
+read y;
+while ((!(z==z))||(!(z<x))) {
+while ((2>=y)||(x<y)) {
+x=2*z+y%2;
+print y;
+}
+if ((!(y>=1))||(2<=x)) then {
+print z;
+print y;
+} else {
+x=x%x+1/x;
+y=0%2+1%x;
+x=x%z-y%1;
+}
+}
+if ((!(z>z))&&(y!=2)) then {
+while ((y>=y)||(z<y)) {
+print x;
+read y;
+}
+while ((!(0>=0))||(x<1)) {
+print z;
+}
+} else {
+read z;
+}
+read y;
+while ((0<2)||(!(x==0))) {
+read z;
+read x;
+}
+if ((y<=z)||(!(0<2))) then {
+print y;
+z=0*y-x%y;
+read x;
+} else {
+read z;
+}
+read y;
+}
