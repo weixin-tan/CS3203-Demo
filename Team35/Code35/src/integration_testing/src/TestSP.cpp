@@ -204,5 +204,73 @@ TEST_CASE("SP round 1 basic iteration test") {
 	REQUIRE(parsed_statement10.constant[0] == "0");
 }
 
+TEST_CASE("SP Forbidden word") {
+
+	using std::filesystem::current_path;
+
+	PKB pkb = PKB();
+	Convertor convertor = Convertor(pkb.getSetter());
+	Tokeniser tokeniser = Tokeniser();
+	ConcreteSyntaxWithValidation concrete = ConcreteSyntaxWithValidation();
+
+	std::ifstream t("test.txt");
+	std::stringstream buffer;
+	buffer << t.rdbuf();
+	ProcedureLst procedureLst;
+	// Creating the queue of tokens
+	std::queue<Token> tokenQueue = tokeniser.putInQueue(buffer.str());
+	Procedure parsedProcedure = concrete.parseProcedure(tokenQueue);
+	procedureLst.setNextProcedure(parsedProcedure);
+	std::vector<std::vector<ParsedStatement>> resultsLst = convertor.ProcedureReader(procedureLst);
+
+	std::vector<ParsedStatement> results = resultsLst[0];
+
+	//sorting the parsed statements as they are NOT inserted into order. 
+	std::sort(results.begin(),
+		results.end(),
+		[](ParsedStatement& lhs, ParsedStatement& rhs)
+		{
+			return lhs.stmt_no < rhs.stmt_no;
+		});
+
+	ParsedStatement parsed_statement1 = results[0];
+	ParsedStatement parsed_statement2 = results[1];
+	ParsedStatement parsed_statement3 = results[2];
+	ParsedStatement parsed_statement4 = results[3];
+	ParsedStatement parsed_statement5 = results[4];
+	ParsedStatement parsed_statement6 = results[5];
+	ParsedStatement parsed_statement7 = results[6];
+	ParsedStatement parsed_statement8 = results[7];
+	ParsedStatement parsed_statement9 = results[8];
+	ParsedStatement parsed_statement10 = results[9];
+	
+	REQUIRE(parsed_statement1.var_modified[0] == "a");
+	REQUIRE(parsed_statement2.var_modified[0] == "a");
+	REQUIRE(parsed_statement3.var_modified[0] == "if");
+	REQUIRE(parsed_statement5.var_modified[0] == "if");
+	REQUIRE(parsed_statement9.var_modified[0] == "read");
+
+
+	REQUIRE(parsed_statement1.var_used[0] == "procedure");
+	REQUIRE(parsed_statement2.var_used[0] == "if");
+	REQUIRE(parsed_statement3.var_used[0] == "while");
+	REQUIRE(parsed_statement4.var_used[0] == "while");
+	REQUIRE(parsed_statement4.var_used[1] == "procedure");
+	REQUIRE(parsed_statement5.var_used[0] == "then");
+	REQUIRE(parsed_statement5.var_used[1] == "print");
+	REQUIRE(parsed_statement5.var_used[2] == "call");
+	REQUIRE(parsed_statement6.var_used[0] == "print");
+	REQUIRE(parsed_statement7.var_used[0] == "x");
+	REQUIRE(parsed_statement8.var_used[0] == "if");
+	REQUIRE(parsed_statement8.var_used[1] == "read");
+	REQUIRE(parsed_statement10.var_used[0] == "read");
+
+
+	
+
+
+}
+
+
 
 

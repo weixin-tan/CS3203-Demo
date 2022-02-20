@@ -7,7 +7,7 @@
 #include <regex>
 
 Tokeniser::Tokeniser() {
-
+    forbiddenFlag = false;
 }
 
 bool Tokeniser::isNumber(const std::string &str) {
@@ -36,45 +36,57 @@ Token Tokeniser::tokeniser(std::string input) {
             return t;
         } else if (input == ";"){
             Token t = Token(TokenType::SEMICOLON, input);
+            forbiddenFlag = false; 
             return t;
         } else if (input == "}") {
             Token t = Token(TokenType::RIGHT_CURLY, input);
+            forbiddenFlag = false;
             return t;
         } else if (input == "{") {
             Token t = Token(TokenType::LEFT_CURLY, input);
+            forbiddenFlag = false;
             return t;
         } else if (input == "(") {
             Token t = Token(TokenType::LEFT_BRACE, input);
             return t;
         } else if (input == ")") {
             Token t = Token(TokenType::RIGHT_BRACE, input);
+            forbiddenFlag = false;
             return t;
         } else if (input == "!") {
             Token t = Token(TokenType::NOT, input);
             return t;
         } else if (input == "=") {
             Token t = Token(TokenType::ASSIGN, input);
+            forbiddenFlag = true;
             return t;
         } else if (input == "+") {
             Token t = Token(TokenType::ADD, input);
+            forbiddenFlag = true;
             return t;
         } else if (input == "-") {
             Token t = Token(TokenType::SUBTRACT, input);
+            forbiddenFlag = true;
             return t;
         } else if (input == "*") {
             Token t = Token(TokenType::MULTIPLY, input);
+            forbiddenFlag = true;
             return t;
         } else if (input == "/") {
             Token t = Token(TokenType::DIVIDE, input);
+            forbiddenFlag = true;
             return t;
         } else if (input == "%") {
             Token t = Token(TokenType::MODULO, input);
+            forbiddenFlag = true;
             return t;
         } else if (input == ">") {
             Token t = Token(TokenType::GREATER, input);
+            forbiddenFlag = true;
             return t;
         } else if (input == "<") {
             Token t = Token(TokenType::LESSER, input);
+            forbiddenFlag = true;
             return t;
         } else {
             Token t = Token(TokenType::SPECIALCHAR, input);
@@ -87,45 +99,81 @@ Token Tokeniser::tokeniser(std::string input) {
         return t;
     }else if (input == "read"){
         Token t = Token(TokenType::READ_KEYWORD, input);
+        if (forbiddenFlag) {
+            t = Token(TokenType::NAME, input);
+        }
+        forbiddenFlag = true;
         return t;
     }else if (input == "print"){
         Token t = Token(TokenType::PRINT_KEYWORD, input);
+        if (forbiddenFlag) {
+            t = Token(TokenType::NAME, input);
+        }
+        forbiddenFlag = true;
         return t;
     }else if (input == "call"){
         Token t = Token(TokenType::CALL_KEYWORD, input);
+        if (forbiddenFlag) {
+            t = Token(TokenType::NAME, input);
+        }
+        forbiddenFlag = true;
         return t;
     }else if (input == "while"){
         Token t = Token(TokenType::WHILE_KEYWORD, input);
+        if (forbiddenFlag) {
+            t = Token(TokenType::NAME, input);
+        }
+        forbiddenFlag = true;
         return t;
     }else if (input == "if"){
         Token t = Token(TokenType::IF_KEYWORD, input);
+        if (forbiddenFlag) {
+            t = Token(TokenType::NAME, input);
+        }
+        forbiddenFlag = true;
         return t;
     }else if (input == "procedure"){
         Token t = Token(TokenType::PROCEDURE_KEYWORD, input);
+        if (forbiddenFlag) {
+            t = Token(TokenType::NAME, input);
+        }
+        forbiddenFlag = true;
         return t;
     }else if (input == "then"){
         Token t = Token(TokenType::THEN_KEYWORD, input);
+        if (forbiddenFlag) {
+            t = Token(TokenType::NAME, input);
+        }
         return t;
     }else if (input == "else") {
         Token t = Token(TokenType::ELSE_KEYWORD, input);
+        if (forbiddenFlag) {
+            t = Token(TokenType::NAME, input);
+        }
         return t;
     }else if (input == "&&") {
         Token t = Token(TokenType::AND, input);
+        forbiddenFlag = true;
         return t;
     }else if (input == "||") {
         Token t = Token(TokenType::OR, input);
+        forbiddenFlag = true;
         return t;
     }else if (input == "!=") {
         Token t = Token(TokenType::NOT_EQUAL, input);
+        forbiddenFlag = true;
         return t;
     }else if (input == ">=") {
         Token t = Token(TokenType::GEQ, input);
+        forbiddenFlag = true;
         return t;
     }else if (input == "<=") {
         Token t = Token(TokenType::LEQ, input);
+        forbiddenFlag = true;
         return t;
     }else if (input == "==") {
         Token t = Token(TokenType::EQUAL, input);
+        forbiddenFlag = true;
         return t;
     }else if (isNumber(input)) {
         Token t = Token(TokenType::DIGIT, input);
