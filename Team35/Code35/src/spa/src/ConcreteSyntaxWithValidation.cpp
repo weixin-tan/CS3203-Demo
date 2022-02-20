@@ -223,7 +223,8 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseExprStr
 			;
 		}
 		else {
-			throw std::invalid_argument("Invalid symbol in expression.");
+			// throw std::invalid_argument("Invalid symbol in expression.");
+			;
 		}
 		tokensQueue.pop();
 	}
