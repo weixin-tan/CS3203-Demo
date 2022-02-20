@@ -31,8 +31,18 @@ bool isWildCard(const std::string& s) {
  * @return return true if string s is '"' IDENT '"'. ekse return false
  */
 bool isQuotationIdent(const std::string& s){
-  std::regex quotationIdentRegex("\"[A-Za-z][A-Za-z0-9]*\"");
-  return std::regex_match(s, quotationIdentRegex);
+  std::string temp;
+  if (s.substr(0,1) == "\"" && s.substr(s.length()-1, 1) == "\""){
+    temp = stripString(s.substr(1, s.length()-2));
+    return isIdent(temp);
+  }
+  return false;
+}
+
+std::string extractStringFromQuotation(const std::string& s){
+  std::string temp;
+  temp = stripString(s.substr(1, s.length()-2));
+  return temp;
 }
 
 /**
@@ -40,7 +50,18 @@ bool isQuotationIdent(const std::string& s){
  * @return returns true if string s is '_' '"' expr '"' '_'. Else return false
  */
 bool isStringWithinWildCard(const std::string& s){
-  return s.substr(0,2) == "_\"" && s.substr(s.length()-2, 2) == "\"_";
+  std::string temp;
+  if (s.substr(0,1) == "_" && s.substr(s.length()-1, 1) == "_"){
+    temp = stripString(s.substr(1, s.length()-2));
+    return temp.substr(0,1) == "\"" && temp.substr(temp.length()-1,1) == "\"";
+  }
+  return false;
+}
+
+std::string extractStringFromWildCard(const std::string& s){
+  std::string temp = stripString(s.substr(1, s.length()-2));
+  temp = stripString(temp.substr(1, temp.length()-2));
+  return temp;
 }
 
 /**
@@ -161,6 +182,26 @@ bool checkDesignEntitySynonyms(std::vector<std::string> sArr) {
 }
 
 /**
+ * split string by multiple space delimiters
+ * @param s some string
+ * @return list of words with spaces removed
+ */
+std::vector<std::string> splitStringBySpaces(const std::string& s){
+  std::vector<std::string> toReturn;
+  std::regex re("[ \t\n\r\f\v]");
+  std::sregex_token_iterator first{s.begin(), s.end(), re, -1}, last;
+  std::vector<std::string> tokens{first, last};
+  std::string temp;
+  for (auto word: tokens) {
+    temp = stripString(word);
+    if (!temp.empty()) {
+      toReturn.push_back(temp);
+    }
+  }
+  return toReturn;
+}
+
+/**
  * Seperate Design Entity and Synonyms and put them in a list
  * @param s Entity declarations statement
  * @return List where the first element is a Design Entity and the rest are Synonyms
@@ -168,7 +209,7 @@ bool checkDesignEntitySynonyms(std::vector<std::string> sArr) {
 std::vector<std::string> extractDesignEntityAndSynonyms(const std::string& s){
   std::vector<std::string> returnList;
   std::vector<std::string> laterSynonymsList = splitString(s, ",");
-  std::vector<std::string> frontDesignEntityAndSynonym = splitString(laterSynonymsList.front(), " ");
+  std::vector<std::string> frontDesignEntityAndSynonym = splitStringBySpaces(laterSynonymsList.front());
   std::string tempString;
   for(auto & i : frontDesignEntityAndSynonym){
     tempString = stripString(i);

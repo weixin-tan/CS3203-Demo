@@ -11,6 +11,8 @@ bool isInteger(const std::string& s);
 bool isWildCard(const std::string& s);
 bool isQuotationIdent(const std::string& s);
 bool isStringWithinWildCard(const std::string& s);
+std::string extractStringFromQuotation(const std::string& s);
+std::string extractStringFromWildCard(const std::string& s);
 bool isStmtRef(const std::string& s);
 bool isEntRef(const std::string& s);
 std::string stripString(std::string s);
@@ -20,8 +22,9 @@ std::vector<std::string> splitDeclarationAndSelect(const std::string& s);
 std::vector<std::string> extractSelect(const std::string& s);
 std::vector<std::string> extractDeclaration(const std::string& s);
 
-bool checkDesignEntitySynonyms(std::vector<std::string> sArr);
+std::vector<std::string> splitStringBySpaces(const std::string& s);
 std::vector<std::string> extractDesignEntityAndSynonyms(const std::string& s);
+bool checkDesignEntitySynonyms(std::vector<std::string> sArr);
 
 bool isSelect(const std::string& s);
 bool isPattern(const std::string& s);

@@ -50,7 +50,7 @@ TEST_CASE("testing valid queries on parseQuery"){
 
   std::string s1 = "while w;Select w";
   std::string s2 = "variable      v     ; Select     v      ";
-  std::string s3 = "stmt s;\nSelect\ns\nsuch\nthat\nFollows*(6,s)";
+  std::string s3 = "stmt\ns;\nSelect\ns\nsuch\nthat\nFollows*(6,s)";
   std::string s4 = "    variable     v     ;    Select     v     such    that         Modifies (    6   ,   v   )  ";
   std::string s5 = "assign a;while w;Select a such that Parent*(w,a)";
   std::string s6 = "assign a; Select a pattern a ( _ , _\"count + 1\"_)";
@@ -248,6 +248,9 @@ TEST_CASE("trippy queries"){
   string s7 = "variable that; Select that pattern that(that, _)";
   string s8 = "variable pattern; Select pattern pattern pattern (_, \"x\")";
   string s9 = "assign suchthat; Select suchthat such that Follows*(6,suchthat)";
+  string s10 = "variable\tv;\tSelect\tv\tsuch\tthat\tParent*(v, 3)";
+  string s11 = "assign a; Select a pattern a (\"\na\t\", _\"b\"_ )";
+  string s12 = "assign a; Select a pattern a (\"a\", _\n\"b\"\t_ )";
 
   SECTION("test that trippy queries are valid"){
     REQUIRE(!qp.parsePQL(s1).empty());
@@ -259,11 +262,15 @@ TEST_CASE("trippy queries"){
     REQUIRE(!qp.parsePQL(s7).empty());
     REQUIRE(!qp.parsePQL(s8).empty());
     REQUIRE(!qp.parsePQL(s9).empty());
+    REQUIRE(!qp.parsePQL(s10).empty());
+    REQUIRE(!qp.parsePQL(s11).empty());
+    REQUIRE(!qp.parsePQL(s12).empty());
+
   }
 }
 
-TEST_CASE("testing object creation"){
-
+TEST_CASE("testing site"){
+  cout << "hello running debug mode";
 }
 /*
 METHODS TO TEST
