@@ -200,7 +200,7 @@ std::queue<Token> Tokeniser::forbiddenWord(std::queue<Token> inputQueue){
     }
 
     for (int i = 0; i < tempVec.size() - 1; i++) {
-        if (tempVec[i].type == TokenType::PRINT_KEYWORD || tempVec[i].type == TokenType::READ_KEYWORD
+        if (tempVec[i].type == TokenType::READ_KEYWORD
         || tempVec[i].type == TokenType::CALL_KEYWORD || tempVec[i].type == TokenType::PROCEDURE_KEYWORD
         || tempVec[i].type == TokenType::THEN_KEYWORD || tempVec[i].type == TokenType::ELSE_KEYWORD
         || tempVec[i].type == TokenType::WHILE_KEYWORD || tempVec[i].type == TokenType::IF_KEYWORD) {
@@ -213,9 +213,24 @@ std::queue<Token> Tokeniser::forbiddenWord(std::queue<Token> inputQueue){
           || tempVec[i+1].type == TokenType::LEQ || tempVec[i+1].type == TokenType::NOT_EQUAL
           || tempVec[i+1].type == TokenType::ASSIGN) {
               tempVec[i].type = TokenType::NAME;
-          } else if(tempVec[i+1].type == TokenType::PRINT_KEYWORD){
-              tempVec[i+1].type = TokenType::NAME;
           }
+        } else if(tempVec[i].type == TokenType::PRINT_KEYWORD ){
+            if(tempVec[i+1].type == TokenType::EQUAL || tempVec[i+1].type == TokenType::ADD
+               || tempVec[i+1].type == TokenType::SUBTRACT || tempVec[i+1].type == TokenType::MULTIPLY
+               || tempVec[i+1].type == TokenType::MODULO || tempVec[i+1].type == TokenType::DIVIDE
+               || tempVec[i+1].type == TokenType::AND || tempVec[i+1].type == TokenType::OR
+               || tempVec[i+1].type == TokenType::NOT || tempVec[i+1].type == TokenType::GREATER
+               || tempVec[i+1].type == TokenType::GEQ || tempVec[i+1].type == TokenType::LESSER
+               || tempVec[i+1].type == TokenType::LEQ || tempVec[i+1].type == TokenType::NOT_EQUAL
+               || tempVec[i+1].type == TokenType::ASSIGN){
+                tempVec[i].type = TokenType::NAME;
+            } else if(tempVec[i+1].type == TokenType::PRINT_KEYWORD
+                    || tempVec[i+1].type == TokenType::READ_KEYWORD
+                    || tempVec[i+1].type == TokenType::CALL_KEYWORD || tempVec[i+1].type == TokenType::PROCEDURE_KEYWORD
+                    || tempVec[i+1].type == TokenType::THEN_KEYWORD || tempVec[i+1].type == TokenType::ELSE_KEYWORD
+                    || tempVec[i+1].type == TokenType::WHILE_KEYWORD || tempVec[i+1].type == TokenType::IF_KEYWORD){
+                tempVec[i+1].type = TokenType::NAME;
+            }
         }
     }
 
