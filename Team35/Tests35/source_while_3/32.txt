@@ -1,9 +1,0 @@
-procedure main { 
-while ((!(bravo>=alpha))||(!(0==bravo))) {
-while ((z==z)&&(!(y>=z))) {
-while ((1>=y)&&(!(2<y))) {
-alpha=1*z+bravo*1;
-}
-}
-}
-}

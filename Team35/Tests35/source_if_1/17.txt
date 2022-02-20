@@ -1,7 +1,0 @@
-procedure main { 
-if ((0<=x)||(bravo<=0)) then {
-alpha=2*0-1*2;
-} else {
-print y;
-}
-}

@@ -1,7 +1,0 @@
-procedure main { 
-if ((1>=z)&&(!(y>=alpha))) then {
-print y;
-} else {
-read z;
-}
-}

@@ -1,5 +1,0 @@
-procedure main { 
-while ((!(y<0))||(!(z!=z))) {
-charlie=1/charlie+z*y;
-}
-}

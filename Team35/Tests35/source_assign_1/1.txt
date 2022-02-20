@@ -1,3 +1,0 @@
-procedure main { 
-y=y/1-alpha/0;
-}

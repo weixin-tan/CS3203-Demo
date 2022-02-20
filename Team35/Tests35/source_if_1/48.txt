@@ -1,7 +1,0 @@
-procedure main { 
-if ((z>=x)||(0<=alpha)) then {
-print charlie;
-} else {
-print z;
-}
-}

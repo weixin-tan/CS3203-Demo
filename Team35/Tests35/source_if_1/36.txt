@@ -1,7 +1,0 @@
-procedure main { 
-if ((!(bravo>1))||(!(z!=z))) then {
-print bravo;
-} else {
-print bravo;
-}
-}

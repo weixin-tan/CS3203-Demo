@@ -1,9 +1,0 @@
-procedure main { 
-while ((!(1<=alpha))||(!(1>=2))) {
-while ((bravo>=1)&&(0<=0)) {
-while ((2<=bravo)||(1>=alpha)) {
-x=bravo/alpha+1%1;
-}
-}
-}
-}

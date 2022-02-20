@@ -1,7 +1,0 @@
-procedure main { 
-while ((!(1<charlie))||(0<y)) {
-while ((!(1==y))&&(!(2>=alpha))) {
-read bravo;
-}
-}
-}

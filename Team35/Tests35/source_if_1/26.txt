@@ -1,7 +1,0 @@
-procedure main { 
-if ((z<bravo)&&(0>=2)) then {
-bravo=x*x+0%2;
-} else {
-read bravo;
-}
-}

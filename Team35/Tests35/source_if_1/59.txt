@@ -1,7 +1,0 @@
-procedure main { 
-if ((!(z==y))||(!(alpha<2))) then {
-alpha=y/z-z%x;
-} else {
-print alpha;
-}
-}

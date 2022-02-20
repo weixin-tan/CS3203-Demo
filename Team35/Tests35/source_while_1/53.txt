@@ -1,5 +1,0 @@
-procedure main { 
-while ((charlie==2)||(2==2)) {
-print bravo;
-}
-}

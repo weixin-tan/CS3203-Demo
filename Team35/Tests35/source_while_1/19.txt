@@ -1,5 +1,0 @@
-procedure main { 
-while ((!(charlie>=z))&&(alpha<=charlie)) {
-print y;
-}
-}

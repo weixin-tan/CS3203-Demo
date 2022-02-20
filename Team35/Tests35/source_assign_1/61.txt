@@ -1,3 +1,0 @@
-procedure main { 
-z=x/bravo-bravo/0;
-}

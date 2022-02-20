@@ -1,7 +1,0 @@
-procedure main { 
-if ((!(bravo<=alpha))&&(!(z>=charlie))) then {
-x=0/0+0%z;
-} else {
-print charlie;
-}
-}

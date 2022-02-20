@@ -1,5 +1,0 @@
-procedure main { 
-while ((z!=2)||(!(x!=0))) {
-print z;
-}
-}

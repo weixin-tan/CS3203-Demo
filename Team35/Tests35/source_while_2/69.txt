@@ -1,9 +1,0 @@
-procedure main { 
-while ((0>=0)&&(alpha<=charlie)) {
-if ((y<z)||(!(x>=0))) then {
-y=y%y-x/bravo;
-} else {
-print x;
-}
-}
-}

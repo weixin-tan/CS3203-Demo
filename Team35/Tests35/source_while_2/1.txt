@@ -1,7 +1,0 @@
-procedure main { 
-while ((bravo>=charlie)||(!(bravo<1))) {
-while ((!(bravo<=0))||(2<=2)) {
-x=y%z-bravo/bravo;
-}
-}
-}

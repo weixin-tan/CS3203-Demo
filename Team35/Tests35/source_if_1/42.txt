@@ -1,7 +1,0 @@
-procedure main { 
-if ((!(1==0))&&(2!=2)) then {
-y=y%z-x/bravo;
-} else {
-print bravo;
-}
-}

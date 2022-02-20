@@ -1,5 +1,0 @@
-procedure main { 
-while ((!(y>=2))||(charlie>=x)) {
-charlie=alpha*z+charlie%bravo;
-}
-}

@@ -1,3 +1,0 @@
-procedure main { 
-y=z*2-0%bravo;
-}

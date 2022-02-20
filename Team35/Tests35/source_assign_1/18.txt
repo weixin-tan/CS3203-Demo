@@ -1,3 +1,0 @@
-procedure main { 
-alpha=2%alpha+y/charlie;
-}

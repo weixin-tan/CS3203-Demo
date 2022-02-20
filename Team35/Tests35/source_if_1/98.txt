@@ -1,7 +1,0 @@
-procedure main { 
-if ((!(x>2))||(!(alpha>x))) then {
-read bravo;
-} else {
-read y;
-}
-}

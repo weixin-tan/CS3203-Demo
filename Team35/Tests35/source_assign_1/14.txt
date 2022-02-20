@@ -1,3 +1,0 @@
-procedure main { 
-charlie=0*z+z*0;
-}

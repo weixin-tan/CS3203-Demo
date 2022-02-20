@@ -1,3 +1,0 @@
-procedure main { 
-x=0/x+alpha%x;
-}

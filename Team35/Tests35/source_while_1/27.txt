@@ -1,5 +1,0 @@
-procedure main { 
-while ((!(z==0))&&(z!=alpha)) {
-read charlie;
-}
-}

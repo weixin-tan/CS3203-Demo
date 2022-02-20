@@ -1,9 +1,0 @@
-procedure main { 
-while ((!(x>2))&&(2<=2)) {
-if ((charlie<=y)||(alpha==y)) then {
-read x;
-} else {
-read x;
-}
-}
-}

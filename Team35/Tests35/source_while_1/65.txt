@@ -1,5 +1,0 @@
-procedure main { 
-while ((!(0==2))&&(charlie<=charlie)) {
-z=y%2+bravo/2;
-}
-}

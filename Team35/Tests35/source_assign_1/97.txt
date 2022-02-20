@@ -1,3 +1,0 @@
-procedure main { 
-y=charlie*0+charlie%0;
-}

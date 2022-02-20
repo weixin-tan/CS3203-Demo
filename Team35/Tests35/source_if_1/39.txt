@@ -1,7 +1,0 @@
-procedure main { 
-if ((x==0)&&(!(alpha<y))) then {
-bravo=x*1-bravo*2;
-} else {
-read z;
-}
-}

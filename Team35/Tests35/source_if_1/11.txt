@@ -1,7 +1,0 @@
-procedure main { 
-if ((!(alpha>=0))||(2>=2)) then {
-print charlie;
-} else {
-print y;
-}
-}

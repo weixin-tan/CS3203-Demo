@@ -1,7 +1,0 @@
-procedure main { 
-while ((!(1>charlie))||(0!=charlie)) {
-while ((1>y)&&(charlie<x)) {
-read charlie;
-}
-}
-}

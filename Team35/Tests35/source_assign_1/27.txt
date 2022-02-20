@@ -1,3 +1,0 @@
-procedure main { 
-bravo=x*0+x%bravo;
-}

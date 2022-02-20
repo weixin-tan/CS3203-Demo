@@ -1,5 +1,0 @@
-procedure main { 
-while ((!(alpha!=1))||(bravo!=1)) {
-print x;
-}
-}

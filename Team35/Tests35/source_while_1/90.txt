@@ -1,5 +1,0 @@
-procedure main { 
-while ((0<charlie)||(!(z==x))) {
-print z;
-}
-}

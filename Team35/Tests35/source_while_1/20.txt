@@ -1,5 +1,0 @@
-procedure main { 
-while ((!(alpha<1))&&(!(y>=y))) {
-read alpha;
-}
-}

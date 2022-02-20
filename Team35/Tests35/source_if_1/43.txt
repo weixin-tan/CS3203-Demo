@@ -1,7 +1,0 @@
-procedure main { 
-if ((!(alpha!=charlie))||(!(y<=alpha))) then {
-y=x*y+bravo/2;
-} else {
-print x;
-}
-}

@@ -1,7 +1,0 @@
-procedure main { 
-while ((y==y)&&(!(0<=z))) {
-while ((alpha!=2)&&(!(bravo>=1))) {
-print alpha;
-}
-}
-}

@@ -1,3 +1,0 @@
-procedure main { 
-alpha=1%0-bravo/bravo;
-}

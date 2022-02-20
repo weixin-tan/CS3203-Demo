@@ -1,5 +1,0 @@
-procedure main { 
-while ((!(z<=z))&&(1==1)) {
-read bravo;
-}
-}

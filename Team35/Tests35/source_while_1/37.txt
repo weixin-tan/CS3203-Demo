@@ -1,5 +1,0 @@
-procedure main { 
-while ((!(x<=charlie))&&(0<=2)) {
-print bravo;
-}
-}

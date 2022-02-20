@@ -1,7 +1,0 @@
-procedure main { 
-if ((!(z==2))&&(1!=x)) then {
-read x;
-} else {
-print y;
-}
-}

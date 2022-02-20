@@ -1,9 +1,0 @@
-procedure main { 
-while ((!(bravo>=x))||(!(z!=y))) {
-while ((!(2<bravo))&&(!(y<=bravo))) {
-while ((!(bravo<=0))||(2<=2)) {
-x=y%z-bravo/bravo;
-}
-}
-}
-}

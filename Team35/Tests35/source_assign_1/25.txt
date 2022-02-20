@@ -1,3 +1,0 @@
-procedure main { 
-y=y*bravo-bravo*0;
-}

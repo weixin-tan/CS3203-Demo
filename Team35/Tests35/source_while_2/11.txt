@@ -1,9 +1,0 @@
-procedure main { 
-while ((2>=alpha)&&(charlie<=x)) {
-if ((x==bravo)&&(!(bravo<=0))) then {
-print charlie;
-} else {
-z=1*0-x*charlie;
-}
-}
-}

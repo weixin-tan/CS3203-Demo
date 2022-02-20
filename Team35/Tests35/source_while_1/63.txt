@@ -1,5 +1,0 @@
-procedure main { 
-while ((!(y>=bravo))||(2>1)) {
-alpha=bravo/bravo-x*y;
-}
-}

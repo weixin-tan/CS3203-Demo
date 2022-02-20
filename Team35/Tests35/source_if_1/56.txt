@@ -1,7 +1,0 @@
-procedure main { 
-if ((1<=x)&&(!(0!=bravo))) then {
-bravo=charlie%1-2%y;
-} else {
-y=z/x+x%charlie;
-}
-}

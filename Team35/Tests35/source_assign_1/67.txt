@@ -1,3 +1,0 @@
-procedure main { 
-alpha=alpha%z+1*1;
-}

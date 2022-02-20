@@ -1,9 +1,0 @@
-procedure main { 
-while ((alpha<=bravo)&&(z<x)) {
-while ((bravo>=alpha)||(!(y<=2))) {
-while ((y<2)&&(alpha!=alpha)) {
-read x;
-}
-}
-}
-}

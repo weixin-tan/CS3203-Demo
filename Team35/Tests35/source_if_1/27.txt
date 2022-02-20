@@ -1,7 +1,0 @@
-procedure main { 
-if ((charlie<=y)||(alpha==y)) then {
-read x;
-} else {
-read x;
-}
-}

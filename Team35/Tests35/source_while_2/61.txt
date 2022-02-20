@@ -1,7 +1,0 @@
-procedure main { 
-while ((y!=x)&&(!(1>=alpha))) {
-while ((!(2<0))&&(!(1!=2))) {
-print alpha;
-}
-}
-}

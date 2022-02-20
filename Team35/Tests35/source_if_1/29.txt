@@ -1,7 +1,0 @@
-procedure main { 
-if ((bravo<=2)||(charlie<bravo)) then {
-read alpha;
-} else {
-print y;
-}
-}

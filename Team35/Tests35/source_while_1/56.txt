@@ -1,5 +1,0 @@
-procedure main { 
-while ((!(bravo<z))||(!(x!=x))) {
-print x;
-}
-}

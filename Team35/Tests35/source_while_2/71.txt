@@ -1,9 +1,0 @@
-procedure main { 
-while ((!(2>=z))||(charlie<charlie)) {
-if ((bravo<=2)||(charlie<bravo)) then {
-read alpha;
-} else {
-print y;
-}
-}
-}

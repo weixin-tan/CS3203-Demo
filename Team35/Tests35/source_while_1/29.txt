@@ -1,5 +1,0 @@
-procedure main { 
-while ((!(0>=bravo))||(2>y)) {
-y=y/2+1*z;
-}
-}

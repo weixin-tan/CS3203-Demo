@@ -1,7 +1,0 @@
-procedure main { 
-while ((y>2)||(0>1)) {
-while ((!(bravo>=2))&&(!(0<=2))) {
-print y;
-}
-}
-}

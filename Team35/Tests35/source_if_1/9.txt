@@ -1,7 +1,0 @@
-procedure main { 
-if ((2<z)||(!(alpha>=alpha))) then {
-y=y*alpha-0/y;
-} else {
-x=1*bravo+y/y;
-}
-}

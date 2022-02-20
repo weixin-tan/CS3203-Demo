@@ -1,7 +1,0 @@
-procedure main { 
-if ((!(2<z))||(bravo>0)) then {
-read alpha;
-} else {
-read x;
-}
-}

@@ -1,5 +1,0 @@
-procedure main { 
-while ((!(alpha==2))&&(bravo>=y)) {
-bravo=alpha*z+z%alpha;
-}
-}

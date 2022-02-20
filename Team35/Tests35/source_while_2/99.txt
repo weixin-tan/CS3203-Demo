@@ -1,9 +1,0 @@
-procedure main { 
-while ((alpha<bravo)||(!(2>2))) {
-if ((!(2!=charlie))&&(!(x>=alpha))) then {
-print z;
-} else {
-print bravo;
-}
-}
-}

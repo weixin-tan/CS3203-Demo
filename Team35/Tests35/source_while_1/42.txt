@@ -1,5 +1,0 @@
-procedure main { 
-while ((bravo>bravo)&&(x==0)) {
-z=charlie/charlie-charlie/alpha;
-}
-}

@@ -1,3 +1,0 @@
-procedure main { 
-alpha=1%2+1/charlie;
-}

@@ -1,7 +1,0 @@
-procedure main { 
-if ((!(y>=bravo))&&(z==0)) then {
-x=2%1+0%x;
-} else {
-print z;
-}
-}

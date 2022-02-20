@@ -1,7 +1,0 @@
-procedure main { 
-while ((alpha>=x)&&(1<=alpha)) {
-while ((bravo<=x)&&(alpha>bravo)) {
-y=y/alpha-y/charlie;
-}
-}
-}

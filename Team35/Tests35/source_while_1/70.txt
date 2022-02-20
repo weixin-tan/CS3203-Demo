@@ -1,5 +1,0 @@
-procedure main { 
-while ((0<alpha)||(z>1)) {
-print bravo;
-}
-}

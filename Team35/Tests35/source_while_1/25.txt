@@ -1,5 +1,0 @@
-procedure main { 
-while ((1<=2)&&(z>bravo)) {
-print z;
-}
-}

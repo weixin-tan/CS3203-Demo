@@ -1,7 +1,0 @@
-procedure main { 
-if ((1==charlie)&&(!(bravo!=x))) then {
-read alpha;
-} else {
-alpha=y%0+charlie/charlie;
-}
-}

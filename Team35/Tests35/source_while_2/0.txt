@@ -1,7 +1,0 @@
-procedure main { 
-while ((bravo<0)&&(1<=y)) {
-while ((1!=charlie)&&(!(2==alpha))) {
-x=charlie%x+charlie/x;
-}
-}
-}

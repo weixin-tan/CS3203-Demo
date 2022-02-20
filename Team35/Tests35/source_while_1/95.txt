@@ -1,5 +1,0 @@
-procedure main { 
-while ((!(1!=bravo))||(1<0)) {
-read x;
-}
-}

@@ -1,7 +1,0 @@
-procedure main { 
-if ((y<z)||(!(x>=0))) then {
-y=y%y-x/bravo;
-} else {
-print x;
-}
-}

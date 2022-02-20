@@ -1,9 +1,0 @@
-procedure main { 
-while ((!(y<bravo))||(!(alpha>=bravo))) {
-if ((charlie<x)||(x>=bravo)) then {
-print bravo;
-} else {
-read alpha;
-}
-}
-}

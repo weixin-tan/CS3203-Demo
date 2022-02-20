@@ -1,7 +1,0 @@
-procedure main { 
-while ((!(z!=2))||(0!=1)) {
-while ((bravo==bravo)||(charlie!=0)) {
-print x;
-}
-}
-}

@@ -1,7 +1,0 @@
-procedure main { 
-if ((1!=x)||(!(x>alpha))) then {
-read alpha;
-} else {
-charlie=alpha/x+1*charlie;
-}
-}

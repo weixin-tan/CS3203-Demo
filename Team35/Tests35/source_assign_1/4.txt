@@ -1,3 +1,0 @@
-procedure main { 
-z=y*2-charlie/y;
-}

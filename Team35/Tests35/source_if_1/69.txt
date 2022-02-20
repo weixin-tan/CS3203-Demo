@@ -1,7 +1,0 @@
-procedure main { 
-if ((0>charlie)&&(1>0)) then {
-read bravo;
-} else {
-read x;
-}
-}

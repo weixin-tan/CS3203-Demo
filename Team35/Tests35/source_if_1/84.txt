@@ -1,7 +1,0 @@
-procedure main { 
-if ((!(alpha>alpha))&&(!(x>=charlie))) then {
-read x;
-} else {
-read bravo;
-}
-}

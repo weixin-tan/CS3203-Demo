@@ -1,5 +1,0 @@
-procedure main { 
-while ((alpha<2)||(!(x<=z))) {
-read alpha;
-}
-}

@@ -1,5 +1,0 @@
-procedure main { 
-while ((y>y)||(0<=alpha)) {
-print z;
-}
-}

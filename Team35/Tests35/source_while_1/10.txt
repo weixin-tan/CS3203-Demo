@@ -1,5 +1,0 @@
-procedure main { 
-while ((x==alpha)&&(charlie!=alpha)) {
-bravo=1/2-x*0;
-}
-}

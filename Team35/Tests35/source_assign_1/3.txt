@@ -1,3 +1,0 @@
-procedure main { 
-bravo=x%1-charlie%y;
-}

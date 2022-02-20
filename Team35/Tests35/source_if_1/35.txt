@@ -1,7 +1,0 @@
-procedure main { 
-if ((charlie>=z)&&(y>x)) then {
-print x;
-} else {
-z=charlie*x+y*charlie;
-}
-}

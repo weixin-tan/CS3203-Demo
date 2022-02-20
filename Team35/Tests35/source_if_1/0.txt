@@ -1,7 +1,0 @@
-procedure main { 
-if ((0>=y)||(alpha==alpha)) then {
-print alpha;
-} else {
-print z;
-}
-}

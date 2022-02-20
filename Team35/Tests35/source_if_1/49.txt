@@ -1,7 +1,0 @@
-procedure main { 
-if ((!(charlie>=charlie))&&(!(z<=alpha))) then {
-read bravo;
-} else {
-x=alpha/0+charlie*y;
-}
-}
