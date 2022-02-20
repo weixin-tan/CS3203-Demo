@@ -7,6 +7,19 @@
 #include <regex>
 
 Tokeniser::Tokeniser() {
+
+    // Forbidden flag is a variable to tell the tokeniser that the NEXT value would be a
+    // NAME, instead of a procedure.
+    // It will be activated when there is a keyword (print/call/if/ while/read) 
+    // OR a + = - / * < etc. 
+    // but it will be deactivated the moment we find a ) } or ; to signify the end of
+    // the statement/statement container/while for loop/ condition
+
+    // NOTE that ( will not change anything so we never touch forbidden flag
+
+    // When the forbiddenflag is activated, any subsequent tokens that are keywords will
+    // be recognised as names. 
+    
     forbiddenFlag = false;
 }
 

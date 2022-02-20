@@ -1,0 +1,17 @@
+procedure main {
+a = procedure;
+a = if;
+if = while;
+while( while < procedure){
+    if = (then + print) - 3 + call;
+}
+
+print print;
+print x;
+
+if( if< read ) then {
+    read read;
+} else {
+    print read;
+}
+}

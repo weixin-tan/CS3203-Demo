@@ -204,7 +204,27 @@ TEST_CASE("SP round 1 basic iteration test") {
 	REQUIRE(parsed_statement10.constant[0] == "0");
 }
 
+
+
 TEST_CASE("SP Forbidden word") {
+
+	//procedure main{
+	//a = procedure;
+	//a = if;
+	//if = while;
+	//while (while < procedure) {
+	//	if = (then + print) - 3 + call;
+	//}
+	//print print;
+	//print x;
+	//
+	//if (if < read) then {
+	//	read read;
+	//}
+	//else {
+	//  print read;
+	//}
+	//}
 
 	using std::filesystem::current_path;
 
@@ -213,7 +233,7 @@ TEST_CASE("SP Forbidden word") {
 	Tokeniser tokeniser = Tokeniser();
 	ConcreteSyntaxWithValidation concrete = ConcreteSyntaxWithValidation();
 
-	std::ifstream t("test.txt");
+	std::ifstream t("iter1forbidden.txt");
 	std::stringstream buffer;
 	buffer << t.rdbuf();
 	ProcedureLst procedureLst;
