@@ -1,0 +1,1 @@
+procedure f { xx = 5 ; whatever = xx ; xx = whatever ; }
