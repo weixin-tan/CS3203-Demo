@@ -244,9 +244,9 @@ TEST_CASE("trippy queries"){
   string s3 = "variable Select; Select Select such that Uses(Select, _)";
   string s4 = "variable such; Select such such that Uses(such, _)";
   string s5 = "variable that; Select that such that Uses(that, _)";
-  string s6 = "variable such; Select such pattern such(such, _)";
-  string s7 = "variable that; Select that pattern that(that, _)";
-  string s8 = "variable pattern; Select pattern pattern pattern (_, \"x\")";
+  string s6 = "assign such; Select such pattern such(such, _)";
+  string s7 = "assign that; Select that pattern that(that, _)";
+  string s8 = "assign pattern; Select pattern pattern pattern (_, \"x\")";
   string s9 = "assign suchthat; Select suchthat such that Follows*(6,suchthat)";
   string s10 = "variable\tv;\tSelect\tv\tsuch\tthat\tParent*(v, 3)";
   string s11 = "assign a; Select a pattern a (\"\na\t\", _\"b\"_ )";

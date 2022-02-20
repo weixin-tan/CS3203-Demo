@@ -483,7 +483,8 @@ bool checkRelRefList(std::vector<std::string> sArr){
  */
 bool checkPatternList(std::vector<std::string> patternList, std::unordered_map<std::string, Entity>* entityMap){
   if (patternList.size() == 3 && isEntRef(patternList[1]) && entityMapContains(patternList[0], entityMap)){
-    return true;
+    Entity e = (*entityMap)[patternList[0]];
+    return e.eType == EntityType::Assignment || e.eType == EntityType::If || e.eType == EntityType::While;
   }
   return false;
 }
