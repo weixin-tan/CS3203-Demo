@@ -23,6 +23,13 @@ std::vector<Result> QPSHandler::processClause(const std::vector<Clause> &clauses
 
     for (const RelationshipRef& r : refList) {
       assert(("Relationship type is Null", r.rType != RelationshipType::Null));
+      bool a = !EntityToElementConverter::isValid(r.leftEntity.name) ;
+      bool b = !EntityToElementConverter::isValid(r.rightEntity.name);
+      bool c = !EntityToElementConverter::isValid(r.AssignmentEntity.name);
+      if (!EntityToElementConverter::isValid(r.leftEntity.name) || !EntityToElementConverter::isValid(r.rightEntity.name) || !EntityToElementConverter::isValid(r.AssignmentEntity.name)) {
+        std::vector<Result> empty = {};
+        return empty;
+      }
       if (r.rType == RelationshipType::Pattern) {
         result = patternHandler->handlePattern(entityToFind, r);
       } else {

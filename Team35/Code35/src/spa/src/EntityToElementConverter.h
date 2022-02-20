@@ -13,7 +13,7 @@ class EntityToElementConverter {
   static ElementType extractElementType(const Entity& e);
   static ProgramElement fixedEntityConverter(const Entity& e);
   static bool isInteger(std::string s);
-
+  static bool isValid(std::string s);
 };
 
 

@@ -31,19 +31,40 @@ Result SuchThatHandler::handleSuchThat(const Entity& entityToGet, const Relation
 
 //Get all instances of the searched entity based on whether the relationship exists in PKB
 Result SuchThatHandler::handleBoolCheck(const Entity& entityToGet, const RelationshipRef& relRef) {
-  Result result;
-  bool check;
-  Entity left = relRef.leftEntity;
-  Entity right = relRef.rightEntity;
-  std::set<std::pair<ProgramElement, ProgramElement>> checkElements;
-  ElementType elementTypeToGet = EntityToElementConverter::extractElementType(entityToGet);
+    Result result;
+    bool check;
+    Entity left = relRef.leftEntity;
+    Entity right = relRef.rightEntity;
+    std::set<std::pair<ProgramElement, ProgramElement>> checkElements;
+    ElementType elementTypeToGet = EntityToElementConverter::extractElementType(entityToGet);
 
-  if (left.eType == EntityType::Wildcard) { //Case where the left side is a wildcard
-    Result r = handleRightSide(right, left, relRef.rType);
+  if (left.eType == EntityType::Wildcard && right.eType == EntityType::Wildcard) {
+    assert(relRef.rType != RelationshipType::Modifies || relRef.rType != RelationshipType::Uses);
+    std::set<ProgramElement> elements = pg->getEntity(ElementType::kStatement);
+    check = false;
+    for (const ProgramElement& e1 : elements) {
+      for (const ProgramElement& e2 : elements) {
+        bool isRel = pg->isRelationship(relRef.rType, e1, e2);
+        if (isRel) {
+          check = true;
+          checkElements.insert(std::pair<ProgramElement, ProgramElement> (e1, e2));
+          break;
+        }
+      }
+    }
+  } else if (left.eType == EntityType::Wildcard) { //Case where the left side is a wildcard
+    assert(relRef.rType != RelationshipType::Modifies || relRef.rType != RelationshipType::Uses);
+    left.eType = EntityType::Statement;
+    Result r = handleLeftSide(left, right, relRef.rType);
     checkElements = r.getSuchThatElements();
     check = !checkElements.empty();
   } else if (right.eType == EntityType::Wildcard) { //Case where the right side is a wildcard
-    Result r = handleLeftSide(left, right, relRef.rType);
+    if (relRef.rType == RelationshipType::Modifies || relRef.rType == RelationshipType::Uses) {
+      right.eType = EntityType::Variable;
+    } else {
+      right.eType = EntityType::Statement;
+    }
+    Result r = handleRightSide(right, left, relRef.rType);
     checkElements = r.getSuchThatElements();
     check = !checkElements.empty();
   } else if (left.eType == EntityType::FixedInteger && (right.eType == EntityType::FixedString || right.eType == EntityType::FixedInteger)) {
