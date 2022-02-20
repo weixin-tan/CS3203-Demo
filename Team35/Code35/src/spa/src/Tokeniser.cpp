@@ -213,6 +213,8 @@ std::queue<Token> Tokeniser::forbiddenWord(std::queue<Token> inputQueue){
           || tempVec[i+1].type == TokenType::LEQ || tempVec[i+1].type == TokenType::NOT_EQUAL
           || tempVec[i+1].type == TokenType::ASSIGN) {
               tempVec[i].type = TokenType::NAME;
+          } else if(tempVec[i+1].type == TokenType::PRINT_KEYWORD){
+              tempVec[i+1].type = TokenType::NAME;
           }
         }
     }
