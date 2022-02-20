@@ -3,20 +3,20 @@
 
 enum ElementType {
   // statements
-  Statement,
-  Read,
-  Print,
-  Call,
-  While,
-  If,
-  Assignment,
+  kStatement,
+  kRead,
+  kPrint,
+  kCall,
+  kWhile,
+  kIf,
+  kAssignment,
 
   // procedures
-  Procedure,
+  kProcedure,
 
   // singles
-  Variable,
-  Constant,
+  kVariable,
+  kConstant,
 };
 
 bool isStatementType(const ElementType& element_type);

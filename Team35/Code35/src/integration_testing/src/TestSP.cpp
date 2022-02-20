@@ -108,6 +108,8 @@ TEST_CASE("SP round 1 basic iteration test") {
 	ParsedStatement parsed_statement8 = results[7];
 	ParsedStatement parsed_statement9 = results[8];
 	ParsedStatement parsed_statement10 = results[9];
+	ParsedStatement parsed_statement11 = results[10];
+
 
 	//"Checking if statement number is correct")
 	REQUIRE(parsed_statement1.stmt_no == 1);
@@ -120,6 +122,8 @@ TEST_CASE("SP round 1 basic iteration test") {
 	REQUIRE(parsed_statement8.stmt_no == 8);
 	REQUIRE(parsed_statement9.stmt_no == 9);
 	REQUIRE(parsed_statement10.stmt_no == 10);
+	REQUIRE(parsed_statement11.stmt_no == 11);
+
 
 	//Checking if the if statement is correct"
 	REQUIRE(parsed_statement7.if_stmt_no == 6);
@@ -143,12 +147,14 @@ TEST_CASE("SP round 1 basic iteration test") {
 	REQUIRE(parsed_statement8.statement_type == StatementType::kassign_stmt);
 	REQUIRE(parsed_statement9.statement_type == StatementType::kassign_stmt);
 	REQUIRE(parsed_statement10.statement_type == StatementType::kassign_stmt);
+	REQUIRE(parsed_statement11.statement_type == StatementType::kprint_stmt);
 
 
 	//"Checking if the used is correct"
 	REQUIRE(parsed_statement2.var_used[0] == "x");
 	REQUIRE(parsed_statement4.var_used[0] == "x");
 	REQUIRE(parsed_statement6.var_used[0] == "z");
+	REQUIRE(parsed_statement11.var_used[0] == "z");
 
 
 	//"Checking if the procedure is correct")
@@ -162,6 +168,7 @@ TEST_CASE("SP round 1 basic iteration test") {
 	REQUIRE(parsed_statement8.procedure_name == "f");
 	REQUIRE(parsed_statement9.procedure_name == "f");
 	REQUIRE(parsed_statement10.procedure_name == "f");
+	REQUIRE(parsed_statement11.procedure_name == "f");
 
 	// Checking if the variables modified is correct.
 	REQUIRE(parsed_statement1.var_modified[0] == "x");
@@ -184,6 +191,7 @@ TEST_CASE("SP round 1 basic iteration test") {
 	REQUIRE(parsed_statement8.preceding == 7);
 	REQUIRE(parsed_statement9.preceding == ParsedStatement::default_null_stmt_no);
 	REQUIRE(parsed_statement10.preceding == 9);
+	REQUIRE(parsed_statement11.preceding == 4);
 
 	// CHecking if the constant is correct
 	REQUIRE(parsed_statement1.constant[0] == "5");

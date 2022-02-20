@@ -161,6 +161,26 @@ bool checkDesignEntitySynonyms(std::vector<std::string> sArr) {
 }
 
 /**
+ * split string by multiple space delimiters
+ * @param s some string
+ * @return list of words with spaces removed
+ */
+std::vector<std::string> splitStringBySpaces(const std::string& s){
+  std::vector<std::string> toReturn;
+  std::regex re("[ \t\n\r\f\v]");
+  std::sregex_token_iterator first{s.begin(), s.end(), re, -1}, last;
+  std::vector<std::string> tokens{first, last};
+  std::string temp;
+  for (auto word: tokens) {
+    temp = stripString(word);
+    if (!temp.empty()) {
+      toReturn.push_back(temp);
+    }
+  }
+  return toReturn;
+}
+
+/**
  * Seperate Design Entity and Synonyms and put them in a list
  * @param s Entity declarations statement
  * @return List where the first element is a Design Entity and the rest are Synonyms
@@ -168,7 +188,7 @@ bool checkDesignEntitySynonyms(std::vector<std::string> sArr) {
 std::vector<std::string> extractDesignEntityAndSynonyms(const std::string& s){
   std::vector<std::string> returnList;
   std::vector<std::string> laterSynonymsList = splitString(s, ",");
-  std::vector<std::string> frontDesignEntityAndSynonym = splitString(laterSynonymsList.front(), " ");
+  std::vector<std::string> frontDesignEntityAndSynonym = splitStringBySpaces(laterSynonymsList.front());
   std::string tempString;
   for(auto & i : frontDesignEntityAndSynonym){
     tempString = stripString(i);

@@ -3,12 +3,12 @@
 
 
 #include "Result.h"
+#include <vector>
 
 class ResultProcessor {
  public:
   ResultProcessor();
-  Result processResults(std::vector<Result> results);
-
+  std::set<ProgramElement> processResults(std::vector<Result> results);
 };
 
 

@@ -2,7 +2,7 @@
 #include "Type.h"
 
 Entity::Entity() {
-    Entity::eType = EntityType::Wildcard;
+    Entity::eType = EntityType::Null;
 }
 
 Entity::Entity(EntityType eType, std::string name) {
@@ -21,5 +21,5 @@ bool Entity::operator==(const Entity &e1) const {
 }
 
 bool Entity::operator!=(const Entity &e1) const {
-  return eType != e1.eType && name != e1.name;
+  return !(eType == e1.eType && name == e1.name);
 }

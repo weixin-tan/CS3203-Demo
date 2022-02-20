@@ -11,6 +11,7 @@ public:
   Entity leftEntity;
   Entity rightEntity;
   Entity AssignmentEntity;
+  RelationshipRef();
   RelationshipRef(RelationshipType rType, Entity leftEntity, Entity rightEntity);
   RelationshipRef(RelationshipType rType, Entity leftEntity, Entity rightEntity, Entity AssignmentEntity);
   std::string toString();

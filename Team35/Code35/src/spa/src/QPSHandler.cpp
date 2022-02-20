@@ -1,4 +1,5 @@
 #include "QPSHandler.h"
+#include "EntityToElementConverter.h"
 
 QPSHandler::QPSHandler(PkbGetter* pg) {
   QPSHandler::pg = pg;
@@ -34,6 +35,10 @@ std::vector<Result> QPSHandler::processClause(const std::vector<Clause> &clauses
 }
 
 Result QPSHandler::handleNoRelationshipRef(const Entity& entityToFind) const {
-  std::vector<Entity> resultEntities = pg->getEntity(entityToFind.eType);
-  return Result(resultEntities);
+  Result result;
+  ElementType elementTypeToGet = EntityToElementConverter::extractElementType(entityToFind);
+  std::set<ProgramElement> resultElements = pg->getEntity(elementTypeToGet);
+  result.setNoClauseElements(resultElements);
+  result.setResultEntity(entityToFind);
+  return result;
 }

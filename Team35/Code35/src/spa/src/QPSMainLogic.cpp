@@ -25,7 +25,7 @@ QPSMainLogic::QPSMainLogic(PkbGetter* pg) {
 std::list<std::string> QPSMainLogic::parse(std::string query) {
   std::vector<Clause> clauses = callParser(query);
   std::vector<Result> matchingEntities = callHandler(clauses);
-  Result processedEntities = callProcessor(matchingEntities);
+  std::set<ProgramElement> processedEntities = callProcessor(matchingEntities);
   std::list<std::string> finalResult = callFormatter(processedEntities);
   return finalResult;
 }
@@ -40,12 +40,12 @@ std::vector<Result> QPSMainLogic::callHandler(std::vector<Clause> clauses) {
   return matchingEntities;
 }
 
-Result QPSMainLogic::callProcessor(std::vector<Result> matchingEntities) {
-  Result processedEntities = resultProcessor->processResults(matchingEntities);
+std::set<ProgramElement> QPSMainLogic::callProcessor(std::vector<Result> matchingEntities) {
+  std::set<ProgramElement> processedEntities = resultProcessor->processResults(matchingEntities);
   return processedEntities;
 }
 
-std::list<std::string> QPSMainLogic::callFormatter(Result processedEntities) {
+std::list<std::string> QPSMainLogic::callFormatter(std::set<ProgramElement> processedEntities) {
   std::list<std::string> finalResult = resultFormatter->formatResult(processedEntities);
   return finalResult;
 }
