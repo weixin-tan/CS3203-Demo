@@ -11,6 +11,8 @@ bool isInteger(const std::string& s);
 bool isWildCard(const std::string& s);
 bool isQuotationIdent(const std::string& s);
 bool isStringWithinWildCard(const std::string& s);
+std::string extractStringFromQuotation(const std::string& s);
+std::string extractStringFromWildCard(const std::string& s);
 bool isStmtRef(const std::string& s);
 bool isEntRef(const std::string& s);
 std::string stripString(std::string s);

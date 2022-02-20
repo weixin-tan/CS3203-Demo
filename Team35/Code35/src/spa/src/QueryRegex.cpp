@@ -31,8 +31,18 @@ bool isWildCard(const std::string& s) {
  * @return return true if string s is '"' IDENT '"'. ekse return false
  */
 bool isQuotationIdent(const std::string& s){
-  std::regex quotationIdentRegex("\"[A-Za-z][A-Za-z0-9]*\"");
-  return std::regex_match(s, quotationIdentRegex);
+  std::string temp;
+  if (s.substr(0,1) == "\"" && s.substr(s.length()-1, 1) == "\""){
+    temp = stripString(s.substr(1, s.length()-2));
+    return isIdent(temp);
+  }
+  return false;
+}
+
+std::string extractStringFromQuotation(const std::string& s){
+  std::string temp;
+  temp = stripString(s.substr(1, s.length()-2));
+  return temp;
 }
 
 /**
@@ -40,7 +50,18 @@ bool isQuotationIdent(const std::string& s){
  * @return returns true if string s is '_' '"' expr '"' '_'. Else return false
  */
 bool isStringWithinWildCard(const std::string& s){
-  return s.substr(0,2) == "_\"" && s.substr(s.length()-2, 2) == "\"_";
+  std::string temp;
+  if (s.substr(0,1) == "_" && s.substr(s.length()-1, 1) == "_"){
+    temp = stripString(s.substr(1, s.length()-2));
+    return temp.substr(0,1) == "\"" && temp.substr(temp.length()-1,1) == "\"";
+  }
+  return false;
+}
+
+std::string extractStringFromWildCard(const std::string& s){
+  std::string temp = stripString(s.substr(1, s.length()-2));
+  temp = stripString(temp.substr(1, temp.length()-2));
+  return temp;
 }
 
 /**
