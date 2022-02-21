@@ -16,6 +16,8 @@ public:
     //constructor
     Tokeniser();
 
+    bool forbiddenFlag;
+
     //methods
     bool isNumber(const std::string& str);
     bool isAlphabet(const std::string& str);
@@ -29,6 +31,8 @@ public:
     std::string trim(std::string s);
     std::string addSpace(std::string s);
     std::queue<Token> forbiddenWord(std::queue<Token> inputQueue);
+
+
 
 
 };
