@@ -28,7 +28,7 @@ ResultProcessor rp = ResultProcessor();
 //  print x; // 11
 //}
 
-std::vector<ParsedStatement> statements = {
+std::vector<ParsedStatement> pStatements = {
   ParsedStatement(1, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"}, {"5"},  ParsedStatement::default_procedure_name, ParsedStatement::default_null_stmt_no),
   ParsedStatement(2, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {"x"}, {"y"}, {}, ParsedStatement::default_procedure_name, 1),
   ParsedStatement(3, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kassign_stmt, ParsedStatement::default_pattern, "f", {}, {"x"}, {"5"}, ParsedStatement::default_procedure_name, 2),
@@ -43,81 +43,287 @@ std::vector<ParsedStatement> statements = {
 };
 
 
-TEST_CASE("QPS Handler") {
-    for (const ParsedStatement& parsed_statement : statements)
+TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
+    for (const ParsedStatement& parsed_statement : pStatements)
         pkb.getSetter()->insertStmt(parsed_statement);
 
-    SECTION("HANDLER AND FORMATTER") {
-        std::set<ProgramElement> variables;
-        std::set<ProgramElement> assignments;
-        ProgramElement x = ProgramElement::createVariable("x");
-        ProgramElement y = ProgramElement::createVariable("y");
-        ProgramElement z = ProgramElement::createVariable("z");
-        variables.insert(x);
-        variables.insert(y);
-        variables.insert(z);
+    std::set<ProgramElement> statements;
+
+    ProgramElement s1 = ProgramElement::createStatement(ElementType::kStatement, 1);
+    ProgramElement s2 = ProgramElement::createStatement(ElementType::kStatement, 2);
+    ProgramElement s3 = ProgramElement::createStatement(ElementType::kStatement, 3);
+    ProgramElement s4 = ProgramElement::createStatement(ElementType::kStatement, 4);
+    ProgramElement s5 = ProgramElement::createStatement(ElementType::kStatement, 5);
+    ProgramElement s6 = ProgramElement::createStatement(ElementType::kStatement, 6);
+    ProgramElement s7 = ProgramElement::createStatement(ElementType::kStatement, 7);
+    ProgramElement s8 = ProgramElement::createStatement(ElementType::kStatement, 8);
+    ProgramElement s9 = ProgramElement::createStatement(ElementType::kStatement, 9);
+    ProgramElement s10 = ProgramElement::createStatement(ElementType::kStatement, 10);
+    ProgramElement s11 = ProgramElement::createStatement(ElementType::kStatement, 11);
+    statements.insert(s1);
+    statements.insert(s2);
+    statements.insert(s3);
+    statements.insert(s4);
+    statements.insert(s5);
+    statements.insert(s6);
+    statements.insert(s7);
+    statements.insert(s8);
+    statements.insert(s9);
+    statements.insert(s10);
+    statements.insert(s11);
+
+    std::set<ProgramElement> variables;
+    ProgramElement vx = ProgramElement::createVariable("x");
+    ProgramElement vy = ProgramElement::createVariable("y");
+    ProgramElement vz = ProgramElement::createVariable("z");
+    variables.insert(vx);
+    variables.insert(vy);
+    variables.insert(vz);
+
+    std::set<ProgramElement> constants;
+    ProgramElement c0 = ProgramElement::createConstant("0");
+    ProgramElement c100 = ProgramElement::createConstant("100");
+    ProgramElement c5 = ProgramElement::createConstant("5");
+    ProgramElement c10 = ProgramElement::createConstant("10");
+    ProgramElement c4 = ProgramElement::createConstant("4");
+    constants.insert(c0);
+    constants.insert(c100);
+    constants.insert(c5);
+    constants.insert(c10);
+    constants.insert(c4);
 
 
-        std::string r1 = "variable v; Select v";
-        std::string r2 = "assign a; Select a such that Modifies(a, _)";
-        std::string r3 = "assign a; while w; Select a such that Parent*(w, a)";
-        std::string r4 = "if ifs; print p;\nSelect p such that Parent (4, ifs)";
-        std::string r5 = "assign a; assign a1;\n Select a such that Follows (a1, a)";
-        std::string r6 = "if ifs; stmt s; assign a; assign a1; Select a such that Parent (ifs, a1) pattern a1 (_, _\"100\"_)";
-        std::string r7 = "constant c; Select c";
-        std::string r8 = "assign a; assign a1; Select a1 such that Follows (a, a1) pattern a (_, _\"100\"_)";
-        std::string r9 = "assign a; assign a1; Select a1 such that Follows (a1, a) pattern a (_, _\"5\"_)";
-        std::string r10 = "if ifs; stmt s; assign a; assign a1; Select a such that Follows (a1, s) pattern a1 (_, _\"100\"_)";
-        std::string r11 = "if ifs; stmt s; assign a; assign a1; Select a such that Follows (s, a1) pattern a1 (_, _\"5\"_)";
-        std::string r12 = "stmt s; Select s such that Parent(_, _)";
+    std::set<ProgramElement> assignments;
+    ProgramElement a1 = ProgramElement::createStatement(ElementType::kAssignment, 1);
+    ProgramElement a2 = ProgramElement::createStatement(ElementType::kAssignment, 2);
+    ProgramElement a3 = ProgramElement::createStatement(ElementType::kAssignment, 3);
+    ProgramElement a7 = ProgramElement::createStatement(ElementType::kAssignment, 7);
+    ProgramElement a8 = ProgramElement::createStatement(ElementType::kAssignment, 8);
+    ProgramElement a9 = ProgramElement::createStatement(ElementType::kAssignment, 9);
+    ProgramElement a10 = ProgramElement::createStatement(ElementType::kAssignment, 10);
+    assignments.insert(a1);
+    assignments.insert(a2);
+    assignments.insert(a3);
+    assignments.insert(a7);
+    assignments.insert(a8);
+    assignments.insert(a9);
+    assignments.insert(a10);
 
-        std::set<ProgramElement> s1 = rp.processResults(qh.processClause(qp.parsePQL(r1)));
-        REQUIRE(s1 == variables);
 
-        std::list<std::string> s2 = qr->parse(r2);
-        for (std::string s : s2) {
-            cout << "two: " << s << "\n";
-        }
-        std::list<std::string> s3 = qr->parse(r3);
-        for (std::string s : s3) {
-            cout << "three: " << s << "\n";
-        }
-        std::list<std::string> s4 = qr->parse(r4);
-        for (std::string s : s4) {
-            cout << "four: " << s << "\n";
-        }
-        std::list<std::string> s5 = qr->parse(r5);
-        for (std::string s : s5) {
-            cout << "five: " << s << "\n";
-        }
-        std::list<std::string> s6 = qr->parse(r6);
-        for (std::string s : s6) {
-            cout << "six: " << s << "\n";
-        }
-        std::list<std::string> s7 = qr->parse(r7);
-        for (std::string s : s7) {
-            cout << "seven: " << s << "\n";
-        }
-        std::list<std::string> s8 = qr->parse(r8);
-        for (std::string s : s8) {
-            cout << "eight: " << s << "\n";
-        }
-        std::list<std::string> s9 = qr->parse(r9);
-        for (std::string s : s9) {
-            cout << "nine: " << s << "\n";
-        }
-        std::list<std::string> s10 = qr->parse(r10);
-        for (std::string s : s10) {
-            cout << "ten: " << s << "\n";
-        }
-        std::list<std::string> s11 = qr->parse(r11);
-        for (std::string s : s11) {
-            cout << "eleven: " << s << "\n";
-        }
-        std::list<std::string> s12 = qr->parse(r12);
-        for (std::string s : s12) {
-            cout << "twelve: " << s << "\n";
-        }
+    std::set<ProgramElement> prints;
+    ProgramElement print1 = ProgramElement::createStatement(ElementType::kPrint, 11);
+    prints.insert(print1);
+
+    std::set<ProgramElement> reads;
+    ProgramElement r1 = ProgramElement::createStatement(ElementType::kRead, 5);
+    reads.insert(r1);
+
+    std::set<ProgramElement> whiles;
+    ProgramElement w1 = ProgramElement::createStatement(ElementType::kWhile, 4);
+    whiles.insert(w1);
+
+    SECTION("NO CLAUSES") {
+        std::string nc1 = "variable v; Select v";
+        std::string nc2 = "constant c; Select c";
+        std::string nc3 = "assign a; Select a";
+        std::string nc4 = "print p; Select p";
+
+        std::set<ProgramElement> result1 = rp.processResults(qh.processClause(qp.parsePQL(nc1)));
+        std::set<ProgramElement> result2 = rp.processResults(qh.processClause(qp.parsePQL(nc2)));
+        std::set<ProgramElement> result3 = rp.processResults(qh.processClause(qp.parsePQL(nc3)));
+        std::set<ProgramElement> result4 = rp.processResults(qh.processClause(qp.parsePQL(nc4)));
+        REQUIRE(result1 == variables);
+        REQUIRE(result2 == constants);
+        REQUIRE(result3 == assignments);
+        REQUIRE(result4 == prints);
+    }
+
+    SECTION("SUCH THAT CLAUSE - Follows/Follows*/Parent/Parent*") {
+        std::string st1 = "if ifs; print p;\nSelect p such that Parent (4, ifs)";
+        std::string st2 = "while w; assign a;\nSelect a such that Parent* (w, a)";
+        std::string st3 = "print p; Select p such that Follows* (_, p)";
+        std::string st4 = "read r; Select r such that Follows* (r, _)";
+        std::string st5 = "stmt s; Select s such that Parent*(s, 7)";
+        std::string st6 = "stmt s; Select s such that Follows(_, _)";
+        std::string st7 = "assign a; assign a1; Select a such that Follows(a, a1)";
+        std::string st8 = "constant c; Select c such that Follows*(1, 11)";
+        std::string st9 = "read r; Select r such that Follows(5, _)";
+        std::string st10 = "while w; Select w such that Parent*(4, 7)";
+        std::string st11 = "read r; Select r such that Follows(_, 5)";
+        std::string st12 = "assign a; Select a such that Follows*(7, 9)";
+
+        std::set<ProgramElement> empty = {};
+        std::set<ProgramElement> expectedResult2;
+        expectedResult2.insert(a7);
+        expectedResult2.insert(a8);
+        expectedResult2.insert(a9);
+        expectedResult2.insert(a10);
+        std::set<ProgramElement> expectedResult5;
+        expectedResult5.insert(s4);
+        expectedResult5.insert(s6);
+        std::set<ProgramElement> expectedResult7;
+        expectedResult7.insert(a1);
+        expectedResult7.insert(a2);
+        expectedResult7.insert(a7);
+        expectedResult7.insert(a9);
+
+
+        std::set<ProgramElement> result1 = rp.processResults(qh.processClause(qp.parsePQL(st1)));
+        std::set<ProgramElement> result2 = rp.processResults(qh.processClause(qp.parsePQL(st2)));
+        std::set<ProgramElement> result3 = rp.processResults(qh.processClause(qp.parsePQL(st3)));
+        std::set<ProgramElement> result4 = rp.processResults(qh.processClause(qp.parsePQL(st4)));
+        std::set<ProgramElement> result5 = rp.processResults(qh.processClause(qp.parsePQL(st5)));
+        std::set<ProgramElement> result6 = rp.processResults(qh.processClause(qp.parsePQL(st6)));
+        std::set<ProgramElement> result7 = rp.processResults(qh.processClause(qp.parsePQL(st7)));
+        std::set<ProgramElement> result8 = rp.processResults(qh.processClause(qp.parsePQL(st8)));
+        std::set<ProgramElement> result9 = rp.processResults(qh.processClause(qp.parsePQL(st9)));
+        std::set<ProgramElement> result10 = rp.processResults(qh.processClause(qp.parsePQL(st10)));
+        std::set<ProgramElement> result11 = rp.processResults(qh.processClause(qp.parsePQL(st11)));
+        std::set<ProgramElement> result12 = rp.processResults(qh.processClause(qp.parsePQL(st12)));
+
+        REQUIRE(result1 == prints);
+        REQUIRE(result2 == expectedResult2);
+        REQUIRE(result3 == prints);
+        REQUIRE(result4 == reads);
+        REQUIRE(result5 == expectedResult5);
+        REQUIRE(result6 == statements);
+        REQUIRE(result7 == expectedResult7);
+        REQUIRE(result8 == constants);
+        REQUIRE(result9 == reads);
+        REQUIRE(result10 == whiles);
+        REQUIRE(result11 == empty);
+        REQUIRE(result12 == empty);
+    }
+
+    SECTION("SUCH THAT CLAUSE - Modifies/Uses") {
+        std::string st1 = "assign a; Select a such that Modifies(1, _)";
+        std::string st2 = "assign a; Select a such that Uses(1, _)";
+        std::string st3 = "assign a; Select a such that Modifies(a, \"x\")";
+        std::string st4 = "while w; Select w such that Modifies(1, \"x\")";
+        std::string st5 = "read r; Select r such that Modifies(r, \"z\")";
+        std::string st6 = "print p; Select p such that Uses(r, \"z\")";
+        std::string st7 = "while w; Select w such that Uses(w, \"x\")";
+        std::string st8 = "if ifs; Select ifs such that Modifies(ifs, \"x\")";
+        std::string st9 = "stmt s; variable v; Select v such that Uses(s, v)";
+        std::string st10 = "constant c; variable v; Select c such that Uses(2, v)";
+        std::string st11 = "constant c; Select c such that Modifies(a, \"1x1\")";
+        std::string st12 = "assign a; Select a such that Modifies(a, _)";
+
+        std::set<ProgramElement> expectedResult3;
+        expectedResult3.insert(a1);
+        expectedResult3.insert(a3);
+        expectedResult3.insert(a7);
+        std::set<ProgramElement> expectedResult8;
+        expectedResult8.insert(ProgramElement::createStatement(ElementType::kIf, 6));
+        std::set<ProgramElement> expectedResult9;
+        expectedResult9.insert(vx);
+        expectedResult9.insert(vz);
+
+        std::set<ProgramElement> empty = {};
+        std::set<ProgramElement> result1 = rp.processResults(qh.processClause(qp.parsePQL(st1)));
+        std::set<ProgramElement> result2 = rp.processResults(qh.processClause(qp.parsePQL(st2)));
+        std::set<ProgramElement> result3 = rp.processResults(qh.processClause(qp.parsePQL(st3)));
+        std::set<ProgramElement> result4 = rp.processResults(qh.processClause(qp.parsePQL(st4)));
+        std::set<ProgramElement> result5 = rp.processResults(qh.processClause(qp.parsePQL(st5)));
+        std::set<ProgramElement> result6 = rp.processResults(qh.processClause(qp.parsePQL(st6)));
+        std::set<ProgramElement> result7 = rp.processResults(qh.processClause(qp.parsePQL(st7)));
+        std::set<ProgramElement> result8 = rp.processResults(qh.processClause(qp.parsePQL(st8)));
+        std::set<ProgramElement> result9 = rp.processResults(qh.processClause(qp.parsePQL(st9)));
+        std::set<ProgramElement> result10 = rp.processResults(qh.processClause(qp.parsePQL(st10)));
+        std::set<ProgramElement> result11 = rp.processResults(qh.processClause(qp.parsePQL(st11)));
+        std::set<ProgramElement> result12 = rp.processResults(qh.processClause(qp.parsePQL(st12)));
+
+        REQUIRE(result1 == assignments);
+        REQUIRE(result2 == empty);
+        REQUIRE(result3 == expectedResult3);
+        REQUIRE(result4 == whiles);
+        REQUIRE(result5 == reads);
+        REQUIRE(result6 == empty);
+        REQUIRE(result7 == whiles);
+        REQUIRE(result8 == expectedResult8);
+        REQUIRE(result9 == expectedResult9);
+        REQUIRE(result10 == constants);
+        REQUIRE(result11 == empty);
+        REQUIRE(result12 == assignments);
+
+    }
+
+    SECTION("PATTERN CLAUSE") {
+        std::string p1 = "assign a; Select a pattern a(_, _\"5\"_)";
+        std::string p2 = "assign a; Select a pattern a(\"x\", _)";
+        std::string p3 = "assign a; Select a pattern a(\"y\", _\"x\"_)";
+        std::string p4 = "assign a; Select a pattern a(_, _)";
+        std::string p5 = "assign a; assign a1; Select a1 pattern a(_, _)";
+        std::string p6 = "assign a; assign a1; Select a1 pattern a(_, _\"5\"_)";
+        std::string p7 = "assign a; assign a1; Select a1 pattern a(\"b\", _)";
+        std::string p8 = "assign a; assign a1; Select a1 pattern a(_, _\"b\")";
+        std::string p9 = "assign a; Select a pattern a(\"b\", _)";
+
+        std::set<ProgramElement> empty = {};
+        std::set<ProgramElement> expectedResult1;
+        expectedResult1.insert(a1);
+        expectedResult1.insert(a3);
+        expectedResult1.insert(a8);
+        std::set<ProgramElement> expectedResult2;
+        expectedResult2.insert(a1);
+        expectedResult2.insert(a3);
+        expectedResult2.insert(a7);
+        std::set<ProgramElement> expectedResult3;
+        expectedResult3.insert(a2);
+
+        std::set<ProgramElement> result1 = rp.processResults(qh.processClause(qp.parsePQL(p1)));
+        std::set<ProgramElement> result2 = rp.processResults(qh.processClause(qp.parsePQL(p2)));
+        std::set<ProgramElement> result3 = rp.processResults(qh.processClause(qp.parsePQL(p3)));
+        std::set<ProgramElement> result4 = rp.processResults(qh.processClause(qp.parsePQL(p4)));
+        std::set<ProgramElement> result5 = rp.processResults(qh.processClause(qp.parsePQL(p5)));
+        std::set<ProgramElement> result6 = rp.processResults(qh.processClause(qp.parsePQL(p6)));
+        std::set<ProgramElement> result7 = rp.processResults(qh.processClause(qp.parsePQL(p7)));
+        std::set<ProgramElement> result8 = rp.processResults(qh.processClause(qp.parsePQL(p8)));
+        std::set<ProgramElement> result9 = rp.processResults(qh.processClause(qp.parsePQL(p9)));
+
+        REQUIRE(result1 == expectedResult1);
+        REQUIRE(result2 == expectedResult2);
+        REQUIRE(result3 == expectedResult3);
+        REQUIRE(result4 == assignments);
+        REQUIRE(result5 == assignments);
+        REQUIRE(result6 == assignments);
+        REQUIRE(result7 == empty);
+        REQUIRE(result8 == empty);
+        REQUIRE(result9 == empty);
+    }
+
+    SECTION("COMBINATION CLAUSES") {
+        std::string com1 = "if ifs; stmt s; assign a; assign a1; Select a1 such that Parent (ifs, a1) pattern a1 (_, _\"100\"_)";
+        std::string com2 = "assign a; assign a1; Select a1 such that Follows (a, a1) pattern a (_, _\"100\"_)";
+        std::string com3 = "assign a; assign a1; Select a1 such that Follows (a1, a) pattern a (_, _\"5\"_)";
+        std::string com4 = "if ifs; stmt s; assign a; assign a1; Select a such that Follows (a1, s) pattern a1 (_, _\"100\"_)";
+        std::string com5 = "constant c; variable v; assign a; assign a1; Select c such that Modifies (a, v) pattern a1 (_, _\"15\"_)";
+
+        std::set<ProgramElement> empty = {};
+        std::set<ProgramElement> expectedResult1;
+        expectedResult1.insert(a7);
+        expectedResult1.insert(a9);
+        std::set<ProgramElement> expectedResult2;
+        expectedResult2.insert(a8);
+        expectedResult2.insert(a10);
+        std::set<ProgramElement> expectedResult3;
+        expectedResult3.insert(a2);
+        expectedResult3.insert(a7);
+
+
+
+
+        std::set<ProgramElement> result1 = rp.processResults(qh.processClause(qp.parsePQL(com1)));
+        std::set<ProgramElement> result2 = rp.processResults(qh.processClause(qp.parsePQL(com2)));
+        std::set<ProgramElement> result3 = rp.processResults(qh.processClause(qp.parsePQL(com3)));
+        std::set<ProgramElement> result4 = rp.processResults(qh.processClause(qp.parsePQL(com4)));
+        std::set<ProgramElement> result5 = rp.processResults(qh.processClause(qp.parsePQL(com5)));
+
+        REQUIRE(result1 == expectedResult1);
+        REQUIRE(result2 == expectedResult2);
+        REQUIRE(result3 == expectedResult3);
+        REQUIRE(result4 == assignments);
+        REQUIRE(result5 == empty);
 
     }
 }
