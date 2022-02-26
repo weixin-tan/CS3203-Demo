@@ -73,6 +73,7 @@ void PkbSetter::handleFollows(const ParsedStatement& parsedStatement) {
 
 void PkbSetter::handleCalls(const ParsedStatement& parsedStatement) {
     db->stmtToProcedureCalled[parsedStatement.stmt_no] = parsedStatement.procedure_called;
+    db->procedureToProcedureCalled[parsedStatement.procedure_name].insert(parsedStatement.procedure_called);
 }
 
 void PkbSetter::insertStmt(const ParsedStatement& parsedStatement) {

@@ -27,6 +27,7 @@ private:
     int getPrecedingStmtNo(int stmtNo) const;
     ElementType getStmtType(int stmtNo) const;
     std::set<std::string> getUsedConstants(int stmtNo) const;
+    std::set<std::string> getProcedureCalled(const std::string& proc) const;
 
 public:
     explicit PkbGetter(DB* db);

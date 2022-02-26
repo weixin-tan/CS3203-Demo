@@ -26,6 +26,7 @@ public:
     std::map<int, std::set<int>> parentToChildTable;
     std::map<int, int> childToParentTable;
     std::map<int, std::string> stmtToProcedureCalled;
+    std::map<std::string, std::set<std::string>> procedureToProcedureCalled;
     std::map<int, int> stmtPreceding;
     std::map<int, int> stmtFollowing;
     std::map<std::string, std::set<int>> constantToStmtTable;

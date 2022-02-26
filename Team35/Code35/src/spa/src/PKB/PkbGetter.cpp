@@ -118,6 +118,12 @@ std::set<std::string> PkbGetter::getUsedConstants(int stmtNo) const {
     return db->usesStmtToConstantTable.at(stmtNo);
 }
 
+std::set<std::string> PkbGetter::getProcedureCalled(const std::string& proc) const {
+    if (db->procedureToProcedureCalled.count(proc) == 0)
+        return {};
+    return db->procedureToProcedureCalled.at(proc);
+}
+
 
 PkbGetter::PkbGetter(DB* db) : db(db) {}
 
