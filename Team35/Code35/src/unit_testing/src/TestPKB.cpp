@@ -44,9 +44,7 @@ TEST_CASE("PKB Basic") {
             ParsedStatement(11, ParsedStatement::default_null_stmt_no, ParsedStatement::default_null_stmt_no, StatementType::kprint_stmt, ParsedStatement::default_pattern, "f", {"x"}, {}, {}, ParsedStatement::default_procedure_name, 4),
     };
 
-    for (const ParsedStatement& parsed_statement : statements)
-        pkb_setter->insertStmt(parsed_statement);
-
+    pkb_setter->insertStmts(statements);
 
     SECTION("General") {
         SECTION("getEntity") {

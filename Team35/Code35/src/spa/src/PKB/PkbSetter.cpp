@@ -90,3 +90,8 @@ void PkbSetter::insertStmt(const ParsedStatement& parsedStatement) {
     handleModifies(parsedStatement);
     handleCalls(parsedStatement);
 }
+
+void PkbSetter::insertStmts(const std::vector<ParsedStatement>& parsedStatements) {
+    for (const ParsedStatement& parsedStatement : parsedStatements)
+        insertStmt(parsedStatement);
+}
