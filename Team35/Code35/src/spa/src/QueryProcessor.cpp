@@ -63,6 +63,16 @@ RelationshipRef QueryProcessor::createRelationshipObject(std::vector<std::string
     rType = RelationshipType::Uses;
   }else if (relStr == "Modifies"){
     rType = RelationshipType::Modifies;
+  }else if (relStr == "Calls"){
+    rType = RelationshipType::Calls;
+  }else if (relStr == "Calls*"){
+    rType = RelationshipType::CallsT;
+  }else if (relStr == "Next"){
+    rType = RelationshipType::Next;
+  }else if (relStr == "Next*"){
+    rType = RelationshipType::NextT;
+  }else if (relStr == "Affects*"){
+    rType = RelationshipType::Affects;
   }else{
     //this relationship type is NULL -> invalid
     rType = RelationshipType::Null;
@@ -184,8 +194,9 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
         isValid = isValid && checkRelRefList(relRefList);
         if (isValid){
           RelationshipRef newRef = createRelationshipObject(relRefList, &entityMap);
-          if (newRef.rType == RelationshipType::Null){
-            isValid = false;
+
+          isValid = isValid && checkRelationshipRef(newRef);
+          if (!isValid){
             break;
           }else{
             newClause.appendRef(newRef);
@@ -200,8 +211,8 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
 
         if (isValid){
           RelationshipRef newRef = createPatternObject(patternList, &entityMap);
-          if (newRef.rType == RelationshipType::Null){
-            isValid = false;
+          isValid = isValid && checkRelationshipRef(newRef);
+          if (!isValid){
             break;
           }else{
             newClause.appendRef(newRef);

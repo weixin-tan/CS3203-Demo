@@ -14,8 +14,8 @@ bool isIdent(const std::string& s){
  * @return returns true if string s is an INTEGER. else return false
  */
 bool isInteger(const std::string& s){
-  std::regex integerRegex("[0-9]+");
-  return std::regex_match(s, integerRegex);
+  std::regex integerRegex("[1-9][0-9]*");
+  return std::regex_match(s, integerRegex) || s == "0";
 }
 
 /**
@@ -26,23 +26,41 @@ bool isWildCard(const std::string& s) {
   return s == "_";
 }
 
+std::string extractFirstChar(const std::string& s){
+  return s.substr(0,1);
+}
+
+std::string extractLastChar(const std::string& s){
+  return s.substr(s.length()-1, 1);
+}
+
+std::string extractStringWithoutFirstAndLast(const std::string& s){
+  return stripString(s.substr(1, s.length()-2));
+}
+
+std::string extractStringFromQuotation(const std::string& s){
+  std::string temp;
+  temp = extractStringWithoutFirstAndLast(s);
+  return temp;
+}
+
+std::string extractStringFromWildCard(const std::string& s){
+  std::string temp = extractStringWithoutFirstAndLast(s);
+  temp = extractStringWithoutFirstAndLast(temp);
+  return temp;
+}
+
 /**
  * @param s a string
  * @return return true if string s is '"' IDENT '"'. ekse return false
  */
 bool isQuotationIdent(const std::string& s){
   std::string temp;
-  if (s.substr(0,1) == "\"" && s.substr(s.length()-1, 1) == "\""){
-    temp = stripString(s.substr(1, s.length()-2));
+  if (extractFirstChar(s) == "\"" && extractLastChar(s) == "\""){
+    temp = extractStringWithoutFirstAndLast(s);
     return isIdent(temp);
   }
   return false;
-}
-
-std::string extractStringFromQuotation(const std::string& s){
-  std::string temp;
-  temp = stripString(s.substr(1, s.length()-2));
-  return temp;
 }
 
 /**
@@ -51,17 +69,11 @@ std::string extractStringFromQuotation(const std::string& s){
  */
 bool isStringWithinWildCard(const std::string& s){
   std::string temp;
-  if (s.substr(0,1) == "_" && s.substr(s.length()-1, 1) == "_"){
-    temp = stripString(s.substr(1, s.length()-2));
-    return temp.substr(0,1) == "\"" && temp.substr(temp.length()-1,1) == "\"";
+  if (extractFirstChar(s) == "_" && extractLastChar(s) == "_"){
+    temp = extractStringWithoutFirstAndLast(s);
+    return extractFirstChar(temp) == "\"" && extractLastChar(temp) == "\"";
   }
   return false;
-}
-
-std::string extractStringFromWildCard(const std::string& s){
-  std::string temp = stripString(s.substr(1, s.length()-2));
-  temp = stripString(temp.substr(1, temp.length()-2));
-  return temp;
 }
 
 /**
@@ -114,74 +126,6 @@ std::vector<std::string> splitString(const std::string& s, const std::string& de
 }
 
 /**
- * Split entity declarations from select clause
- * @param s query string
- * @return List of declarations and select clauses, seperated
- */
-std::vector<std::string> splitDeclarationAndSelect(const std::string& s){
-  return splitString(s, ";");
-}
-
-/**
- * Extract Select Clauses from query string
- * @param s query string
- * @return List of Select Clauses
- */
-std::vector<std::string> extractSelect(const std::string& s){
-  std::vector<std::string> returnList;
-  std::vector<std::string> stmtList = splitDeclarationAndSelect(s);
-  for (const std::string& stmt: stmtList){
-    if (stmt.find("Select") == 0){
-      // select exists as the first word in the statement
-      returnList.push_back(stmt);
-    }
-  }
-  return returnList;
-}
-
-/**
- * Extract Entity Declarations from query string
- * @param s query string
- * @return List of Entity Declaration Statements
- */
-std::vector<std::string> extractDeclaration(const std::string& s){
-  std::vector<std::string> returnList;
-  std::vector<std::string> stmtList = splitDeclarationAndSelect(s);
-  for (const std::string& stmt: stmtList){
-    if (stmt.find("Select") != 0){
-      // select does not exist in the statement
-      returnList.push_back(stmt);
-    }
-  }
-  return returnList;
-}
-
-/**
- * check if Entity Declaration Statements are valid
- * @param sArr List where the first element is a designEntity, and the rest are synonyms
- * @return returns true if the Entity Declaration Statement is valid. else, return false
- */
-bool checkDesignEntitySynonyms(std::vector<std::string> sArr) {
-  std::vector<std::string> designEntity {"stmt", "read", "print", "call", "while", "if", "assign", "variable", "constant", "procedure"};
-  bool returnBool;
-  if (sArr.size() <= 1){
-    returnBool = false;
-  }else{
-    std::string designStr = sArr[0];
-    if (std::find(std::begin(designEntity), std::end(designEntity), designStr) != std::end(designEntity)){
-      //designStr contains one of the design entity keywords
-      returnBool = true;
-    }else{
-      returnBool = false;
-    }
-    for (int i=1; i<sArr.size(); i++){
-      returnBool = returnBool && isIdent(sArr[i]);
-    }
-  }
-  return returnBool;
-}
-
-/**
  * split string by multiple space delimiters
  * @param s some string
  * @return list of words with spaces removed
@@ -199,6 +143,57 @@ std::vector<std::string> splitStringBySpaces(const std::string& s){
     }
   }
   return toReturn;
+}
+
+/**
+ * @param s some string
+ * @return returns true if the word "Select" is at the start of a string
+ */
+bool isSelect(const std::string& s){
+  return s.find("Select") == 0 ;
+}
+
+/**
+ * Split entity declarations from select clause
+ * @param s query string
+ * @return List of declarations and select clauses, seperated
+ */
+std::vector<std::string> splitDeclarationAndSelect(const std::string& s){
+  return splitString(s, ";");
+}
+
+/**
+ * Extract Select Clauses from query string
+ * @param s query string
+ * @return List of Select Clauses
+ */
+std::vector<std::string> extractSelect(const std::string& s){
+  std::vector<std::string> returnList;
+  std::vector<std::string> stmtList = splitDeclarationAndSelect(s);
+  for (const std::string& stmt: stmtList){
+    if (isSelect(stmt)){
+      // select exists as the first word in the statement
+      returnList.push_back(stmt);
+    }
+  }
+  return returnList;
+}
+
+/**
+ * Extract Entity Declarations from query string
+ * @param s query string
+ * @return List of Entity Declaration Statements
+ */
+std::vector<std::string> extractDeclaration(const std::string& s){
+  std::vector<std::string> returnList;
+  std::vector<std::string> stmtList = splitDeclarationAndSelect(s);
+  for (const std::string& stmt: stmtList){
+    if (!isSelect(stmt)){
+      // select does not exist in the statement
+      returnList.push_back(stmt);
+    }
+  }
+  return returnList;
 }
 
 /**
@@ -233,11 +228,28 @@ std::vector<std::string> extractDesignEntityAndSynonyms(const std::string& s){
 }
 
 /**
- * @param s some string
- * @return returns true if the word "Select" is at the start of a string
+ * check if Entity Declaration Statements are valid
+ * @param sArr List where the first element is a designEntity, and the rest are synonyms
+ * @return returns true if the Entity Declaration Statement is valid. else, return false
  */
-bool isSelect(const std::string& s){
-  return s.find("Select") == 0 ;
+bool checkDesignEntitySynonyms(std::vector<std::string> sArr) {
+  std::vector<std::string> designEntity {"stmt", "read", "print", "call", "while", "if", "assign", "variable", "constant", "procedure"};
+  bool returnBool;
+  if (sArr.size() <= 1){
+    returnBool = false;
+  }else{
+    std::string designStr = sArr[0];
+    if (std::find(std::begin(designEntity), std::end(designEntity), designStr) != std::end(designEntity)){
+      //designStr contains one of the design entity keywords
+      returnBool = true;
+    }else{
+      returnBool = false;
+    }
+    for (int i=1; i<sArr.size(); i++){
+      returnBool = returnBool && isIdent(sArr[i]);
+    }
+  }
+  return returnBool;
 }
 
 /**
@@ -508,4 +520,100 @@ std::string removePattern(const std::string& s){
  */
 bool entityMapContains(const std::string& s, std::unordered_map<std::string, Entity>* entityMap){
   return (*entityMap).find(s) != (*entityMap).end();
+}
+
+bool checkRelationshipRef(RelationshipRef r){
+  if (r.rType == RelationshipType::Null){
+    return false;
+  }else{
+    bool returnBool;
+    if (r.rType == RelationshipType::FollowsT || r.rType == RelationshipType::Follows){
+      returnBool = checkFollows(r);
+    } else if (r.rType == RelationshipType::Uses){
+      returnBool = checkUses(r);
+    } else if (r.rType == RelationshipType::Modifies){
+      returnBool = checkModifies(r);
+    } else if (r.rType == RelationshipType::Calls || r.rType == RelationshipType::CallsT){
+      returnBool = checkCalls(r);
+    } else if (r.rType == RelationshipType::Parent || r.rType == RelationshipType::ParentT || r.rType == RelationshipType::Next || r.rType == RelationshipType::NextT || r.rType == RelationshipType::Affects){
+      returnBool = checkParentsorNextOrAffects(r);
+    } else {
+      returnBool = false;
+    }
+    return returnBool;
+  }
+}
+
+bool checkFollows(RelationshipRef r){
+  bool leftSideBool = r.leftEntity.eType == EntityType::FixedInteger
+      || r.leftEntity.eType == EntityType::Statement
+      || r.leftEntity.eType == EntityType::Wildcard;
+  bool rightSideBool = r.rightEntity.eType == EntityType::FixedInteger
+      || r.rightEntity.eType == EntityType::Statement
+      || r.rightEntity.eType == EntityType::Wildcard;
+  return leftSideBool && rightSideBool;
+}
+
+bool checkUses(RelationshipRef r){
+  bool leftSideBool = r.leftEntity.eType == EntityType::FixedInteger
+      || r.leftEntity.eType == EntityType::FixedString
+      || r.leftEntity.eType == EntityType::Assignment
+      || r.leftEntity.eType == EntityType::Print
+      || r.leftEntity.eType == EntityType::While
+      || r.leftEntity.eType == EntityType::If
+      || r.leftEntity.eType == EntityType::Procedure
+      || r.leftEntity.eType == EntityType::Call
+      || r.leftEntity.eType == EntityType::Wildcard;
+  bool rightSideBool = r.rightEntity.eType == EntityType::FixedString
+      || r.rightEntity.eType == EntityType::Variable
+      || r.rightEntity.eType == EntityType::Wildcard;
+  return leftSideBool && rightSideBool;
+}
+
+bool checkModifies(RelationshipRef r){
+  bool leftSideBool = r.leftEntity.eType == EntityType::FixedInteger
+      || r.leftEntity.eType == EntityType::FixedString
+      || r.leftEntity.eType == EntityType::Assignment
+      || r.leftEntity.eType == EntityType::Read
+      || r.leftEntity.eType == EntityType::While
+      || r.leftEntity.eType == EntityType::If
+      || r.leftEntity.eType == EntityType::Procedure
+      || r.leftEntity.eType == EntityType::Call
+      || r.leftEntity.eType == EntityType::Wildcard;
+  bool rightSideBool = r.rightEntity.eType == EntityType::FixedString
+      || r.rightEntity.eType == EntityType::Variable
+      || r.rightEntity.eType == EntityType::Wildcard;
+  return leftSideBool && rightSideBool;
+}
+
+bool checkCalls(RelationshipRef r){
+  bool leftSideBool = r.leftEntity.eType == EntityType::FixedString
+      || r.leftEntity.eType == EntityType::Procedure
+      || r.leftEntity.eType == EntityType::Wildcard;
+  bool rightSideBool = r.rightEntity.eType == EntityType::FixedString
+      || r.rightEntity.eType == EntityType::Procedure
+      || r.rightEntity.eType == EntityType::Wildcard;
+  return leftSideBool && rightSideBool;
+}
+
+bool checkParentsorNextOrAffects(RelationshipRef r){
+  bool leftSideBool = r.leftEntity.eType == EntityType::FixedInteger
+      || r.leftEntity.eType == EntityType::Statement
+      || r.leftEntity.eType == EntityType::Assignment
+      || r.leftEntity.eType == EntityType::While
+      || r.leftEntity.eType == EntityType::If
+      || r.leftEntity.eType == EntityType::Call
+      || r.leftEntity.eType == EntityType::Print
+      || r.leftEntity.eType == EntityType::Read
+      || r.leftEntity.eType == EntityType::Wildcard;
+  bool rightSideBool =  r.rightEntity.eType == EntityType::FixedInteger
+      || r.rightEntity.eType == EntityType::Statement
+      || r.rightEntity.eType == EntityType::Assignment
+      || r.rightEntity.eType == EntityType::While
+      || r.rightEntity.eType == EntityType::If
+      || r.rightEntity.eType == EntityType::Call
+      || r.rightEntity.eType == EntityType::Print
+      || r.rightEntity.eType == EntityType::Read
+      || r.rightEntity.eType == EntityType::Wildcard;
+  return leftSideBool && rightSideBool;
 }

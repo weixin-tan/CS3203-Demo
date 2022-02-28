@@ -5,28 +5,35 @@
 #include <regex>
 #include <unordered_map>
 #include "Entity.h"
+#include "RelationshipRef.h"
 
 bool isIdent(const std::string& s);
 bool isInteger(const std::string& s);
 bool isWildCard(const std::string& s);
-bool isQuotationIdent(const std::string& s);
-bool isStringWithinWildCard(const std::string& s);
+
+std::string extractFirstChar(const std::string& s);
+std::string extractLastChar(const std::string& s);
+std::string extractStringWithoutFirstAndLast(const std::string& s);
 std::string extractStringFromQuotation(const std::string& s);
 std::string extractStringFromWildCard(const std::string& s);
+
+bool isQuotationIdent(const std::string& s);
+bool isStringWithinWildCard(const std::string& s);
+
 bool isStmtRef(const std::string& s);
 bool isEntRef(const std::string& s);
 std::string stripString(std::string s);
 std::vector<std::string> splitString(const std::string& s, const std::string& delimiter);
+std::vector<std::string> splitStringBySpaces(const std::string& s);
 
+bool isSelect(const std::string& s);
 std::vector<std::string> splitDeclarationAndSelect(const std::string& s);
 std::vector<std::string> extractSelect(const std::string& s);
 std::vector<std::string> extractDeclaration(const std::string& s);
 
-std::vector<std::string> splitStringBySpaces(const std::string& s);
 std::vector<std::string> extractDesignEntityAndSynonyms(const std::string& s);
 bool checkDesignEntitySynonyms(std::vector<std::string> sArr);
 
-bool isSelect(const std::string& s);
 bool isPattern(const std::string& s);
 bool existSuchThat(const std::string& s);
 long findPatternClause(const std::string& s);
@@ -45,5 +52,12 @@ bool checkPatternList(std::vector<std::string> patternList, std::unordered_map<s
 std::string removePattern(const std::string& s);
 
 bool entityMapContains(const std::string& s, std::unordered_map<std::string, Entity>* entityMap);
+
+bool checkRelationshipRef(RelationshipRef r);
+bool checkFollows(RelationshipRef r);
+bool checkUses(RelationshipRef r);
+bool checkModifies(RelationshipRef r);
+bool checkCalls(RelationshipRef r);
+bool checkParentsorNextOrAffects(RelationshipRef r);
 
 #endif //SPA_SRC_SPA_SRC_QUERYREGEX_H_

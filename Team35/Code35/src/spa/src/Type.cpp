@@ -29,6 +29,11 @@ std::string Type::relationshipTypeToString(RelationshipType r) {
     case RelationshipType::ParentT: return "ParentT";
     case RelationshipType::Follows: return "Follows";
     case RelationshipType::FollowsT: return "FollowsT";
+    case RelationshipType::Calls: return "Calls";
+    case RelationshipType::CallsT: return "CallsT";
+    case RelationshipType::Next: return "Next";
+    case RelationshipType::NextT: return "NextT";
+    case RelationshipType::Affects: return "Affects";
     case RelationshipType::Pattern: return "Pattern";
     case RelationshipType::Null: return "Null";
   }

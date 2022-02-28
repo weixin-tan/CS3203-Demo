@@ -30,6 +30,11 @@ enum class RelationshipType{
   ParentT,
   Follows,
   FollowsT,
+  Calls,
+  CallsT,
+  Next,
+  NextT,
+  Affects,
   Pattern,
   Null
 };
@@ -62,6 +67,11 @@ class Type{
       "ParentT",
       "Follows",
       "FollowsT",
+      "Calls",
+      "CallsT",
+      "Next",
+      "NextT",
+      "Affects",
       "Pattern",
       "Null"
   };
