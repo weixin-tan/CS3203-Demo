@@ -53,11 +53,11 @@ std::string removePattern(const std::string& s);
 
 bool entityMapContains(const std::string& s, std::unordered_map<std::string, Entity>* entityMap);
 
-bool checkRelationshipRef(RelationshipRef r);
-bool checkFollows(RelationshipRef r);
-bool checkUses(RelationshipRef r);
-bool checkModifies(RelationshipRef r);
-bool checkCalls(RelationshipRef r);
-bool checkParentsorNextOrAffects(RelationshipRef r);
+bool checkRelationshipRef(const RelationshipRef& r);
+bool checkFollowsOrParentsOrNextOrAffects(const RelationshipRef& r);
+bool checkUses(const RelationshipRef& r);
+bool checkModifies(const RelationshipRef& r);
+bool checkCalls(const RelationshipRef& r);
+bool checkPattern(const RelationshipRef& r);
 
 #endif //SPA_SRC_SPA_SRC_QUERYREGEX_H_

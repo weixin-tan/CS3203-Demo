@@ -52,7 +52,7 @@ std::string extractStringFromWildCard(const std::string& s){
 
 /**
  * @param s a string
- * @return return true if string s is '"' IDENT '"'. ekse return false
+ * @return return true if string s is '"' IDENT '"'. else return false
  */
 bool isQuotationIdent(const std::string& s){
   std::string temp;
@@ -106,7 +106,7 @@ std::string stripString(std::string s){
 /**
  * @param s a string to split
  * @param delimiter delimiter string to split the string by
- * @return a list of substring, splitted by the delimiter
+ * @return a list of substring, split by the delimiter
  */
 std::vector<std::string> splitString(const std::string& s, const std::string& delimiter){
   long startPosition = 0;
@@ -136,7 +136,7 @@ std::vector<std::string> splitStringBySpaces(const std::string& s){
   std::sregex_token_iterator first{s.begin(), s.end(), re, -1}, last;
   std::vector<std::string> tokens{first, last};
   std::string temp;
-  for (auto word: tokens) {
+  for (const auto& word: tokens) {
     temp = stripString(word);
     if (!temp.empty()) {
       toReturn.push_back(temp);
@@ -197,7 +197,7 @@ std::vector<std::string> extractDeclaration(const std::string& s){
 }
 
 /**
- * Seperate Design Entity and Synonyms and put them in a list
+ * Seperates Design Entity and Synonyms and put them in a list
  * @param s Entity declarations statement
  * @return List where the first element is a Design Entity and the rest are Synonyms
  */
@@ -265,9 +265,9 @@ bool isPattern(const std::string& s){
  * @return returns true if "such" "that" exists in a string
  */
 bool existSuchThat(const std::string &s) {
-  std::vector<long> mylist = findSuchThatClause(s);
-  long suchPosition = mylist[0];
-  long thatPosition = mylist[1];
+  std::vector<long> myList = findSuchThatClause(s);
+  long suchPosition = myList[0];
+  long thatPosition = myList[1];
   if ((suchPosition == std::string::npos || thatPosition == std::string::npos)){
     return false;
   }else{
@@ -376,9 +376,9 @@ std::vector<std::string> splitVariablesAndClauses(const std::string& s){
  */
 std::vector<std::string> splitPatternAndSuchThatClauses(std::string s){
   std::vector<std::string> returnList;
-  std::vector<long> mylist = findSuchThatClause(s);
-  long suchPosition = mylist[0];
-  long thatPosition = mylist[1];
+  std::vector<long> myList = findSuchThatClause(s);
+  long suchPosition = myList[0];
+  long thatPosition = myList[1];
   if (suchPosition != std::string::npos){
     // remove such that
     s = s.substr(0, suchPosition) + s.substr(thatPosition+4, s.length() - thatPosition-4);
@@ -401,6 +401,7 @@ std::vector<std::string> extractVariablesToSelect(const std::string& s){
   std::vector<std::string> returnList;
   std::string variableString = splitVariablesAndClauses(s)[0];
   if (isSelect(variableString)){
+    std::cout << variableString.substr(6,variableString.length()-6) << " OLD IDEA \n";
     returnList.push_back(stripString(variableString.substr(6,variableString.length()-6)));
   }
   return returnList;
@@ -522,81 +523,33 @@ bool entityMapContains(const std::string& s, std::unordered_map<std::string, Ent
   return (*entityMap).find(s) != (*entityMap).end();
 }
 
-bool checkRelationshipRef(RelationshipRef r){
+bool checkRelationshipRef(const RelationshipRef& r){
   if (r.rType == RelationshipType::Null){
     return false;
   }else{
     bool returnBool;
-    if (r.rType == RelationshipType::FollowsT || r.rType == RelationshipType::Follows){
-      returnBool = checkFollows(r);
+    if (r.rType == RelationshipType::Follows || r.rType == RelationshipType::FollowsT ||
+    r.rType == RelationshipType::Parent || r.rType == RelationshipType::ParentT ||
+    r.rType == RelationshipType::Next || r.rType == RelationshipType::NextT || r.rType == RelationshipType::Affects){
+      returnBool = checkFollowsOrParentsOrNextOrAffects(r);
     } else if (r.rType == RelationshipType::Uses){
       returnBool = checkUses(r);
     } else if (r.rType == RelationshipType::Modifies){
       returnBool = checkModifies(r);
     } else if (r.rType == RelationshipType::Calls || r.rType == RelationshipType::CallsT){
       returnBool = checkCalls(r);
-    } else if (r.rType == RelationshipType::Parent || r.rType == RelationshipType::ParentT || r.rType == RelationshipType::Next || r.rType == RelationshipType::NextT || r.rType == RelationshipType::Affects){
-      returnBool = checkParentsorNextOrAffects(r);
-    } else {
+    } else if (r.rType == RelationshipType::Pattern){
+      returnBool = checkPattern(r);
+    }
+
+    else {
       returnBool = false;
     }
     return returnBool;
   }
 }
 
-bool checkFollows(RelationshipRef r){
-  bool leftSideBool = r.leftEntity.eType == EntityType::FixedInteger
-      || r.leftEntity.eType == EntityType::Statement
-      || r.leftEntity.eType == EntityType::Wildcard;
-  bool rightSideBool = r.rightEntity.eType == EntityType::FixedInteger
-      || r.rightEntity.eType == EntityType::Statement
-      || r.rightEntity.eType == EntityType::Wildcard;
-  return leftSideBool && rightSideBool;
-}
-
-bool checkUses(RelationshipRef r){
-  bool leftSideBool = r.leftEntity.eType == EntityType::FixedInteger
-      || r.leftEntity.eType == EntityType::FixedString
-      || r.leftEntity.eType == EntityType::Assignment
-      || r.leftEntity.eType == EntityType::Print
-      || r.leftEntity.eType == EntityType::While
-      || r.leftEntity.eType == EntityType::If
-      || r.leftEntity.eType == EntityType::Procedure
-      || r.leftEntity.eType == EntityType::Call
-      || r.leftEntity.eType == EntityType::Wildcard;
-  bool rightSideBool = r.rightEntity.eType == EntityType::FixedString
-      || r.rightEntity.eType == EntityType::Variable
-      || r.rightEntity.eType == EntityType::Wildcard;
-  return leftSideBool && rightSideBool;
-}
-
-bool checkModifies(RelationshipRef r){
-  bool leftSideBool = r.leftEntity.eType == EntityType::FixedInteger
-      || r.leftEntity.eType == EntityType::FixedString
-      || r.leftEntity.eType == EntityType::Assignment
-      || r.leftEntity.eType == EntityType::Read
-      || r.leftEntity.eType == EntityType::While
-      || r.leftEntity.eType == EntityType::If
-      || r.leftEntity.eType == EntityType::Procedure
-      || r.leftEntity.eType == EntityType::Call
-      || r.leftEntity.eType == EntityType::Wildcard;
-  bool rightSideBool = r.rightEntity.eType == EntityType::FixedString
-      || r.rightEntity.eType == EntityType::Variable
-      || r.rightEntity.eType == EntityType::Wildcard;
-  return leftSideBool && rightSideBool;
-}
-
-bool checkCalls(RelationshipRef r){
-  bool leftSideBool = r.leftEntity.eType == EntityType::FixedString
-      || r.leftEntity.eType == EntityType::Procedure
-      || r.leftEntity.eType == EntityType::Wildcard;
-  bool rightSideBool = r.rightEntity.eType == EntityType::FixedString
-      || r.rightEntity.eType == EntityType::Procedure
-      || r.rightEntity.eType == EntityType::Wildcard;
-  return leftSideBool && rightSideBool;
-}
-
-bool checkParentsorNextOrAffects(RelationshipRef r){
+bool checkFollowsOrParentsOrNextOrAffects(const RelationshipRef& r){
   bool leftSideBool = r.leftEntity.eType == EntityType::FixedInteger
       || r.leftEntity.eType == EntityType::Statement
       || r.leftEntity.eType == EntityType::Assignment
@@ -616,4 +569,61 @@ bool checkParentsorNextOrAffects(RelationshipRef r){
       || r.rightEntity.eType == EntityType::Read
       || r.rightEntity.eType == EntityType::Wildcard;
   return leftSideBool && rightSideBool;
+}
+
+bool checkUses(const RelationshipRef& r){
+  bool leftSideBool = r.leftEntity.eType == EntityType::FixedInteger
+      || r.leftEntity.eType == EntityType::FixedString
+      || r.leftEntity.eType == EntityType::Statement
+      || r.leftEntity.eType == EntityType::Assignment
+      || r.leftEntity.eType == EntityType::Print
+      || r.leftEntity.eType == EntityType::While
+      || r.leftEntity.eType == EntityType::If
+      || r.leftEntity.eType == EntityType::Procedure
+      || r.leftEntity.eType == EntityType::Call
+      || r.leftEntity.eType == EntityType::Wildcard;
+  bool rightSideBool = r.rightEntity.eType == EntityType::FixedString
+      || r.rightEntity.eType == EntityType::Variable
+      || r.rightEntity.eType == EntityType::Wildcard;
+  return leftSideBool && rightSideBool;
+}
+
+bool checkModifies(const RelationshipRef& r){
+  bool leftSideBool = r.leftEntity.eType == EntityType::FixedInteger
+      || r.leftEntity.eType == EntityType::FixedString
+      || r.leftEntity.eType == EntityType::Assignment
+      || r.leftEntity.eType == EntityType::Read
+      || r.leftEntity.eType == EntityType::While
+      || r.leftEntity.eType == EntityType::If
+      || r.leftEntity.eType == EntityType::Procedure
+      || r.leftEntity.eType == EntityType::Call
+      || r.leftEntity.eType == EntityType::Wildcard;
+  bool rightSideBool = r.rightEntity.eType == EntityType::FixedString
+      || r.rightEntity.eType == EntityType::Variable
+      || r.rightEntity.eType == EntityType::Wildcard;
+  return leftSideBool && rightSideBool;
+}
+
+bool checkCalls(const RelationshipRef& r){
+  bool leftSideBool = r.leftEntity.eType == EntityType::FixedString
+      || r.leftEntity.eType == EntityType::Procedure
+      || r.leftEntity.eType == EntityType::Wildcard;
+  bool rightSideBool = r.rightEntity.eType == EntityType::FixedString
+      || r.rightEntity.eType == EntityType::Procedure
+      || r.rightEntity.eType == EntityType::Wildcard;
+  return leftSideBool && rightSideBool;
+}
+
+bool checkPattern(const RelationshipRef& r){
+  bool assignBool = r.AssignmentEntity.eType == EntityType::Assignment ||
+      r.AssignmentEntity.eType == EntityType::While ||
+      r.AssignmentEntity.eType == EntityType::If;
+  bool leftSideBool = r.leftEntity.eType == EntityType::FixedString
+      || r.leftEntity.eType == EntityType::Variable
+      || r.leftEntity.eType == EntityType::Wildcard;
+  bool rightSideBool = r.rightEntity.eType == EntityType::Wildcard ||
+      r.rightEntity.eType == EntityType::FixedStringWithinWildcard ||
+      r.rightEntity.eType == EntityType::FixedString;
+
+  return assignBool && leftSideBool && rightSideBool;
 }

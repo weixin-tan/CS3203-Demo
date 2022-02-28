@@ -239,16 +239,16 @@ TEST_CASE("invalid querys"){
 
 TEST_CASE("trippy queries"){
   QueryProcessor qp = QueryProcessor();
-  string s1 = "read read; while while; if if; variable variable; Select read such that Uses(while, if)";
+  string s1 = "read read; while while; if if; variable variable; Select read such that Follows(while, if)";
   string s2 = "assign Uses; variable Modifies; Select Uses pattern Uses (Modifies, _)";
-  string s3 = "variable Select; Select Select such that Uses(Select, _)";
-  string s4 = "variable such; Select such such that Uses(such, _)";
-  string s5 = "variable that; Select that such that Uses(that, _)";
-  string s6 = "assign such; Select such pattern such(such, _)";
-  string s7 = "assign that; Select that pattern that(that, _)";
+  string s3 = "variable Select; Select Select such that Uses(_, Select)";
+  string s4 = "variable such; Select such such that Uses(_, such)";
+  string s5 = "variable that; Select that such that Uses(_, that)";
+  string s6 = "assign such; Select such pattern such(\"x\", _)";
+  string s7 = "assign that; Select that pattern that(\"x\", _)";
   string s8 = "assign pattern; Select pattern pattern pattern (_, \"x\")";
   string s9 = "assign suchthat; Select suchthat such that Follows*(6,suchthat)";
-  string s10 = "variable\tv;\tSelect\tv\tsuch\tthat\tParent*(v, 3)";
+  string s10 = "assign\tv;\tSelect\tv\tsuch\tthat\tParent*(v, 3)";
   string s11 = "assign a; Select a pattern a (\"\na\t\", _\"b\"_ )";
   string s12 = "assign a; Select a pattern a (\"a\", _\n\"b\"\t_ )";
 
@@ -270,7 +270,9 @@ TEST_CASE("trippy queries"){
 }
 
 TEST_CASE("testing site"){
-  cout << "hello running debug mode";
+  QueryProcessor qp = QueryProcessor();
+  string myquery = "Select <p, q ,r> such that Calls (p, q)";
+  qp.parsePQL(myquery);
 }
 /*
 METHODS TO TEST
