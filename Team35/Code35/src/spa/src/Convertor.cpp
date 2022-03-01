@@ -86,6 +86,9 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 		break;
 	case ContainerType::kprocedure:
 		break;
+	default:
+		throw std::invalid_argument("no such container type");
+		break;
 	}
 
 	//push the value into the stack
