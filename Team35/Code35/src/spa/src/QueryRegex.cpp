@@ -392,6 +392,28 @@ std::vector<std::string> splitPatternAndSuchThatClauses(std::string s){
   return returnList;
 }
 
+
+std::string removeSelect(const std::string& s){
+  if (s.find("Select") == 0){
+    return stripString(s.substr(6,s.length()-6));
+  }
+  return s;
+}
+
+bool vBracketsExist(const std::string& s){
+  long leftV = s.find("<");
+  long rightV = s.find(">");
+  if (leftV == 0 && rightV == s.length() - 1){
+    return leftV < rightV;
+  }else{
+    return false;
+  }
+}
+
+std::string removeVBrackets(const std::string& s){
+  return stripString(s.substr(1, s.length()-2));
+}
+
 /**
  * Extract the variable to select
  * @param s some string
@@ -400,9 +422,17 @@ std::vector<std::string> splitPatternAndSuchThatClauses(std::string s){
 std::vector<std::string> extractVariablesToSelect(const std::string& s){
   std::vector<std::string> returnList;
   std::string variableString = splitVariablesAndClauses(s)[0];
+
   if (isSelect(variableString)){
-    std::cout << variableString.substr(6,variableString.length()-6) << " OLD IDEA \n";
-    returnList.push_back(stripString(variableString.substr(6,variableString.length()-6)));
+    variableString = removeSelect(variableString);
+    if (vBracketsExist(variableString)){
+      variableString = removeVBrackets(variableString);
+      for (auto word: splitString(variableString, ",")){
+        returnList.push_back(word);
+      }
+    }else{
+      returnList.push_back(variableString);
+    }
   }
   return returnList;
 }
@@ -478,10 +508,13 @@ bool checkRelRefList(std::vector<std::string> sArr){
   if (sArr.size() != 3){
     return false;
   }else{
-    if (sArr[0] == "Follows" || sArr[0] ==  "Follows*" || sArr[0] ==  "Parent" || sArr[0] == "Parent*"){
+    if (sArr[0] == "Follows" || sArr[0] ==  "Follows*" || sArr[0] ==  "Parent" || sArr[0] == "Parent*"
+    || sArr[0] == "Next" || sArr[0] == "Next*" || sArr[0] == "Affects" || sArr[0] == "Affects*"){
       return isStmtRef(sArr[1]) && isStmtRef(sArr[2]);
     }else if (sArr[0] == "Uses" || sArr[0] == "Modifies"){
       return (isEntRef(sArr[1]) && isEntRef(sArr[2])) || (isStmtRef(sArr[1]) && isEntRef(sArr[2]));
+    }else if (sArr[0] == "Calls" || sArr[0] ==  "Calls*"){
+      return (isEntRef(sArr[1]) && isEntRef(sArr[2]));
     }else{
       return false;
     }
@@ -615,15 +648,21 @@ bool checkCalls(const RelationshipRef& r){
 }
 
 bool checkPattern(const RelationshipRef& r){
-  bool assignBool = r.AssignmentEntity.eType == EntityType::Assignment ||
-      r.AssignmentEntity.eType == EntityType::While ||
-      r.AssignmentEntity.eType == EntityType::If;
-  bool leftSideBool = r.leftEntity.eType == EntityType::FixedString
-      || r.leftEntity.eType == EntityType::Variable
-      || r.leftEntity.eType == EntityType::Wildcard;
-  bool rightSideBool = r.rightEntity.eType == EntityType::Wildcard ||
-      r.rightEntity.eType == EntityType::FixedStringWithinWildcard ||
-      r.rightEntity.eType == EntityType::FixedString;
-
-  return assignBool && leftSideBool && rightSideBool;
+  if(r.AssignmentEntity.eType == EntityType::Assignment){
+    bool leftSideBool = r.leftEntity.eType == EntityType::FixedString
+        || r.leftEntity.eType == EntityType::Variable
+        || r.leftEntity.eType == EntityType::Wildcard;
+    bool rightSideBool = r.rightEntity.eType == EntityType::Wildcard ||
+        r.rightEntity.eType == EntityType::FixedStringWithinWildcard ||
+        r.rightEntity.eType == EntityType::FixedString;
+    return leftSideBool && rightSideBool;
+  }else if (r.AssignmentEntity.eType == EntityType::While || r.AssignmentEntity.eType == EntityType::If){
+    bool leftSideBool = r.leftEntity.eType == EntityType::FixedString
+        || r.leftEntity.eType == EntityType::Wildcard
+        || r.leftEntity.eType == EntityType::Variable;
+    bool rightSideBool = r.rightEntity.eType == EntityType::Wildcard;
+    return leftSideBool && rightSideBool;
+  }else{
+    return false;
+  }
 }

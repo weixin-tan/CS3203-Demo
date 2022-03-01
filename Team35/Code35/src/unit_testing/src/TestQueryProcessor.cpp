@@ -271,7 +271,8 @@ TEST_CASE("trippy queries"){
 
 TEST_CASE("testing site"){
   QueryProcessor qp = QueryProcessor();
-  string myquery = "Select <p, q ,r> such that Calls (p, q)";
+
+  string myquery = "assign a; while w;Select a pattern a (\"x\", _) such that Parent* (w, a) and Next* (1, a)";
   qp.parsePQL(myquery);
 }
 /*

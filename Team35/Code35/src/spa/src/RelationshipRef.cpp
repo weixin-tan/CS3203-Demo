@@ -22,7 +22,9 @@ std::string RelationshipRef::toString() {
   std::ostringstream buffer;
   buffer << "Relationship Type: " << Type::relationshipTypeToString(rType) << " leftEntity: "
          << leftEntity.toString() << " rightEntity " << rightEntity.toString() << std::endl;
-
+  if (rType == RelationshipType::Pattern){
+    buffer << " assignEntity: " << AssignmentEntity.toString();
+  }
   return buffer.str();
 }
 bool RelationshipRef::operator==(const RelationshipRef &r1) {

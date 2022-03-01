@@ -41,6 +41,7 @@ std::vector<long> findSuchThatClause(const std::string& s);
 
 std::vector<std::string> splitVariablesAndClauses(const std::string& s);
 std::vector<std::string> splitPatternAndSuchThatClauses(std::string s);
+std::string removeSelect(const std::string& s);
 std::vector<std::string> extractVariablesToSelect(const std::string& s);
 std::vector<std::string> extractSuchThatClauses(const std::string& s);
 std::vector<std::string> extractPatternClauses(const std::string& s);
@@ -59,5 +60,6 @@ bool checkUses(const RelationshipRef& r);
 bool checkModifies(const RelationshipRef& r);
 bool checkCalls(const RelationshipRef& r);
 bool checkPattern(const RelationshipRef& r);
+bool isBOOLEAN(const std::string& s);
 
 #endif //SPA_SRC_SPA_SRC_QUERYREGEX_H_

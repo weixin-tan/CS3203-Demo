@@ -160,6 +160,7 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
   std::unordered_map<std::string, Entity> entityMap;
   std::vector<std::string> declarationStmtList = extractDeclaration(parsePQL);
   std::vector<std::string> selectStmtList = extractSelect(parsePQL);
+  entityMap["BOOLEAN"] = Entity(EntityType::Boolean, "BOOLEAN");
 
   for (const auto& declarationStmt: declarationStmtList){
     std::vector<std::string> designEntityArr = extractDesignEntityAndSynonyms(declarationStmt);
@@ -219,16 +220,16 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
           }
         }
       }
-      //std::cout << "\n" << newClause.toString() << "\n";
+      std::cout << "\n" << newClause.toString() << "\n";
       clauseList.push_back(newClause);
     }
   }
 
   if (isValid){
-    //std::cout << "is valid!";
+    std::cout << "is valid!";
     return clauseList;
   }else{
-    //std::cout << "is invalid!";
+    std::cout << "is invalid!";
     std::vector<Clause> emptyClause;
     return emptyClause;
   }
