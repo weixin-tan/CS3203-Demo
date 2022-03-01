@@ -10,6 +10,7 @@
 #include "Procedure.h"
 #include "ProcedureLst.h"
 #include <PKB/PkbSetter.h>
+#include <stdexcept>
 
 class Convertor {
 
