@@ -101,7 +101,6 @@ bool entityMapContains(const std::string& s, std::unordered_map<std::string, Ent
   return (*entityMap).find(s) != (*entityMap).end();
 }
 
-
 /**
  * @param s a string
  * @return remove whitespace from the front and the back of a string
@@ -180,38 +179,21 @@ std::vector<std::string> splitDeclarationAndSelect(const std::string& s){
   return splitString(s, ";");
 }
 
-
-/**
- * Extract Select Clauses from query string
- * @param s query string
- * @return List of Select Clauses
- */
-std::vector<std::string> extractSelectStatements(const std::string& s){
-  std::vector<std::string> returnList;
+std::vector<std::vector<std::string>> extractSelectAndDeclarationStatements(const std::string& s){
+  std::vector<std::vector<std::string>> returnList;
+  std::vector<std::string> selectList;
+  std::vector<std::string> declarationList;
   std::vector<std::string> stmtList = splitDeclarationAndSelect(s);
   for (const std::string& stmt: stmtList){
     if (isSelect(stmt)){
       // select exists as the first word in the statement
-      returnList.push_back(stmt);
+      selectList.push_back(stmt);
+    }else{
+      declarationList.push_back(stmt);
     }
   }
-  return returnList;
-}
-
-/**
- * Extract Entity Declarations from query string
- * @param s query string
- * @return List of Entity Declaration Statements
- */
-std::vector<std::string> extractDeclarationStatements(const std::string& s){
-  std::vector<std::string> returnList;
-  std::vector<std::string> stmtList = splitDeclarationAndSelect(s);
-  for (const std::string& stmt: stmtList){
-    if (!isSelect(stmt)){
-      // select does not exist in the statement
-      returnList.push_back(stmt);
-    }
-  }
+  returnList.push_back(selectList);
+  returnList.push_back(declarationList);
   return returnList;
 }
 
@@ -355,18 +337,41 @@ std::string removeVBrackets(const std::string& s){
   return extractStringWithoutFirstAndLastChar(s);
 }
 
-bool checkAnd(std::vector<std::string> clausesList){
+bool checkAndSuchThat(std::vector<std::string> clausesList){
   bool returnBool = true;
-  for(int i=1; i<clausesList.size(); i++){
-    returnBool = returnBool && clausesList[i].find("and") == 0;
+  for(int i=0; i<clausesList.size(); i++){
+    returnBool = returnBool && clausesList[i].find("and") == 0 || existSuchThat( clausesList[i]);
   }
   return returnBool;
 }
 
-void removeAnd(std::vector<std::string>* clausesList){
+void removeAndSuchThat(std::vector<std::string>* clausesList){
   int andLength = 3;
-  for(int i=1; i<(*clausesList).size(); i++){
-    (*clausesList)[i] = stripString((*clausesList)[i].substr(andLength, (*clausesList)[i].length()-andLength));
+  for(int i=0; i<(*clausesList).size(); i++){
+    if ((*clausesList)[i].find("and") == 0){
+      (*clausesList)[i] = stripString((*clausesList)[i].substr(andLength, (*clausesList)[i].length()-andLength));
+    }else{
+      (*clausesList)[i] = removeSuchThat((*clausesList)[i]);
+    }
+  }
+}
+
+bool checkAndPattern(std::vector<std::string> clausesList){
+  bool returnBool = true;
+  for(int i=0; i<clausesList.size(); i++){
+    returnBool = returnBool && clausesList[i].find("and") == 0 || isPattern( clausesList[i]);
+  }
+  return returnBool;
+}
+
+void removeAndPattern(std::vector<std::string>* clausesList){
+  int andLength = 3;
+  for(int i=0; i<(*clausesList).size(); i++){
+    if ((*clausesList)[i].find("and") == 0){
+      (*clausesList)[i] = stripString((*clausesList)[i].substr(andLength, (*clausesList)[i].length()-andLength));
+    }else{
+      (*clausesList)[i] = removePattern((*clausesList)[i]);
+    }
   }
 }
 
@@ -382,7 +387,23 @@ std::string removeSelect(const std::string& s){
  */
 std::string removePattern(const std::string& s){
   int patternLength = 7;
-  return stripString(s.substr(patternLength,s.length()-patternLength));
+  if (isPattern(s)){
+    return stripString(s.substr(patternLength,s.length()-patternLength));
+  }else{
+    return s;
+  }
+}
+
+std::string removeSuchThat(std::string s){
+  std::vector<long> myList = findSuchThatClause(s);
+  long suchPosition = myList[0];
+  long thatPosition = myList[1];
+  if (suchPosition != std::string::npos){
+    // remove such that
+    return stripString(s.substr(0, suchPosition) + s.substr(thatPosition+4, s.length() - thatPosition-4));
+  }else{
+    return s;
+  }
 }
 
 /**
@@ -427,13 +448,6 @@ std::vector<std::string> splitVariablesAndClauses(const std::string& s){
  */
 std::vector<std::string> splitPatternAndSuchThatClauses(std::string s){
   std::vector<std::string> returnList;
-  std::vector<long> myList = findSuchThatClause(s);
-  long suchPosition = myList[0];
-  long thatPosition = myList[1];
-  if (suchPosition != std::string::npos){
-    // remove such that
-    s = s.substr(0, suchPosition) + s.substr(thatPosition+4, s.length() - thatPosition-4);
-  }
   std::vector<std::string> wordsList = splitString(s, ")");
   for (int i=0; i<wordsList.size(); i=i+1){
     if (!wordsList[i].empty()){
@@ -466,45 +480,41 @@ std::vector<std::string> extractVariablesToSelect(const std::string& s){
   return returnList;
 }
 
-/**
- * Extract such that clauses
- * @param s some string
- * @return a list of such that clauses
- */
-std::vector<std::string> extractSuchThatClauses(const std::string& s){
-  std::vector<std::string> returnList;
+std::vector<std::vector<std::string>> extractClauses(const std::string& s){
+  std::vector<std::vector<std::string>> returnList;
+  std::vector<std::string> suchThatList;
+  std::vector<std::string> patternList;
   std::vector<std::string> everythingList = splitVariablesAndClauses(s);
   if (everythingList.size() == 2) {
     std::string clausesString = everythingList[1];
     std::vector<std::string> clausesList = splitPatternAndSuchThatClauses(clausesString);
 
+    bool pattern = false;
+    bool suchThat = false;
+    bool with = false;
+
     for (const auto &stmt : clausesList) {
-      if (!isPattern(stmt)) {
-        returnList.push_back(stmt);
+      if (isPattern(stmt)){
+        patternList.push_back(stmt);
+        pattern = true;
+        suchThat = false;
+        with = false;
+      }else if (existSuchThat(stmt)){
+        suchThatList.push_back(stmt);
+        pattern = false;
+        suchThat = true;
+        with = false;
+      }else{
+        if (pattern){
+          patternList.push_back(stmt);
+        }else if (suchThat){
+          suchThatList.push_back(stmt);
+        }
       }
     }
   }
-  return returnList;
-}
-
-/**
- * Extract pattern clauses
- * @param s
- * @return
- */
-std::vector<std::string> extractPatternClauses(const std::string& s){
-  std::vector<std::string> returnList;
-  std::vector<std::string> everythingList = splitVariablesAndClauses(s);
-  if (everythingList.size() == 2) {
-    std::string clausesString = splitVariablesAndClauses(s)[1];
-    std::vector<std::string> clausesList = splitPatternAndSuchThatClauses(clausesString);
-
-    for (const auto &stmt : clausesList) {
-      if (isPattern(stmt)) {
-        returnList.push_back(stmt);
-      }
-    }
-  }
+  returnList.push_back(suchThatList);
+  returnList.push_back(patternList);
   return returnList;
 }
 

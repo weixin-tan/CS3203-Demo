@@ -35,6 +35,7 @@ enum class RelationshipType{
   Next,
   NextT,
   Affects,
+  AffectsT,
   Pattern,
   Null
 };
@@ -72,6 +73,7 @@ class Type{
       "Next",
       "NextT",
       "Affects",
+      "AffectsT",
       "Pattern",
       "Null"
   };

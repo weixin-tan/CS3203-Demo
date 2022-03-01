@@ -71,8 +71,10 @@ RelationshipRef QueryProcessor::createRelationshipObject(std::vector<std::string
     rType = RelationshipType::Next;
   }else if (relStr == "Next*"){
     rType = RelationshipType::NextT;
-  }else if (relStr == "Affects*"){
+  }else if (relStr == "Affects"){
     rType = RelationshipType::Affects;
+  }else if (relStr == "Affects*"){
+    rType = RelationshipType::AffectsT;
   }else{
     //this relationship type is NULL -> invalid
     rType = RelationshipType::Null;
@@ -158,8 +160,10 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
   bool isValid = true;
   std::vector<Clause> clauseList;
   std::unordered_map<std::string, Entity> entityMap;
-  std::vector<std::string> declarationStmtList = extractDeclarationStatements(parsePQL);
-  std::vector<std::string> selectStmtList = extractSelectStatements(parsePQL);
+
+  std::vector<std::vector<std::string>> fullList = extractSelectAndDeclarationStatements(parsePQL);
+  std::vector<std::string> selectStmtList = fullList[0];
+  std::vector<std::string> declarationStmtList = fullList[1];
   entityMap["BOOLEAN"] = Entity(EntityType::Boolean, "BOOLEAN");
 
   for (const auto& declarationStmt: declarationStmtList){
@@ -173,9 +177,10 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
   if (isValid){
     for (const auto& selectStmt: selectStmtList){
       Clause newClause = Clause();
+      std::vector<std::vector<std::string>> allList = extractClauses(selectStmt);
       std::vector<std::string> variablesToSelect = extractVariablesToSelect(selectStmt);
-      std::vector<std::string> SuchThatClauses = extractSuchThatClauses(selectStmt);
-      std::vector<std::string> PatternClauses = extractPatternClauses(selectStmt);
+      std::vector<std::string> SuchThatClauses = allList[0];
+      std::vector<std::string> PatternClauses = allList[1];
 
       if (existSuchThat(selectStmt)){
         isValid = isValid && (SuchThatClauses.size() > 0);
@@ -183,14 +188,12 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
         isValid = isValid && (SuchThatClauses.empty());
       }
 
-      if (SuchThatClauses.size() > 1){
-        isValid = isValid && checkAnd(SuchThatClauses);
-        removeAnd(&SuchThatClauses);
-      }
-
-      if (PatternClauses.size() > 1){
-        isValid = isValid && checkAnd(PatternClauses);
-        removeAnd(&PatternClauses);
+      isValid = isValid && checkAndSuchThat(SuchThatClauses);
+      removeAndSuchThat(&SuchThatClauses);
+      isValid = isValid && checkAndPattern(PatternClauses);
+      removeAndPattern(&PatternClauses);
+      if (!isValid){
+        break;
       }
 
       for (const auto& s: variablesToSelect){
@@ -205,7 +208,8 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
         isValid = isValid && checkRelRefList(relRefList);
         if (isValid){
           RelationshipRef newRef = createRelationshipObject(relRefList, &entityMap);
-
+          std::cout << s << "\n";
+          std::cout << newRef.toString() << "\n";
           isValid = isValid && checkRelationshipRef(newRef);
           if (!isValid){
             break;
@@ -216,7 +220,6 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
       }
 
       for (auto s: PatternClauses){
-        s = removePattern(s);
         std::vector<std::string> patternList = extractItemsInBrackets(s);
         isValid = isValid && checkPatternList(patternList, &entityMap);
 

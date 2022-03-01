@@ -34,6 +34,7 @@ std::string Type::relationshipTypeToString(RelationshipType r) {
     case RelationshipType::Next: return "Next";
     case RelationshipType::NextT: return "NextT";
     case RelationshipType::Affects: return "Affects";
+    case RelationshipType::AffectsT: return "AffectsT";
     case RelationshipType::Pattern: return "Pattern";
     case RelationshipType::Null: return "Null";
   }
