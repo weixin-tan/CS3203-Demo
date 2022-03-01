@@ -251,6 +251,8 @@ TEST_CASE("trippy queries"){
   string s10 = "assign\tv;\tSelect\tv\tsuch\tthat\tParent*(v, 3)";
   string s11 = "assign a; Select a pattern a (\"\na\t\", _\"b\"_ )";
   string s12 = "assign a; Select a pattern a (\"a\", _\n\"b\"\t_ )";
+  string s13 = "variable and; Select and such that Uses(_,and) and Modifies(1,and)";
+  string s14 = "assign and; Select and pattern and (\"x\", _) and and (\"y\", _)";
 
   SECTION("test that trippy queries are valid"){
     REQUIRE(!qp.parsePQL(s1).empty());
@@ -265,32 +267,33 @@ TEST_CASE("trippy queries"){
     REQUIRE(!qp.parsePQL(s10).empty());
     REQUIRE(!qp.parsePQL(s11).empty());
     REQUIRE(!qp.parsePQL(s12).empty());
-
+    REQUIRE(!qp.parsePQL(s13).empty());
+    REQUIRE(!qp.parsePQL(s14).empty());
   }
 }
 
-TEST_CASE("test advanced queries"){
+TEST_CASE("test advanced queries without with clauses"){
   QueryProcessor qp = QueryProcessor();
+  string s1 = "Select BOOLEAN such that Next* (2, 9)";
+  string s2 = "Select BOOLEAN such that Calls (_,_)";
+  string s3 = "while w;Select w pattern w (\"x\", _)";
 
-  string s1 = "procedure p, q;Select p such that Calls (p, _)";
-  string s2 = "procedure p;Select p such that Calls (p, \"Third\") and Modifies (p, \"i\")";
-  string s3 = "procedure p; Select p such that Calls* (p, \"Third\")";
-  string s4 = "Select BOOLEAN such that Next* (2, 9)";
-  string s5 = "assign a; while w;Select a pattern a (\"x\", _) such that Parent* (w, a) and Next* (1, a)";
-  string s6 = "assign a; while w;Select a such that Modifies (a, \"x\") and Parent* (w, a) and Next* (1, a)";
-  string s7 = "stmt s;Select s such that Next* (5, s) and Next* (s, 12)";
-  string s8 = "assign a;Select a such that Affects* (a, 10)";
-  string s9 = "assign a1, a2;Select <a1, a2> such that Affects (a1, a2)";
-  string s10 = "procedure p, q; Select <p, q> such that Calls (p, q)";
-  string s11 = "while w1, w2, w3;Select <w1, w2, w3> such that Parent* (w1, w2) and Parent* (w2, w3)";
-  string s12 = "while w;Select w pattern w (\"x\", _)";
-  string s13 = "assign a;Select a pattern a (\"x\", _)";
-  string s14 = "assign a;Select a pattern a (_, _\"x * y + z\"_)";
-  string s15 = "assign a1, a2; while w1, w2;Select a2 pattern a1 (\"x\", _) and a2 (\"x\", _\"x\"_) such that Affects (a1, a2) and Parent* (w2, a2) and Parent* (w1, w2)";
-  string s16 = "assign a; while w;Select <a, w> such that Calls (\"Second\", \"Third\")";
-  string s17 = "procedure p, q; assign a;Select <p, q> such that Modifies (a, \"y\")";
-  string s18 = "Select BOOLEAN such that Calls (_,_)";
-  qp.parsePQL(s16);
+  string s4 = "assign a1, a2;Select <a1, a2> such that Affects (a1, a2)";
+  string s5 = "procedure p, q; Select <p, q> such that Calls (p, q)";
+  string s6 = "while w1, w2, w3;Select <w1, w2, w3> such that Parent* (w1, w2) and Parent* (w2, w3)";
+  string s7 = "procedure p, q; assign a;Select <p, q, a> such that Modifies (a, \"y\")";
+
+  string s8 = "procedure p;Select p such that Calls (p, \"Third\") and Modifies (p, \"i\")";
+  string s9 = "assign a; while w;Select a such that Modifies (a, \"x\") and Parent* (w, a) and Next* (1, a)";
+  string s10 = "stmt s;Select s such that Next* (5, s) and Next* (s, 12) such that Follows(1,2)";
+
+  string s11 = "assign a; Select a pattern a (\"\na\t\", _\"b\"_ ) and a (\"x\",_)";
+  string s12 = "assign a; Select a pattern a (\"\na\t\", _\"b\"_ ) pattern a (\"x\",_)";
+
+  string s13 = "assign a; while w;Select a pattern a (\"x\", _) such that Parent* (w, a) and Next* (1, a)";
+  string s14 = "assign a1, a2; while w1, w2;Select a2 pattern a1 (\"x\", _) and a2 (\"x\", _\"x\"_) such that Affects (a1, a2) and Parent* (w2, a2) and Parent* (w1, w2)";
+
+  qp.parsePQL(s14);
 }
 /*
 METHODS TO TEST
