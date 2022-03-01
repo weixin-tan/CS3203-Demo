@@ -34,19 +34,19 @@ std::string extractLastChar(const std::string& s){
   return s.substr(s.length()-1, 1);
 }
 
-std::string extractStringWithoutFirstAndLast(const std::string& s){
+std::string extractStringWithoutFirstAndLastChar(const std::string& s){
   return stripString(s.substr(1, s.length()-2));
 }
 
 std::string extractStringFromQuotation(const std::string& s){
   std::string temp;
-  temp = extractStringWithoutFirstAndLast(s);
+  temp = extractStringWithoutFirstAndLastChar(s);
   return temp;
 }
 
 std::string extractStringFromWildCard(const std::string& s){
-  std::string temp = extractStringWithoutFirstAndLast(s);
-  temp = extractStringWithoutFirstAndLast(temp);
+  std::string temp = extractStringWithoutFirstAndLastChar(s);
+  temp = extractStringWithoutFirstAndLastChar(temp);
   return temp;
 }
 
@@ -57,7 +57,7 @@ std::string extractStringFromWildCard(const std::string& s){
 bool isQuotationIdent(const std::string& s){
   std::string temp;
   if (extractFirstChar(s) == "\"" && extractLastChar(s) == "\""){
-    temp = extractStringWithoutFirstAndLast(s);
+    temp = extractStringWithoutFirstAndLastChar(s);
     return isIdent(temp);
   }
   return false;
@@ -70,7 +70,7 @@ bool isQuotationIdent(const std::string& s){
 bool isStringWithinWildCard(const std::string& s){
   std::string temp;
   if (extractFirstChar(s) == "_" && extractLastChar(s) == "_"){
-    temp = extractStringWithoutFirstAndLast(s);
+    temp = extractStringWithoutFirstAndLastChar(s);
     return extractFirstChar(temp) == "\"" && extractLastChar(temp) == "\"";
   }
   return false;
@@ -91,6 +91,16 @@ bool isStmtRef(const std::string& s){
 bool isEntRef(const std::string& s){
   return isIdent(s) || isWildCard(s) || isQuotationIdent(s);
 }
+
+/**
+ * @param s some string
+ * @param entityMap entity Map to reference to
+ * @return returns true if some string s is one of the keys of the entity map
+ */
+bool entityMapContains(const std::string& s, std::unordered_map<std::string, Entity>* entityMap){
+  return (*entityMap).find(s) != (*entityMap).end();
+}
+
 
 /**
  * @param s a string
@@ -154,6 +164,14 @@ bool isSelect(const std::string& s){
 }
 
 /**
+ * @param s some string
+ * @return returns true if the word "pattern" is at the start of a string
+ */
+bool isPattern(const std::string& s){
+  return s.find("pattern") == 0;
+}
+
+/**
  * Split entity declarations from select clause
  * @param s query string
  * @return List of declarations and select clauses, seperated
@@ -162,12 +180,13 @@ std::vector<std::string> splitDeclarationAndSelect(const std::string& s){
   return splitString(s, ";");
 }
 
+
 /**
  * Extract Select Clauses from query string
  * @param s query string
  * @return List of Select Clauses
  */
-std::vector<std::string> extractSelect(const std::string& s){
+std::vector<std::string> extractSelectStatements(const std::string& s){
   std::vector<std::string> returnList;
   std::vector<std::string> stmtList = splitDeclarationAndSelect(s);
   for (const std::string& stmt: stmtList){
@@ -184,7 +203,7 @@ std::vector<std::string> extractSelect(const std::string& s){
  * @param s query string
  * @return List of Entity Declaration Statements
  */
-std::vector<std::string> extractDeclaration(const std::string& s){
+std::vector<std::string> extractDeclarationStatements(const std::string& s){
   std::vector<std::string> returnList;
   std::vector<std::string> stmtList = splitDeclarationAndSelect(s);
   for (const std::string& stmt: stmtList){
@@ -232,12 +251,12 @@ std::vector<std::string> extractDesignEntityAndSynonyms(const std::string& s){
  * @param sArr List where the first element is a designEntity, and the rest are synonyms
  * @return returns true if the Entity Declaration Statement is valid. else, return false
  */
-bool checkDesignEntitySynonyms(std::vector<std::string> sArr) {
+bool checkDesignEntitySynonymsList(std::vector<std::string> sArr) {
   std::vector<std::string> designEntity {"stmt", "read", "print", "call", "while", "if", "assign", "variable", "constant", "procedure"};
-  bool returnBool;
   if (sArr.size() <= 1){
-    returnBool = false;
+    return false;
   }else{
+    bool returnBool;
     std::string designStr = sArr[0];
     if (std::find(std::begin(designEntity), std::end(designEntity), designStr) != std::end(designEntity)){
       //designStr contains one of the design entity keywords
@@ -248,30 +267,7 @@ bool checkDesignEntitySynonyms(std::vector<std::string> sArr) {
     for (int i=1; i<sArr.size(); i++){
       returnBool = returnBool && isIdent(sArr[i]);
     }
-  }
-  return returnBool;
-}
-
-/**
- * @param s some string
- * @return returns true if the word "pattern" is at the start of a string
- */
-bool isPattern(const std::string& s){
-  return s.find("pattern") == 0;
-}
-
-/**
- * @param s some string
- * @return returns true if "such" "that" exists in a string
- */
-bool existSuchThat(const std::string &s) {
-  std::vector<long> myList = findSuchThatClause(s);
-  long suchPosition = myList[0];
-  long thatPosition = myList[1];
-  if ((suchPosition == std::string::npos || thatPosition == std::string::npos)){
-    return false;
-  }else{
-    return thatPosition - suchPosition - 4 > 0;
+    return returnBool;
   }
 }
 
@@ -336,6 +332,60 @@ std::vector<long> findSuchThatClause(const std::string& s){
 }
 
 /**
+ * @param s some string
+ * @return returns true if "such" "that" exists in a string
+ */
+bool existSuchThat(const std::string &s) {
+  std::vector<long> myList = findSuchThatClause(s);
+  long suchPosition = myList[0];
+  long thatPosition = myList[1];
+  int thatLength = 4;
+  if ((suchPosition == std::string::npos || thatPosition == std::string::npos)){
+    return false;
+  }else{
+    return thatPosition - suchPosition - thatLength > 0;
+  }
+}
+
+bool existVBrackets(const std::string& s){
+  return extractFirstChar(s) == "<" && extractLastChar(s) == ">";
+}
+
+std::string removeVBrackets(const std::string& s){
+  return extractStringWithoutFirstAndLastChar(s);
+}
+
+bool checkAnd(std::vector<std::string> clausesList){
+  bool returnBool = true;
+  for(int i=1; i<clausesList.size(); i++){
+    returnBool = returnBool && clausesList[i].find("and") == 0;
+  }
+  return returnBool;
+}
+
+void removeAnd(std::vector<std::string>* clausesList){
+  int andLength = 3;
+  for(int i=1; i<(*clausesList).size(); i++){
+    (*clausesList)[i] = stripString((*clausesList)[i].substr(andLength, (*clausesList)[i].length()-andLength));
+  }
+}
+
+std::string removeSelect(const std::string& s){
+  int selectLength = 6;
+  return stripString(s.substr(selectLength,s.length()-selectLength));
+}
+
+/**
+ * Remove pattern word from front of the string if it exists
+ * @param s some string
+ * @return string without pattern in front
+ */
+std::string removePattern(const std::string& s){
+  int patternLength = 7;
+  return stripString(s.substr(patternLength,s.length()-patternLength));
+}
+
+/**
  * Split the selected variable and clauses into a list
  * @param s some string to split
  * @return a list containing the variable to select and clauses
@@ -351,10 +401,11 @@ std::vector<std::string> splitVariablesAndClauses(const std::string& s){
   if ((suchThatPosition == std::string::npos) && (patternPosition == std::string::npos)){
     returnList.push_back(s);
   }else if (suchThatPosition == std::string::npos){
-    // pattern
+    // pattern only
     varString = s.substr(0, patternPosition);
     clauseString = s.substr(patternPosition, s.length() - patternPosition);
   }else if (patternPosition == std::string::npos){
+    // rel ref only
     varString = s.substr(0, suchThatPosition);
     clauseString = s.substr(suchThatPosition, s.length() - suchThatPosition);
   }else if (patternPosition < suchThatPosition){
@@ -392,28 +443,6 @@ std::vector<std::string> splitPatternAndSuchThatClauses(std::string s){
   return returnList;
 }
 
-
-std::string removeSelect(const std::string& s){
-  if (s.find("Select") == 0){
-    return stripString(s.substr(6,s.length()-6));
-  }
-  return s;
-}
-
-bool vBracketsExist(const std::string& s){
-  long leftV = s.find("<");
-  long rightV = s.find(">");
-  if (leftV == 0 && rightV == s.length() - 1){
-    return leftV < rightV;
-  }else{
-    return false;
-  }
-}
-
-std::string removeVBrackets(const std::string& s){
-  return stripString(s.substr(1, s.length()-2));
-}
-
 /**
  * Extract the variable to select
  * @param s some string
@@ -425,7 +454,7 @@ std::vector<std::string> extractVariablesToSelect(const std::string& s){
 
   if (isSelect(variableString)){
     variableString = removeSelect(variableString);
-    if (vBracketsExist(variableString)){
+    if (existVBrackets(variableString)){
       variableString = removeVBrackets(variableString);
       for (auto word: splitString(variableString, ",")){
         returnList.push_back(word);
@@ -533,27 +562,6 @@ bool checkPatternList(std::vector<std::string> patternList, std::unordered_map<s
     return e.eType == EntityType::Assignment || e.eType == EntityType::If || e.eType == EntityType::While;
   }
   return false;
-}
-
-/**
- * Remove pattern word from front of the string if it exists
- * @param s some string
- * @return string without pattern in front
- */
-std::string removePattern(const std::string& s){
-  if (s.find("pattern") == 0){
-    return stripString(s.substr(7,s.length()));
-  }
-  return s;
-}
-
-/**
- * @param s some string
- * @param entityMap entity Map to reference to
- * @return returns true if some string s is one of the keys of the entity map
- */
-bool entityMapContains(const std::string& s, std::unordered_map<std::string, Entity>* entityMap){
-  return (*entityMap).find(s) != (*entityMap).end();
 }
 
 bool checkRelationshipRef(const RelationshipRef& r){

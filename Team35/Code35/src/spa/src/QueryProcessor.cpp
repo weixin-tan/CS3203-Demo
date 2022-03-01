@@ -158,13 +158,13 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
   bool isValid = true;
   std::vector<Clause> clauseList;
   std::unordered_map<std::string, Entity> entityMap;
-  std::vector<std::string> declarationStmtList = extractDeclaration(parsePQL);
-  std::vector<std::string> selectStmtList = extractSelect(parsePQL);
+  std::vector<std::string> declarationStmtList = extractDeclarationStatements(parsePQL);
+  std::vector<std::string> selectStmtList = extractSelectStatements(parsePQL);
   entityMap["BOOLEAN"] = Entity(EntityType::Boolean, "BOOLEAN");
 
   for (const auto& declarationStmt: declarationStmtList){
     std::vector<std::string> designEntityArr = extractDesignEntityAndSynonyms(declarationStmt);
-    isValid = isValid && checkDesignEntitySynonyms(designEntityArr);
+    isValid = isValid && checkDesignEntitySynonymsList(designEntityArr);
     if (isValid){
       createDeclarationObjects(designEntityArr, &entityMap);
     }
@@ -181,6 +181,16 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
         isValid = isValid && (SuchThatClauses.size() > 0);
       }else{
         isValid = isValid && (SuchThatClauses.empty());
+      }
+
+      if (SuchThatClauses.size() > 1){
+        isValid = isValid && checkAnd(SuchThatClauses);
+        removeAnd(&SuchThatClauses);
+      }
+
+      if (PatternClauses.size() > 1){
+        isValid = isValid && checkAnd(PatternClauses);
+        removeAnd(&PatternClauses);
       }
 
       for (const auto& s: variablesToSelect){
