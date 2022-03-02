@@ -13,7 +13,7 @@ const std::map<StatementType, ElementType> PkbSetter::spTypeToElementTypeTable =
         {StatementType::kread_stmt,   ElementType::kRead}
 };
 
-PkbSetter::PkbSetter(DB *db) : db(db) {}
+PkbSetter::PkbSetter(DB* db) : db(db), designExtractor(db) {}
 
 void PkbSetter::handleVariables(const ParsedStatement& parsedStatement) {
     for (const auto& var: parsedStatement.var_modified)
@@ -96,4 +96,6 @@ void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& pro
     for (const auto& procedure : procedures)
         for (const auto& parsedStatement : procedure)
             insertStmt(parsedStatement);
+    db->callsTable = designExtractor.extractCalls();
+    db->callsTTable = designExtractor.extractCallsT();
 }

@@ -4,7 +4,6 @@
 #include <map>
 #include <set>
 #include <string>
-#include "../Type.h"
 #include "../ParsedStatement.h"
 #include "ElementType.h"
 
@@ -31,6 +30,8 @@ public:
     std::map<int, int> stmtFollowing;
     std::map<std::string, std::set<int>> constantToStmtTable;
     std::map<int, std::set<std::string>> usesStmtToConstantTable;
+    std::map<std::string, std::set<std::string>> callsTable;
+    std::map<std::string, std::set<std::string>> callsTTable;
 
     // entity tables
     std::set<std::string> variables;

@@ -5,11 +5,13 @@
 #include "../ParsedStatement.h"
 #include "../StatementType.h"
 #include "ElementType.h"
+#include "DesignExtractor.h"
 #include <map>
 
 class PkbSetter {
 private:
     DB* db;
+    DesignExtractor designExtractor;
     static const std::map<StatementType, ElementType> spTypeToElementTypeTable;
 
 private:
