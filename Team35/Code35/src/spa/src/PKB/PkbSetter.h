@@ -28,7 +28,7 @@ private:
 
 public:
     PkbSetter(DB* db);
-    void insertStmts(const std::vector<ParsedStatement>& parsedStatements);
+    void insertStmts(const std::vector<std::vector<ParsedStatement>>& procedures);
 };
 
 
