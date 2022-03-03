@@ -8,17 +8,20 @@ ConcreteSyntaxWithValidation::ConcreteSyntaxWithValidation() {
 
 }
 
-// not used for Iteration 1
+// Returns a Program object containing a ProcedureLst object.
+// // tokensQueue is a queue of Token objects received from Tokeniser.
 Program ConcreteSyntaxWithValidation::parseProgram(std::queue<Token> tokensQueue) {
 	Program program;
 	ProcedureLst procedureLst;
 
-	int stmt_count = 0;
-
 	while (tokensQueue.size() != 0) {
-		Procedure temp_procedure = ConcreteSyntaxWithValidation::parseProcedure(tokensQueue);
-		stmt_count += temp_procedure.getSize();
-		procedureLst.setNextProcedure(temp_procedure);
+		try {
+			Procedure temp_procedure = ConcreteSyntaxWithValidation::parseProcedure(tokensQueue);
+			procedureLst.setNextProcedure(temp_procedure);
+		}
+		catch (const std::invalid_argument& e) {
+			throw;
+		}
 	}
 
 	program.setProcedureLst(procedureLst);
@@ -27,7 +30,7 @@ Program ConcreteSyntaxWithValidation::parseProgram(std::queue<Token> tokensQueue
 
 // Returns a Procedure object that can be further processed by Convertor.
 // tokensQueue is a queue of Token objects received from Tokeniser.
-Procedure ConcreteSyntaxWithValidation::parseProcedure(std::queue<Token> tokensQueue) {
+Procedure ConcreteSyntaxWithValidation::parseProcedure(std::queue<Token>& tokensQueue) {
 	Procedure procedure;
 
 	// procedure_keyword
