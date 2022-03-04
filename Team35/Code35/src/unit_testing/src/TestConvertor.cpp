@@ -15,8 +15,6 @@ TEST_CASE("Case 1") {
 	// PKB setter
 	PKB pkb;
 
-	
-
 	StmtLst stmt_cont;
 	//Creating the statement b = a
 	Statement statement1;
@@ -270,5 +268,101 @@ TEST_CASE("Case 2") {
 	REQUIRE(parsed_statement8.constant[0] == "5");
 	REQUIRE(parsed_statement9.constant[0] == "100");
 	REQUIRE(parsed_statement10.constant[0] == "0");
+}
+
+//Short stubs for incorrect error handling
+TEST_CASE("Incorrect convertor statement type 1") {
+	// PKB setter
+	PKB pkb;
+
+	StmtLst stmt_cont;
+	stmt_cont.SetContainerType(ContainerType::kprocedure);
+
+	stmt_cont.setNextStmt(Statement(1, StatementType::kassign_stmt, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
+	stmt_cont.setNextStmt(Statement(2, StatementType::kassign_stmt, { "y" }, { "x" }, {}, "f", {}, nullptr, nullptr, nullptr));
+	stmt_cont.setNextStmt(Statement(3, StatementType::kprocedure_stmt, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
+
+	//Creating the procedure
+	Procedure procedure3;
+	procedure3.setProcName("f");
+	procedure3.setSize(3);
+	procedure3.setStmtLst(stmt_cont);
+
+	//Creating the procedure list
+	ProcedureLst procedureLst2;
+	procedureLst2.setNextProcedure(procedure3);
+
+	// Creating the convertor
+	Convertor convertor(pkb.getSetter());
+
+	//Checking if the procedure error is thrown. 
+	REQUIRE_THROWS_WITH(convertor.ProcedureReader(procedureLst2), "procedure stmt type");
+	
+}
+
+TEST_CASE("Incorrect convertor statement type 2") {
+	// PKB setter
+	PKB pkb;
+
+	StmtLst stmt_cont;
+	stmt_cont.SetContainerType(ContainerType::kprocedure);
+
+	stmt_cont.setNextStmt(Statement(1, StatementType::kassign_stmt, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
+	stmt_cont.setNextStmt(Statement(2, StatementType::kassign_stmt, { "y" }, { "x" }, {}, "f", {}, nullptr, nullptr, nullptr));
+	stmt_cont.setNextStmt(Statement(3, StatementType::knone, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
+
+	//Creating the procedure
+	Procedure procedure3;
+	procedure3.setProcName("f");
+	procedure3.setSize(3);
+	procedure3.setStmtLst(stmt_cont);
+
+	//Creating the procedure list
+	ProcedureLst procedureLst2;
+	procedureLst2.setNextProcedure(procedure3);
+
+	// Creating the convertor
+	Convertor convertor(pkb.getSetter());
+
+	//Checking if the procedure error is thrown. 
+	REQUIRE_THROWS_WITH(convertor.ProcedureReader(procedureLst2), "none stmt type");
+
+}
+
+TEST_CASE("Incorrect convertor statement type 3 - in nested container") {
+	// PKB setter
+	PKB pkb;
+
+	StmtLst stmt_cont;
+	stmt_cont.SetContainerType(ContainerType::kprocedure);
+
+	//while statement list
+	StmtLst whileStmtLst1;
+	whileStmtLst1.SetContainerType(ContainerType::kwhile);
+	whileStmtLst1.setNextStmt(Statement(4, StatementType::knone, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
+
+	std::shared_ptr<StmtLst> SP_whileStmtLst2 = std::make_shared<StmtLst>(whileStmtLst1);
+
+	stmt_cont.setNextStmt(Statement(1, StatementType::kassign_stmt, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
+	stmt_cont.setNextStmt(Statement(2, StatementType::kassign_stmt, { "y" }, { "x" }, {}, "f", {}, nullptr, nullptr, nullptr));
+	stmt_cont.setNextStmt(Statement(3, StatementType::kwhile_stmt, {}, {}, { "x" }, "f", { "4" }, nullptr, nullptr, SP_whileStmtLst2));
+
+
+	//Creating the procedure
+	Procedure procedure3;
+	procedure3.setProcName("f");
+	procedure3.setSize(3);
+	procedure3.setStmtLst(stmt_cont);
+
+	//Creating the procedure list
+	ProcedureLst procedureLst2;
+	procedureLst2.setNextProcedure(procedure3);
+
+	// Creating the convertor
+	Convertor convertor(pkb.getSetter());
+
+	//Checking if the procedure error is thrown. 
+	REQUIRE_THROWS_WITH(convertor.ProcedureReader(procedureLst2), "none stmt type");
+
 }
 
