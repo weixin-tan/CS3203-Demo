@@ -16,7 +16,7 @@ Token Factor::getConstValue() const {
 	return this->constValue;
 }
 
-Expr* Factor::getExpr() const {
+std::shared_ptr<Expr> Factor::getExpr() const {
 	return expr;
 }
 
@@ -32,6 +32,6 @@ void Factor::setConstValue(Token constValue) {
 	this->constValue = constValue;
 }
 
-void Factor::setExpr(Expr* expr) {
+void Factor::setExpr(std::shared_ptr<Expr> expr) {
 	this->expr = expr;
 }
