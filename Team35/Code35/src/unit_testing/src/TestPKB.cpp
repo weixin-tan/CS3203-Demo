@@ -711,3 +711,299 @@ TEST_CASE("PKB Basic") {
         }
     }
 }
+
+TEST_CASE("PKB Calls") {
+    PKB pkb;
+    PkbSetter* pkbSetter = pkb.getSetter();
+    PkbGetter* pkbGetter = pkb.getGetter();
+    std::vector<std::vector<ParsedStatement>> procedures;
+    std::set<ProgramElement> resultElementSet, expectedElementSet;
+    SECTION("Valid cases") {
+        //proc1 calls proc2
+        //proc2 calls proc3
+        //proc2 calls proc4
+        //proc3 calls proc4
+        //proc4 calls proc5
+        //proc4 calls proc6
+        procedures = {
+                {
+                        ParsedStatement(
+                                1,
+                                ParsedStatement::default_null_stmt_no,
+                                ParsedStatement::default_null_stmt_no,
+                                StatementType::kcall_stmt,
+                                "",
+                                "proc1",
+                                {},
+                                {},
+                                {},
+                                "proc2",
+                                ParsedStatement::default_null_stmt_no
+                        )
+                },
+                {
+                        ParsedStatement(
+                                2,
+                                ParsedStatement::default_null_stmt_no,
+                                ParsedStatement::default_null_stmt_no,
+                                StatementType::kcall_stmt,
+                                "",
+                                "proc2",
+                                {},
+                                {},
+                                {},
+                                "proc3",
+                                ParsedStatement::default_null_stmt_no
+                        ),
+                        ParsedStatement(
+                                3,
+                                ParsedStatement::default_null_stmt_no,
+                                ParsedStatement::default_null_stmt_no,
+                                StatementType::kcall_stmt,
+                                "",
+                                "proc2",
+                                {},
+                                {},
+                                {},
+                                "proc4",
+                                2
+                        )
+                },
+                {
+                        ParsedStatement(
+                                4,
+                                ParsedStatement::default_null_stmt_no,
+                                ParsedStatement::default_null_stmt_no,
+                                StatementType::kcall_stmt,
+                                "",
+                                "proc3",
+                                {},
+                                {},
+                                {},
+                                "proc4",
+                                ParsedStatement::default_null_stmt_no
+                        ),
+                },
+                {
+                        ParsedStatement(
+                                5,
+                                ParsedStatement::default_null_stmt_no,
+                                ParsedStatement::default_null_stmt_no,
+                                StatementType::kcall_stmt,
+                                "",
+                                "proc4",
+                                {},
+                                {},
+                                {},
+                                "proc5",
+                                ParsedStatement::default_null_stmt_no
+                        ),
+                        ParsedStatement(
+                                6,
+                                ParsedStatement::default_null_stmt_no,
+                                ParsedStatement::default_null_stmt_no,
+                                StatementType::kcall_stmt,
+                                "",
+                                "proc4",
+                                {},
+                                {},
+                                {},
+                                "proc6",
+                                ParsedStatement::default_null_stmt_no
+                        ),
+                },
+        };
+        pkbSetter->insertStmts(procedures);
+        SECTION("isRelationship") {
+            REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kCalls, ProgramElement::createProcedure("proc1"), ProgramElement::createProcedure("proc2")));
+            REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kCalls, ProgramElement::createProcedure("proc2"), ProgramElement::createProcedure("proc3")));
+            REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kCalls, ProgramElement::createProcedure("proc2"), ProgramElement::createProcedure("proc4")));
+            REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kCalls, ProgramElement::createProcedure("proc3"), ProgramElement::createProcedure("proc4")));
+            REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kCalls, ProgramElement::createProcedure("proc4"), ProgramElement::createProcedure("proc5")));
+            REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kCalls, ProgramElement::createProcedure("proc4"), ProgramElement::createProcedure("proc6")));
+            REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kCallsT, ProgramElement::createProcedure("proc1"), ProgramElement::createProcedure("proc2")));
+            REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kCallsT, ProgramElement::createProcedure("proc1"), ProgramElement::createProcedure("proc3")));
+            REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kCallsT, ProgramElement::createProcedure("proc2"), ProgramElement::createProcedure("proc5")));
+        }
+        SECTION("getLeftSide") {
+            resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kCalls, ProgramElement::createProcedure("proc2"), ElementType::kProcedure);
+            expectedElementSet = {ProgramElement::createProcedure("proc1")};
+            REQUIRE(resultElementSet == expectedElementSet);
+
+            resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kCalls, ProgramElement::createProcedure("proc3"), ElementType::kProcedure);
+            expectedElementSet = {ProgramElement::createProcedure("proc2")};
+            REQUIRE(resultElementSet == expectedElementSet);
+
+            resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kCalls, ProgramElement::createProcedure("proc4"), ElementType::kProcedure);
+            expectedElementSet = {ProgramElement::createProcedure("proc2"), ProgramElement::createProcedure("proc3")};
+            REQUIRE(resultElementSet == expectedElementSet);
+
+            resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kCallsT, ProgramElement::createProcedure("proc2"), ElementType::kProcedure);
+            expectedElementSet = {ProgramElement::createProcedure("proc1")};
+            REQUIRE(resultElementSet == expectedElementSet);
+
+            resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kCallsT, ProgramElement::createProcedure("proc3"), ElementType::kProcedure);
+            expectedElementSet = {ProgramElement::createProcedure("proc2"), ProgramElement::createProcedure("proc1")};
+            REQUIRE(resultElementSet == expectedElementSet);
+
+            resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kCallsT, ProgramElement::createProcedure("proc5"), ElementType::kProcedure);
+            expectedElementSet = {ProgramElement::createProcedure("proc1"),
+                                  ProgramElement::createProcedure("proc2"),
+                                  ProgramElement::createProcedure("proc3"),
+                                  ProgramElement::createProcedure("proc4"),
+            };
+            REQUIRE(resultElementSet == expectedElementSet);
+        }
+        SECTION("getRightSide") {
+            resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kCalls, ProgramElement::createProcedure("proc1"), ElementType::kProcedure);
+            expectedElementSet = {ProgramElement::createProcedure("proc2")};
+            REQUIRE(resultElementSet == expectedElementSet);
+
+            resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kCalls, ProgramElement::createProcedure("proc3"), ElementType::kProcedure);
+            expectedElementSet = {ProgramElement::createProcedure("proc4")};
+            REQUIRE(resultElementSet == expectedElementSet);
+
+            resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kCalls, ProgramElement::createProcedure("proc4"), ElementType::kProcedure);
+            expectedElementSet = {ProgramElement::createProcedure("proc5"), ProgramElement::createProcedure("proc6")};
+            REQUIRE(resultElementSet == expectedElementSet);
+
+            resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kCallsT, ProgramElement::createProcedure("proc4"), ElementType::kProcedure);
+            expectedElementSet = {
+                    ProgramElement::createProcedure("proc5"),
+                    ProgramElement::createProcedure("proc6"),
+            };
+            REQUIRE(resultElementSet == expectedElementSet);
+
+            resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kCallsT, ProgramElement::createProcedure("proc3"), ElementType::kProcedure);
+            expectedElementSet = {
+                    ProgramElement::createProcedure("proc4"),
+                    ProgramElement::createProcedure("proc5"),
+                    ProgramElement::createProcedure("proc6"),
+            };
+            REQUIRE(resultElementSet == expectedElementSet);
+
+            resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kCallsT, ProgramElement::createProcedure("proc1"), ElementType::kProcedure);
+            expectedElementSet = {
+                    ProgramElement::createProcedure("proc2"),
+                    ProgramElement::createProcedure("proc3"),
+                    ProgramElement::createProcedure("proc4"),
+                    ProgramElement::createProcedure("proc5"),
+                    ProgramElement::createProcedure("proc6"),
+            };
+            REQUIRE(resultElementSet == expectedElementSet);
+        }
+    }
+    SECTION("Invalid cases") {
+        SECTION("Recursive call") {
+            procedures = {
+                    {
+                            ParsedStatement(
+                                    1,
+                                    ParsedStatement::default_null_stmt_no,
+                                    ParsedStatement::default_null_stmt_no,
+                                    StatementType::kcall_stmt,
+                                    "",
+                                    "proc1",
+                                    {},
+                                    {},
+                                    {},
+                                    "proc1",
+                                    ParsedStatement::default_null_stmt_no
+                            )
+                    }
+            };
+            REQUIRE_THROWS(pkbSetter->insertStmts(procedures));
+        }
+        SECTION("Cyclic call") {
+            procedures = {
+                    {
+                            ParsedStatement(
+                                    1,
+                                    ParsedStatement::default_null_stmt_no,
+                                    ParsedStatement::default_null_stmt_no,
+                                    StatementType::kcall_stmt,
+                                    "",
+                                    "proc1",
+                                    {},
+                                    {},
+                                    {},
+                                    "proc2",
+                                    ParsedStatement::default_null_stmt_no
+                            )
+                    },
+                    {
+                            ParsedStatement(
+                                    2,
+                                    ParsedStatement::default_null_stmt_no,
+                                    ParsedStatement::default_null_stmt_no,
+                                    StatementType::kcall_stmt,
+                                    "",
+                                    "proc2",
+                                    {},
+                                    {},
+                                    {},
+                                    "proc3",
+                                    ParsedStatement::default_null_stmt_no
+                            ),
+                            ParsedStatement(
+                                    3,
+                                    ParsedStatement::default_null_stmt_no,
+                                    ParsedStatement::default_null_stmt_no,
+                                    StatementType::kcall_stmt,
+                                    "",
+                                    "proc4",
+                                    {},
+                                    {},
+                                    {},
+                                    "proc2",
+                                    2
+                            )
+                    },
+                    {
+                            ParsedStatement(
+                                    4,
+                                    ParsedStatement::default_null_stmt_no,
+                                    ParsedStatement::default_null_stmt_no,
+                                    StatementType::kcall_stmt,
+                                    "",
+                                    "proc3",
+                                    {},
+                                    {},
+                                    {},
+                                    "proc4",
+                                    ParsedStatement::default_null_stmt_no
+                            ),
+                    },
+                    {
+                            ParsedStatement(
+                                    5,
+                                    ParsedStatement::default_null_stmt_no,
+                                    ParsedStatement::default_null_stmt_no,
+                                    StatementType::kcall_stmt,
+                                    "",
+                                    "proc4",
+                                    {},
+                                    {},
+                                    {},
+                                    "proc5",
+                                    ParsedStatement::default_null_stmt_no
+                            ),
+                            ParsedStatement(
+                                    6,
+                                    ParsedStatement::default_null_stmt_no,
+                                    ParsedStatement::default_null_stmt_no,
+                                    StatementType::kcall_stmt,
+                                    "",
+                                    "proc4",
+                                    {},
+                                    {},
+                                    {},
+                                    "proc6",
+                                    ParsedStatement::default_null_stmt_no
+                            ),
+                    },
+            };
+            REQUIRE_THROWS(pkbSetter->insertStmts(procedures));
+        }
+    }
+}

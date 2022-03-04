@@ -5,7 +5,7 @@ PkbValidator::PkbValidator(DB *db) : db(db) {}
 void PkbValidator::validateNoCyclicCall() {
     for (const auto&[proc, calledTProc] : db->callsTTable) {
         if (calledTProc.count(proc) != 0)
-            throw ("Cyclic call detected!\n" + proc);
+            throw std::invalid_argument("Cyclic call detected!\n" + proc);
     }
 }
 
