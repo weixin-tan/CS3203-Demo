@@ -9,11 +9,15 @@ private:
 	TokenType tokenType;
 	Expr *expr;
 	Term term;
+	bool termFlag; 
+	bool exprFlag;
 public:
 	Expr();
 	TokenType getOperator() const;
 	Expr getExpr() const;
 	Term getTerm() const;
+	bool hasExpr() const;
+	bool hasTerm() const;
 	void setOperator(TokenType tokenType);
 	void setExpr(Expr expr);
 	void setTerm(Term term);
