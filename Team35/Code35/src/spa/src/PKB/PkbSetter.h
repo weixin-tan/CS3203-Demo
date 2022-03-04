@@ -6,12 +6,14 @@
 #include "../StatementType.h"
 #include "ElementType.h"
 #include "DesignExtractor.h"
+#include "PkbValidator.h"
 #include <map>
 
 class PkbSetter {
 private:
     DB* db;
     DesignExtractor designExtractor;
+    PkbValidator pkbValidator;
     static const std::map<StatementType, ElementType> spTypeToElementTypeTable;
 
 private:
@@ -29,7 +31,7 @@ private:
     void handleCalls(const ParsedStatement& parsedStatement);
 
 public:
-    PkbSetter(DB* db);
+    explicit PkbSetter(DB* db);
     void insertStmts(const std::vector<std::vector<ParsedStatement>>& procedures);
 };
 

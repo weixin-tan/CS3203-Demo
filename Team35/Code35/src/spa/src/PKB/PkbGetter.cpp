@@ -12,18 +12,27 @@ bool inline isStatementTypeToGet(const ElementType& typeToGet, const ElementType
 }
 
 bool PkbGetter::isExists(const ProgramElement& elementToCheck) const {
-    if (isStatementType(elementToCheck.element_type)) {
-        int stmtNo = elementToCheck.integer_value;
-        if (db->stmtTable.count(stmtNo) == 0) return false;
-        return isStatementTypeToGet(elementToCheck.element_type, getStmtType(stmtNo));
+    switch (elementToCheck.element_type) {
+        case ElementType::kStatement:
+        case ElementType::kRead:
+        case ElementType::kPrint:
+        case ElementType::kCall:
+        case ElementType::kWhile:
+        case ElementType::kIf:
+        case ElementType::kAssignment: {
+            int stmtNo = elementToCheck.integer_value;
+            if (db->stmtTable.count(stmtNo) == 0) return false;
+            return isStatementTypeToGet(elementToCheck.element_type, getStmtType(stmtNo));
+        }
+        case ElementType::kProcedure:
+            return db->procedures.count(elementToCheck.string_value);
+        case ElementType::kVariable:
+            return db->variables.count(elementToCheck.string_value);
+        case ElementType::kConstant:
+            return db->constants.count(elementToCheck.string_value);
+        default:
+            throw std::logic_error("Unknown element type to check, or didn't return");
     }
-    if (ElementType::kProcedure == elementToCheck.element_type)
-        return db->procedures.count(elementToCheck.string_value);
-    if (ElementType::kVariable == elementToCheck.element_type)
-        return db->variables.count(elementToCheck.string_value);
-    if (ElementType::kConstant == elementToCheck.element_type)
-        return db->constants.count(elementToCheck.string_value);
-    assert(false);
 }
 
 // TODO: move this to db
@@ -118,12 +127,17 @@ std::set<std::string> PkbGetter::getUsedConstants(int stmtNo) const {
     return db->usesStmtToConstantTable.at(stmtNo);
 }
 
-std::set<std::string> PkbGetter::getProcedureCalled(const std::string& proc) const {
-    if (db->procedureToProcedureCalled.count(proc) == 0)
+std::set<std::string> PkbGetter::getCalls(const std::string& proc) const {
+    if (db->callsTable.count(proc) == 0)
         return {};
-    return db->procedureToProcedureCalled.at(proc);
+    return db->callsTable.at(proc);
 }
 
+std::set<std::string> PkbGetter::getCallsT(const std::string& proc) const {
+    if (db->callsTTable.count(proc) == 0)
+        return {};
+    return db->callsTTable.at(proc);
+}
 
 PkbGetter::PkbGetter(DB* db) : db(db) {}
 
@@ -189,26 +203,18 @@ bool PkbGetter::isRelationship(const PkbRelationshipType& r, const ProgramElemen
             }
             break;
         }
-        default: {
-            assert(false);
-        }
-    }
-
-    return result;
-}
-
-std::set<ProgramElement> PkbGetter::getRelationshipStatements(const PkbRelationshipType& r) const {
-    std::set<ProgramElement> result;
-
-    switch (r) {
-        case PkbRelationshipType::kModifies: {
-            for (const auto&[var, _] : db->varToModifyStmtTable)
-                result.merge(getLeftSide(r, ProgramElement::createVariable(var), ElementType::kStatement));
+        case PkbRelationshipType::kCalls: {
+            if (!(leftSide.element_type == ElementType::kProcedure && rightSide.element_type == ElementType::kProcedure))
+                throw std::invalid_argument("Wrong element type for isCalls");
+            result = (db->callsTable.count(leftSide.string_value) != 0)
+                    && (db->callsTable.at(leftSide.string_value).count(rightSide.string_value) != 0);
             break;
         }
-        case PkbRelationshipType::kUses: {
-            for (const auto&[var, _] : db->varToUsesStmtTable)
-                result.merge(getLeftSide(r, ProgramElement::createVariable(var), ElementType::kStatement));
+        case PkbRelationshipType::kCallsT: {
+            if (!(leftSide.element_type == ElementType::kProcedure && rightSide.element_type == ElementType::kProcedure))
+                throw std::invalid_argument("Wrong element type for isCallsT");
+            result = (db->callsTTable.count(leftSide.string_value) != 0)
+                    && (db->callsTTable.at(leftSide.string_value).count(rightSide.string_value) != 0);
             break;
         }
         default: {
@@ -258,6 +264,7 @@ std::set<ProgramElement> PkbGetter::getEntity(const ElementType& typeToGet) cons
     return result;
 }
 
+// TODO: should we still store reverse relationships?
 std::set<ProgramElement> PkbGetter::getLeftSide(const PkbRelationshipType& r, const ProgramElement& rightSide,
                                                 const ElementType& typeToGet) const {
     if (!isExists(rightSide)) return {};
@@ -359,9 +366,24 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const PkbRelationshipType& r, co
 
             break;
         }
-        default: {
-            assert(false);
+        case PkbRelationshipType::kCalls: {
+            if (!(typeToGet == ElementType::kProcedure && rightSide.element_type == ElementType::kProcedure))
+                throw std::invalid_argument("Wrong element type for getLeftSide on Calls");
+            for (const auto&[callsProc, calledProcs] : db->callsTable)
+                if (calledProcs.count(rightSide.string_value) != 0)
+                    result.insert(ProgramElement::createProcedure(callsProc));
+            break;
         }
+        case PkbRelationshipType::kCallsT: {
+            if (!(typeToGet == ElementType::kProcedure && rightSide.element_type == ElementType::kProcedure))
+                throw std::invalid_argument("Wrong element type for getLeftSide on CallsT");
+            for (const auto&[callsTProc, calledTProcs] : db->callsTTable)
+                if (calledTProcs.count(rightSide.string_value) != 0)
+                    result.insert(ProgramElement::createProcedure(callsTProc));
+            break;
+        }
+        default:
+            throw std::invalid_argument("Unknown relationship type for getLeftSide or didn't break");
     }
 
     return result;
@@ -443,9 +465,22 @@ std::set<ProgramElement> PkbGetter::getRightSide(const PkbRelationshipType& r, c
             }
             break;
         }
-        default: {
-            assert(false);
+        case PkbRelationshipType::kCalls: {
+            if (!(leftSide.element_type == ElementType::kProcedure && typeToGet == ElementType::kProcedure))
+                throw std::invalid_argument("Wrong element type for getRightSide on Calls");
+            for (const std::string& calledProc : getCalls(leftSide.string_value))
+                result.insert(ProgramElement::createProcedure(calledProc));
+            break;
         }
+        case PkbRelationshipType::kCallsT: {
+            if (!(leftSide.element_type == ElementType::kProcedure && typeToGet == ElementType::kProcedure))
+                throw std::invalid_argument("Wrong element type for getRightSide on CallsT");
+            for (const std::string& calledProc : getCallsT(leftSide.string_value))
+                result.insert(ProgramElement::createProcedure(calledProc));
+            break;
+        }
+        default:
+            throw std::invalid_argument("Unknown relationship type for getRightSide or didn't break");
     }
 
     return result;
