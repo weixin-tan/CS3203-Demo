@@ -286,10 +286,11 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const RelationshipType& r, const
             assert(isStatementType(typeToGet) || typeToGet == ElementType::kProcedure);
             assert(rightSide.element_type == ElementType::kVariable || rightSide.element_type == ElementType::kConstant);
 
-            // TODO: temporary allow constant, for pattern
+            // TODO: remove once expression is supported
             if (rightSide.element_type == ElementType::kConstant) {
                 for (const int& stmtNo : getUsesStmtNosGivenConstant(rightSide.string_value))
-                    result.insert(ProgramElement::createStatement(typeToGet, stmtNo));
+                    if (isStatementTypeToGet(typeToGet, getStmtType(stmtNo)))
+                        result.insert(ProgramElement::createStatement(typeToGet, stmtNo));
                 break;
             }
 
