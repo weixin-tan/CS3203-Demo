@@ -132,7 +132,7 @@ RelationshipRef QueryProcessor::createPatternObject(std::vector<std::string> pat
 
 /**
  * Create expression entity object from strings
- * @param s string represeting an expression
+ * @param s string representing an expression
  * @return Created Entity object
  */
 Entity QueryProcessor::createExpressionEntity(const std::string &s) {
@@ -231,7 +231,7 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
     std::vector<std::string> WithClauses = allList[2];
 
     if (existSuchThat(selectStmt)){
-      isValid = isValid && (SuchThatClauses.size() > 0);
+      isValid = isValid && (!SuchThatClauses.empty());
     }else{
       isValid = isValid && (SuchThatClauses.empty());
     }
@@ -270,7 +270,7 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
       break;
     }
 
-    for (auto s: PatternClauses){
+    for (const auto& s: PatternClauses){
       std::vector<std::string> patternList = extractItemsInBrackets(s);
       isValid = isValid && checkPatternList(patternList, &entityMap);
       if (isValid){
@@ -284,7 +284,7 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
       break;
     }
 
-    for (auto s: WithClauses){
+    for (const auto& s: WithClauses){
       std::vector<std::string> clausesList = splitStringBySpaces(s);
       isValid = isValid && clausesList.size() == 2;
       if (isValid){
@@ -293,6 +293,11 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
         newClause.appendRef(newRef);
       }
     }
+
+    if (!isValid){
+      break;
+    }
+
     //std::cout << "\n" << newClause.toString() << "\n";
     clauseList.push_back(newClause);
   }

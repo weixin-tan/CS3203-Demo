@@ -1,7 +1,8 @@
 #include "QueryRegex.h"
 
 bool firstWordChecker(const std::string& s, const std::string& targetWord){
-  return s.find(targetWord) == 0;
+  int startPosition = 0;
+  return s.find(targetWord) == startPosition;
 }
 
 /**
@@ -286,7 +287,7 @@ long findWithClause(const std::string& s){
 
 long findPatternClauseInSubstring(const std::string& s){
   long patternPosition = s.rfind("pattern");
-  if (s.substr(patternPosition, s.length() - patternPosition).find("(") != std::string::npos){
+  if (s.substr(patternPosition, s.length() - patternPosition).find('(') != std::string::npos){
     return patternPosition;
   }else{
     return findPatternClauseInSubstring(s.substr(0, patternPosition));
@@ -330,10 +331,11 @@ std::vector<long> findSuchThatClause(const std::string& s){
   return returnList;
 }
 
-long smallestNumber(long positionList[3]){
+long smallestNumber(const long positionList[3]){
   long toReturn = LLONG_MAX;
   long temp;
-  for (int i=0; i < 3; i++){
+  int positionListSize = 3;
+  for (int i=0; i < positionListSize; i++){
     temp = positionList[i];
     if (std::string::npos != temp && temp < toReturn){
       toReturn = temp;
@@ -392,26 +394,26 @@ std::string removeVBrackets(const std::string& s){
   return extractStringWithoutFirstAndLastChar(s);
 }
 
-bool checkAndCommandWord(std::vector<std::string> clausesList, bool (*existCommandWordFunction)(const std::string &s)){
+bool checkAndCommandWord(const std::vector<std::string>& clausesList, bool (*existCommandWordFunction)(const std::string &s)){
   bool returnBool = true;
-  for(int i=0; i<clausesList.size(); i++){
-    returnBool = returnBool && clausesList[i].find("and") == 0 || existCommandWordFunction( clausesList[i]);
+  for(auto & i : clausesList){
+    returnBool = returnBool && i.find("and") == 0 || existCommandWordFunction( i);
   }
   return returnBool;
 }
 
 void removeAndCommandWord(std::vector<std::string>* clausesList, std::string (*removeCommandWordFunction)(const std::string &s)){
   int andLength = 3;
-  for(int i=0; i<(*clausesList).size(); i++){
-    if ((*clausesList)[i].find("and") == 0){
-      (*clausesList)[i] = stripString((*clausesList)[i].substr(andLength, (*clausesList)[i].length()-andLength));
+  for(auto & i : *clausesList){
+    if (i.find("and") == 0){
+      i = stripString(i.substr(andLength, i.length()-andLength));
     }else{
-      (*clausesList)[i] = removeCommandWordFunction((*clausesList)[i]);
+      i = removeCommandWordFunction(i);
     }
   }
 }
 
-bool checkAndSuchThat(std::vector<std::string> clausesList){
+bool checkAndSuchThat(const std::vector<std::string>& clausesList){
   return checkAndCommandWord(clausesList, existSuchThat);
 }
 
@@ -419,7 +421,7 @@ void removeAndSuchThat(std::vector<std::string>* clausesList){
   removeAndCommandWord(clausesList, removeSuchThat);
 }
 
-bool checkAndPattern(std::vector<std::string> clausesList){
+bool checkAndPattern(const std::vector<std::string>& clausesList){
   return checkAndCommandWord(clausesList, isPattern);
 }
 
@@ -427,7 +429,7 @@ void removeAndPattern(std::vector<std::string>* clausesList){
   removeAndCommandWord(clausesList, removePattern);
 }
 
-bool checkAndWith(std::vector<std::string> clausesList){
+bool checkAndWith(const std::vector<std::string>& clausesList){
   return checkAndCommandWord(clausesList, isWith);
 }
 
@@ -512,7 +514,7 @@ std::vector<std::string> splitVariablesAndClauses(const std::string& s){
 
   if ((suchThatPosition == std::string::npos) && (patternPosition == std::string::npos) && (withPosition == std::string::npos)){
     returnList.push_back(s);
-    returnList.push_back("");
+    returnList.emplace_back("");
     return returnList;
   }else if(selected == suchThatPosition){
     varString = s.substr(0, suchThatPosition);
@@ -534,7 +536,7 @@ std::vector<std::string> extractWithClauses(const std::string& s){
   std::string temp = std::regex_replace( s, std::regex( "=" ), " " );
   std::vector<std::string> tempList = splitStringBySpaces(temp);
   while (tempList.size() % 3 != 0){
-    tempList.push_back("");
+    tempList.emplace_back("");
   }
   for (int i = 0; i < tempList.size(); i=i+3){
     temp = tempList[i] + " " + tempList[i+1] + " " + tempList[i+2];
@@ -548,30 +550,30 @@ std::vector<std::string> extractWithClauses(const std::string& s){
  * @param s some string to be split
  * @return a list of clauses, either pattern or such that
  */
-std::vector<std::string> splitPatternAndSuchThatClauses(std::string s){
+std::vector<std::string> splitPatternAndSuchThatClauses(const std::string& s){
   std::vector<std::string> returnList;
   std::vector<std::string> temp;
   std::vector<std::string> wordsList = splitString(s, ")");
-  for (auto s: wordsList){
-    if (!s.empty()){
-      if (!isWith(s)){
-        returnList.push_back(s + ")");
-      }else if (isWith(s) && s.find("pattern") != std::string::npos){
-        long x = findPatternClauseInSubstring(s);
-        std::string first = s.substr(0, x);
-        std::string second = s.substr(x, s.length()-x);
+  for (const auto& stmt: wordsList){
+    if (!stmt.empty()){
+      if (!isWith(stmt)){
+        returnList.push_back(stmt + ")");
+      }else if (isWith(stmt) && stmt.find("pattern") != std::string::npos){
+        long x = findPatternClauseInSubstring(stmt);
+        std::string first = stmt.substr(0, x);
+        std::string second = stmt.substr(x, stmt.length()-x);
         temp = extractWithClauses(first);
         returnList.insert( returnList.end(), temp.begin(), temp.end());
         returnList.push_back(second + ")");
-      }else if (isWith(s) && existSuchThat(s)){
-        long x = findSuchThatClause(s)[0];
-        std::string first = s.substr(0, x);
-        std::string second = s.substr(x, s.length()-x);
+      }else if (isWith(stmt) && existSuchThat(stmt)){
+        long x = findSuchThatClause(stmt)[0];
+        std::string first = stmt.substr(0, x);
+        std::string second = stmt.substr(x, stmt.length()-x);
         temp = extractWithClauses(first);
         returnList.insert( returnList.end(), temp.begin(), temp.end());
         returnList.push_back(second + ")");
       }else{
-        temp = extractWithClauses(s);
+        temp = extractWithClauses(stmt);
         returnList.insert( returnList.end(), temp.begin(), temp.end());
       }
     }
@@ -592,7 +594,7 @@ std::vector<std::string> extractVariablesToSelect(const std::string& s){
     variableString = removeSelect(variableString);
     if (existVBrackets(variableString)){
       variableString = removeVBrackets(variableString);
-      for (auto word: splitString(variableString, ",")){
+      for (const auto& word: splitString(variableString, ",")){
         returnList.push_back(word);
       }
     }else{

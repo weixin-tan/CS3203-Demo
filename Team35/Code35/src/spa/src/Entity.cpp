@@ -1,4 +1,6 @@
 #include "Entity.h"
+
+#include <utility>
 #include "Type.h"
 
 Entity::Entity() {
@@ -8,13 +10,13 @@ Entity::Entity() {
 
 Entity::Entity(EntityType eType, std::string name) {
     Entity::eType = eType;
-    Entity::name = name;
+    Entity::name = std::move(name);
     Entity::aType = EntityAttributeType::Null;
 }
 
 Entity::Entity(EntityType eType, std::string name, EntityAttributeType aType) {
   Entity::eType = eType;
-  Entity::name = name;
+  Entity::name = std::move(name);
   Entity::aType = aType;
 }
 
