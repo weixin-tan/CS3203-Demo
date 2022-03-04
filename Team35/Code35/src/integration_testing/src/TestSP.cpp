@@ -20,10 +20,12 @@ TEST_CASE("SP round 0 iteration test") {
 	std::stringstream buffer;
 	buffer << t.rdbuf();
 	ProcedureLst procedureLst;
-	procedureLst.setNextProcedure(concrete.parseProcedure(tokeniser.putInQueue(buffer.str())));
-	std::vector<std::vector<ParsedStatement>> results = convertor.ProcedureReader(procedureLst);
+	std::queue<Token> tokenQueue = tokeniser.putInQueue(buffer.str());
+	Procedure parsedProcedure = concrete.parseProcedure(tokenQueue);
+	procedureLst.setNextProcedure(parsedProcedure);
+	std::vector<std::vector<ParsedStatement>> resultsLst = convertor.ProcedureReader(procedureLst);
 
-	std::vector<ParsedStatement> result = results[0];
+	std::vector<ParsedStatement> result = resultsLst[0];
 
 	ParsedStatement parsed_statement1 = result[0];
 	ParsedStatement parsed_statement2 = result[1];
