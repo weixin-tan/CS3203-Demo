@@ -36,6 +36,18 @@ std::string Type::relationshipTypeToString(RelationshipType r) {
     case RelationshipType::Affects: return "Affects";
     case RelationshipType::AffectsT: return "AffectsT";
     case RelationshipType::Pattern: return "Pattern";
+    case RelationshipType::With: return "With";
     case RelationshipType::Null: return "Null";
   }
 }
+
+std::string Type::attributeTypeToString(EntityAttributeType a) {
+  switch(a){
+    case EntityAttributeType::ProcName: return "ProcName";
+    case EntityAttributeType::VarName: return "VarName";
+    case EntityAttributeType::Value: return "Value";
+    case EntityAttributeType::Stmt: return "Stmt";
+    case EntityAttributeType::Null: return "Null";
+  }
+}
+

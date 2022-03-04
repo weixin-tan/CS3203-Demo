@@ -295,6 +295,11 @@ TEST_CASE("test advanced queries without with clauses"){
 
   qp.parsePQL(s14);
 }
+
+TEST_CASE("debugging"){
+  QueryProcessor qp = QueryProcessor();
+  qp.parsePQL("while w1, w2, w3; Select <w1.stmt#, w2.stmt#, w3.stmt#> such that Parent* (w1, w2) and Parent* (w2, w3)");
+}
 /*
 METHODS TO TEST
 static void createDeclarationObjects(std::vector<std::string> designEntityArr, std::unordered_map<std::string, Entity>* entityMap);

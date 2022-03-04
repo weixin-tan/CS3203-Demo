@@ -9,8 +9,10 @@ class Entity {
 public:
   Entity();
   Entity(EntityType eType, std::string name);
+  Entity(EntityType eType, std::string name, EntityAttributeType aType);
 
   EntityType eType;
+  EntityAttributeType aType;
   std::string name;
 
   std::string toString();
