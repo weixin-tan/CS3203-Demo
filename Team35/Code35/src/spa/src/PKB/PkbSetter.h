@@ -13,6 +13,8 @@ private:
     static const std::map<StatementType, ElementType> spTypeToElementTypeTable;
 
 private:
+    void insertStmt(const ParsedStatement& parsedStatement);
+
     void handleVariables(const ParsedStatement& parsedStatement);
     void handleProcedure(const ParsedStatement& parsedStatement);
     void handleStatementType(const ParsedStatement& parsedStatement);
@@ -26,8 +28,7 @@ private:
 
 public:
     PkbSetter(DB* db);
-    void insertStmt(const ParsedStatement& parsedStatement);
-
+    void insertStmts(const std::vector<std::vector<ParsedStatement>>& procedures);
 };
 
 

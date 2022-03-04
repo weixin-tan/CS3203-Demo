@@ -19,7 +19,7 @@ public:
 
 	void Parse(std::string filename);
 	
-	Procedure procedure; 
+	Program program; 
 	std::queue<Token> tokenQueue;
 };
 

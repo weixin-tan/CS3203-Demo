@@ -12,7 +12,7 @@ class ConcreteSyntaxWithValidation {
 public:
 	ConcreteSyntaxWithValidation();
 	Program parseProgram(std::queue<Token> tokensQueue);
-	Procedure parseProcedure(std::queue<Token> tokensQueue);
+	Procedure parseProcedure(std::queue<Token>& tokensQueue);
 	StmtLst parseStmtLst(std::queue<Token>& tokensQueue);
 	Statement parseStmt(std::queue<Token>& tokensQueue);
 	Statement parseAssign(std::queue<Token>& tokensQueue);

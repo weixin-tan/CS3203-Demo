@@ -44,9 +44,14 @@ std::vector<ParsedStatement> pStatements = {
 
 
 TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
+    std::vector<std::vector<ParsedStatement>> stmtlsts; 
+    std::vector<ParsedStatement> stmtlst;
     for (const ParsedStatement& parsed_statement : pStatements)
-        pkb.getSetter()->insertStmt(parsed_statement);
+        stmtlst.push_back(parsed_statement);
+        
 
+    stmtlsts.push_back(stmtlst);
+    pkb.getSetter()->insertStmts(stmtlsts);
     std::set<ProgramElement> statements;
 
     ProgramElement s1 = ProgramElement::createStatement(ElementType::kStatement, 1);

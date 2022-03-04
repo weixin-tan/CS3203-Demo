@@ -26,13 +26,15 @@ std::vector<std::vector<ParsedStatement>> Convertor::ProcedureReader(ProcedureLs
 		results.push_back(StatementListReader(procedurelist.getProcedureAtIndex(i).getStmtLst(), -1));
 
 		// TODO: Sending the statement list to the PKB - should be removed 
-		for (const ParsedStatement i : finalResults) {
-			pkb_setter->insertStmt(i);
-		}
+		///for (const ParsedStatement i : finalResults) {
+		//	pkb_setter->insertStmt(i);
+		//}
 
 		//resetting the final results
 		finalResults = std::vector<ParsedStatement>();
 	}
+
+	pkb_setter->insertStmts(results);
 	return results;
 }
 
@@ -86,6 +88,9 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 		break;
 	case ContainerType::kprocedure:
 		break;
+	default:
+		throw std::invalid_argument("no such container type");
+		break;
 	}
 
 	//push the value into the stack
@@ -127,10 +132,14 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 	
 		//Recursively read the inner statement stack. 	
 	case StatementType::kprocedure_stmt:
-		//TODO: Throw some error or return
+		throw std::invalid_argument("procedure stmt type");
 		break;
 
 	case StatementType::knone:
+		throw std::invalid_argument("none stmt type");
+		break;
+	default:
+		throw std::invalid_argument("no such statement type");
 		break;
 	}
 
