@@ -264,6 +264,8 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         std::string p8 = "assign a; assign a1; Select a1 pattern a(_, _\"b\")";
         std::string p9 = "assign a; Select a pattern a(\"b\", _)";
         std::string p10 = "assign a; while w; Select w pattern a(_, _\"5\"_)";
+        std::string p11 = "assign a; variable v; Select v pattern a (v, _)";
+        std::string p12 = "assign a; variable v; Select a pattern a (v, _)";
 
         std::set<ProgramElement> empty = {};
         std::set<ProgramElement> expectedResult1;
@@ -287,6 +289,8 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         std::set<ProgramElement> result8 = rp.processResults(qh.processClause(qp.parsePQL(p8)));
         std::set<ProgramElement> result9 = rp.processResults(qh.processClause(qp.parsePQL(p9)));
         std::set<ProgramElement> result10 = rp.processResults(qh.processClause(qp.parsePQL(p10)));
+        std::set<ProgramElement> result11 = rp.processResults(qh.processClause(qp.parsePQL(p11)));
+        std::set<ProgramElement> result12 = rp.processResults(qh.processClause(qp.parsePQL(p12)));
 
         REQUIRE(result1 == expectedResult1);
         REQUIRE(result2 == expectedResult2);
@@ -298,6 +302,8 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         REQUIRE(result8 == empty);
         REQUIRE(result9 == empty);
         REQUIRE(result10 == whiles);
+        REQUIRE(result11 == variables);
+        REQUIRE(result12 == assignments);
     }
 
     SECTION("COMBINATION CLAUSES") {
@@ -306,6 +312,9 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         std::string com3 = "assign a; assign a1; Select a1 such that Follows (a1, a) pattern a (_, _\"5\"_)";
         std::string com4 = "if ifs; stmt s; assign a; assign a1; Select a such that Follows (a1, s) pattern a1 (_, _\"100\"_)";
         std::string com5 = "constant c; variable v; assign a; assign a1; Select c such that Modifies (a, v) pattern a1 (_, _\"15\"_)";
+        std::string com6 = "assign a, a1; variable v; Select a such that Uses (a1, v) pattern a (v, _)";
+        std::string com7 = "assign a, a1; variable v, v1; Select v such that Uses (a, v) pattern a1 (v, _)";
+        std::string com8 = "assign a, a1; variable v, v1; Select v1 such that Modifies (a, v) pattern a1 (v1, _)";
 
         std::set<ProgramElement> empty = {};
         std::set<ProgramElement> expectedResult1;
@@ -317,21 +326,29 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         std::set<ProgramElement> expectedResult3;
         expectedResult3.insert(a2);
         expectedResult3.insert(a7);
-
-
-
+        std::set<ProgramElement> expectedResult6;
+        expectedResult6.insert(a1);
+        expectedResult6.insert(a3);
+        expectedResult6.insert(a7);
+        std::set<ProgramElement> expectedResult7;
+        expectedResult7.insert(vx);
 
         std::set<ProgramElement> result1 = rp.processResults(qh.processClause(qp.parsePQL(com1)));
         std::set<ProgramElement> result2 = rp.processResults(qh.processClause(qp.parsePQL(com2)));
         std::set<ProgramElement> result3 = rp.processResults(qh.processClause(qp.parsePQL(com3)));
         std::set<ProgramElement> result4 = rp.processResults(qh.processClause(qp.parsePQL(com4)));
         std::set<ProgramElement> result5 = rp.processResults(qh.processClause(qp.parsePQL(com5)));
+        std::set<ProgramElement> result6 = rp.processResults(qh.processClause(qp.parsePQL(com6)));
+        std::set<ProgramElement> result7 = rp.processResults(qh.processClause(qp.parsePQL(com7)));
+        std::set<ProgramElement> result8 = rp.processResults(qh.processClause(qp.parsePQL(com8)));
 
         REQUIRE(result1 == expectedResult1);
         REQUIRE(result2 == expectedResult2);
         REQUIRE(result3 == expectedResult3);
         REQUIRE(result4 == assignments);
         REQUIRE(result5 == empty);
-
+        REQUIRE(result6 == expectedResult6);
+        REQUIRE(result7 == expectedResult7);
+        REQUIRE(result8 == variables);
     }
 }

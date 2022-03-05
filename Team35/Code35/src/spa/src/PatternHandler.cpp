@@ -49,15 +49,25 @@ Result PatternHandler::handleLeftWildcard(const Entity& rightEntity) {
 Result PatternHandler::handleRightWildcard(const Entity& leftEntity) {
   Result result;
   std::set<ProgramElement> resultElements;
+  std::set<std::pair<ProgramElement,ProgramElement>> entRefResultElements;
   if (leftEntity.eType == EntityType::FixedString) {
     ProgramElement leftElement = EntityToElementConverter::fixedEntityConverter(leftEntity);
     resultElements = pg->getLeftSide(PkbRelationshipType::kModifies, leftElement, ElementType::kAssignment);
   } else if (leftEntity.eType == EntityType::Variable) {
-    resultElements = pg->getEntity(ElementType::kAssignment);
+    result.setAssignEntRef(leftEntity);
+    std::set<ProgramElement> entRefElements = pg->getEntity(ElementType::kVariable);
+    for (const auto& e : entRefElements) {
+      std::set<ProgramElement> assign = pg->getLeftSide(PkbRelationshipType::kModifies, e, ElementType::kAssignment);
+      for (const auto& a : assign) {
+        std::pair <ProgramElement, ProgramElement> combination (a, e);
+        entRefResultElements.insert(combination);
+      }
+    }
   } else {
     assert(false);
   }
   result.setPatternElements(resultElements);
+  result.setEntRefElements(entRefResultElements);
   return result;
 }
 
