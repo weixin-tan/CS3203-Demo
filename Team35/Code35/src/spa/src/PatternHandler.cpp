@@ -11,6 +11,7 @@ Result PatternHandler::handlePattern(const Entity& entityToGet, const Relationsh
   Entity left = relRef.leftEntity;
   Entity right = relRef.rightEntity;
   Entity assign = relRef.AssignmentEntity;
+  ElementType pkbElement = EntityToElementConverter::extractElementType(entityToGet);
   Result result;
 
   if (left.eType == EntityType::Wildcard && right.eType == EntityType::Wildcard) {
@@ -23,7 +24,7 @@ Result PatternHandler::handlePattern(const Entity& entityToGet, const Relationsh
     result = handleNoWildcard(right, left);
   }
 
-  result.setNoClauseElements(pg->getEntity(ElementType::kAssignment));
+  result.setNoClauseElements(pg->getEntity(pkbElement));
   result.setAssignEntity(assign);
   result.setResultEntity(entityToGet);
   return result;

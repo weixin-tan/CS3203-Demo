@@ -263,6 +263,7 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         std::string p7 = "assign a; assign a1; Select a1 pattern a(\"b\", _)";
         std::string p8 = "assign a; assign a1; Select a1 pattern a(_, _\"b\")";
         std::string p9 = "assign a; Select a pattern a(\"b\", _)";
+        std::string p10 = "assign a; while w; Select w pattern a(_, _\"5\"_)";
 
         std::set<ProgramElement> empty = {};
         std::set<ProgramElement> expectedResult1;
@@ -285,6 +286,7 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         std::set<ProgramElement> result7 = rp.processResults(qh.processClause(qp.parsePQL(p7)));
         std::set<ProgramElement> result8 = rp.processResults(qh.processClause(qp.parsePQL(p8)));
         std::set<ProgramElement> result9 = rp.processResults(qh.processClause(qp.parsePQL(p9)));
+        std::set<ProgramElement> result10 = rp.processResults(qh.processClause(qp.parsePQL(p10)));
 
         REQUIRE(result1 == expectedResult1);
         REQUIRE(result2 == expectedResult2);
@@ -295,6 +297,7 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         REQUIRE(result7 == empty);
         REQUIRE(result8 == empty);
         REQUIRE(result9 == empty);
+        REQUIRE(result10 == whiles);
     }
 
     SECTION("COMBINATION CLAUSES") {
