@@ -213,6 +213,7 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         std::string st10 = "constant c; variable v; Select c such that Uses(2, v)";
         std::string st11 = "constant c; Select c such that Modifies(a, \"1x1\")";
         std::string st12 = "assign a; Select a such that Modifies(a, _)";
+        std::string st13 = "stmt s; Select s such that Modifies(s, \"z\")";
 
         std::set<ProgramElement> expectedResult3;
         expectedResult3.insert(a1);
@@ -223,6 +224,10 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         std::set<ProgramElement> expectedResult9;
         expectedResult9.insert(vx);
         expectedResult9.insert(vz);
+        std::set<ProgramElement> expectedResult13;
+        expectedResult13.insert(s5);
+        expectedResult13.insert(s8);
+        expectedResult13.insert(s10);
 
         std::set<ProgramElement> empty = {};
         std::set<ProgramElement> result1 = rp.processResults(qh.processClause(qp.parsePQL(st1)));
@@ -237,6 +242,7 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         std::set<ProgramElement> result10 = rp.processResults(qh.processClause(qp.parsePQL(st10)));
         std::set<ProgramElement> result11 = rp.processResults(qh.processClause(qp.parsePQL(st11)));
         std::set<ProgramElement> result12 = rp.processResults(qh.processClause(qp.parsePQL(st12)));
+        std::set<ProgramElement> result13 = rp.processResults(qh.processClause(qp.parsePQL(st13)));
 
         REQUIRE(result1 == assignments);
         REQUIRE(result2 == empty);
@@ -250,7 +256,7 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         REQUIRE(result10 == constants);
         REQUIRE(result11 == empty);
         REQUIRE(result12 == assignments);
-
+        REQUIRE(result13 == expectedResult13);
     }
 
     SECTION("PATTERN CLAUSE") {
