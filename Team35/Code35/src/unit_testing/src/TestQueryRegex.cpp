@@ -118,10 +118,10 @@ TEST_CASE("test basic boolean methods"){
 }
 
 TEST_CASE("test advanced boolean methods"){
-  SECTION("checking checkDesignEntitySynonyms"){
-    REQUIRE(checkDesignEntitySynonyms({"constant", "a", "b", "c"}));
-    REQUIRE(!checkDesignEntitySynonyms({"invalid", "a"}));
-    REQUIRE(!checkDesignEntitySynonyms({"variable", "1"}));
+  SECTION("checking checkDesignEntitySynonymsList"){
+    REQUIRE(checkDesignEntitySynonymsList({"constant", "a", "b", "c"}));
+    REQUIRE(!checkDesignEntitySynonymsList({"invalid", "a"}));
+    REQUIRE(!checkDesignEntitySynonymsList({"variable", "1"}));
   }
 
   SECTION("checking checkRelRefList"){
@@ -135,7 +135,7 @@ TEST_CASE("test advanced boolean methods"){
 METHODS TO TEST
 bool checkPatternList(std::vector<std::string> patternList, std::unordered_map<std::string, Entity>* entityMap);
   bool entityMapContains(const std::string& s, std::unordered_map<std::string, Entity>* entityMap);
-bool checkDesignEntitySynonyms(std::vector<std::string> sArr);
+bool checkDesignEntitySynonymsList(std::vector<std::string> sArr);
 bool checkRelRefList(std::vector<std::string> s);
 bool checkPatternList(std::vector<std::string> patternList, std::unordered_map<std::string, Entity>* entityMap);
 bool entityMapContains(const std::string& s, std::unordered_map<std::string, Entity>* entityMap);
@@ -149,8 +149,8 @@ long findPatternClause(const std::string& s);
 std::vector<long> findSuchThatClause(const std::string& s);
 
 std::vector<std::string> splitDeclarationAndSelect(const std::string& s);
-std::vector<std::string> extractSelect(const std::string& s);
-std::vector<std::string> extractDeclaration(const std::string& s);
+std::vector<std::string> extractSelectStatements(const std::string& s);
+std::vector<std::string> extractDeclarationStatements(const std::string& s);
 
 std::vector<std::string> splitStringBySpaces(const std::string& s);
 std::vector<std::string> extractDesignEntityAndSynonyms(const std::string& s);
