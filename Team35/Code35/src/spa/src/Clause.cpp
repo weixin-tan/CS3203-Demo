@@ -26,16 +26,16 @@ std::string Clause::toString() {
 bool Clause::operator==(const Clause & c1) {
   bool toReturn = true;
   bool temp;
-  for(auto e: entityToFindList){
+  for(const auto& e: entityToFindList){
     temp = false;
-    for (auto e1 : c1.entityToFindList){
+    for (const auto& e1 : c1.entityToFindList){
       temp = temp || (e1 == e);
     }
     toReturn = toReturn && temp;
   }
   for (auto r: refList){
     temp = false;
-    for (auto r1: c1.refList){
+    for (const auto& r1: c1.refList){
       temp = temp || (r == r1);
     }
     toReturn = toReturn && temp;

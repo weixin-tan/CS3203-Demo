@@ -239,18 +239,20 @@ TEST_CASE("invalid querys"){
 
 TEST_CASE("trippy queries"){
   QueryProcessor qp = QueryProcessor();
-  string s1 = "read read; while while; if if; variable variable; Select read such that Uses(while, if)";
+  string s1 = "read read; while while; if if; variable variable; Select read such that Follows(while, if)";
   string s2 = "assign Uses; variable Modifies; Select Uses pattern Uses (Modifies, _)";
-  string s3 = "variable Select; Select Select such that Uses(Select, _)";
-  string s4 = "variable such; Select such such that Uses(such, _)";
-  string s5 = "variable that; Select that such that Uses(that, _)";
-  string s6 = "assign such; Select such pattern such(such, _)";
-  string s7 = "assign that; Select that pattern that(that, _)";
+  string s3 = "variable Select; Select Select such that Uses(_, Select)";
+  string s4 = "variable such; Select such such that Uses(_, such)";
+  string s5 = "variable that; Select that such that Uses(_, that)";
+  string s6 = "assign such; Select such pattern such(\"x\", _)";
+  string s7 = "assign that; Select that pattern that(\"x\", _)";
   string s8 = "assign pattern; Select pattern pattern pattern (_, \"x\")";
   string s9 = "assign suchthat; Select suchthat such that Follows*(6,suchthat)";
-  string s10 = "variable\tv;\tSelect\tv\tsuch\tthat\tParent*(v, 3)";
+  string s10 = "assign\tv;\tSelect\tv\tsuch\tthat\tParent*(v, 3)";
   string s11 = "assign a; Select a pattern a (\"\na\t\", _\"b\"_ )";
   string s12 = "assign a; Select a pattern a (\"a\", _\n\"b\"\t_ )";
+  string s13 = "variable and; Select and such that Uses(_,and) and Modifies(1,and)";
+  string s14 = "assign and; Select and pattern and (\"x\", _) and and (\"y\", _)";
 
   SECTION("test that trippy queries are valid"){
     REQUIRE(!qp.parsePQL(s1).empty());
@@ -265,12 +267,38 @@ TEST_CASE("trippy queries"){
     REQUIRE(!qp.parsePQL(s10).empty());
     REQUIRE(!qp.parsePQL(s11).empty());
     REQUIRE(!qp.parsePQL(s12).empty());
-
+    REQUIRE(!qp.parsePQL(s13).empty());
+    REQUIRE(!qp.parsePQL(s14).empty());
   }
 }
 
-TEST_CASE("testing site"){
-  cout << "hello running debug mode";
+TEST_CASE("test advanced queries without with clauses"){
+  QueryProcessor qp = QueryProcessor();
+  string s1 = "Select BOOLEAN such that Next* (2, 9)";
+  string s2 = "Select BOOLEAN such that Calls (_,_)";
+  string s3 = "while w;Select w pattern w (\"x\", _)";
+
+  string s4 = "assign a1, a2;Select <a1, a2> such that Affects (a1, a2)";
+  string s5 = "procedure p, q; Select <p, q> such that Calls (p, q)";
+  string s6 = "while w1, w2, w3;Select <w1, w2, w3> such that Parent* (w1, w2) and Parent* (w2, w3)";
+  string s7 = "procedure p, q; assign a;Select <p, q, a> such that Modifies (a, \"y\")";
+
+  string s8 = "procedure p;Select p such that Calls (p, \"Third\") and Modifies (p, \"i\")";
+  string s9 = "assign a; while w;Select a such that Modifies (a, \"x\") and Parent* (w, a) and Next* (1, a)";
+  string s10 = "stmt s;Select s such that Next* (5, s) and Next* (s, 12) such that Follows(1,2)";
+
+  string s11 = "assign a; Select a pattern a (\"\na\t\", _\"b\"_ ) and a (\"x\",_)";
+  string s12 = "assign a; Select a pattern a (\"\na\t\", _\"b\"_ ) pattern a (\"x\",_)";
+
+  string s13 = "assign a; while w;Select a pattern a (\"x\", _) such that Parent* (w, a) and Next* (1, a)";
+  string s14 = "assign a1, a2; while w1, w2;Select a2 pattern a1 (\"x\", _) and a2 (\"x\", _\"x\"_) such that Affects (a1, a2) and Parent* (w2, a2) and Parent* (w1, w2)";
+
+  qp.parsePQL(s14);
+}
+
+TEST_CASE("debugging"){
+  QueryProcessor qp = QueryProcessor();
+  qp.parsePQL("while w1, w2, w3; Select <w1.stmt#, w2.stmt#, w3.stmt#> such that Parent* (w1, w2) and Parent* (w2, w3)");
 }
 /*
 METHODS TO TEST
