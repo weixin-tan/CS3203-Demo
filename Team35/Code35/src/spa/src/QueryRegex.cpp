@@ -332,12 +332,12 @@ std::vector<long> findSuchThatClause(const std::string& s){
 }
 
 long smallestNumber(const long positionList[3]){
-  long toReturn = LLONG_MAX;
+  long toReturn = INT32_MAX;
   long temp;
   int positionListSize = 3;
   for (int i=0; i < positionListSize; i++){
     temp = positionList[i];
-    if (std::string::npos != temp && temp < toReturn){
+    if (std::string::npos != temp && temp < toReturn && temp >= 0){
       toReturn = temp;
     }
   }
