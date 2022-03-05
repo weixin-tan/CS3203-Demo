@@ -27,12 +27,13 @@ private:
     int getPrecedingStmtNo(int stmtNo) const;
     ElementType getStmtType(int stmtNo) const;
     std::set<std::string> getUsedConstants(int stmtNo) const;
+    std::set<std::string> getCalls(const std::string& proc) const;
+    std::set<std::string> getCallsT(const std::string& proc) const;
 
 public:
     explicit PkbGetter(DB* db);
     bool isRelationship(const PkbRelationshipType& r, const ProgramElement& leftSide, const ProgramElement& rightSide) const;
     std::set<ProgramElement> getEntity(const ElementType& typeToGet) const;
-    std::set<ProgramElement> getRelationshipStatements(const PkbRelationshipType& r) const;
     std::set<ProgramElement> getLeftSide(const PkbRelationshipType& r, const ProgramElement& rightSide, const ElementType& typeToGet) const;
     std::set<ProgramElement> getRightSide(const PkbRelationshipType& r, const ProgramElement& leftSide, const ElementType& typeToGet) const;
     std::set<ProgramElement> getAssignmentGivenExpression(const ProgramElement& expression) const; // TODO: temporary pattern

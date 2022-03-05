@@ -4,13 +4,13 @@
 #include <map>
 #include <set>
 #include <string>
-#include "../Type.h"
 #include "../ParsedStatement.h"
 #include "ElementType.h"
 
 // just a dataclass to hold all the tables
 struct DB {
     // TODO: do setter/getter for the table as well
+    // TODO: deprecate unnecessary tables
 public:
     // relationship tables
     std::map<int, ParsedStatement> stmtTable;
@@ -30,6 +30,8 @@ public:
     std::map<int, int> stmtFollowing;
     std::map<std::string, std::set<int>> constantToStmtTable;
     std::map<int, std::set<std::string>> usesStmtToConstantTable;
+    std::map<std::string, std::set<std::string>> callsTable;
+    std::map<std::string, std::set<std::string>> callsTTable;
 
     // entity tables
     std::set<std::string> variables;

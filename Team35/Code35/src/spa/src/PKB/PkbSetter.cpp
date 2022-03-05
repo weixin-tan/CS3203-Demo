@@ -13,7 +13,7 @@ const std::map<StatementType, ElementType> PkbSetter::spTypeToElementTypeTable =
         {StatementType::kread_stmt,   ElementType::kRead}
 };
 
-PkbSetter::PkbSetter(DB *db) : db(db) {}
+PkbSetter::PkbSetter(DB* db) : db(db), designExtractor(db), pkbValidator(db) {}
 
 void PkbSetter::handleVariables(const ParsedStatement& parsedStatement) {
     for (const auto& var: parsedStatement.var_modified)
@@ -72,7 +72,8 @@ void PkbSetter::handleFollows(const ParsedStatement& parsedStatement) {
 }
 
 void PkbSetter::handleCalls(const ParsedStatement& parsedStatement) {
-    db->stmtToProcedureCalled[parsedStatement.stmt_no] = parsedStatement.procedure_called;
+    if (parsedStatement.procedure_called != ParsedStatement::default_procedure_name)
+        db->stmtToProcedureCalled[parsedStatement.stmt_no] = parsedStatement.procedure_called;
 }
 
 void PkbSetter::insertStmt(const ParsedStatement& parsedStatement) {
@@ -92,7 +93,17 @@ void PkbSetter::insertStmt(const ParsedStatement& parsedStatement) {
 }
 
 void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& procedures) {
+    // insert legacy stuff, might be deprecated
     for (const auto& procedure : procedures)
         for (const auto& parsedStatement : procedure)
             insertStmt(parsedStatement);
+
+    // extract design abstractions
+    db->callsTable = designExtractor.extractCalls();
+    db->callsTTable = designExtractor.extractCallsT();
+
+    // validate design abstractions
+    pkbValidator.validateNoCyclicCall();
+    pkbValidator.validateCallsExists();
+    PkbValidator::validateNoDuplicateProcedure(procedures);
 }
