@@ -104,5 +104,6 @@ void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& pro
 
     // validate design abstractions
     pkbValidator.validateNoCyclicCall();
+    pkbValidator.validateCallsExists();
     PkbValidator::validateNoDuplicateProcedure(procedures);
 }

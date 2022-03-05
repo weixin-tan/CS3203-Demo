@@ -9,9 +9,15 @@ void PkbValidator::validateNoCyclicCall() {
     }
 }
 
-// TODO
 void PkbValidator::validateCallsExists() {
-    throw "PkbValidator::validateCallsExists not implemented!";
+    std::set<std::string> calledProcs;
+    for (const auto&[_, currentCalledProcs] : db->callsTable)
+        for (const auto& calledProc : currentCalledProcs)
+            calledProcs.insert(calledProc);
+
+    for (const auto& calledProc : calledProcs)
+        if (db->procedures.count(calledProc) == 0)
+            throw std::invalid_argument("Undefined procedure called!");
 }
 
 void PkbValidator::validateNoDuplicateProcedure(const std::vector<std::vector<ParsedStatement>>& procedures) {
