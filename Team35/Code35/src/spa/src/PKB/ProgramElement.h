@@ -1,31 +1,36 @@
 #ifndef SPA_TEAM35_CODE35_SRC_SPA_SRC_PKB_PROGRAMELEMENT_H_
 #define SPA_TEAM35_CODE35_SRC_SPA_SRC_PKB_PROGRAMELEMENT_H_
 
+#include "../Type.h"
 #include "ElementType.h"
 #include <string>
 
-// TODO: split into proper subclasses
 class ProgramElement {
+private:
+    std::tuple<ElementType, int, std::string, std::string, std::string> tuple;
+
 public:
-    static const int null_integer_value = -1;
-    static const std::string null_string_value;
+    static const int nullIntegerValue = -1;
+    static const std::string nullStringValue;
 
 public:
     // TODO: put back const
-    ElementType element_type;
-    int integer_value;
-    std::string string_value;
+    ElementType elementType;
+    int stmtNo;
+    std::string procName;
+    std::string varName;
+    std::string value;
 
 private:
-    ProgramElement(ElementType element_type, int integer_value, const std::string& string_value);
+    ProgramElement(ElementType elementType, int stmtNo, const std::string& procName, const std::string& varName, const std::string& value);
 
 public:
-    static ProgramElement createStatement(ElementType element_type, int stmt_no);
-    static ProgramElement createProcedure(const std::string& procedure_name);
-    static ProgramElement createVariable(const std::string& variable_name);
-    static ProgramElement createConstant(const std::string& constant_value);  // use string to avoid overflow
+    static ProgramElement createStatement(ElementType elementType, int stmtNo, const std::string& procOrVarName = ProgramElement::nullStringValue);
+    static ProgramElement createProcedure(const std::string& procName);
+    static ProgramElement createVariable(const std::string& varName);
+    static ProgramElement createConstant(const std::string& value);  // use string to avoid overflow
 
-    std::string toString() const;
+    std::string toString(EntityAttributeType entityAttributeType = EntityAttributeType::Stmt) const;
 
     bool operator<(const ProgramElement& r) const;
     bool operator==(const ProgramElement& r) const;

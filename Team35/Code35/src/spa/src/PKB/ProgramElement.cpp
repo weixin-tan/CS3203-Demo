@@ -1,43 +1,73 @@
-#include <cassert>
+#include <stdexcept>
 #include "ProgramElement.h"
 
-const std::string ProgramElement::null_string_value;
+const std::string ProgramElement::nullStringValue;
 
-// TODO: test suggestion of using std::move
-ProgramElement::ProgramElement(ElementType element_type, int integer_value, const std::string& string_value) : element_type(element_type), integer_value(integer_value), string_value(string_value) {}
+// TODO: investigate std::move
+ProgramElement::ProgramElement(ElementType elementType, int stmtNo, const std::string& procName, const std::string& varName, const std::string& value) : elementType(elementType), stmtNo(stmtNo), procName(procName), varName(varName), value(value), tuple(elementType, stmtNo, procName, varName, value) {}
 
-ProgramElement ProgramElement::createStatement(ElementType element_type, int stmt_no) {
-  assert(isStatementType(element_type));
-  return {element_type, stmt_no, null_string_value};
+
+ProgramElement ProgramElement::createStatement(ElementType elementType, int stmtNo, const std::string& procOrVarName) {
+    if (!isStatementType(elementType))
+        throw std::invalid_argument("Wrong element type for statement");
+    if (procOrVarName == ProgramElement::nullStringValue)
+        return {elementType, stmtNo, ProgramElement::nullStringValue, ProgramElement::nullStringValue, ProgramElement::nullStringValue};
+    if (elementType == ElementType::kCall)
+        return {elementType, stmtNo, procOrVarName, ProgramElement::nullStringValue, ProgramElement::nullStringValue};
+    if (elementType == ElementType::kPrint || elementType == ElementType::kRead)
+        return {elementType, stmtNo, ProgramElement::nullStringValue, procOrVarName, ProgramElement::nullStringValue};
+    throw std::logic_error("No viable construction for statement");
 }
 
-ProgramElement ProgramElement::createProcedure(const std::string& procedure_name) {
-  return {ElementType::kProcedure, ProgramElement::null_integer_value, procedure_name};
+ProgramElement ProgramElement::createProcedure(const std::string& procName) {
+    if (procName.empty())
+        throw std::invalid_argument("Empty procName string provided");
+    return {ElementType::kProcedure, ProgramElement::nullIntegerValue, procName, ProgramElement::nullStringValue, ProgramElement::nullStringValue};
 }
 
-ProgramElement ProgramElement::createConstant(const std::string& constant_value) {
-  return {ElementType::kConstant, ProgramElement::null_integer_value, constant_value};
+ProgramElement ProgramElement::createConstant(const std::string& value) {
+    if (value.empty())
+        throw std::invalid_argument("Empty value string provided");
+    return {ElementType::kConstant, ProgramElement::nullIntegerValue, ProgramElement::nullStringValue, ProgramElement::nullStringValue,value};
 }
 
-ProgramElement ProgramElement::createVariable(const std::string& variable_name) {
-  assert(!variable_name.empty());
-  return {ElementType::kVariable, ProgramElement::null_integer_value, variable_name};
+ProgramElement ProgramElement::createVariable(const std::string& varName) {
+    if (varName.empty())
+        throw std::invalid_argument("Empty varName string provided");
+    return {ElementType::kVariable, ProgramElement::nullIntegerValue, ProgramElement::nullStringValue, varName, ProgramElement::nullStringValue};
 }
 
-std::string ProgramElement::toString() const {
-    return (isStatementType(element_type) ? std::to_string(integer_value) : string_value);
+// element type takes priority, if statement select with entityAttributeType
+std::string ProgramElement::toString(EntityAttributeType entityAttributeType) const {
+    if (elementType == ElementType::kProcedure)
+        return procName;
+    if (elementType == ElementType::kVariable)
+        return varName;
+    if (elementType == ElementType::kConstant)
+        return value;
+    switch (entityAttributeType) {
+        case EntityAttributeType::Stmt:
+            return std::to_string(stmtNo);
+        case EntityAttributeType::VarName: {
+            if (elementType != ElementType::kPrint && elementType != ElementType::kRead)
+                throw std::invalid_argument("Accessing variable for statements not guaranteed to have variable");
+            return varName;
+        }
+        case EntityAttributeType::ProcName: {
+            if (elementType != ElementType::kCall)
+                throw std::invalid_argument("Accessing procName for statements not guaranteed to have procedure");
+            return procName;
+        }
+        default:
+            throw std::invalid_argument("Bad attribute selector for statement");
+    }
+
 }
 
 bool ProgramElement::operator<(const ProgramElement& r) const {
-  if (element_type != r.element_type)
-    return element_type < r.element_type;
-  if (integer_value != r.integer_value)
-    return integer_value < r.integer_value;
-  return string_value < r.string_value;
+    return tuple < r.tuple;
 }
 
 bool ProgramElement::operator==(const ProgramElement& r) const {
-    return element_type == r.element_type
-        && integer_value == r.integer_value
-        && string_value == r.string_value;
+    return tuple == r.tuple;
 }
