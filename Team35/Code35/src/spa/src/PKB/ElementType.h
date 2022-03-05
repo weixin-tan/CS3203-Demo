@@ -1,7 +1,8 @@
 #ifndef SPA_TEAM35_CODE35_SRC_SPA_SRC_PKB_ELEMENTTYPE_H_
 #define SPA_TEAM35_CODE35_SRC_SPA_SRC_PKB_ELEMENTTYPE_H_
 
-enum ElementType {
+// TODO: rename to EntityType once deconflicted
+enum class ElementType {
   // statements
   kStatement,
   kRead,

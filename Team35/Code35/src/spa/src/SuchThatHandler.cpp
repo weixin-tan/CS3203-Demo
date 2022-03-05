@@ -10,15 +10,16 @@ SuchThatHandler::SuchThatHandler(PkbGetter *pg) {
 Result SuchThatHandler::handleSuchThat(const Entity& entityToGet, const RelationshipRef& relRef) {
   Result result;
   RelationshipType relType = relRef.rType;
+  PkbRelationshipType pkbRel = convertRel(relType);
   Entity left = relRef.leftEntity;
   Entity right = relRef.rightEntity;
 
   if (left == entityToGet && right == entityToGet) {
       //Iteration 1 has no cases where both sides are the same result and so empty Result is appropriate
   } else if (left == entityToGet) { //If left side is the entity being searched for
-    result = handleLeftSide(entityToGet, right, relType);
+    result = handleLeftSide(entityToGet, right, pkbRel);
   } else if (right == entityToGet) { //If right side is the entity being searched for
-    result = handleRightSide(entityToGet, left, relType);
+    result = handleRightSide(entityToGet, left, pkbRel);
   } else {
     result = handleBoolCheck(entityToGet, relRef); //If both sides are not the entity being searched for
   }
@@ -37,6 +38,7 @@ Result SuchThatHandler::handleBoolCheck(const Entity& entityToGet, const Relatio
     Entity right = relRef.rightEntity;
     std::set<std::pair<ProgramElement, ProgramElement>> checkElements;
     ElementType elementTypeToGet = EntityToElementConverter::extractElementType(entityToGet);
+    PkbRelationshipType pkbRel = convertRel(relRef.rType);
 
   if (left.eType == EntityType::Wildcard && right.eType == EntityType::Wildcard) {
     assert(relRef.rType != RelationshipType::Modifies || relRef.rType != RelationshipType::Uses);
@@ -44,7 +46,7 @@ Result SuchThatHandler::handleBoolCheck(const Entity& entityToGet, const Relatio
     check = false;
     for (const ProgramElement& e1 : elements) {
       for (const ProgramElement& e2 : elements) {
-        bool isRel = pg->isRelationship(relRef.rType, e1, e2);
+        bool isRel = pg->isRelationship(pkbRel, e1, e2);
         if (isRel) {
           check = true;
           checkElements.insert(std::pair<ProgramElement, ProgramElement> (e1, e2));
@@ -55,7 +57,7 @@ Result SuchThatHandler::handleBoolCheck(const Entity& entityToGet, const Relatio
   } else if (left.eType == EntityType::Wildcard) { //Case where the left side is a wildcard
     assert(relRef.rType != RelationshipType::Modifies || relRef.rType != RelationshipType::Uses);
     left.eType = EntityType::Statement;
-    Result r = handleLeftSide(left, right, relRef.rType);
+    Result r = handleLeftSide(left, right, pkbRel);
     checkElements = r.getSuchThatElements();
     check = !checkElements.empty();
   } else if (right.eType == EntityType::Wildcard) { //Case where the right side is a wildcard
@@ -64,25 +66,25 @@ Result SuchThatHandler::handleBoolCheck(const Entity& entityToGet, const Relatio
     } else {
       right.eType = EntityType::Statement;
     }
-    Result r = handleRightSide(right, left, relRef.rType);
+    Result r = handleRightSide(right, left, pkbRel);
     checkElements = r.getSuchThatElements();
     check = !checkElements.empty();
   } else if (left.eType == EntityType::FixedInteger && (right.eType == EntityType::FixedString || right.eType == EntityType::FixedInteger)) {
     ProgramElement leftElement = EntityToElementConverter::fixedEntityConverter(left);
     ProgramElement rightElement = EntityToElementConverter::fixedEntityConverter(right);
-    check = pg->isRelationship(relRef.rType, leftElement, rightElement);
+    check = pg->isRelationship(pkbRel, leftElement, rightElement);
     std::pair<ProgramElement, ProgramElement> fixedPair(leftElement, rightElement);
     checkElements.insert(fixedPair);
   } else if (left.eType == EntityType::FixedInteger){
-    Result r = handleRightSide(right, left, relRef.rType);
+    Result r = handleRightSide(right, left, pkbRel);
     checkElements = r.getSuchThatElements();
     check = !checkElements.empty();
   } else if (right.eType == EntityType::FixedInteger || right.eType == EntityType::FixedString) {
-    Result r = handleLeftSide(left, right, relRef.rType);
+    Result r = handleLeftSide(left, right, pkbRel);
     checkElements = r.getSuchThatElements();
     check = !checkElements.empty();
   } else { // For all other cases handleLeftSide or handleRightSide would work
-    Result r = handleLeftSide(left, right, relRef.rType);
+    Result r = handleLeftSide(left, right, pkbRel);
     checkElements = r.getSuchThatElements();
     check = !checkElements.empty();
   }
@@ -99,12 +101,12 @@ Result SuchThatHandler::handleBoolCheck(const Entity& entityToGet, const Relatio
 }
 
 //If the entity being searched for is on the left side, find all instances that match the conditions
-Result SuchThatHandler::handleLeftSide(const Entity& entityToGet, const Entity& rightEntity, RelationshipType relType) {
+Result SuchThatHandler::handleLeftSide(const Entity& entityToGet, const Entity& rightEntity, PkbRelationshipType relType) {
   Result result;
   std::set<std::pair<ProgramElement, ProgramElement>> resultPairs;
   ElementType elementTypeToGet = EntityToElementConverter::extractElementType(entityToGet);
 
-  if (relType == RelationshipType::Modifies || relType == RelationshipType::Uses) {
+  if (relType == PkbRelationshipType::kModifies || relType == PkbRelationshipType::kUses) {
     if (rightEntity.eType == EntityType::FixedString) {
       resultPairs = getFixedEntityPairs(relType, rightEntity, elementTypeToGet, LEFT);
     } else if (rightEntity.eType == EntityType::Variable || rightEntity.eType == EntityType::Wildcard) {
@@ -112,8 +114,8 @@ Result SuchThatHandler::handleLeftSide(const Entity& entityToGet, const Entity& 
     } else {
       assert(false);
     }
-  } else if (relType == RelationshipType::Follows || relType == RelationshipType::FollowsT
-      || relType == RelationshipType::Parent || relType == RelationshipType::ParentT) {
+  } else if (relType == PkbRelationshipType::kFollows || relType == PkbRelationshipType::kFollowsT
+      || relType == PkbRelationshipType::kParent || relType == PkbRelationshipType::kParentT) {
     if (rightEntity.eType == EntityType::FixedInteger) {
       resultPairs = getFixedEntityPairs(relType, rightEntity, elementTypeToGet, LEFT);
     } else {
@@ -126,12 +128,12 @@ Result SuchThatHandler::handleLeftSide(const Entity& entityToGet, const Entity& 
   return result;
 }
 
-Result SuchThatHandler::handleRightSide(const Entity& entityToGet, const Entity& leftEntity, RelationshipType relType) {
+Result SuchThatHandler::handleRightSide(const Entity& entityToGet, const Entity& leftEntity, PkbRelationshipType relType) {
   Result result;
   std::set<std::pair<ProgramElement, ProgramElement>> resultPairs;
   ElementType elementTypeToGet = EntityToElementConverter::extractElementType(entityToGet);
 
-  if (relType == RelationshipType::Modifies || relType == RelationshipType::Uses) {
+  if (relType == PkbRelationshipType::kModifies || relType == PkbRelationshipType::kUses) {
     assert(("Cannot be Wildcard for Modifies and Uses!", leftEntity.eType != EntityType::Wildcard));
   }
 
@@ -146,7 +148,7 @@ Result SuchThatHandler::handleRightSide(const Entity& entityToGet, const Entity&
 }
 
 std::set<std::pair<ProgramElement, ProgramElement>>
-SuchThatHandler::getFixedEntityPairs(RelationshipType relType, const Entity& givenEntity, ElementType t, bool direction) {
+SuchThatHandler::getFixedEntityPairs(PkbRelationshipType relType, const Entity& givenEntity, ElementType t, bool direction) {
   std::set<std::pair<ProgramElement, ProgramElement>> finalResult;
   std::set<ProgramElement> pkbResult;
   ProgramElement programElement = EntityToElementConverter::fixedEntityConverter(givenEntity);
@@ -168,12 +170,12 @@ SuchThatHandler::getFixedEntityPairs(RelationshipType relType, const Entity& giv
 }
 
 std::set<std::pair<ProgramElement, ProgramElement>>
-SuchThatHandler::getAllCombinationsOfPairs(RelationshipType relType, const Entity& givenEntity, ElementType t, bool direction) {
+SuchThatHandler::getAllCombinationsOfPairs(PkbRelationshipType relType, const Entity& givenEntity, ElementType t, bool direction) {
   std::set<std::pair<ProgramElement, ProgramElement>> finalResult;
   std::set<ProgramElement> pkbResult;
   ElementType elementToIterate;
 
-  if (direction == LEFT && (relType == RelationshipType::Modifies || relType == RelationshipType::Uses)) {
+  if (direction == LEFT && (relType == PkbRelationshipType::kModifies || relType == PkbRelationshipType::kUses)) {
     elementToIterate = ElementType::kVariable;
   } else {
     if (givenEntity.eType == EntityType::Wildcard) {
@@ -200,4 +202,15 @@ SuchThatHandler::getAllCombinationsOfPairs(RelationshipType relType, const Entit
     }
   }
   return finalResult;
+}
+
+PkbRelationshipType SuchThatHandler::convertRel(RelationshipType r) {
+  switch(r){
+    case RelationshipType::Modifies: return PkbRelationshipType::kModifies;
+    case RelationshipType::Uses: return PkbRelationshipType::kUses;
+    case RelationshipType::Parent: return PkbRelationshipType::kParent;
+    case RelationshipType::ParentT: return PkbRelationshipType::kParentT;
+    case RelationshipType::Follows: return PkbRelationshipType::kFollows;
+    case RelationshipType::FollowsT: return PkbRelationshipType::kFollowsT;
+  }
 }

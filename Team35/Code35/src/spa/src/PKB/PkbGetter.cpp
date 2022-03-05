@@ -3,6 +3,7 @@
 
 #include "PkbGetter.h"
 #include "ProgramElement.h"
+#include "PkbRelationshipType.h"
 #include "DB.h"
 
 // TODO: rename
@@ -120,13 +121,13 @@ std::set<std::string> PkbGetter::getUsedConstants(int stmtNo) const {
 
 PkbGetter::PkbGetter(DB* db) : db(db) {}
 
-bool PkbGetter::isRelationship(const RelationshipType& r, const ProgramElement& leftSide, const ProgramElement& rightSide) const {
+bool PkbGetter::isRelationship(const PkbRelationshipType& r, const ProgramElement& leftSide, const ProgramElement& rightSide) const {
     if (!isExists(leftSide) || !isExists(rightSide)) return false;
 
     bool result = false;
 
     switch (r) {
-        case RelationshipType::Modifies : {
+        case PkbRelationshipType::kModifies : {
             assert(rightSide.element_type == ElementType::kVariable);
             if (isStatementType(leftSide.element_type)) {
                 std::set<ProgramElement> modifyStatements = getLeftSide(r, rightSide, leftSide.element_type);
@@ -137,7 +138,7 @@ bool PkbGetter::isRelationship(const RelationshipType& r, const ProgramElement& 
             }
             break;
         }
-        case RelationshipType::Uses: {
+        case PkbRelationshipType::kUses: {
             assert(rightSide.element_type == ElementType::kVariable);
             if (isStatementType(leftSide.element_type)) {
                 std::set<ProgramElement> usesStatements = getLeftSide(r, rightSide, leftSide.element_type);
@@ -148,17 +149,17 @@ bool PkbGetter::isRelationship(const RelationshipType& r, const ProgramElement& 
             }
             break;
         }
-        case RelationshipType::Parent: {
+        case PkbRelationshipType::kParent: {
             assert(isStatementType(leftSide.element_type) && isStatementType(rightSide.element_type));
             result = getParentStmtNo(rightSide.integer_value) == leftSide.integer_value;
             break;
         }
-        case RelationshipType::Follows: {
+        case PkbRelationshipType::kFollows: {
             assert(isStatementType(leftSide.element_type) && isStatementType(rightSide.element_type));
             result = getFollowingStmtNo(leftSide.integer_value) == rightSide.integer_value;
             break;
         }
-        case RelationshipType::ParentT: {
+        case PkbRelationshipType::kParentT: {
             int targetStmtNo = leftSide.integer_value;
             int currentStmtNo = rightSide.integer_value;
             while (currentStmtNo != ParsedStatement::default_null_stmt_no) {
@@ -170,7 +171,7 @@ bool PkbGetter::isRelationship(const RelationshipType& r, const ProgramElement& 
             }
             break;
         }
-        case RelationshipType::FollowsT: {
+        case PkbRelationshipType::kFollowsT: {
             int targetStmtNo = leftSide.integer_value;
             int currentStmtNo = rightSide.integer_value;
             while (currentStmtNo != ParsedStatement::default_null_stmt_no) {
@@ -190,16 +191,16 @@ bool PkbGetter::isRelationship(const RelationshipType& r, const ProgramElement& 
     return result;
 }
 
-std::set<ProgramElement> PkbGetter::getRelationshipStatements(const RelationshipType& r) const {
+std::set<ProgramElement> PkbGetter::getRelationshipStatements(const PkbRelationshipType& r) const {
     std::set<ProgramElement> result;
 
     switch (r) {
-        case RelationshipType::Modifies: {
+        case PkbRelationshipType::kModifies: {
             for (const auto&[var, _] : db->varToModifyStmtTable)
                 result.merge(getLeftSide(r, ProgramElement::createVariable(var), ElementType::kStatement));
             break;
         }
-        case RelationshipType::Uses: {
+        case PkbRelationshipType::kUses: {
             for (const auto&[var, _] : db->varToUsesStmtTable)
                 result.merge(getLeftSide(r, ProgramElement::createVariable(var), ElementType::kStatement));
             break;
@@ -251,14 +252,14 @@ std::set<ProgramElement> PkbGetter::getEntity(const ElementType& typeToGet) cons
     return result;
 }
 
-std::set<ProgramElement> PkbGetter::getLeftSide(const RelationshipType& r, const ProgramElement& rightSide,
+std::set<ProgramElement> PkbGetter::getLeftSide(const PkbRelationshipType& r, const ProgramElement& rightSide,
                                                 const ElementType& typeToGet) const {
     if (!isExists(rightSide)) return {};
 
     std::set<ProgramElement> result;
 
     switch (r) {
-        case RelationshipType::Modifies: {
+        case PkbRelationshipType::kModifies: {
             assert(isStatementType(typeToGet) || typeToGet == ElementType::kProcedure);
             assert(rightSide.element_type == ElementType::kVariable);
 
@@ -282,7 +283,7 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const RelationshipType& r, const
             } else assert(false);
             break;
         }
-        case RelationshipType::Uses: {
+        case PkbRelationshipType::kUses: {
             assert(isStatementType(typeToGet) || typeToGet == ElementType::kProcedure);
             assert(rightSide.element_type == ElementType::kVariable || rightSide.element_type == ElementType::kConstant);
 
@@ -313,7 +314,7 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const RelationshipType& r, const
             } else assert(false);
             break;
         }
-        case RelationshipType::Follows: {
+        case PkbRelationshipType::kFollows: {
             assert(isStatementType(rightSide.element_type) && isStatementType(typeToGet));
 
             int targetStmtNo = getPrecedingStmtNo(rightSide.integer_value);
@@ -321,7 +322,7 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const RelationshipType& r, const
                 result.insert(ProgramElement::createStatement(typeToGet, targetStmtNo));
             break;
         }
-        case RelationshipType::Parent: {
+        case PkbRelationshipType::kParent: {
             assert(isStatementType(rightSide.element_type) && isStatementType(typeToGet));
 
             int targetStmtNo = getParentStmtNo(rightSide.integer_value);
@@ -329,7 +330,7 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const RelationshipType& r, const
                 result.insert(ProgramElement::createStatement(typeToGet, targetStmtNo));
             break;
         }
-        case RelationshipType::FollowsT: {
+        case PkbRelationshipType::kFollowsT: {
             assert(isStatementType(rightSide.element_type) && isStatementType(typeToGet));
 
             int currentStmtNo = getPrecedingStmtNo(rightSide.integer_value);
@@ -341,7 +342,7 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const RelationshipType& r, const
 
             break;
         }
-        case RelationshipType::ParentT: {
+        case PkbRelationshipType::kParentT: {
             assert(isStatementType(rightSide.element_type) && isStatementType(typeToGet));
 
             int currentStmtNo = getParentStmtNo(rightSide.integer_value);
@@ -361,12 +362,12 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const RelationshipType& r, const
     return result;
 }
 
-std::set<ProgramElement> PkbGetter::getRightSide(const RelationshipType& r, const ProgramElement& leftSide,
+std::set<ProgramElement> PkbGetter::getRightSide(const PkbRelationshipType& r, const ProgramElement& leftSide,
                                                  const ElementType& typeToGet) const {
     if (!isExists(leftSide)) return {};
     std::set<ProgramElement> result;
     switch (r) {
-        case RelationshipType::Modifies: {
+        case PkbRelationshipType::kModifies: {
             assert(isStatementType(leftSide.element_type) || leftSide.element_type == ElementType::kProcedure);
             assert(typeToGet == ElementType::kVariable);
 
@@ -382,7 +383,7 @@ std::set<ProgramElement> PkbGetter::getRightSide(const RelationshipType& r, cons
             } else assert(false);
             break;
         }
-        case RelationshipType::Uses: {
+        case PkbRelationshipType::kUses: {
             assert(isStatementType(leftSide.element_type) || leftSide.element_type == ElementType::kProcedure);
             assert(typeToGet == ElementType::kVariable);
 
@@ -398,7 +399,7 @@ std::set<ProgramElement> PkbGetter::getRightSide(const RelationshipType& r, cons
             } else assert(false);
             break;
         }
-        case RelationshipType::Follows: {
+        case PkbRelationshipType::kFollows: {
             assert(isStatementType(leftSide.element_type) && isStatementType(typeToGet));
 
             int targetStmtNo = getFollowingStmtNo(leftSide.integer_value);
@@ -406,7 +407,7 @@ std::set<ProgramElement> PkbGetter::getRightSide(const RelationshipType& r, cons
                 result.insert(ProgramElement::createStatement(typeToGet, targetStmtNo));
             break;
         }
-        case RelationshipType::Parent: {
+        case PkbRelationshipType::kParent: {
             assert(isStatementType(leftSide.element_type) && isStatementType(typeToGet));
 
             for (const int& childStmtNo: getChildStmtNos(leftSide.integer_value))
@@ -414,7 +415,7 @@ std::set<ProgramElement> PkbGetter::getRightSide(const RelationshipType& r, cons
                     result.insert(ProgramElement::createStatement(typeToGet, childStmtNo));
             break;
         }
-        case RelationshipType::FollowsT: {
+        case PkbRelationshipType::kFollowsT: {
             assert(isStatementType(leftSide.element_type) && isStatementType(typeToGet));
 
             int currentStmtNo = getFollowingStmtNo(leftSide.integer_value);
@@ -426,7 +427,7 @@ std::set<ProgramElement> PkbGetter::getRightSide(const RelationshipType& r, cons
 
             break;
         }
-        case RelationshipType::ParentT: {
+        case PkbRelationshipType::kParentT: {
             assert(isStatementType(leftSide.element_type) && isStatementType(typeToGet));
 
             for (const int& childStmtNo: getChildStmtNos(leftSide.integer_value)) {
@@ -447,14 +448,14 @@ std::set<ProgramElement> PkbGetter::getRightSide(const RelationshipType& r, cons
 
 // TODO: temporary, expression currently is just a constant or variable used
 std::set<ProgramElement> PkbGetter::getAssignmentGivenExpression(const ProgramElement& expression) const {
-    return getLeftSide(RelationshipType::Uses, expression, ElementType::kAssignment);
+    return getLeftSide(PkbRelationshipType::kUses, expression, ElementType::kAssignment);
 }
 
 std::set<ProgramElement> PkbGetter::getAssignmentGivenVariableAndExpression(const ProgramElement& variable, const ProgramElement& expression) const {
     std::set<ProgramElement> result;
     std::set<ProgramElement> assignments = getAssignmentGivenExpression(expression);
     for (const auto& assignment : assignments)
-        if (getRightSide(RelationshipType::Modifies, assignment, ElementType::kVariable).count(variable) != 0)
+        if (getRightSide(PkbRelationshipType::kModifies, assignment, ElementType::kVariable).count(variable) != 0)
             result.insert(assignment);
     return result;
 }

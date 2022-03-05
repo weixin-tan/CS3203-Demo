@@ -40,7 +40,7 @@ Result PatternHandler::handleLeftWildcard(const Entity& rightEntity) {
   assert(rightEntity.eType == EntityType::FixedStringWithinWildcard); //Iteration 1
   Result result;
   ProgramElement rightElement = EntityToElementConverter::fixedEntityConverter(rightEntity);
-  std::set<ProgramElement> resultElements = pg->getLeftSide(RelationshipType::Uses, rightElement, ElementType::kAssignment);
+  std::set<ProgramElement> resultElements = pg->getLeftSide(PkbRelationshipType::kUses, rightElement, ElementType::kAssignment);
   result.setPatternElements(resultElements);
   return result;
 }
@@ -50,7 +50,7 @@ Result PatternHandler::handleRightWildcard(const Entity& leftEntity) {
   std::set<ProgramElement> resultElements;
   if (leftEntity.eType == EntityType::FixedString) {
     ProgramElement leftElement = EntityToElementConverter::fixedEntityConverter(leftEntity);
-    resultElements = pg->getLeftSide(RelationshipType::Modifies, leftElement, ElementType::kAssignment);
+    resultElements = pg->getLeftSide(PkbRelationshipType::kModifies, leftElement, ElementType::kAssignment);
   } else if (leftEntity.eType == EntityType::Variable) {
     resultElements = pg->getEntity(ElementType::kAssignment);
   } else {
