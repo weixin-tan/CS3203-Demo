@@ -72,7 +72,8 @@ void PkbSetter::handleFollows(const ParsedStatement& parsedStatement) {
 }
 
 void PkbSetter::handleCalls(const ParsedStatement& parsedStatement) {
-    db->stmtToProcedureCalled[parsedStatement.stmt_no] = parsedStatement.procedure_called;
+    if (parsedStatement.procedure_called != ParsedStatement::default_procedure_name)
+        db->stmtToProcedureCalled[parsedStatement.stmt_no] = parsedStatement.procedure_called;
 }
 
 void PkbSetter::insertStmt(const ParsedStatement& parsedStatement) {
@@ -103,4 +104,5 @@ void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& pro
 
     // validate design abstractions
     pkbValidator.validateNoCyclicCall();
+    PkbValidator::validateNoDuplicateProcedure(procedures);
 }

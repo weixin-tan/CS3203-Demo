@@ -9,9 +9,9 @@ private:
 
 public:
     explicit PkbValidator(DB* db);
-    void validateNoCyclicCall();  // no cyclic call
-    void validateCallsExists();  // called target must exist
-    void validateNoDuplicateProcedure();  // no procedure with duplicated name
+    void validateNoCyclicCall();
+    void validateCallsExists();
+    static void validateNoDuplicateProcedure(const std::vector<std::vector<ParsedStatement>>& procedures);
 };
 
 #endif //SPA_TEAM35_CODE35_SRC_SPA_SRC_PKB_PKBVALIDATOR_H_
