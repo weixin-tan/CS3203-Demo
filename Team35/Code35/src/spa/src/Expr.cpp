@@ -20,26 +20,26 @@ TokenType Expr::getOperator() const {
 	return this->tokenType;
 }
 
-Expr Expr::getExpr() const {
-	return *expr;
+std::shared_ptr<Expr> Expr::getExpr() const {
+	return expr;
 }
 
 Expr* Expr::getExprPtr() const {
 	if (!this->hasExpr()) {
 		return nullptr; 
 	}
-	return expr; 
+	return expr.get(); 
 }
 
 Term Expr::getTerm() const {
-	return *term;
+	return term;
 }
 
-Term* Expr::getTermPtr() const {
+Term* Expr::getTermPtr() {
 	if (!this->hasTerm()) {
 		return nullptr;
 	}
-	return term;
+	return &term;
 }
 
 bool Expr::hasExpr() const {
@@ -54,12 +54,12 @@ void Expr::setOperator(TokenType tokenType) {
 	this->tokenType = tokenType;
 }
 
-void Expr::setExpr(Expr expr) {
-	this->expr = &expr;
+void Expr::setExpr(std::shared_ptr<Expr> expr) {
+	this->expr = expr;
 	this->exprFlag = true;
 }
 
 void Expr::setTerm(Term term) {
-	this->term = &term;
+	this->term = term;
 	this->termFlag = true; 
 }

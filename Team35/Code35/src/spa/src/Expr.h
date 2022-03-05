@@ -1,3 +1,4 @@
+#include <memory>
 #include "Term.h"
 #include "TokenType.h"
 
@@ -7,21 +8,21 @@
 class Expr {
 private:
 	TokenType tokenType;
-	Expr *expr;
-	Term *term;
+	std::shared_ptr<Expr> expr;
+	Term term;
 	bool termFlag; 
 	bool exprFlag;
 public:
 	Expr();
 	TokenType getOperator() const;
-	Expr getExpr() const;
+	std::shared_ptr<Expr> getExpr() const;
 	Term getTerm() const;
 	Expr* getExprPtr() const;
 	bool hasExpr() const;
-	Term* getTermPtr() const;
+	Term* getTermPtr();
 	bool hasTerm() const;
 	void setOperator(TokenType tokenType);
-	void setExpr(Expr expr);
+	void setExpr(std::shared_ptr<Expr> expr);
 	void setTerm(Term term);
 };
 

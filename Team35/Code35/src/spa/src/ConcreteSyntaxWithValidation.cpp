@@ -272,7 +272,15 @@ Expr ConcreteSyntaxWithValidation::parseExprRecursion(std::stack<Token>& exprSta
 	if (!exprStack.empty()) {
 		expr.setOperator(exprStack.top().getToken());
 		exprStack.pop();
-		expr.setExpr(ConcreteSyntaxWithValidation::parseExprRecursion(exprStack));
+		Expr another_expr;
+		try {
+			another_expr = ConcreteSyntaxWithValidation::parseExprRecursion(exprStack);
+		}
+		catch (const std::invalid_argument& e) {
+			throw;
+		}
+		std::shared_ptr<Expr> ex = std::make_shared<Expr>(another_expr);
+		expr.setExpr(ex);
 	}
 	return expr;
 }
@@ -303,7 +311,15 @@ Term ConcreteSyntaxWithValidation::parseTerm(std::queue<Token>& termQueue) {
 	if (!termQueue.empty()) {
 		term.setOperator(termQueue.front().getToken());
 		termQueue.pop();
-		term.setTerm(ConcreteSyntaxWithValidation::parseTerm(termQueue));
+		Term another_term;
+		try {
+			another_term = ConcreteSyntaxWithValidation::parseTerm(termQueue);
+		}
+		catch (const std::invalid_argument& e) {
+			throw;
+		}
+		std::shared_ptr<Term> te = std::make_shared<Term>(another_term);
+		term.setTerm(te);
 	}
 	return term;
 }
@@ -348,7 +364,7 @@ Factor ConcreteSyntaxWithValidation::parseFactor(std::queue<Token>& factorQueue)
 		factor.setType(FactorType::VAR);
 		factorQueue.pop();
 	}
-	else if (factorQueue.front().getToken() == TokenType::INTEGER) {
+	else if ((factorQueue.front().getToken() == TokenType::INTEGER) || (factorQueue.front().getToken() == TokenType::DIGIT)) {
 		factor.setConstValue(factorQueue.front());
 		factor.setType(FactorType::CONST);
 		factorQueue.pop();
