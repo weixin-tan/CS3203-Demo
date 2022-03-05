@@ -8,7 +8,7 @@ class Expr {
 private:
 	TokenType tokenType;
 	Expr *expr;
-	Term term;
+	Term *term;
 	bool termFlag; 
 	bool exprFlag;
 public:
@@ -16,7 +16,9 @@ public:
 	TokenType getOperator() const;
 	Expr getExpr() const;
 	Term getTerm() const;
+	Expr* getExprPtr() const;
 	bool hasExpr() const;
+	Term* getTermPtr() const;
 	bool hasTerm() const;
 	void setOperator(TokenType tokenType);
 	void setExpr(Expr expr);

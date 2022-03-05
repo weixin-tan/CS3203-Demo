@@ -9,7 +9,7 @@ class ExpressionProcessor {
 	bool areIdenticalTerm(Term* root1, Term* root2);
 	bool areIdenticalFactor(Factor* root1, Factor* root2);
 	bool isSubtree(Expr* root1, Expr* root2);
-	Expr* getNestedExpr(Expr* root2);
+	std::shared_ptr<Expr> ExpressionProcessor::getNestedExpr(Expr* root2);
 
 public:
 

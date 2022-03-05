@@ -22,9 +22,10 @@ bool ExpressionProcessor::areIdenticalExpr(Expr *root1, Expr *root2) {
 	if (root1 == nullptr || root2 == nullptr) {
 		return false;
 	}
+
 	return root1->getOperator() == root2->getOperator() &&
-		areIdenticalExpr(&root1->getExpr(), &root2->getExpr()) &&
-		areIdenticalTerm(&root1->getTerm(), &root2->getTerm());
+		areIdenticalExpr(root1->getExprPtr(), root2->getExprPtr()) &&
+		areIdenticalTerm(root1->getTermPtr(), root2->getTermPtr());
 }
 
 bool ExpressionProcessor::areIdenticalTerm(Term* root1, Term* root2) {
@@ -35,8 +36,8 @@ bool ExpressionProcessor::areIdenticalTerm(Term* root1, Term* root2) {
 		return false;
 	}
 	return root1->getOperator() == root2->getOperator() &&
-		areIdenticalFactor(&root1->getFactor(), &root2->getFactor()) &&
-		areIdenticalTerm(&root1->getTerm(), &root2->getTerm());
+		areIdenticalFactor(root1->getFactorPtr(), root2->getFactorPtr()) &&
+		areIdenticalTerm(root1->getTermPtr(), root2->getTermPtr());
 
 }
 
@@ -51,11 +52,11 @@ bool ExpressionProcessor::areIdenticalFactor(Factor* root1, Factor* root2) {
 		root1->getVarName().getId() == root2->getVarName().getId() &&
 		root1->getConstValue().getId() == root2->getConstValue().getId() &&
 		root1->getType() == root2->getType() &&
-		areIdenticalExpr(root1->getExpr(), root2->getExpr());
+		areIdenticalExpr(root1->getExpr().get(), root2->getExpr().get());
 }
 
 // Checking if they are partial match or not. 
-bool ExpressionProcessor::isSubtree(Expr*root1, Expr* root2) {
+bool ExpressionProcessor::isSubtree(Expr* root1, Expr* root2) {
 	if (root2 == nullptr) {
 		return true; 
 	}
@@ -66,18 +67,18 @@ bool ExpressionProcessor::isSubtree(Expr*root1, Expr* root2) {
 		return true;
 	} else {
 
-		return isSubtree(root1, &root2->getExpr()) || 
+		return isSubtree(root1, root2->getExprPtr()) || 
 		// We need to get the NEXT expression out. 
-		isSubtree(root1, getNestedExpr(root2));
+		isSubtree(root1, getNestedExpr(root2).get());
 	}
 }
 
-Expr* ExpressionProcessor::getNestedExpr(Expr* root2)
+std::shared_ptr<Expr> ExpressionProcessor::getNestedExpr(Expr* root2)
 {
 	if (&root2->getTerm() != nullptr) {
-		Term* term = &root2->getTerm();
+		Term* term = root2->getTermPtr();
 		if (&term->getFactor() != nullptr) {
-			Factor* factor = &term->getFactor();
+			Factor* factor = term->getFactorPtr();
 			if (factor->getExpr() != nullptr) {
 				return factor->getExpr();
 			}

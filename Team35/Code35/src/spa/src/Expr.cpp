@@ -24,8 +24,22 @@ Expr Expr::getExpr() const {
 	return *expr;
 }
 
+Expr* Expr::getExprPtr() const {
+	if (!this->hasExpr()) {
+		return nullptr; 
+	}
+	return expr; 
+}
+
 Term Expr::getTerm() const {
-	return this->term;
+	return *term;
+}
+
+Term* Expr::getTermPtr() const {
+	if (!this->hasTerm()) {
+		return nullptr;
+	}
+	return term;
 }
 
 bool Expr::hasExpr() const {
@@ -46,6 +60,6 @@ void Expr::setExpr(Expr expr) {
 }
 
 void Expr::setTerm(Term term) {
-	this->term = term;
+	this->term = &term;
 	this->termFlag = true; 
 }

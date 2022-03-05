@@ -21,7 +21,11 @@ TEST_CASE("Check Similarity 1") {
 	tokenQueue = tokeniser.putInQueue("x*y;");
 	Expr b = validator.parseExpr(tokenQueue);
 
-	REQUIRE(expressionProcessor.fullfillsMatching(a, b, ExpressionIndicator::PARTIAL_MATCH) == true); 
+	tokenQueue = tokeniser.putInQueue("z - 8 - (x * y) * z;");
+	Expr c = validator.parseExpr(tokenQueue);
 
+	REQUIRE(expressionProcessor.fullfillsMatching(a, c, ExpressionIndicator::FULL_MATCH) == true);
+	REQUIRE(expressionProcessor.fullfillsMatching(a, b, ExpressionIndicator::PARTIAL_MATCH) == true); 
+	
 
 }
