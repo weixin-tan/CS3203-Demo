@@ -71,11 +71,6 @@ void PkbSetter::handleFollows(const ParsedStatement& parsedStatement) {
     }
 }
 
-void PkbSetter::handleCalls(const ParsedStatement& parsedStatement) {
-    if (parsedStatement.procedure_called != ParsedStatement::default_procedure_name)
-        db->stmtToProcedureCalled[parsedStatement.stmt_no] = parsedStatement.procedure_called;
-}
-
 void PkbSetter::insertStmt(const ParsedStatement& parsedStatement) {
     db->stmtTable[parsedStatement.stmt_no] = parsedStatement;
     // handle entity
@@ -89,7 +84,6 @@ void PkbSetter::insertStmt(const ParsedStatement& parsedStatement) {
     handleParent(parsedStatement);
     handleUses(parsedStatement);
     handleModifies(parsedStatement);
-    handleCalls(parsedStatement);
 }
 
 void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& procedures) {
@@ -99,8 +93,10 @@ void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& pro
             insertStmt(parsedStatement);
 
     // extract design abstractions
-    db->callsTable = designExtractor.extractCalls();
-    db->callsTTable = designExtractor.extractCallsT();
+    designExtractor.extractCalls(db->callsTable);
+    designExtractor.extractCallsT(db->callsTTable);
+    designExtractor.extractFollows(db->followsTable);
+    designExtractor.extractFollowsT(db->followsTTable);
 
     // validate design abstractions
     pkbValidator.validateNoCyclicCall();
