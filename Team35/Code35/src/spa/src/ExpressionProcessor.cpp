@@ -137,7 +137,7 @@ bool ExpressionProcessor::isSubtree(Expr* root1, Term* term2) {
 
 }
 
-
+// To get the nested expression from the root. 
 std::shared_ptr<Expr> ExpressionProcessor::getNestedExpr(Term* root2)
 {
 	if (root2->getFactorPtr() != nullptr) {
