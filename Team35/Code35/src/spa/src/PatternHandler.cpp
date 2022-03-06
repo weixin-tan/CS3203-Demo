@@ -73,16 +73,27 @@ Result PatternHandler::handleRightWildcard(const Entity& leftEntity) {
 
 Result PatternHandler::handleNoWildcard(const Entity& rightEntity, const Entity& leftEntity) {
   Result result;
-  std::set<ProgramElement> left = handleRightWildcard(leftEntity).getPatternElements();
-  std::set<ProgramElement> right = handleLeftWildcard(rightEntity).getPatternElements();
+  Result leftResult = handleRightWildcard(leftEntity);
+  Result rightResult = handleLeftWildcard(rightEntity);
   std::set<ProgramElement> resultElements;
-
-  for (const auto& e : left) {
-    if (right.count(e)) {
-      resultElements.insert(e);
+  if (leftResult.getAssignEntRef().eType == EntityType::Null) {
+    for (const auto& e : leftResult.getPatternElements()) {
+      if (rightResult.getPatternElements().count(e)) {
+        resultElements.insert(e);
+      }
     }
+    result.setPatternElements(resultElements);
+  } else {
+    result.setAssignEntRef(leftResult.getAssignEntRef());
+    std::set<std::pair<ProgramElement, ProgramElement>> pairResult;
+    for (const auto& p: leftResult.getEntRefElements()) {
+      for (const auto& e: rightResult.getPatternElements()) {
+        if (p.first == e) {
+          pairResult.insert(p);
+        }
+      }
+    }
+    result.setEntRefElements(pairResult);
   }
-
-  result.setPatternElements(resultElements);
   return result;
 }

@@ -323,6 +323,8 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         std::string com6 = "assign a, a1; variable v; Select a such that Uses (a1, v) pattern a (v, _)";
         std::string com7 = "assign a, a1; variable v, v1; Select v such that Uses (a, v) pattern a1 (v, _)";
         std::string com8 = "assign a, a1; variable v, v1; Select v1 such that Modifies (a, v) pattern a1 (v1, _)";
+        std::string com9 = "assign a; variable v; Select a such that Modifies (a, \"y\") pattern a (v, _\"100\"_)";
+        std::string com10 = "print p; assign a; variable v; Select a such that Uses (p, \"x\") pattern a (v, _\"x\"_)";
 
         std::set<ProgramElement> empty = {};
         std::set<ProgramElement> expectedResult1;
@@ -340,6 +342,10 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         expectedResult6.insert(a7);
         std::set<ProgramElement> expectedResult7;
         expectedResult7.insert(vx);
+        std::set<ProgramElement> expectedResult9;
+        expectedResult9.insert(a9);
+        std::set<ProgramElement> expectedResult10;
+        expectedResult10.insert(a2);
 
         std::set<ProgramElement> result1 = rp.processResults(qh.processClause(qp.parsePQL(com1)));
         std::set<ProgramElement> result2 = rp.processResults(qh.processClause(qp.parsePQL(com2)));
@@ -349,6 +355,8 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         std::set<ProgramElement> result6 = rp.processResults(qh.processClause(qp.parsePQL(com6)));
         std::set<ProgramElement> result7 = rp.processResults(qh.processClause(qp.parsePQL(com7)));
         std::set<ProgramElement> result8 = rp.processResults(qh.processClause(qp.parsePQL(com8)));
+        std::set<ProgramElement> result9 = rp.processResults(qh.processClause(qp.parsePQL(com9)));
+        std::set<ProgramElement> result10 = rp.processResults(qh.processClause(qp.parsePQL(com10)));
 
         REQUIRE(result1 == expectedResult1);
         REQUIRE(result2 == expectedResult2);
@@ -358,5 +366,8 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         REQUIRE(result6 == expectedResult6);
         REQUIRE(result7 == expectedResult7);
         REQUIRE(result8 == variables);
+        REQUIRE(result9 == expectedResult9);
+        REQUIRE(result10 == expectedResult10);
+
     }
 }
