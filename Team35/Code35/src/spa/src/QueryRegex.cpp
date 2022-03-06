@@ -740,6 +740,7 @@ bool checkUses(const RelationshipRef& r){
 bool checkModifiesLeftSide(const Entity& e){
   return e.eType == EntityType::FixedInteger
       || e.eType == EntityType::FixedString
+      || e.eType == EntityType::Statement
       || e.eType == EntityType::Assignment
       || e.eType == EntityType::Read
       || e.eType == EntityType::While
