@@ -1,8 +1,15 @@
 #include "ExpressionProcessor.h"
+#include "ConcreteSyntaxWithValidation.h"
+#include "Tokeniser.h"
 #include <iostream>
 
+// code to be refactored
 Expr ExpressionProcessor::stringToExpr(std::string query) {
-	return Expr(); 
+	query = query + ";";
+	Tokeniser tokeniser;
+	std::queue<Token> tokenQueue = tokeniser.putInQueue(query);
+	ConcreteSyntaxWithValidation validator;
+	return validator.parseExpr(tokenQueue);
 }
 
 bool ExpressionProcessor::fullfillsMatching(Expr exp1, Expr exp2, ExpressionIndicator expressionIndicator) {

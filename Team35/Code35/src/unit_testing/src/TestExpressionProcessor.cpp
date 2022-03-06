@@ -123,3 +123,27 @@ TEST_CASE("Check Similarity 4") {
 	REQUIRE(expressionProcessor.fullfillsMatching(b, a, ExpressionIndicator::PARTIAL_MATCH) == true);
 	REQUIRE(expressionProcessor.fullfillsMatching(c, a, ExpressionIndicator::PARTIAL_MATCH) == false);
 }
+
+TEST_CASE("Check integration") {
+
+	ExpressionProcessor expressionProcessor;
+
+	Expr a = expressionProcessor.stringToExpr("z - 8 - (x * y) * z");
+
+	Expr b = expressionProcessor.stringToExpr("x*y");
+
+	Expr c = expressionProcessor.stringToExpr("z - 8 - (x * y) * z");
+
+	Expr d = expressionProcessor.stringToExpr("x");
+
+	Expr e = expressionProcessor.stringToExpr("x * z");
+
+	Expr f = expressionProcessor.stringToExpr("z - 8;");
+
+	REQUIRE(expressionProcessor.fullfillsMatching(a, c, ExpressionIndicator::FULL_MATCH) == true);
+	REQUIRE(expressionProcessor.fullfillsMatching(b, a, ExpressionIndicator::PARTIAL_MATCH) == true);
+	REQUIRE(expressionProcessor.fullfillsMatching(d, a, ExpressionIndicator::PARTIAL_MATCH) == true);
+	REQUIRE(expressionProcessor.fullfillsMatching(e, a, ExpressionIndicator::PARTIAL_MATCH) == false);
+	REQUIRE(expressionProcessor.fullfillsMatching(f, a, ExpressionIndicator::PARTIAL_MATCH) == true);
+	
+}
