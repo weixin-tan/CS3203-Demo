@@ -32,6 +32,14 @@ void Result::setAssignEntity(Entity assign) {
   Result::assignEntity = assign;
 }
 
+void Result::setAssignEntRef(Entity entRef) {
+  Result::assignEntRef = entRef;
+}
+
+void Result::setEntRefElements(std::set<std::pair<ProgramElement, ProgramElement>> elements) {
+  Result::entRefElements = elements;
+}
+
 std::set<ProgramElement> Result::getNoClauseElements() {
     return Result::noClauseElements;
 }
@@ -58,6 +66,14 @@ Entity Result::getRightSuchThatEntity() {
 
 Entity Result::getAssignEntity() {
     return Result::assignEntity;
+}
+
+Entity Result::getAssignEntRef() {
+  return Result::assignEntRef;
+}
+
+std::set<std::pair<ProgramElement, ProgramElement>> Result::getEntRefElements() {
+    return Result::entRefElements;
 }
 
 bool Result::allSuchThatAndPatternEntitiesNull() {

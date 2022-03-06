@@ -213,6 +213,7 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         std::string st10 = "constant c; variable v; Select c such that Uses(2, v)";
         std::string st11 = "constant c; Select c such that Modifies(a, \"1x1\")";
         std::string st12 = "assign a; Select a such that Modifies(a, _)";
+        std::string st13 = "stmt s; Select s such that Modifies(s, \"z\")";
 
         std::set<ProgramElement> expectedResult3;
         expectedResult3.insert(a1);
@@ -223,6 +224,12 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         std::set<ProgramElement> expectedResult9;
         expectedResult9.insert(vx);
         expectedResult9.insert(vz);
+        std::set<ProgramElement> expectedResult13;
+        expectedResult13.insert(s4);
+        expectedResult13.insert(s5);
+        expectedResult13.insert(s6);
+        expectedResult13.insert(s8);
+        expectedResult13.insert(s10);
 
         std::set<ProgramElement> empty = {};
         std::set<ProgramElement> result1 = rp.processResults(qh.processClause(qp.parsePQL(st1)));
@@ -237,6 +244,7 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         std::set<ProgramElement> result10 = rp.processResults(qh.processClause(qp.parsePQL(st10)));
         std::set<ProgramElement> result11 = rp.processResults(qh.processClause(qp.parsePQL(st11)));
         std::set<ProgramElement> result12 = rp.processResults(qh.processClause(qp.parsePQL(st12)));
+        std::set<ProgramElement> result13 = rp.processResults(qh.processClause(qp.parsePQL(st13)));
 
         REQUIRE(result1 == assignments);
         REQUIRE(result2 == empty);
@@ -250,7 +258,7 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         REQUIRE(result10 == constants);
         REQUIRE(result11 == empty);
         REQUIRE(result12 == assignments);
-
+        REQUIRE(result13 == expectedResult13);
     }
 
     SECTION("PATTERN CLAUSE") {
@@ -263,6 +271,9 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         std::string p7 = "assign a; assign a1; Select a1 pattern a(\"b\", _)";
         std::string p8 = "assign a; assign a1; Select a1 pattern a(_, _\"b\")";
         std::string p9 = "assign a; Select a pattern a(\"b\", _)";
+        std::string p10 = "assign a; while w; Select w pattern a(_, _\"5\"_)";
+        std::string p11 = "assign a; variable v; Select v pattern a (v, _)";
+        std::string p12 = "assign a; variable v; Select a pattern a (v, _)";
 
         std::set<ProgramElement> empty = {};
         std::set<ProgramElement> expectedResult1;
@@ -285,6 +296,9 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         std::set<ProgramElement> result7 = rp.processResults(qh.processClause(qp.parsePQL(p7)));
         std::set<ProgramElement> result8 = rp.processResults(qh.processClause(qp.parsePQL(p8)));
         std::set<ProgramElement> result9 = rp.processResults(qh.processClause(qp.parsePQL(p9)));
+        std::set<ProgramElement> result10 = rp.processResults(qh.processClause(qp.parsePQL(p10)));
+        std::set<ProgramElement> result11 = rp.processResults(qh.processClause(qp.parsePQL(p11)));
+        std::set<ProgramElement> result12 = rp.processResults(qh.processClause(qp.parsePQL(p12)));
 
         REQUIRE(result1 == expectedResult1);
         REQUIRE(result2 == expectedResult2);
@@ -295,6 +309,9 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         REQUIRE(result7 == empty);
         REQUIRE(result8 == empty);
         REQUIRE(result9 == empty);
+        REQUIRE(result10 == whiles);
+        REQUIRE(result11 == variables);
+        REQUIRE(result12 == assignments);
     }
 
     SECTION("COMBINATION CLAUSES") {
@@ -303,6 +320,9 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         std::string com3 = "assign a; assign a1; Select a1 such that Follows (a1, a) pattern a (_, _\"5\"_)";
         std::string com4 = "if ifs; stmt s; assign a; assign a1; Select a such that Follows (a1, s) pattern a1 (_, _\"100\"_)";
         std::string com5 = "constant c; variable v; assign a; assign a1; Select c such that Modifies (a, v) pattern a1 (_, _\"15\"_)";
+        std::string com6 = "assign a, a1; variable v; Select a such that Uses (a1, v) pattern a (v, _)";
+        std::string com7 = "assign a, a1; variable v, v1; Select v such that Uses (a, v) pattern a1 (v, _)";
+        std::string com8 = "assign a, a1; variable v, v1; Select v1 such that Modifies (a, v) pattern a1 (v1, _)";
 
         std::set<ProgramElement> empty = {};
         std::set<ProgramElement> expectedResult1;
@@ -314,21 +334,29 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         std::set<ProgramElement> expectedResult3;
         expectedResult3.insert(a2);
         expectedResult3.insert(a7);
-
-
-
+        std::set<ProgramElement> expectedResult6;
+        expectedResult6.insert(a1);
+        expectedResult6.insert(a3);
+        expectedResult6.insert(a7);
+        std::set<ProgramElement> expectedResult7;
+        expectedResult7.insert(vx);
 
         std::set<ProgramElement> result1 = rp.processResults(qh.processClause(qp.parsePQL(com1)));
         std::set<ProgramElement> result2 = rp.processResults(qh.processClause(qp.parsePQL(com2)));
         std::set<ProgramElement> result3 = rp.processResults(qh.processClause(qp.parsePQL(com3)));
         std::set<ProgramElement> result4 = rp.processResults(qh.processClause(qp.parsePQL(com4)));
         std::set<ProgramElement> result5 = rp.processResults(qh.processClause(qp.parsePQL(com5)));
+        std::set<ProgramElement> result6 = rp.processResults(qh.processClause(qp.parsePQL(com6)));
+        std::set<ProgramElement> result7 = rp.processResults(qh.processClause(qp.parsePQL(com7)));
+        std::set<ProgramElement> result8 = rp.processResults(qh.processClause(qp.parsePQL(com8)));
 
         REQUIRE(result1 == expectedResult1);
         REQUIRE(result2 == expectedResult2);
         REQUIRE(result3 == expectedResult3);
         REQUIRE(result4 == assignments);
         REQUIRE(result5 == empty);
-
+        REQUIRE(result6 == expectedResult6);
+        REQUIRE(result7 == expectedResult7);
+        REQUIRE(result8 == variables);
     }
 }

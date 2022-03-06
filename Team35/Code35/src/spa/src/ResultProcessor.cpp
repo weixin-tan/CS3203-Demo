@@ -16,11 +16,30 @@ std::set<ProgramElement> ResultProcessor::processResults(std::vector<Result> res
     }
 
     // Handle pattern clause
-    if (onlyResult.getAssignEntity().eType != EntityType::Null) {
+    if (onlyResult.getAssignEntRef().eType == EntityType::Null && onlyResult.getAssignEntity().eType != EntityType::Null) {
       if (onlyResult.getAssignEntity() == onlyResult.getResultEntity()) {
         return onlyResult.getPatternElements();
       } else {
         if (onlyResult.getPatternElements().empty()) {
+          return emptyResultElements;
+        } else {
+          return onlyResult.getNoClauseElements();
+        }
+      }
+    }
+    if (onlyResult.getAssignEntRef().eType != EntityType::Null && onlyResult.getAssignEntity().eType != EntityType::Null){
+      std::set<ProgramElement> assigns;
+      std::set<ProgramElement> vars;
+      for (const auto &r : onlyResult.getEntRefElements()) {
+        assigns.insert(r.first);
+        vars.insert(r.second);
+      }
+      if (onlyResult.getAssignEntity() == onlyResult.getResultEntity()) {
+        return assigns;
+      } else if (onlyResult.getResultEntity() == onlyResult.getAssignEntRef()) {
+        return vars;
+      } else {
+        if (onlyResult.getEntRefElements().empty()) {
           return emptyResultElements;
         } else {
           return onlyResult.getNoClauseElements();
@@ -65,99 +84,105 @@ std::set<ProgramElement> ResultProcessor::processResults(std::vector<Result> res
 
     Entity resultEntity = suchThatResult.getResultEntity(); // Both results have the same result entity.
 
-    // Takes care of cases where left and right such that are the same as result element
-    if (suchThatResult.getSuchThatElements().empty() || patternResult.getPatternElements().empty()) {
+    if (suchThatResult.getSuchThatElements().empty() || (patternResult.getPatternElements().empty() && patternResult.getEntRefElements().empty())) {
       return emptyResultElements;
     }
 
-    std::set<std::pair<ProgramElement, ProgramElement>> resultPairs = suchThatResult.getSuchThatElements();
-    std::set<ProgramElement> patternElements = patternResult.getPatternElements();
-    std::set<ProgramElement> extractLeftEntity;
-    std::set<ProgramElement> extractRightEntity;
-    std::set<ProgramElement> finalResult;
+    std::set<std::pair<ProgramElement, ProgramElement>> suchThatPairs = suchThatResult.getSuchThatElements();
+    std::set<std::pair<ProgramElement, ProgramElement>> patternEntRefPairs = patternResult.getEntRefElements();
+    std::set<ProgramElement> patternPairs = patternResult.getPatternElements();
+    std::set<std::pair<ProgramElement, ProgramElement>> resultWithCommonEntities;
+    std::set<ProgramElement> resultForProcessor;
+    bool common = false;
 
-    for (const auto& r : resultPairs) {
-      extractLeftEntity.insert(r.first);
-      extractRightEntity.insert(r.second);
+    if (suchThatResult.getLeftSuchThatEntity() == patternResult.getAssignEntity() && patternResult.getAssignEntRef().eType == EntityType::Null) {
+      common = true;
+      for (const auto& r : suchThatPairs) {
+        for (const auto& a : patternPairs) {
+          if (r.first == a) {
+            resultWithCommonEntities.insert(r);
+          }
+        }
+      }
+    }
+    if (suchThatResult.getRightSuchThatEntity() == patternResult.getAssignEntity() && patternResult.getAssignEntRef().eType == EntityType::Null) {
+      common = true;
+      for (const auto& r : suchThatPairs) {
+        for (const auto& a : patternPairs) {
+          if (r.second == a) {
+            resultWithCommonEntities.insert(r);
+          }
+        }
+      }
+    }
+    if (suchThatResult.getLeftSuchThatEntity() == patternResult.getAssignEntity() && suchThatResult.getRightSuchThatEntity() == patternResult.getAssignEntRef()) {
+      common = true;
+      for (const auto& r : suchThatPairs) {
+        for (const auto& a : patternEntRefPairs) {
+          if (r.first == a.first && r.second == a.second) {
+            resultWithCommonEntities.insert(r);
+          }
+        }
+      }
     }
 
-    if (resultEntity == patternResult.getAssignEntity() && resultEntity == suchThatResult.getLeftSuchThatEntity()) {
-      //Return all left such that entity
-      for (const auto& e : extractLeftEntity) {
-        if (patternElements.count(e)) {
-          finalResult.insert(e);
+    if (common) {
+      if (resultWithCommonEntities.empty()) {
+        return emptyResultElements;
+      }
+      if (resultEntity == suchThatResult.getLeftSuchThatEntity()) {
+        for (const auto& r :resultWithCommonEntities) {
+          resultForProcessor.insert(r.first);
         }
       }
-      return finalResult;
-
-    } else if (resultEntity == patternResult.getAssignEntity() && resultEntity == suchThatResult.getRightSuchThatEntity()){
-      //Return all right such that entity
-      for (const auto& e : extractRightEntity) {
-        if (patternElements.count(e)) {
-          finalResult.insert(e);
+      if (resultEntity == suchThatResult.getRightSuchThatEntity()) {
+        for (const auto& r :resultWithCommonEntities) {
+          resultForProcessor.insert(r.second);
         }
       }
-      return finalResult;
-
-    } else if (resultEntity == patternResult.getAssignEntity()) { // Not equal to left and right such that entities
-      //Return all pattern entities
-      return patternElements;
-
-    } else if (resultEntity != patternResult.getAssignEntity() && resultEntity == suchThatResult.getLeftSuchThatEntity()) {
-
-      if (patternResult.getAssignEntity() == suchThatResult.getRightSuchThatEntity()) {
-        for (const auto& e : resultPairs) {
-          if (patternElements.count(e.second)) {
-            finalResult.insert(e.first);
-          }
-        }
-        return finalResult;
+      if (resultForProcessor.empty()) {
+        return suchThatResult.getNoClauseElements();
       } else {
-        return extractLeftEntity;
+        return resultForProcessor;
       }
-
-    } else if (resultEntity != patternResult.getAssignEntity() && resultEntity == suchThatResult.getRightSuchThatEntity()) {
-
-      if (patternResult.getAssignEntity() == suchThatResult.getLeftSuchThatEntity()) {
-        for (const auto& e : resultPairs) {
-          if (patternElements.count(e.first)) {
-            finalResult.insert(e.second);
+    } else {
+      if (suchThatResult.getRightSuchThatEntity() == patternResult.getAssignEntRef()) {
+        std::set<std::tuple<ProgramElement, ProgramElement, ProgramElement>> commonResult;
+        for (const auto& r : suchThatPairs) {
+          for (const auto& a : patternEntRefPairs) {
+            if (r.second == a.second) {
+              std::tuple<ProgramElement, ProgramElement, ProgramElement> commons (r.first, r.second, a.first);
+              commonResult.insert(commons);
+            }
           }
         }
-        return finalResult;
-      } else {
-        return extractRightEntity;
-      }
-
-    } else { // All three don't match result entity
-
-      if (patternResult.getAssignEntity() == suchThatResult.getLeftSuchThatEntity()) {
-        for (const auto& e : resultPairs) {
-          if (patternElements.count(e.first)) {
-            finalResult.insert(e.second);
-          }
-        }
-        if (!finalResult.empty()) {
-          return suchThatResult.getNoClauseElements();
-        } else {
+        if (commonResult.empty()) {
           return emptyResultElements;
         }
-      } else if (patternResult.getAssignEntity() == suchThatResult.getRightSuchThatEntity()) {
-        for (const auto& e : resultPairs) {
-          if (patternElements.count(e.second)) {
-            finalResult.insert(e.first);
+        if (resultEntity == suchThatResult.getLeftSuchThatEntity()) {
+          for (const auto& r :commonResult) {
+            resultForProcessor.insert(std::get<0>(r));
           }
         }
-        if (!finalResult.empty()) {
+        if (resultEntity == suchThatResult.getRightSuchThatEntity()) {
+          for (const auto& r :commonResult) {
+            resultForProcessor.insert(std::get<1>(r));
+          }
+        }
+        if (resultEntity == patternResult.getAssignEntity()) {
+          for (const auto& r :commonResult) {
+            resultForProcessor.insert(std::get<2>(r));
+          }
+        }
+        if (resultForProcessor.empty()) {
           return suchThatResult.getNoClauseElements();
         } else {
-          return emptyResultElements;
+          return resultForProcessor;
         }
       } else {
         return suchThatResult.getNoClauseElements();
       }
     }
-
   } else {
       return emptyResultElements;
   }
