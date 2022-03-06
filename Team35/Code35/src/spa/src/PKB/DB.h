@@ -30,6 +30,10 @@ public:
     std::map<int, int> stmtFollowing;
     std::map<std::string, std::set<int>> constantToStmtTable;
     std::map<int, std::set<std::string>> usesStmtToConstantTable;
+    std::map<int, std::set<int>> parentTable;
+    std::map<int, std::set<int>> parentTTable;
+    std::map<int, std::set<int>> followsTable;
+    std::map<int, std::set<int>> followsTTable;
     std::map<std::string, std::set<std::string>> callsTable;
     std::map<std::string, std::set<std::string>> callsTTable;
 

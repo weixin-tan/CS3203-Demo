@@ -23,12 +23,7 @@ private:
     std::set<int> getUsesStmtNosGivenVariable(const std::string& var) const;
     std::set<int> getUsesStmtNosGivenConstant(const std::string& c) const;
     int getParentStmtNo(int childStmtNo) const;
-    int getFollowingStmtNo(int stmtNo) const;
-    int getPrecedingStmtNo(int stmtNo) const;
     ElementType getStmtType(int stmtNo) const;
-    std::set<std::string> getUsedConstants(int stmtNo) const;
-    std::set<std::string> getCalls(const std::string& proc) const;
-    std::set<std::string> getCallsT(const std::string& proc) const;
 
 public:
     explicit PkbGetter(DB* db);
