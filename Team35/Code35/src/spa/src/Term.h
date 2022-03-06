@@ -1,3 +1,4 @@
+#include <memory>
 #include "Factor.h"
 #include "TokenType.h"
 
@@ -7,15 +8,22 @@
 class Term {
 private:
 	TokenType tokenType;
-	Term* term;
+	std::shared_ptr<Term> term;
 	Factor factor;
+	bool termFlag; 
+	bool factorFlag; 
 public:
 	Term();
 	TokenType getOperator() const;
-	Term getTerm() const;
+	std::shared_ptr<Term> getTerm() const;
+	Term* getTermPtr() const; 
+	Factor* getFactorPtr();
 	Factor getFactor() const;
+	bool hasTerm() const;
+	bool hasFactor() const; 
+	
 	void setOperator(TokenType tokenType);
-	void setTerm(Term term);
+	void setTerm(std::shared_ptr<Term> term);
 	void setFactor(Factor factor);
 };
 

@@ -30,6 +30,6 @@ public:
 	Statement parsePrint(std::queue<Token>& tokensQueue);
 	Statement parseCall(std::queue<Token>& tokensQueue);
 
-	std::vector<std::vector<std::string>> parseExprString(std::queue<Token>& tokensQueue);
+	std::vector<std::vector<std::string>> parseExprString(std::queue<Token> tokensQueue);
 	std::vector<std::vector<std::string>> parseCondExprString(std::queue<Token>& tokensQueue);
 };
