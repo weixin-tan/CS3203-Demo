@@ -15,8 +15,6 @@ private:
     std::set<int> getChildStmtNos(int parentStmtNo) const;
     std::set<std::string> getModifiedVars(int parentStmtNo) const;
     std::set<int> getModifiesStmtNosGivenVariable(const std::string& var) const;
-    std::set<std::string> getModifiesProcs(const std::string& var) const;
-    std::set<std::string> getVariableGivenModifyProc(const std::string& proc) const;
     std::set<std::string> getUsesProcs(const std::string& var) const;
     std::set<std::string> getVariableGivenUsesProc(const std::string& proc) const;
     std::set<std::string> getUsedVars(int parentStmtNo) const;

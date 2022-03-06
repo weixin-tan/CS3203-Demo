@@ -64,13 +64,6 @@ void PkbSetter::handleParent(const ParsedStatement& parsedStatement) {
     }
 }
 
-void PkbSetter::handleFollows(const ParsedStatement& parsedStatement) {
-    if (parsedStatement.stmt_no != ParsedStatement::default_null_stmt_no) {
-        db->stmtPreceding[parsedStatement.stmt_no] = parsedStatement.preceding;
-        db->stmtFollowing[parsedStatement.preceding] = parsedStatement.stmt_no;
-    }
-}
-
 void PkbSetter::insertStmt(const ParsedStatement& parsedStatement) {
     db->stmtTable[parsedStatement.stmt_no] = parsedStatement;
     // handle entity
@@ -80,7 +73,6 @@ void PkbSetter::insertStmt(const ParsedStatement& parsedStatement) {
     handleStatementType(parsedStatement);
 
     // handle relationships
-    handleFollows(parsedStatement);
     handleParent(parsedStatement);
     handleUses(parsedStatement);
     handleModifies(parsedStatement);
@@ -95,13 +87,16 @@ void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& pro
     // extract design abstractions
     designExtractor.extractCalls(db->callsTable);
     designExtractor.extractCallsT(db->callsTTable);
-    designExtractor.extractFollows(db->followsTable);
-    designExtractor.extractFollowsT(db->followsTTable);
-    designExtractor.extractParent(db->parentTable);
-    designExtractor.extractParentT(db->parentTTable);
 
     // validate design abstractions
     pkbValidator.validateNoCyclicCall();
     pkbValidator.validateCallsExists();
     PkbValidator::validateNoDuplicateProcedure(procedures);
+
+    // extract design abstractions (these assume that
+    designExtractor.extractFollows(db->followsTable);
+    designExtractor.extractFollowsT(db->followsTTable);
+    designExtractor.extractParent(db->parentTable);
+    designExtractor.extractParentT(db->parentTTable);
+    designExtractor.extractModifiesP(db->modifiesPTable);
 }

@@ -92,3 +92,17 @@ void DesignExtractor::extractCallsT(std::map<std::string, std::set<std::string>>
     for (const auto&[originProc, _] : db->callsTable)
         dfsCallsT(originProc, callsTTable[originProc]);
 }
+
+void DesignExtractor::extractModifiesP(std::map<std::string, std::set<std::string>>& modifiesPTable) {
+    // insert local
+    for (const auto&[_, parsedStatement] : db->stmtTable)
+        modifiesPTable[parsedStatement.procedure_name].insert(parsedStatement.var_modified.begin(), parsedStatement.var_modified.end());
+
+    for (const auto&[callingProc, calledTProcs] : db->callsTTable) {
+        for (const auto& calledTProc : calledTProcs) {
+            auto modifiedVars = modifiesPTable.find(calledTProc);
+            if (modifiedVars == modifiesPTable.end()) continue;
+            modifiesPTable[callingProc].insert(modifiedVars->second.begin(), modifiedVars->second.end());
+        }
+    }
+}

@@ -24,7 +24,6 @@ private:
     void handleStatementType(const ParsedStatement& parsedStatement);
     void handleConstants(const ParsedStatement &statement);
 
-    void handleFollows(const ParsedStatement& parsedStatement);
     void handleParent(const ParsedStatement& parsedStatement);
     void handleUses(const ParsedStatement& parsedStatement);
     void handleModifies(const ParsedStatement& parsedStatement);

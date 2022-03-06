@@ -25,9 +25,6 @@ public:
     std::map<int, ElementType> stmtTypeTable;
     std::map<int, std::set<int>> parentToChildTable;
     std::map<int, int> childToParentTable;
-    std::map<int, std::string> stmtToProcedureCalled;
-    std::map<int, int> stmtPreceding;
-    std::map<int, int> stmtFollowing;
     std::map<std::string, std::set<int>> constantToStmtTable;
     std::map<int, std::set<std::string>> usesStmtToConstantTable;
     std::map<int, std::set<int>> parentTable;
@@ -36,6 +33,7 @@ public:
     std::map<int, std::set<int>> followsTTable;
     std::map<std::string, std::set<std::string>> callsTable;
     std::map<std::string, std::set<std::string>> callsTTable;
+    std::map<std::string, std::set<std::string>> modifiesPTable;
 
     // entity tables
     std::set<std::string> variables;
