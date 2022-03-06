@@ -6,6 +6,7 @@
 #include <memory>
 #include "StatementType.h"
 #include "StmtLst.h"
+#include "Expr.h"
 
 class StmtLst;
 
@@ -28,9 +29,11 @@ public:
 	
 	// For assignment statements
 	std::vector<std::string> expr;
+	Expr expression;
 
 	// for while, if statements
 	std::vector<std::string> cond_expr;
+	Expr cond_expression;
 
 	// for call statements
 	std::string proc_name;
