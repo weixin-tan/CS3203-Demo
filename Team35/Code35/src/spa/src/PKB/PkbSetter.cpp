@@ -93,7 +93,7 @@ void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& pro
     pkbValidator.validateCallsExists();
     PkbValidator::validateNoDuplicateProcedure(procedures);
 
-    // extract design abstractions (these assume that
+    // extract design abstractions (these assume that data is clean)
     designExtractor.extractFollows(db->followsTable);
     designExtractor.extractFollowsT(db->followsTTable);
     designExtractor.extractParent(db->parentTable);
