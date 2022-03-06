@@ -37,6 +37,23 @@ void DesignExtractor::dfsFollowsT(const int& originStmt, std::set<int>& visited)
     }
 }
 
+void DesignExtractor::dfsParentT(const int& originStmt, std::set<int>& visited) {
+    std::queue<int> q;
+    q.push(originStmt);
+    while (!q.empty()) {
+        int stmtNo = q.front();
+        q.pop();
+        auto children = db->parentTable.find(stmtNo);
+        if (children == db->parentTable.end()) continue;
+        for (const auto& childStmtNo : children->second) {
+            if (visited.find(childStmtNo) == visited.end()) {
+                visited.insert(childStmtNo);
+                q.push(childStmtNo);
+            }
+        }
+    }
+}
+
 void DesignExtractor::extractFollows(std::map<int, std::set<int>>& followsTable) {
     for (const auto&[stmtNo, parsedStatement] : db->stmtTable) {
         if (parsedStatement.preceding != ParsedStatement::default_null_stmt_no)
@@ -47,6 +64,21 @@ void DesignExtractor::extractFollows(std::map<int, std::set<int>>& followsTable)
 void DesignExtractor::extractFollowsT(std::map<int, std::set<int>>& followsTTable) {
     for (const auto&[originStmt, _] : db->followsTable)
         dfsFollowsT(originStmt, followsTTable[originStmt]);
+}
+
+void DesignExtractor::extractParent(std::map<int, std::set<int>>& parentTable) {
+    for (const auto&[stmtNo, parsedStatement] : db->stmtTable) {
+        int parentStmtNo = ((parsedStatement.if_stmt_no != ParsedStatement::default_null_stmt_no)
+                ? parsedStatement.if_stmt_no
+                : parsedStatement.while_stmt_no);
+        if (parentStmtNo != ParsedStatement::default_null_stmt_no)
+            parentTable[parentStmtNo].insert(parsedStatement.stmt_no);
+    }
+}
+
+void DesignExtractor::extractParentT(std::map<int, std::set<int>>& parentTTable) {
+    for (const auto&[originStmt, _] : db->parentTable)
+        dfsParentT(originStmt, parentTTable[originStmt]);
 }
 
 void DesignExtractor::extractCalls(std::map<std::string, std::set<std::string>>& callsTable) {

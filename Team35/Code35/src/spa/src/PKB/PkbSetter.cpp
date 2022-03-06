@@ -97,6 +97,8 @@ void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& pro
     designExtractor.extractCallsT(db->callsTTable);
     designExtractor.extractFollows(db->followsTable);
     designExtractor.extractFollowsT(db->followsTTable);
+    designExtractor.extractParent(db->parentTable);
+    designExtractor.extractParentT(db->parentTTable);
 
     // validate design abstractions
     pkbValidator.validateNoCyclicCall();
