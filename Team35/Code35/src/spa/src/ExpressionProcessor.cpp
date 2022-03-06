@@ -1,4 +1,5 @@
 #include "ExpressionProcessor.h"
+#include <iostream>
 
 Expr ExpressionProcessor::stringToExpr(std::string query) {
 	return Expr(); 
@@ -9,7 +10,24 @@ bool ExpressionProcessor::fullfillsMatching(Expr exp1, Expr exp2, ExpressionIndi
 		return areIdenticalExpr(&exp1, &exp2);
 	}
 	else {
-		return isSubtree(&exp1, &exp2);
+		//There may be a case where the expression is a SHELL. (meaning it contains a term only)
+		//need to strip the terms out of the empty expressions out
+		if (exp1.hasOperator() && exp2.hasOperator()) {
+			return isSubtree(&exp1, &exp2);
+		}
+		if (!exp1.hasOperator() && exp2.hasOperator()) {
+			Term* term1 = exp1.getTermPtr();
+			return isSubtree(term1, &exp2);
+		}
+		if (!exp2.hasOperator() && exp1.hasOperator()) {
+			Term* term2 = exp2.getTermPtr(); 
+			return isSubtree(&exp1, term2);
+		}
+		else {
+			Term* term1 = exp1.getTermPtr();
+			Term* term2 = exp2.getTermPtr();
+			return isSubtree(term1, term2);
+		}
 	}
 }
 
@@ -56,33 +74,78 @@ bool ExpressionProcessor::areIdenticalFactor(Factor* root1, Factor* root2) {
 }
 
 // Checking if they are partial match or not. 
+// returns TRUE if root 1 is a subtree of root2 
 bool ExpressionProcessor::isSubtree(Expr* root1, Expr* root2) {
-	if (root2 == nullptr) {
+	bool res = false;
+	if (root1 == nullptr) {
 		return true; 
 	}
-	if (root1 == nullptr) {
+	if (root2 == nullptr) {
 		return false; 
 	}
 	if (areIdenticalExpr(root1, root2)) {
 		return true;
-	} else {
-
-		return isSubtree(root1, root2->getExprPtr()) || 
-		// We need to get the NEXT expression out. 
-		isSubtree(root1, getNestedExpr(root2).get());
 	}
+
+	// This is for the case if the expression operator of the root2 is EMPTY, 
+	// BUT contains a term. WE would then have to check if that term
+	// is a subtree of root1. 
+	return isSubtree(root1, root2->getExprPtr()) ||
+		isSubtree(root1, root2->getTermPtr());
+	
 }
 
-std::shared_ptr<Expr> ExpressionProcessor::getNestedExpr(Expr* root2)
+bool ExpressionProcessor::isSubtree(Term* term1, Term* term2) {
+	bool res = false;
+	if (term1 == nullptr) {
+		return true;
+	}
+	if (term2 == nullptr) {
+		return false;
+	}
+	if (areIdenticalTerm(term1, term2)) {
+		return true;
+	}
+
+	return isSubtree(term1, term2->getTermPtr()) || isSubtree(term1, this->getNestedExpr(term2).get());
+}
+
+
+bool ExpressionProcessor::isSubtree(Term* term1, Expr* root2) {
+	if (term1 == nullptr) {
+		std::cout << "it shouldnt activate";
+		return true;
+	}
+	if (root2 == nullptr) {
+		return false;
+	}
+	return isSubtree(term1, root2->getExprPtr()) || isSubtree(term1, root2->getTermPtr());
+}
+
+
+bool ExpressionProcessor::isSubtree(Expr* root1, Term* term2) {
+	if (term2 == nullptr) {
+		return false; 
+	}
+	bool termRes = false;
+	//Recursively checking the term inside. 
+	if (term2->hasTerm()) {
+		termRes = isSubtree(root1, term2->getTermPtr());
+	}
+
+	return termRes || isSubtree(root1, this->getNestedExpr(term2).get());
+
+}
+
+
+std::shared_ptr<Expr> ExpressionProcessor::getNestedExpr(Term* root2)
 {
-	if (&root2->getTerm() != nullptr) {
-		Term* term = root2->getTermPtr();
-		if (&term->getFactor() != nullptr) {
-			Factor* factor = term->getFactorPtr();
-			if (factor->getExpr() != nullptr) {
-				return factor->getExpr();
-			}
+	if (root2->getFactorPtr() != nullptr) {
+		Factor* factor = root2->getFactorPtr();
+		if (factor->hasExpr()) {
+			return factor->getExpr();
 		}
 	}
-	return nullptr;
+	
+	return std::shared_ptr<Expr>(nullptr);;
 }

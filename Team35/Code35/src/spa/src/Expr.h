@@ -15,6 +15,7 @@ private:
 public:
 	Expr();
 	TokenType getOperator() const;
+	bool Expr::hasOperator() const;
 	std::shared_ptr<Expr> getExpr() const;
 	Term getTerm() const;
 	Expr* getExprPtr() const;

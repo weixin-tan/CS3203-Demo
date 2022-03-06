@@ -18,7 +18,8 @@ enum class TokenType {
 	LEQ,
 	EQUAL,
 	NOT_EQUAL,
-	ASSIGN
+	ASSIGN,
+	NONE
 };
 
 #endif

@@ -14,6 +14,11 @@ void setTerm(Term);
 Expr::Expr() {
 	this->termFlag = false; 
 	this->exprFlag = false;
+	this->tokenType = TokenType::NONE;
+}
+
+bool Expr::hasOperator() const {
+	return this->tokenType != TokenType::NONE;
 }
 
 TokenType Expr::getOperator() const {
