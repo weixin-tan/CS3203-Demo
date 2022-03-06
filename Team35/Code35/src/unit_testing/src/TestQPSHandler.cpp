@@ -225,7 +225,9 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         expectedResult9.insert(vx);
         expectedResult9.insert(vz);
         std::set<ProgramElement> expectedResult13;
+        expectedResult13.insert(s4);
         expectedResult13.insert(s5);
+        expectedResult13.insert(s6);
         expectedResult13.insert(s8);
         expectedResult13.insert(s10);
 
