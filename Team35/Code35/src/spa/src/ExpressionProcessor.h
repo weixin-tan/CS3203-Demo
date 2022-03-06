@@ -14,7 +14,7 @@ class ExpressionProcessor {
 	bool isSubtree(Term* term1, Term* term2);
 	bool isSubtree(Term* term1, Expr* root2);
 
-	std::shared_ptr<Expr> ExpressionProcessor::getNestedExpr(Term* root2);
+	std::shared_ptr<Expr> getNestedExpr(Term* root2);
 
 
 public:
