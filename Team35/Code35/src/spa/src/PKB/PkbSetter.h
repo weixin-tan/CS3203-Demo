@@ -28,7 +28,6 @@ private:
     void handleParent(const ParsedStatement& parsedStatement);
     void handleUses(const ParsedStatement& parsedStatement);
     void handleModifies(const ParsedStatement& parsedStatement);
-    void handleCalls(const ParsedStatement& parsedStatement);
 
 public:
     explicit PkbSetter(DB* db);
