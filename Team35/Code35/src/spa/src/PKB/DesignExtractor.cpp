@@ -92,3 +92,73 @@ void DesignExtractor::extractCallsT(std::map<std::string, std::set<std::string>>
     for (const auto&[originProc, _] : db->callsTable)
         dfsCallsT(originProc, callsTTable[originProc]);
 }
+
+void DesignExtractor::extractModifiesP(std::map<std::string, std::set<std::string>>& modifiesPTable) {
+    // insert local
+    for (const auto&[_, parsedStatement] : db->stmtTable)
+        modifiesPTable[parsedStatement.procedure_name].insert(parsedStatement.var_modified.begin(), parsedStatement.var_modified.end());
+
+    for (const auto&[callingProc, calledTProcs] : db->callsTTable) {
+        for (const auto& calledTProc : calledTProcs) {
+            auto modifiedVars = modifiesPTable.find(calledTProc);
+            if (modifiedVars == modifiesPTable.end()) continue;
+            modifiesPTable[callingProc].insert(modifiedVars->second.begin(), modifiedVars->second.end());
+        }
+    }
+}
+
+void DesignExtractor::extractModifiesS(std::map<int, std::set<std::string>>& modifiesSTable) {
+    // insert local
+    for (const auto&[_, parsedStatement] : db->stmtTable) {
+        modifiesSTable[parsedStatement.stmt_no].insert(parsedStatement.var_modified.begin(),
+                                                       parsedStatement.var_modified.end());
+        if (parsedStatement.statement_type == StatementType::kcall_stmt) {
+            auto modifiedVars = db->modifiesPTable.find(parsedStatement.procedure_called);
+            if (modifiedVars == db->modifiesPTable.end()) continue;
+            modifiesSTable[parsedStatement.stmt_no].insert(modifiedVars->second.begin(), modifiedVars->second.end());
+        }
+    }
+
+    for (const auto&[parentStmt, parentTStmts] : db->parentTTable) {
+        for (const auto& parentTStmt : parentTStmts) {
+            auto modifiedVars = modifiesSTable.find(parentTStmt);
+            if (modifiedVars == modifiesSTable.end()) continue;
+            modifiesSTable[parentStmt].insert(modifiedVars->second.begin(), modifiedVars->second.end());
+        }
+    }
+}
+
+void DesignExtractor::extractUsesP(std::map<std::string, std::set<std::string>>& usesPTable) {
+    // insert local
+    for (const auto&[_, parsedStatement] : db->stmtTable)
+        usesPTable[parsedStatement.procedure_name].insert(parsedStatement.var_used.begin(), parsedStatement.var_used.end());
+
+    for (const auto&[callingProc, calledTProcs] : db->callsTTable) {
+        for (const auto& calledTProc : calledTProcs) {
+            auto usedVars = usesPTable.find(calledTProc);
+            if (usedVars == usesPTable.end()) continue;
+            usesPTable[callingProc].insert(usedVars->second.begin(), usedVars->second.end());
+        }
+    }
+}
+
+void DesignExtractor::extractUsesS(std::map<int, std::set<std::string>>& usesSTable) {
+    // insert local
+    for (const auto&[_, parsedStatement] : db->stmtTable) {
+        usesSTable[parsedStatement.stmt_no].insert(parsedStatement.var_used.begin(),
+                                                       parsedStatement.var_used.end());
+        if (parsedStatement.statement_type == StatementType::kcall_stmt) {
+            auto usedVars = db->usesPTable.find(parsedStatement.procedure_called);
+            if (usedVars == db->usesPTable.end()) continue;
+            usesSTable[parsedStatement.stmt_no].insert(usedVars->second.begin(), usedVars->second.end());
+        }
+    }
+
+    for (const auto&[parentStmt, parentTStmts] : db->parentTTable) {
+        for (const auto& parentTStmt : parentTStmts) {
+            auto usedVars = usesSTable.find(parentTStmt);
+            if (usedVars == usesSTable.end()) continue;
+            usesSTable[parentStmt].insert(usedVars->second.begin(), usedVars->second.end());
+        }
+    }
+}
