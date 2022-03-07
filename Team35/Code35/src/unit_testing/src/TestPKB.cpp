@@ -1162,6 +1162,214 @@ TEST_CASE("PKB ModifiesP") {
     }
 }
 
+TEST_CASE("PKB ModifiesS") {
+    PKB pkb;
+    PkbSetter* pkbSetter = pkb.getSetter();
+    PkbGetter* pkbGetter = pkb.getGetter();
+    std::vector<std::vector<ParsedStatement>> procedures;
+    std::set<ProgramElement> resultElementSet, expectedElementSet;
+//    procedure proc1 {
+//        while (proc1Var1 == 5) {
+//            read proc1Var2;
+//            call proc2;
+//        }
+//    }
+//
+//    procedure proc2 {
+//        proc2Var = 100;
+//        call proc3;
+//    }
+//
+//    procedure proc3 {
+//        read proc3Var;
+//    }
+
+    procedures = {
+            {
+                    ParsedStatement(
+                            1,
+                            ParsedStatement::default_null_stmt_no,
+                            ParsedStatement::default_null_stmt_no,
+                            StatementType::kwhile_stmt,
+                            "",
+                            "proc1",
+                            {"proc1Var1"},
+                            {},
+                            {"5"},
+                            ParsedStatement::default_procedure_name,
+                            ParsedStatement::default_null_stmt_no
+                    ),
+                    ParsedStatement(
+                            2,
+                            ParsedStatement::default_null_stmt_no,
+                            1,
+                            StatementType::kread_stmt,
+                            "",
+                            "proc1",
+                            {},
+                            {"proc1Var2"},
+                            {},
+                            ParsedStatement::default_procedure_name,
+                            ParsedStatement::default_null_stmt_no
+                    ),
+                    ParsedStatement(
+                            3,
+                            ParsedStatement::default_null_stmt_no,
+                            1,
+                            StatementType::kcall_stmt,
+                            "",
+                            "proc1",
+                            {},
+                            {},
+                            {},
+                            "proc2",
+                            2
+                    ),
+            },
+            {
+                    ParsedStatement(
+                            4,
+                            ParsedStatement::default_null_stmt_no,
+                            ParsedStatement::default_null_stmt_no,
+                            StatementType::kassign_stmt,
+                            "",
+                            "proc2",
+                            {},
+                            {"proc2Var"},
+                            {"100"},
+                            ParsedStatement::default_procedure_name,
+                            ParsedStatement::default_null_stmt_no
+                    ),
+                    ParsedStatement(
+                            5,
+                            ParsedStatement::default_null_stmt_no,
+                            ParsedStatement::default_null_stmt_no,
+                            StatementType::kcall_stmt,
+                            "",
+                            "proc2",
+                            {},
+                            {},
+                            {},
+                            "proc3",
+                            4
+                    ),
+            },
+            {
+                    ParsedStatement(
+                            6,
+                            ParsedStatement::default_null_stmt_no,
+                            ParsedStatement::default_null_stmt_no,
+                            StatementType::kread_stmt,
+                            "",
+                            "proc3",
+                            {},
+                            {"proc3Var"},
+                            {},
+                            ParsedStatement::default_procedure_name,
+                            ParsedStatement::default_null_stmt_no
+                    ),
+            }
+    };
+    pkbSetter->insertStmts(procedures);
+    SECTION("isRelationship") {
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createVariable("proc2Var")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kRead, 6), ProgramElement::createVariable("proc3Var")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kCall, 5), ProgramElement::createVariable("proc3Var")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kStatement, 3), ProgramElement::createVariable("proc2Var")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kWhile, 1), ProgramElement::createVariable("proc3Var")));
+    }
+    SECTION("getLeftSide") {
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kModifies, ProgramElement::createVariable("proc1Var2"), ElementType::kStatement);
+        expectedElementSet = {
+                ProgramElement::createStatement(ElementType::kStatement, 1),
+                ProgramElement::createStatement(ElementType::kStatement, 2),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kModifies, ProgramElement::createVariable("proc1Var2"), ElementType::kWhile);
+        expectedElementSet = {
+                ProgramElement::createStatement(ElementType::kWhile, 1),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kModifies, ProgramElement::createVariable("proc2Var"), ElementType::kStatement);
+        expectedElementSet = {
+                ProgramElement::createStatement(ElementType::kStatement, 1),
+                ProgramElement::createStatement(ElementType::kStatement, 3),
+                ProgramElement::createStatement(ElementType::kStatement, 4),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kModifies, ProgramElement::createVariable("proc2Var"), ElementType::kCall);
+        expectedElementSet = {
+                ProgramElement::createStatement(ElementType::kCall, 3),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kModifies, ProgramElement::createVariable("proc3Var"), ElementType::kRead);
+        expectedElementSet = {
+                ProgramElement::createStatement(ElementType::kRead, 6),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kModifies, ProgramElement::createVariable("proc3Var"), ElementType::kWhile);
+        expectedElementSet = {
+                ProgramElement::createStatement(ElementType::kWhile, 1),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kModifies, ProgramElement::createVariable("proc3Var"), ElementType::kStatement);
+        expectedElementSet = {
+                ProgramElement::createStatement(ElementType::kStatement, 1),
+                ProgramElement::createStatement(ElementType::kStatement, 3),
+                ProgramElement::createStatement(ElementType::kStatement, 5),
+                ProgramElement::createStatement(ElementType::kStatement, 6),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+    }
+    SECTION("getRightSide") {
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kRead, 6), ElementType::kVariable);
+        expectedElementSet = {
+                ProgramElement::createVariable("proc3Var"),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kStatement, 5), ElementType::kVariable);
+        expectedElementSet = {
+                ProgramElement::createVariable("proc3Var"),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kStatement, 4), ElementType::kVariable);
+        expectedElementSet = {
+                ProgramElement::createVariable("proc2Var"),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kCall, 3), ElementType::kVariable);
+        expectedElementSet = {
+                ProgramElement::createVariable("proc2Var"),
+                ProgramElement::createVariable("proc3Var"),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kStatement, 1), ElementType::kVariable);
+        expectedElementSet = {
+                ProgramElement::createVariable("proc1Var2"),
+                ProgramElement::createVariable("proc2Var"),
+                ProgramElement::createVariable("proc3Var"),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kRead, 2), ElementType::kVariable);
+        expectedElementSet = {
+                ProgramElement::createVariable("proc1Var2"),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+    }
+}
+
+
 TEST_CASE("PKB Validation") {
     PKB pkb;
     PkbSetter* pkbSetter = pkb.getSetter();

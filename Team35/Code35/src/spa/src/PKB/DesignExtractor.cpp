@@ -112,8 +112,8 @@ void DesignExtractor::extractModifiesS(std::map<int, std::set<std::string>>& mod
     for (const auto&[_, parsedStatement] : db->stmtTable) {
         modifiesSTable[parsedStatement.stmt_no].insert(parsedStatement.var_modified.begin(),
                                                        parsedStatement.var_modified.end());
-        if (parsedStatement.statement_type == StatementType::kif_stmt) {
-            auto modifiedVars = db->modifiesPTable.find(parsedStatement.procedure_name);
+        if (parsedStatement.statement_type == StatementType::kcall_stmt) {
+            auto modifiedVars = db->modifiesPTable.find(parsedStatement.procedure_called);
             if (modifiedVars == db->modifiesPTable.end()) continue;
             modifiesSTable[parsedStatement.stmt_no].insert(modifiedVars->second.begin(), modifiedVars->second.end());
         }

@@ -43,18 +43,6 @@ std::set<int> PkbGetter::getChildStmtNos(int parentStmtNo) const {
     return db->parentToChildTable.at(parentStmtNo);
 }
 
-std::set<std::string> PkbGetter::getModifiedVars(int parentStmtNo) const {
-    if (db->modifyStmtToVarTable.count(parentStmtNo) == 0)
-        return {};
-    return db->modifyStmtToVarTable.at(parentStmtNo);
-}
-
-std::set<int> PkbGetter::getModifiesStmtNosGivenVariable(const std::string& var) const {
-    if (db->varToModifyStmtTable.count(var) == 0)
-        return {};
-    return db->varToModifyStmtTable.at(var);
-}
-
 std::set<std::string> PkbGetter::getUsedVars(int parentStmtNo) const {
     if (db->usesStmtToVarTable.count(parentStmtNo) == 0)
         return {};
