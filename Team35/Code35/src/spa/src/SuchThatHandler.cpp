@@ -14,7 +14,9 @@ Result SuchThatHandler::handleSuchThat(const Entity& entityToGet, const Relation
   Entity left = relRef.leftEntity;
   Entity right = relRef.rightEntity;
 
-  if (left == entityToGet && right == entityToGet) {
+  if (pkbRel == PkbRelationshipType::kCalls || pkbRel == PkbRelationshipType::kCallsT) {
+    result = handleCalls(pkbRel, left, right);
+  } else if (left == entityToGet && right == entityToGet) {
       //Iteration 1 has no cases where both sides are the same result and so empty Result is appropriate
   } else if (left == entityToGet) { //If left side is the entity being searched for
     result = handleLeftSide(entityToGet, right, pkbRel);
@@ -212,5 +214,49 @@ PkbRelationshipType SuchThatHandler::convertRel(RelationshipType r) {
     case RelationshipType::ParentT: return PkbRelationshipType::kParentT;
     case RelationshipType::Follows: return PkbRelationshipType::kFollows;
     case RelationshipType::FollowsT: return PkbRelationshipType::kFollowsT;
+    case RelationshipType::Calls: return PkbRelationshipType::kCalls;
+    case RelationshipType::CallsT: return PkbRelationshipType::kCallsT;
   }
+}
+
+Result SuchThatHandler::handleCalls(PkbRelationshipType pkbRel, const Entity &leftEntity, const Entity &rightEntity) {
+  std::set<std::pair<ProgramElement, ProgramElement>> resultElements;
+  if (leftEntity.eType == EntityType::FixedString && rightEntity.eType == EntityType::FixedString) {
+    ProgramElement left = ProgramElement::createProcedure(leftEntity.name);
+    ProgramElement right = ProgramElement::createProcedure(rightEntity.name);
+    bool check = pg->isRelationship(pkbRel, left, right);
+    if (check) {
+      std::pair<ProgramElement, ProgramElement> pair(left, right);
+      resultElements.insert(pair);
+    }
+  } else if (leftEntity.eType == EntityType::FixedString) {
+    ProgramElement left = ProgramElement::createProcedure(leftEntity.name);
+    std::set<ProgramElement> rightElements = pg->getRightSide(pkbRel, left, ElementType::kProcedure);
+    for (const auto& e: rightElements) {
+      std::pair<ProgramElement, ProgramElement> pair(left, e);
+      resultElements.insert(pair);
+    }
+  } else if (rightEntity.eType == EntityType::FixedString) {
+    ProgramElement right = ProgramElement::createProcedure(rightEntity.name);
+    std::set<ProgramElement> leftElements = pg->getLeftSide(pkbRel, right, ElementType::kProcedure);
+    for (const auto& e: leftElements) {
+      std::pair<ProgramElement, ProgramElement> pair(e, right);
+      resultElements.insert(pair);
+    }
+  } else {
+    std::set<ProgramElement> allCalls = pg->getEntity(ElementType::kProcedure);
+    for (const auto& c1 : allCalls) {
+      for (const auto& c2 : allCalls) {
+        bool isRel = pg->isRelationship(pkbRel, c1, c2);
+        if (isRel) {
+          std::pair<ProgramElement, ProgramElement> pair(c1, c2);
+          resultElements.insert(pair);
+        }
+      }
+    }
+  }
+  Result result;
+  result.setSuchThatElements(resultElements);
+  result.setNoClauseElements(pg->getEntity(ElementType::kProcedure));
+  return result;
 }
