@@ -239,20 +239,34 @@ TEST_CASE("invalid querys"){
 
 TEST_CASE("trippy queries"){
   QueryProcessor qp = QueryProcessor();
-  string s1 = "read read; while while; if if; variable variable; Select read such that Follows(while, if)";
-  string s2 = "assign Uses; variable Modifies; Select Uses pattern Uses (Modifies, _)";
-  string s3 = "variable Select; Select Select such that Uses(_, Select)";
-  string s4 = "variable such; Select such such that Uses(_, such)";
-  string s5 = "variable that; Select that such that Uses(_, that)";
-  string s6 = "assign such; Select such pattern such(\"x\", _)";
-  string s7 = "assign that; Select that pattern that(\"x\", _)";
-  string s8 = "assign pattern; Select pattern pattern pattern (_, \"x\")";
-  string s9 = "assign suchthat; Select suchthat such that Follows*(6,suchthat)";
-  string s10 = "assign\tv;\tSelect\tv\tsuch\tthat\tParent*(v, 3)";
-  string s11 = "assign a; Select a pattern a (\"\na\t\", _\"b\"_ )";
-  string s12 = "assign a; Select a pattern a (\"a\", _\n\"b\"\t_ )";
-  string s13 = "variable and; Select and such that Uses(_,and) and Modifies(1,and)";
-  string s14 = "assign and; Select and pattern and (\"x\", _) and and (\"y\", _)";
+  string s1 = "assign\tv;\tSelect\tv\tsuch\tthat\tParent*(v, 3)";
+  string s2 = "assign a; Select a pattern a (\"\na\t\", _\"b\"_ )";
+  string s3 = "assign a; Select a pattern a (\"a\", _\n\"b\"\t_ )";
+
+  string s4 = "read read; while while; if if; variable variable; Select read such that Follows(while, if)";
+  string s5 = "assign Uses; variable Modifies; Select Uses pattern Uses (Modifies, _)";
+  string s6 = "stmt procName; constant value; Select procName with procName.stmt# = value.value";
+  string s7 = "variable Select; Select Select such that Uses(_, Select)";
+  string s8 = "stmt Next; Select Next such that Next (5, Next) and Next (Next, 12)";
+
+  string s9 = "variable such; Select such such that Uses(_, such)";
+  string s10 = "variable that; Select that such that Uses(_, that)";
+  string s11 = "assign such; Select such pattern such(\"x\", _)";
+  string s12 = "assign that; Select that pattern that(\"x\", _)";
+  string s13 = "assign such, that; Select such with such.stmt# = that.stmt#";
+  string s14 = "assign such, that; Select that with such.stmt# = that.stmt#";
+  string s15 = "assign suchthat; Select suchthat such that Follows*(6,suchthat)";
+
+  string s16 = "assign pattern; Select pattern pattern pattern (_, \"x\")";
+  string s17 = "assign pattern; Select pattern pattern pattern (\"x\", _) and pattern(\"y\", _)";
+
+  string s18 = "procedure with; Select with with with.procName = \"Third\"";
+
+  string s19 = "variable and; Select and such that Uses(_,and) and Modifies(1,and)";
+  string s20 = "stmt and; Select and such that Parent(and, 1) and Parent(and, 2)";
+  string s21 = "assign and; Select and pattern and (\"x\", _) and and (\"y\", _)";
+  string s22 = "assign and; Select and pattern and (_,\"x\") and and (_, \"y\")";
+  string s23 = "procedure and; call c, c1; Select and with and.procName = c.procName and and.procName = c1.procName";
 
   SECTION("test that trippy queries are valid"){
     REQUIRE(!qp.parsePQL(s1).empty());
@@ -269,21 +283,77 @@ TEST_CASE("trippy queries"){
     REQUIRE(!qp.parsePQL(s12).empty());
     REQUIRE(!qp.parsePQL(s13).empty());
     REQUIRE(!qp.parsePQL(s14).empty());
+    REQUIRE(!qp.parsePQL(s15).empty());
+    REQUIRE(!qp.parsePQL(s16).empty());
+    REQUIRE(!qp.parsePQL(s17).empty());
+    REQUIRE(!qp.parsePQL(s18).empty());
+    REQUIRE(!qp.parsePQL(s19).empty());
+    REQUIRE(!qp.parsePQL(s20).empty());
+    REQUIRE(!qp.parsePQL(s21).empty());
+    REQUIRE(!qp.parsePQL(s22).empty());
+    REQUIRE(!qp.parsePQL(s23).empty());
   }
 }
 
 TEST_CASE("test advanced queries without with clauses"){
   QueryProcessor qp = QueryProcessor();
-  string s1 = "Select BOOLEAN such that Next* (2, 9)";
-  string s2 = "Select BOOLEAN such that Calls (_,_)";
-  string s3 = "while w;Select w pattern w (\"x\", _)";
+  string s1 = "\nSelect       BOOLEAN\t\t\t\tsuch\n\n\n\nthat     Next* (\t1\t,\t2\t)\n\n";
+  string s2 = "assign a1, a2;Select <a1, a2.stmt#, BOOLEAN> such that Affects (a1, a2)";
+  string s3 = "procedure p; call c; Select c.procName with c.procName = p.procName";
+  string s4 = "while w; if ifs; Select w pattern w (\"x\", _) and ifs (\"x\", _)";
 
-  string s4 = "assign a1, a2;Select <a1, a2> such that Affects (a1, a2)";
-  string s5 = "procedure p, q; Select <p, q> such that Calls (p, q)";
-  string s6 = "while w1, w2, w3;Select <w1, w2, w3> such that Parent* (w1, w2) and Parent* (w2, w3)";
-  string s7 = "procedure p, q; assign a;Select <p, q, a> such that Modifies (a, \"y\")";
+  Clause c1 = Clause();
+  Clause c2 = Clause();
+  Clause c3 = Clause();
+  Clause c4 = Clause();
+  Clause s1_output = qp.parsePQL(s1)[0];
+  Clause s2_output = qp.parsePQL(s2)[0];
+  Clause s3_output = qp.parsePQL(s3)[0];
+  Clause s4_output = qp.parsePQL(s4)[0];
 
-  string s8 = "procedure p;Select p such that Calls (p, \"Third\") and Modifies (p, \"i\")";
+  Entity a1 = Entity(EntityType::Assignment, "a1");
+  Entity a2 = Entity(EntityType::Assignment, "a2");
+  Entity a2stmt = Entity(EntityType::Assignment, "a2", EntityAttributeType::Stmt);
+  Entity ifEntity = Entity(EntityType::If, "ifs");
+  Entity whileEntity = Entity(EntityType::While, "w");
+  Entity wildcard = Entity(EntityType::Wildcard, "_");
+
+  Entity boolean = Entity(EntityType::Boolean, "BOOLEAN");
+  Entity int1 = Entity(EntityType::FixedInteger, "1");
+  Entity int2 = Entity(EntityType::FixedInteger, "2");
+  Entity x = Entity(EntityType::FixedString, "x");
+
+  Entity cProcname = Entity(EntityType::Call, "c", EntityAttributeType::ProcName);
+  Entity pProcname = Entity(EntityType::Procedure, "p", EntityAttributeType::ProcName);
+
+
+  RelationshipRef r1 = RelationshipRef(RelationshipType::NextT, int1, int2);
+  RelationshipRef r2 = RelationshipRef(RelationshipType::Affects, a1, a2);
+  RelationshipRef r3 = RelationshipRef(RelationshipType::With, cProcname, pProcname);
+  RelationshipRef r4a = RelationshipRef(RelationshipType::Pattern, x, wildcard, whileEntity);
+  RelationshipRef r4b = RelationshipRef(RelationshipType::Pattern, x, wildcard, ifEntity);
+
+  SECTION("no mixed clauses query"){
+    c1.appendEntityToFind(boolean);
+    c1.appendRef(r1);
+    REQUIRE(s1_output.equals(c1));
+
+    c2.appendEntityToFind(a1);
+    c2.appendEntityToFind(a2stmt);
+    c2.appendEntityToFind(boolean);
+    c2.appendRef(r2);
+    REQUIRE(s2_output.equals(c2));
+
+    c3.appendEntityToFind(cProcname);
+    c3.appendRef(r3);
+    REQUIRE(s3_output.equals(c3));
+
+    c4.appendEntityToFind(whileEntity);
+    c4.appendRef(r4a);
+    c4.appendRef(r4b);
+    REQUIRE(s4_output.equals(c4));
+  }
+
   string s9 = "assign a; while w;Select a such that Modifies (a, \"x\") and Parent* (w, a) and Next* (1, a)";
   string s10 = "stmt s;Select s such that Next* (5, s) and Next* (s, 12) such that Follows(1,2)";
 
@@ -298,7 +368,8 @@ TEST_CASE("test advanced queries without with clauses"){
 
 TEST_CASE("debugging"){
   QueryProcessor qp = QueryProcessor();
-  qp.parsePQL("while w1, w2, w3; Select <w1.stmt#, w2.stmt#, w3.stmt#> such that Parent* (w1, w2) and Parent* (w2, w3)");
+  Clause c = qp.parsePQL(  "stmt Next; Select Next such that Next (5, Next) and Next (Next, 12)")[0];
+  //cout << c.toString() << "\n";
 }
 /*
 METHODS TO TEST
