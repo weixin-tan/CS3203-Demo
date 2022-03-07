@@ -34,6 +34,7 @@ public:
     std::map<std::string, std::set<std::string>> callsTable;
     std::map<std::string, std::set<std::string>> callsTTable;
     std::map<std::string, std::set<std::string>> modifiesPTable;
+    std::map<int, std::set<std::string>> modifiesSTable;
 
     // entity tables
     std::set<std::string> variables;

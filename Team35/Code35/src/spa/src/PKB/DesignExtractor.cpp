@@ -106,3 +106,24 @@ void DesignExtractor::extractModifiesP(std::map<std::string, std::set<std::strin
         }
     }
 }
+
+void DesignExtractor::extractModifiesS(std::map<int, std::set<std::string>>& modifiesSTable) {
+    // insert local
+    for (const auto&[_, parsedStatement] : db->stmtTable) {
+        modifiesSTable[parsedStatement.stmt_no].insert(parsedStatement.var_modified.begin(),
+                                                       parsedStatement.var_modified.end());
+        if (parsedStatement.statement_type == StatementType::kif_stmt) {
+            auto modifiedVars = db->modifiesPTable.find(parsedStatement.procedure_name);
+            if (modifiedVars == db->modifiesPTable.end()) continue;
+            modifiesSTable[parsedStatement.stmt_no].insert(modifiedVars->second.begin(), modifiedVars->second.end());
+        }
+    }
+
+    for (const auto&[parentStmt, parentTStmts] : db->parentTTable) {
+        for (const auto& parentTStmt : parentTStmts) {
+            auto modifiedVars = modifiesSTable.find(parentTStmt);
+            if (modifiedVars == modifiesSTable.end()) continue;
+            modifiesSTable[parentStmt].insert(modifiedVars->second.begin(), modifiedVars->second.end());
+        }
+    }
+}

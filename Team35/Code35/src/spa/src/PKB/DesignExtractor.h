@@ -19,6 +19,7 @@ public:
     void extractCalls(std::map<std::string, std::set<std::string>>& callsTable);
     void extractCallsT(std::map<std::string, std::set<std::string>>& callsTTable);
     void extractModifiesP(std::map<std::string, std::set<std::string>>& modifiesPTable);
+    void extractModifiesS(std::map<int, std::set<std::string>>& modifiesSTable);
 };
 
 #endif //SPA_TEAM35_CODE35_SRC_SPA_SRC_PKB_DESIGNEXTRACTOR_H_

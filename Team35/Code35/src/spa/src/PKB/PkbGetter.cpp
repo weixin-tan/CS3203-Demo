@@ -111,8 +111,9 @@ bool PkbGetter::isRelationship(const PkbRelationshipType& r, const ProgramElemen
             if (!(isStatementType(leftSide.elementType) || leftSide.elementType == ElementType::kProcedure))
                 throw std::invalid_argument("Wrong left element type for isModifies");
             if (isStatementType(leftSide.elementType)) {
-                std::set<ProgramElement> modifyStatements = getLeftSide(r, rightSide, leftSide.elementType);
-                result = modifyStatements.find(leftSide) != modifyStatements.end();
+                auto modifiedVars = db->modifiesSTable.find(leftSide.stmtNo);
+                if (modifiedVars == db->modifiesSTable.end()) break;
+                result = modifiedVars->second.find(rightSide.varName) != modifiedVars->second.end();
             }
             if (leftSide.elementType == ElementType::kProcedure) {
                 auto modifiedVars = db->modifiesPTable.find(leftSide.procName);
@@ -236,19 +237,10 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const PkbRelationshipType& r, co
                 throw std::invalid_argument("Wrong rightSide type for getLeftSide for Modifies");
 
             if (isStatementType(typeToGet)) {
-                std::set<int> stmtNos;
-                for (const int& stmtNo : getModifiesStmtNosGivenVariable(rightSide.varName)) {
-                    int curStmtNo = stmtNo;
-                    // do not revisit statements visited
-                    while (curStmtNo != ParsedStatement::default_null_stmt_no && stmtNos.find(curStmtNo) == stmtNos.end()) {
-                        if (isStatementTypeToGet(typeToGet, getStmtType(curStmtNo)))
-                            stmtNos.insert(curStmtNo);
-                        curStmtNo = getParentStmtNo(curStmtNo);
-                    }
-                }
-                for (const int& stmtNo : stmtNos)
-                    result.insert(ProgramElement::createStatement(typeToGet, stmtNo));
-                break;
+                for (const auto&[stmtNo, modifiedVars] : db->modifiesSTable)
+                    if (modifiedVars.find(rightSide.varName) != modifiedVars.end() &&
+                            isStatementTypeToGet(typeToGet, db->stmtTypeTable.at(stmtNo)))
+                        result.insert(ProgramElement::createStatement(typeToGet, stmtNo));
             }
             if (typeToGet == ElementType::kProcedure) {
                 for (const auto&[proc, modifiedVars] : db->modifiesPTable)
@@ -367,11 +359,10 @@ std::set<ProgramElement> PkbGetter::getRightSide(const PkbRelationshipType& r, c
                 throw std::invalid_argument("Wrong typeToGet for getRightSide for Modifies");
 
             if (isStatementType(leftSide.elementType)) {
-                for (const std::string& var : getModifiedVars(leftSide.stmtNo))
+                auto modifiedVars = db->modifiesSTable.find(leftSide.stmtNo);
+                if (modifiedVars == db->modifiesSTable.end()) break;
+                for (const auto& var : modifiedVars->second)
                     result.insert(ProgramElement::createVariable(var));
-
-                for (const int& childStmtNo: getChildStmtNos(leftSide.stmtNo))
-                    result.merge(getRightSide(r, ProgramElement::createStatement(ElementType::kStatement, childStmtNo), typeToGet));
             }
             if (leftSide.elementType == ElementType::kProcedure) {
                 auto modifiedVars = db->modifiesPTable.find(leftSide.procName);
