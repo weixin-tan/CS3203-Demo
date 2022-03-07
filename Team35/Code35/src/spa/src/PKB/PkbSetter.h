@@ -24,10 +24,6 @@ private:
     void handleStatementType(const ParsedStatement& parsedStatement);
     void handleConstants(const ParsedStatement &statement);
 
-    void handleParent(const ParsedStatement& parsedStatement);
-    void handleUses(const ParsedStatement& parsedStatement);
-    void handleModifies(const ParsedStatement& parsedStatement);
-
 public:
     explicit PkbSetter(DB* db);
     void insertStmts(const std::vector<std::vector<ParsedStatement>>& procedures);

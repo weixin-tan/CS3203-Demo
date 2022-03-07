@@ -3,7 +3,6 @@
 #include "../StatementType.h"
 #include "ElementType.h"
 
-
 const std::map<StatementType, ElementType> PkbSetter::spTypeToElementTypeTable = {
         {StatementType::kassign_stmt, ElementType::kAssignment},
         {StatementType::kprint_stmt,  ElementType::kPrint},
@@ -26,24 +25,6 @@ void PkbSetter::handleProcedure(const ParsedStatement& parsedStatement) {
     db->procedures.insert(parsedStatement.procedure_name);
 }
 
-void PkbSetter::handleModifies(const ParsedStatement& parsedStatement) {
-    for (const auto& var: parsedStatement.var_modified) {
-        db->modifyStmtToVarTable[parsedStatement.stmt_no].insert(var);
-        db->varToModifyStmtTable[var].insert(parsedStatement.stmt_no);
-        db->modifyProcToVarTable[parsedStatement.procedure_name].insert(var);
-        db->varToModifyProcTable[var].insert(parsedStatement.procedure_name);
-    }
-}
-
-void PkbSetter::handleUses(const ParsedStatement& parsedStatement) {
-    for (const auto& var: parsedStatement.var_used) {
-        db->usesStmtToVarTable[parsedStatement.stmt_no].insert(var);
-        db->varToUsesStmtTable[var].insert(parsedStatement.stmt_no);
-        db->usesProcToVarTable[parsedStatement.procedure_name].insert(var);
-        db->varToUsesProcTable[var].insert(parsedStatement.procedure_name);
-    }
-}
-
 void PkbSetter::handleStatementType(const ParsedStatement& parsedStatement) {
     db->stmtTypeTable[parsedStatement.stmt_no] = spTypeToElementTypeTable.at(parsedStatement.statement_type);
 }
@@ -56,14 +37,6 @@ void PkbSetter::handleConstants(const ParsedStatement& statement) {
     }
 }
 
-void PkbSetter::handleParent(const ParsedStatement& parsedStatement) {
-    int parentStmtNo = ((parsedStatement.while_stmt_no != ParsedStatement::default_null_stmt_no) ? parsedStatement.while_stmt_no : parsedStatement.if_stmt_no);
-    db->childToParentTable[parsedStatement.stmt_no] = parentStmtNo;
-    if (parentStmtNo != ParsedStatement::default_null_stmt_no) {
-        db->parentToChildTable[parentStmtNo].insert(parsedStatement.stmt_no);
-    }
-}
-
 void PkbSetter::insertStmt(const ParsedStatement& parsedStatement) {
     db->stmtTable[parsedStatement.stmt_no] = parsedStatement;
     // handle entity
@@ -71,11 +44,6 @@ void PkbSetter::insertStmt(const ParsedStatement& parsedStatement) {
     handleConstants(parsedStatement);
     handleProcedure(parsedStatement);
     handleStatementType(parsedStatement);
-
-    // handle relationships
-    handleParent(parsedStatement);
-    handleUses(parsedStatement);
-    handleModifies(parsedStatement);
 }
 
 void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& procedures) {
@@ -100,4 +68,6 @@ void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& pro
     designExtractor.extractParentT(db->parentTTable);
     designExtractor.extractModifiesP(db->modifiesPTable);
     designExtractor.extractModifiesS(db->modifiesSTable);
+    designExtractor.extractUsesP(db->usesPTable);
+    designExtractor.extractUsesS(db->usesSTable);
 }

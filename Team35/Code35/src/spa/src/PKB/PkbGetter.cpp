@@ -37,42 +37,6 @@ bool PkbGetter::isExists(const ProgramElement& elementToCheck) const {
 
 // TODO: move this to db
 // TODO: maybe use custom map
-std::set<int> PkbGetter::getChildStmtNos(int parentStmtNo) const {
-    if (db->parentToChildTable.count(parentStmtNo) == 0)
-        return {};
-    return db->parentToChildTable.at(parentStmtNo);
-}
-
-std::set<std::string> PkbGetter::getUsedVars(int parentStmtNo) const {
-    if (db->usesStmtToVarTable.count(parentStmtNo) == 0)
-        return {};
-    return db->usesStmtToVarTable.at(parentStmtNo);
-}
-
-std::set<int> PkbGetter::getUsesStmtNosGivenVariable(const std::string& var) const {
-    if (db->varToUsesStmtTable.count(var) == 0)
-        return {};
-    return db->varToUsesStmtTable.at(var);
-}
-
-std::set<std::string> PkbGetter::getUsesProcs(const std::string& var) const {
-    if (db->varToUsesProcTable.count(var) == 0)
-        return {};
-    return db->varToUsesProcTable.at(var);
-}
-
-std::set<std::string> PkbGetter::getVariableGivenUsesProc(const std::string& proc) const {
-    if (db->usesProcToVarTable.count(proc) == 0)
-        return {};
-    return db->usesProcToVarTable.at(proc);
-}
-
-int PkbGetter::getParentStmtNo(int childStmtNo) const {
-    if (db->childToParentTable.count(childStmtNo) == 0)
-        return ParsedStatement::default_null_stmt_no;
-    return db->childToParentTable.at(childStmtNo);
-}
-
 std::set<int> PkbGetter::getUsesStmtNosGivenConstant(const std::string& c) const {
     if (db->constantToStmtTable.count(c) == 0)
         return {};
@@ -111,13 +75,19 @@ bool PkbGetter::isRelationship(const PkbRelationshipType& r, const ProgramElemen
             break;
         }
         case PkbRelationshipType::kUses: {
-            assert(rightSide.elementType == ElementType::kVariable);
+            if (rightSide.elementType != ElementType::kVariable)
+                throw std::invalid_argument("Wrong right element type for isUses");
+            if (!(isStatementType(leftSide.elementType) || leftSide.elementType == ElementType::kProcedure))
+                throw std::invalid_argument("Wrong left element type for isUses");
             if (isStatementType(leftSide.elementType)) {
-                std::set<ProgramElement> usesStatements = getLeftSide(r, rightSide, leftSide.elementType);
-                result = usesStatements.find(leftSide) != usesStatements.end();
-            } else if (leftSide.elementType == ElementType::kProcedure) {
-                std::set<ProgramElement> usesProcedure = getLeftSide(r, rightSide, leftSide.elementType);
-                result = usesProcedure.find(leftSide) != usesProcedure.end();
+                auto usedVars = db->usesSTable.find(leftSide.stmtNo);
+                if (usedVars == db->usesSTable.end()) break;
+                result = usedVars->second.find(rightSide.varName) != usedVars->second.end();
+            }
+            if (leftSide.elementType == ElementType::kProcedure) {
+                auto usedVars = db->usesPTable.find(leftSide.procName);
+                if (usedVars == db->usesPTable.end()) break;
+                result = usedVars->second.find(rightSide.varName) != usedVars->second.end();
             }
             break;
         }
@@ -238,8 +208,10 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const PkbRelationshipType& r, co
             break;
         }
         case PkbRelationshipType::kUses: {
-            assert(isStatementType(typeToGet) || typeToGet == ElementType::kProcedure);
-            assert(rightSide.elementType == ElementType::kVariable || rightSide.elementType == ElementType::kConstant);
+            if (!(isStatementType(typeToGet) || typeToGet == ElementType::kProcedure))
+                throw std::invalid_argument("Wrong typeToGet for getLeftSide for Uses");
+            if (rightSide.elementType != ElementType::kVariable && rightSide.elementType != ElementType::kConstant) // temporary
+                throw std::invalid_argument("Wrong rightSide type for getLeftSide for Uses");
 
             // TODO: remove once expression is supported
             if (rightSide.elementType == ElementType::kConstant) {
@@ -250,22 +222,16 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const PkbRelationshipType& r, co
             }
 
             if (isStatementType(typeToGet)) {
-                std::set<int> stmtNos;
-                for (const int& stmtNo : getUsesStmtNosGivenVariable(rightSide.varName)) {
-                    int curStmtNo = stmtNo;
-                    // do not revisit statements visited
-                    while (curStmtNo != ParsedStatement::default_null_stmt_no && stmtNos.find(curStmtNo) == stmtNos.end()) {
-                        if (isStatementTypeToGet(typeToGet, getStmtType(curStmtNo)))
-                            stmtNos.insert(curStmtNo);
-                        curStmtNo = getParentStmtNo(curStmtNo);
-                    }
-                }
-                for (const int& stmtNo : stmtNos)
-                    result.insert(ProgramElement::createStatement(typeToGet, stmtNo));
-            } else if (typeToGet == ElementType::kProcedure) {
-                for (const std::string& proc : getUsesProcs(rightSide.varName))
-                    result.insert(ProgramElement::createProcedure(proc));
-            } else assert(false);
+                for (const auto&[stmtNo, usedVars] : db->usesSTable)
+                    if (usedVars.find(rightSide.varName) != usedVars.end() &&
+                            isStatementTypeToGet(typeToGet, db->stmtTypeTable.at(stmtNo)))
+                        result.insert(ProgramElement::createStatement(typeToGet, stmtNo));
+            }
+            if (typeToGet == ElementType::kProcedure) {
+                for (const auto&[proc, usedVars] : db->usesPTable)
+                    if (usedVars.find(rightSide.varName) != usedVars.end())
+                        result.insert(ProgramElement::createProcedure(proc));
+            }
             break;
         }
         case PkbRelationshipType::kFollows: {
@@ -361,19 +327,23 @@ std::set<ProgramElement> PkbGetter::getRightSide(const PkbRelationshipType& r, c
             break;
         }
         case PkbRelationshipType::kUses: {
-            assert(isStatementType(leftSide.elementType) || leftSide.elementType == ElementType::kProcedure);
-            assert(typeToGet == ElementType::kVariable);
+            if (!(isStatementType(leftSide.elementType) || leftSide.elementType == ElementType::kProcedure))
+                throw std::invalid_argument("Wrong leftSide element type for getRightSide for Uses");
+            if (typeToGet != ElementType::kVariable)
+                throw std::invalid_argument("Wrong typeToGet for getRightSide for Uses");
 
             if (isStatementType(leftSide.elementType)) {
-                for (const std::string& var : getUsedVars(leftSide.stmtNo))
+                auto usedVars = db->usesSTable.find(leftSide.stmtNo);
+                if (usedVars == db->usesSTable.end()) break;
+                for (const auto& var : usedVars->second)
                     result.insert(ProgramElement::createVariable(var));
-
-                for (const int& childStmtNo: getChildStmtNos(leftSide.stmtNo))
-                    result.merge(getRightSide(r, ProgramElement::createStatement(ElementType::kStatement, childStmtNo), typeToGet));
-            } else if (leftSide.elementType == ElementType::kProcedure) {
-                for (const std::string& var : getVariableGivenUsesProc(leftSide.procName))
+            }
+            if (leftSide.elementType == ElementType::kProcedure) {
+                auto usedVars = db->usesPTable.find(leftSide.procName);
+                if (usedVars == db->usesPTable.end()) break;
+                for (const auto& var : usedVars->second)
                     result.insert(ProgramElement::createVariable(var));
-            } else assert(false);
+            }
             break;
         }
         case PkbRelationshipType::kFollows: {
