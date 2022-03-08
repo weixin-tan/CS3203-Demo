@@ -19,6 +19,7 @@ private:
   std::set<std::pair<ProgramElement, ProgramElement>> getFixedEntityPairs(PkbRelationshipType relType, const Entity& givenEntity, ElementType t, bool direction);
   std::set<std::pair<ProgramElement, ProgramElement>> getAllCombinationsOfPairs(PkbRelationshipType relType, const Entity& givenEntity, ElementType t, bool direction);
   PkbRelationshipType convertRel(RelationshipType r);
+  Result handleCalls(PkbRelationshipType pkbRel, const Entity& leftEntity, const Entity& rightEntity);
 public:
   explicit SuchThatHandler(PkbGetter* pg);
   Result handleSuchThat(const Entity& entityToGet, const RelationshipRef& relRef);
