@@ -35,8 +35,6 @@ bool PkbGetter::isExists(const ProgramElement& elementToCheck) const {
     }
 }
 
-// TODO: move this to db
-// TODO: maybe use custom map
 std::set<int> PkbGetter::getUsesStmtNosGivenConstant(const std::string& c) const {
     if (db->constantToStmtTable.count(c) == 0)
         return {};
@@ -416,6 +414,15 @@ std::set<ProgramElement> PkbGetter::getRightSide(const PkbRelationshipType& r, c
             throw std::invalid_argument("Unknown relationship type for getRightSide or didn't break");
     }
 
+    return result;
+}
+
+std::set<std::pair<ProgramElement, ProgramElement>> PkbGetter::getRelationshipPairs(const PkbRelationshipType& r, const ElementType& leftTypeToGet, const ElementType& rightTypeToGet) const {
+    std::set<std::pair<ProgramElement, ProgramElement>> result;
+    std::set<ProgramElement> leftSides = getEntity(leftTypeToGet);
+    for (const auto& leftSide : leftSides)
+        for (const auto& rightSide : getRightSide(r, leftSide, rightTypeToGet))
+            result.insert(std::make_pair(leftSide, rightSide));
     return result;
 }
 
