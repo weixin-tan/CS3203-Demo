@@ -18,10 +18,9 @@ private:
 
 private:
     void insertStmt(const ParsedStatement& parsedStatement);
-
+    static ProgramElement convertParsedStatement(const ParsedStatement& parsedStatement);
     void handleVariables(const ParsedStatement& parsedStatement);
     void handleProcedure(const ParsedStatement& parsedStatement);
-    void handleStatementType(const ParsedStatement& parsedStatement);
     void handleConstants(const ParsedStatement &statement);
 
 public:

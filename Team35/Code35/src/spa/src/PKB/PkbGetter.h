@@ -13,7 +13,7 @@ private:
 private:
     bool isExists(const ProgramElement& elementToCheck) const;
     std::set<int> getUsesStmtNosGivenConstant(const std::string& c) const;
-    ElementType getStmtType(int stmtNo) const;
+    static void insertStmtElement(std::set<ProgramElement>& result, const ProgramElement& statement, const ElementType& typeToGet);
 
 public:
     explicit PkbGetter(DB* db);
