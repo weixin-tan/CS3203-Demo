@@ -1173,6 +1173,26 @@ TEST_CASE("PKB Next") {
                 tcData.stmt.at(22),
         };
         REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kWhile, 3), ElementType::kStatement);
+        expectedElementSet = {
+                tcData.stmt.at(4),
+                tcData.stmt.at(7),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kStatement, 9), ElementType::kStatement);
+        expectedElementSet = {
+                tcData.stmt.at(10),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kStatement, 7), ElementType::kAssignment);
+        expectedElementSet = {
+                tcData.stmt.at(8),
+                tcData.stmt.at(9),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
     }
 }
 
