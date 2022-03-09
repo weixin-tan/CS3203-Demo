@@ -131,6 +131,13 @@ bool PkbGetter::isRelationship(const PkbRelationshipType& r, const ProgramElemen
             result = (callsT != db->callsTTable.end() && callsT->second.find(rightSide.procName) != callsT->second.end());
             break;
         }
+        case PkbRelationshipType::kNext : {
+            if(!(isStatementType(leftSide.elementType) && isStatementType(rightSide.elementType)))
+                throw std::invalid_argument("Wrong element type for isNext");
+            auto next = db->nextTable.find(leftSide.stmtNo);
+            result = (next != db->nextTable.end() && next->second.find(rightSide.stmtNo) != next->second.end());
+            break;
+        }
         default:
             throw std::invalid_argument("Unknown relationshipType for isRelationship");
     }
@@ -278,6 +285,15 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const PkbRelationshipType& r, co
                     result.insert(ProgramElement::createProcedure(callsTProc));
             break;
         }
+        case PkbRelationshipType::kNext: {
+            if(!(isStatementType(rightSide.elementType) && isStatementType(typeToGet)))
+                throw std::invalid_argument("Wrong element type for getLeftSide on Next");
+            for (const auto&[stmtNo, nextStmtNos] : db->nextTable) {
+                if (nextStmtNos.find(rightSide.stmtNo) == nextStmtNos.end()) continue;
+                insertStmtElement(result, db->elementStmtTable.at(stmtNo), typeToGet);
+            }
+            break;
+        }
         default:
             throw std::invalid_argument("Unknown relationship type for getLeftSide or didn't break");
     }
@@ -382,6 +398,15 @@ std::set<ProgramElement> PkbGetter::getRightSide(const PkbRelationshipType& r, c
             if (callsT == db->callsTTable.end()) break;
             for (const std::string& calledProc : callsT->second)
                 result.insert(ProgramElement::createProcedure(calledProc));
+            break;
+        }
+        case PkbRelationshipType::kNext: {
+            if (!(isStatementType(leftSide.elementType) && isStatementType(typeToGet)))
+                throw std::invalid_argument("Wrong element type for getRightSide on Next");
+            auto next = db->nextTable.find(leftSide.stmtNo);
+            if (next == db->nextTable.end()) break;
+            for (const int& nextStmtNo : next->second)
+                insertStmtElement(result, db->elementStmtTable.at(nextStmtNo), typeToGet);
             break;
         }
         default:
