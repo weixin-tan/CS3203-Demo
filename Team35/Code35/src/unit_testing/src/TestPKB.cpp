@@ -1109,6 +1109,13 @@ TEST_CASE("PKB Next") {
         REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kStatement, 21), ProgramElement::createStatement(ElementType::kAssignment, 22)));
     }
     SECTION("getLeftSide") {
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kStatement, 3), ElementType::kAssignment);
+        expectedElementSet = {
+                tcData.stmt.at(2),
+                tcData.stmt.at(6),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
         resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kStatement, 10), ElementType::kAssignment);
         expectedElementSet = {
                 tcData.stmt.at(8),
