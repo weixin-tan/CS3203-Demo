@@ -132,10 +132,10 @@ bool PkbGetter::isRelationship(const PkbRelationshipType& r, const ProgramElemen
             break;
         }
         case PkbRelationshipType::kNext : {
-            if (!(isStatementType(leftSide.elementType) && isStatementType(rightSide.elementType)))
+            if(!(isStatementType(leftSide.elementType) && isStatementType(rightSide.elementType)))
                 throw std::invalid_argument("Wrong element type for isNext");
-            auto calls = db->callsTable.find(leftSide.procName);
-            result = (calls != db->callsTable.end() && calls->second.find(rightSide.procName) != calls->second.end());
+            auto next = db->nextTable.find(leftSide.stmtNo);
+            result = (next != db->nextTable.end() && next->second.find(rightSide.stmtNo) != next->second.end());
             break;
         }
         default:

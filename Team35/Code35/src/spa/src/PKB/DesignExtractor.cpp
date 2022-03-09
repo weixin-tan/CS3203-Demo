@@ -78,8 +78,12 @@ void DesignExtractor::dfsNext(const int& originStmt, std::set<int>& visited, con
         }
 
         auto followsStmtNo = db->followsTable.find(stmtNo);
-        if (stmtType != ElementType::kIf)
-            nextTable[stmtNo].insert((followsStmtNo != db->followsTable.end()) ? *followsStmtNo->second.begin() : returnStmtNo);
+        if (stmtType != ElementType::kIf) {
+            if (followsStmtNo != db->followsTable.end()) {
+                nextTable[stmtNo].insert(*followsStmtNo->second.begin());
+            } else if (returnStmtNo != nullReturnStmt)
+                nextTable[stmtNo].insert(returnStmtNo);
+        }
         if (followsStmtNo != db->followsTable.end())
             q.push({*followsStmtNo->second.begin(), returnStmtNo});
     }

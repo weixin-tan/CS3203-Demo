@@ -1029,6 +1029,370 @@ struct PKB_USES_S_TEST_CASE {
             ){}
 };
 
+struct PKB_NEXT_TEST_CASE {
+    std::vector<std::vector<ParsedStatement>> stmtLists;
+    std::map<int, ProgramElement> stmt;
+    std::map<std::string, ProgramElement> procs;
+    std::map<std::string, ProgramElement> vars;
+    std::map<std::string, ProgramElement> constants;
+
+    /* FOR TESTING REFERENCE
+    procedure Second {
+        x = 0; // 1
+        i = 5; // 2
+        while (i!=0) { // 3
+            x = x + 2 * y; // 4
+            call Third; // 5
+            i = i - 1; } // 6
+        if (x==1) then { // 7
+            x = x+1; } // 8
+        else {
+            z = 1; } // 9
+        z = z + x + i; // 10
+        y = z + 2; // 11
+        x = x * y + z; // 12
+    }
+
+    procedure Third {
+        while (c > 0) { // 13
+            if (b > 0) then { // 14
+                d = v + a; } // 15
+            else {
+                a = x * y + v * y + d; } } // 16
+        if (b > 0) then {  // 17
+            if (b > 0) then { // 18
+                d = v + a; } // 19
+            else {
+                a = x * y + v * y + d; } } // 20
+        else {
+            a = x * y + v * y + d; } // 21
+        d = v + a; // 22
+    }
+    */
+
+    PKB_NEXT_TEST_CASE() :
+            stmtLists(
+                    {
+                            {
+                                    ParsedStatement(
+                                            1,
+                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::default_null_stmt_no,
+                                            StatementType::kassign_stmt,
+                                            "",
+                                            "Second",
+                                            {},
+                                            {"x"},
+                                            {"0"},
+                                            ParsedStatement::default_procedure_name,
+                                            ParsedStatement::default_null_stmt_no
+                                    ),
+                                    ParsedStatement(
+                                            2,
+                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::default_null_stmt_no,
+                                            StatementType::kassign_stmt,
+                                            "",
+                                            "Second",
+                                            {},
+                                            {"i"},
+                                            {"5"},
+                                            ParsedStatement::default_procedure_name,
+                                            1
+                                    ),
+                                    ParsedStatement(
+                                            3,
+                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::default_null_stmt_no,
+                                            StatementType::kwhile_stmt,
+                                            "",
+                                            "Second",
+                                            {"i"},
+                                            {},
+                                            {"0"},
+                                            ParsedStatement::default_procedure_name,
+                                            2
+                                    ),
+                                    ParsedStatement(
+                                            4,
+                                            ParsedStatement::default_null_stmt_no,
+                                            3,
+                                            StatementType::kassign_stmt,
+                                            "",
+                                            "Second",
+                                            {"x", "y"},
+                                            {"x"},
+                                            {"2"},
+                                            ParsedStatement::default_procedure_name,
+                                            ParsedStatement::default_null_stmt_no
+                                    ),
+                                    ParsedStatement(
+                                            5,
+                                            ParsedStatement::default_null_stmt_no,
+                                            3,
+                                            StatementType::kcall_stmt,
+                                            "",
+                                            "Second",
+                                            {},
+                                            {},
+                                            {},
+                                            "Third",
+                                            4
+                                    ),
+                                    ParsedStatement(
+                                            6,
+                                            ParsedStatement::default_null_stmt_no,
+                                            3,
+                                            StatementType::kassign_stmt,
+                                            "",
+                                            "Second",
+                                            {"i"},
+                                            {"i"},
+                                            {"1"},
+                                            ParsedStatement::default_procedure_name,
+                                            5
+                                    ),
+                                    ParsedStatement(
+                                            7,
+                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::default_null_stmt_no,
+                                            StatementType::kif_stmt,
+                                            "",
+                                            "Second",
+                                            {"x"},
+                                            {},
+                                            {"1"},
+                                            ParsedStatement::default_procedure_name,
+                                            3
+                                    ),
+                                    ParsedStatement(
+                                            8,
+                                            7,
+                                            ParsedStatement::default_null_stmt_no,
+                                            StatementType::kassign_stmt,
+                                            "",
+                                            "Second",
+                                            {"x"},
+                                            {"x"},
+                                            {"1"},
+                                            ParsedStatement::default_procedure_name,
+                                            ParsedStatement::default_null_stmt_no
+                                    ),
+                                    ParsedStatement(
+                                            9,
+                                            7,
+                                            ParsedStatement::default_null_stmt_no,
+                                            StatementType::kassign_stmt,
+                                            "",
+                                            "Second",
+                                            {},
+                                            {"z"},
+                                            {"1"},
+                                            ParsedStatement::default_procedure_name,
+                                            ParsedStatement::default_null_stmt_no
+                                    ),
+                                    ParsedStatement(
+                                            10,
+                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::default_null_stmt_no,
+                                            StatementType::kassign_stmt,
+                                            "",
+                                            "Second",
+                                            {"z", "x"},
+                                            {"z"},
+                                            {"1"},
+                                            ParsedStatement::default_procedure_name,
+                                            7
+                                    ),
+                                    ParsedStatement(
+                                            11,
+                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::default_null_stmt_no,
+                                            StatementType::kassign_stmt,
+                                            "",
+                                            "Second",
+                                            {"z"},
+                                            {"y"},
+                                            {"2"},
+                                            ParsedStatement::default_procedure_name,
+                                            10
+                                    ),
+                                    ParsedStatement(
+                                            12,
+                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::default_null_stmt_no,
+                                            StatementType::kassign_stmt,
+                                            "",
+                                            "Second",
+                                            {"x", "y", "z"},
+                                            {"x"},
+                                            {},
+                                            ParsedStatement::default_procedure_name,
+                                            11
+                                    ),
+                            },
+                            {
+                                    ParsedStatement(
+                                            13,
+                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::default_null_stmt_no,
+                                            StatementType::kwhile_stmt,
+                                            "",
+                                            "Third",
+                                            {"c"},
+                                            {},
+                                            {"0"},
+                                            ParsedStatement::default_procedure_name,
+                                            ParsedStatement::default_null_stmt_no
+                                    ),
+                                    ParsedStatement(
+                                            14,
+                                            ParsedStatement::default_null_stmt_no,
+                                            13,
+                                            StatementType::kif_stmt,
+                                            "",
+                                            "Third",
+                                            {"b"},
+                                            {},
+                                            {"0"},
+                                            ParsedStatement::default_procedure_name,
+                                            ParsedStatement::default_null_stmt_no
+                                    ),
+                                    ParsedStatement(
+                                            15,
+                                            14,
+                                            ParsedStatement::default_null_stmt_no,
+                                            StatementType::kassign_stmt,
+                                            "",
+                                            "Third",
+                                            {"v", "a"},
+                                            {"d"},
+                                            {},
+                                            ParsedStatement::default_procedure_name,
+                                            ParsedStatement::default_null_stmt_no
+                                    ),
+                                    ParsedStatement(
+                                            16,
+                                            14,
+                                            ParsedStatement::default_null_stmt_no,
+                                            StatementType::kassign_stmt,
+                                            "",
+                                            "Third",
+                                            {"x", "y", "v", "d"},
+                                            {"a"},
+                                            {},
+                                            ParsedStatement::default_procedure_name,
+                                            ParsedStatement::default_null_stmt_no
+                                    ),
+                                    ParsedStatement(
+                                            17,
+                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::default_null_stmt_no,
+                                            StatementType::kif_stmt,
+                                            "",
+                                            "Third",
+                                            {"b"},
+                                            {},
+                                            {"0"},
+                                            ParsedStatement::default_procedure_name,
+                                            13
+                                    ),
+                                    ParsedStatement(
+                                            18,
+                                            17,
+                                            ParsedStatement::default_null_stmt_no,
+                                            StatementType::kif_stmt,
+                                            "",
+                                            "Third",
+                                            {"b"},
+                                            {},
+                                            {"0"},
+                                            ParsedStatement::default_procedure_name,
+                                            ParsedStatement::default_null_stmt_no
+                                    ),
+                                    ParsedStatement(
+                                            19,
+                                            18,
+                                            ParsedStatement::default_null_stmt_no,
+                                            StatementType::kassign_stmt,
+                                            "",
+                                            "Third",
+                                            {"v", "a"},
+                                            {"d"},
+                                            {},
+                                            ParsedStatement::default_procedure_name,
+                                            ParsedStatement::default_null_stmt_no
+                                    ),
+                                    ParsedStatement(
+                                            20,
+                                            18,
+                                            ParsedStatement::default_null_stmt_no,
+                                            StatementType::kassign_stmt,
+                                            "",
+                                            "Third",
+                                            {"x", "y", "v", "d"},
+                                            {"a"},
+                                            {},
+                                            ParsedStatement::default_procedure_name,
+                                            ParsedStatement::default_null_stmt_no
+                                    ),
+                                    ParsedStatement(
+                                            21,
+                                            17,
+                                            ParsedStatement::default_null_stmt_no,
+                                            StatementType::kassign_stmt,
+                                            "",
+                                            "Third",
+                                            {"x", "y", "v", "d"},
+                                            {"a"},
+                                            {},
+                                            ParsedStatement::default_procedure_name,
+                                            ParsedStatement::default_null_stmt_no
+                                    ),
+                                    ParsedStatement(
+                                            22,
+                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::default_null_stmt_no,
+                                            StatementType::kassign_stmt,
+                                            "",
+                                            "Third",
+                                            {"v", "a"},
+                                            {"d"},
+                                            {},
+                                            ParsedStatement::default_procedure_name,
+                                            17
+                                    ),
+                            }
+                    }
+            ),
+            stmt(
+                    {
+                            {1, ProgramElement::createStatement(ElementType::kAssignment, 1)},
+                            {2, ProgramElement::createStatement(ElementType::kAssignment, 2)},
+                            {3, ProgramElement::createStatement(ElementType::kWhile, 3)},
+                            {4, ProgramElement::createStatement(ElementType::kAssignment, 4)},
+                            {5, ProgramElement::createStatement(ElementType::kCall, 5, "Third")},
+                            {6, ProgramElement::createStatement(ElementType::kAssignment, 6)},
+                            {7, ProgramElement::createStatement(ElementType::kIf, 7)},
+                            {8, ProgramElement::createStatement(ElementType::kAssignment, 8)},
+                            {9, ProgramElement::createStatement(ElementType::kAssignment, 9)},
+                            {10, ProgramElement::createStatement(ElementType::kAssignment, 10)},
+                            {11, ProgramElement::createStatement(ElementType::kAssignment, 11)},
+                            {12, ProgramElement::createStatement(ElementType::kAssignment, 12)},
+                            {13, ProgramElement::createStatement(ElementType::kWhile, 13)},
+                            {14, ProgramElement::createStatement(ElementType::kIf, 14)},
+                            {15, ProgramElement::createStatement(ElementType::kAssignment, 15)},
+                            {16, ProgramElement::createStatement(ElementType::kAssignment, 16)},
+                            {17, ProgramElement::createStatement(ElementType::kIf, 17)},
+                            {18, ProgramElement::createStatement(ElementType::kIf, 18)},
+                            {19, ProgramElement::createStatement(ElementType::kAssignment, 19)},
+                            {20, ProgramElement::createStatement(ElementType::kAssignment, 20)},
+                            {21, ProgramElement::createStatement(ElementType::kAssignment, 21)},
+                            {22, ProgramElement::createStatement(ElementType::kAssignment, 22)},
+                    }
+            ) {}
+};
+
 struct PKB_VALIDATION_TEST_CASES {
     std::vector<std::vector<ParsedStatement>> RECURSIVE_CALL_STMT_LIST =
             {
