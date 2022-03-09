@@ -71,6 +71,7 @@ std::vector<std::string> extractVariablesToSelect(const std::string& s);
 std::vector<std::vector<std::string>> extractClauses(const std::string& s);
 
 std::vector<std::string> extractItemsInBrackets(const std::string& s);
+std::vector<std::string> extractPatternBrackets(const std::string& s);
 
 bool checkRelationshipRef(const RelationshipRef& r);
 bool checkEntityIsStmtRef(const Entity& e);

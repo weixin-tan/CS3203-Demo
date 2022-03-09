@@ -156,6 +156,13 @@ TEST_CASE("invalid querys"){
   std::string wronglyCapitalize7 = "assign a; while w; Select a such that parent* (w, a) pattern a (\"count\", _)";
   std::string wronglyCapitalize8 = "assign a; while w; Select a such that Parent* (w, a) Pattern a (\"count\", _)";
 
+  std::string patternIf1 = "if ifs; while w; Select ifs pattern ifs(\"a\",_)";
+  std::string patternIf2 = "if ifs; while w; Select ifs pattern ifs(\"a\",_,)";
+  std::string patternIf3 = "if ifs; while w; Select ifs pattern ifs(\"a\",1,_)";
+  std::string patternIf4 = "if ifs; while w; Select ifs pattern ifs(\"a\",ifs,_)";
+  std::string patternIf5 = "if ifs; while w; Select ifs pattern ifs(\"a\",_,1)";
+  std::string patternIf6 = "if ifs; while w; Select ifs pattern ifs(\"a\",_,ifs)";
+
   vector<Clause> invalidWordOutput1 = qp.parsePQL(invalidWord1);
   vector<Clause> invalidWordOutput2 = qp.parsePQL(invalidWord2);
   vector<Clause> invalidWordOutput3 = qp.parsePQL(invalidWord3);
@@ -192,6 +199,13 @@ TEST_CASE("invalid querys"){
   vector<Clause> wronglyCapitalizeOutput6 = qp.parsePQL(wronglyCapitalize6);
   vector<Clause> wronglyCapitalizeOutput7 = qp.parsePQL(wronglyCapitalize7);
   vector<Clause> wronglyCapitalizeOutput8 = qp.parsePQL(wronglyCapitalize8);
+
+  vector<Clause> patternIfOutput1 = qp.parsePQL(patternIf1);
+  vector<Clause> patternIfOutput2 = qp.parsePQL(patternIf2);
+  vector<Clause> patternIfOutput3 = qp.parsePQL(patternIf3);
+  vector<Clause> patternIfOutput4 = qp.parsePQL(patternIf4);
+  vector<Clause> patternIfOutput5 = qp.parsePQL(patternIf5);
+  vector<Clause> patternIfOutput6 = qp.parsePQL(patternIf6);
 
   SECTION("Invalid Word"){
     REQUIRE(invalidWordOutput1.empty());
@@ -234,6 +248,15 @@ TEST_CASE("invalid querys"){
     REQUIRE(wronglyCapitalizeOutput6.empty());
     REQUIRE(wronglyCapitalizeOutput7.empty());
     REQUIRE(wronglyCapitalizeOutput8.empty());
+  }
+
+  SECTION("something in pattern if is wrong") {
+    REQUIRE(patternIfOutput1.empty());
+    REQUIRE(patternIfOutput2.empty());
+    REQUIRE(patternIfOutput3.empty());
+    REQUIRE(patternIfOutput4.empty());
+    REQUIRE(patternIfOutput5.empty());
+    REQUIRE(patternIfOutput6.empty());
   }
 }
 
@@ -300,7 +323,7 @@ TEST_CASE("test advanced queries without with clauses"){
   string s1 = "\nSelect       BOOLEAN\t\t\t\tsuch\n\n\n\nthat     Next* (\t1\t,\t2\t)\n\n";
   string s2 = "assign a1, a2;Select <a1, a2.stmt#, BOOLEAN> such that Affects (a1, a2)";
   string s3 = "procedure p; call c; Select c.procName with c.procName = p.procName";
-  string s4 = "while w; if ifs; Select w pattern w (\"x\", _) and ifs (\"x\", _)";
+  string s4 = "while w; if ifs; Select w pattern w (\"x\", _) and ifs (\"x\", _, _)";
 
   Clause c1 = Clause();
   Clause c2 = Clause();
@@ -368,7 +391,7 @@ TEST_CASE("test advanced queries without with clauses"){
 
 TEST_CASE("debugging"){
   QueryProcessor qp = QueryProcessor();
-  Clause c = qp.parsePQL(  "stmt Next; Select Next such that Next (5, Next) and Next (Next, 12)")[0];
+  //Clause c = qp.parsePQL(  "if ifs; while w; Select ifs pattern ifs(\"a\",_,_)")[0];
   //cout << c.toString() << "\n";
 }
 /*
