@@ -6,13 +6,14 @@
 #include <string>
 #include "../ParsedStatement.h"
 #include "ElementType.h"
+#include "ProgramElement.h"
 
 // just a dataclass to hold all the tables
 struct DB {
 public:
     // relationship tables
     std::map<int, ParsedStatement> stmtTable;
-    std::map<int, ElementType> stmtTypeTable;
+    std::map<int, ProgramElement> elementStmtTable;
     std::map<std::string, std::set<int>> constantToStmtTable;
     std::map<int, std::set<std::string>> usesStmtToConstantTable;
     std::map<int, std::set<int>> parentTable;

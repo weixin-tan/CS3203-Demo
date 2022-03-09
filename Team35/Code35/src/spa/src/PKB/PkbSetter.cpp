@@ -25,10 +25,6 @@ void PkbSetter::handleProcedure(const ParsedStatement& parsedStatement) {
     db->procedures.insert(parsedStatement.procedure_name);
 }
 
-void PkbSetter::handleStatementType(const ParsedStatement& parsedStatement) {
-    db->stmtTypeTable[parsedStatement.stmt_no] = spTypeToElementTypeTable.at(parsedStatement.statement_type);
-}
-
 void PkbSetter::handleConstants(const ParsedStatement& statement) {
     for (const std::string& c : statement.constant) {
         db->constantToStmtTable[c].insert(statement.stmt_no);
@@ -37,13 +33,25 @@ void PkbSetter::handleConstants(const ParsedStatement& statement) {
     }
 }
 
+ProgramElement PkbSetter::convertParsedStatement(const ParsedStatement& statement) {
+    ElementType elementType = spTypeToElementTypeTable.at(statement.statement_type);
+    std::string procOrVarName = ProgramElement::nullStringValue;
+    if (elementType == ElementType::kRead)
+        procOrVarName = *statement.var_modified.begin();
+    if (elementType == ElementType::kPrint)
+        procOrVarName = *statement.var_used.begin();
+    if (elementType == ElementType::kCall)
+        procOrVarName = statement.procedure_called;
+    return ProgramElement::createStatement(elementType, statement.stmt_no, procOrVarName);
+}
+
 void PkbSetter::insertStmt(const ParsedStatement& parsedStatement) {
     db->stmtTable[parsedStatement.stmt_no] = parsedStatement;
+    db->elementStmtTable.insert({parsedStatement.stmt_no, convertParsedStatement(parsedStatement)});
     // handle entity
     handleVariables(parsedStatement);
     handleConstants(parsedStatement);
     handleProcedure(parsedStatement);
-    handleStatementType(parsedStatement);
 }
 
 void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& procedures) {
