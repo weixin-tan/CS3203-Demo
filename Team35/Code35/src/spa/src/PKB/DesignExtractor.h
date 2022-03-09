@@ -9,6 +9,7 @@ private:
     void dfsCallsT(const std::string& originProc, std::set<std::string>& visited);
     void dfsFollowsT(const int& originStmt, std::set<int>& visited);
     void dfsParentT(const int& originStmt, std::set<int>& visited);
+    void dfsNext(const int& originStmt, std::set<int>& visited, const std::map<int, std::set<int>>& stmtListHead, std::map<int, std::set<int>>& nextTable);
 
 public:
     explicit DesignExtractor(DB* db);
@@ -22,6 +23,7 @@ public:
     void extractModifiesS(std::map<int, std::set<std::string>>& modifiesSTable);
     void extractUsesP(std::map<std::string, std::set<std::string>>& usesPTable);
     void extractUsesS(std::map<int, std::set<std::string>>& usesSTable);
+    void extractNext(std::map<int, std::set<int>>& nextTable);
 };
 
 #endif //SPA_TEAM35_CODE35_SRC_SPA_SRC_PKB_DESIGNEXTRACTOR_H_

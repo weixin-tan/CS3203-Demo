@@ -78,4 +78,5 @@ void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& pro
     designExtractor.extractModifiesS(db->modifiesSTable);
     designExtractor.extractUsesP(db->usesPTable);
     designExtractor.extractUsesS(db->usesSTable);
+    designExtractor.extractNext(db->nextTable);
 }

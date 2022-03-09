@@ -26,6 +26,7 @@ public:
     std::map<int, std::set<std::string>> modifiesSTable;
     std::map<std::string, std::set<std::string>> usesPTable;
     std::map<int, std::set<std::string>> usesSTable;
+    std::map<int, std::set<int>> nextTable;
 
     // entity tables
     std::set<std::string> variables;
