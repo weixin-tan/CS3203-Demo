@@ -225,3 +225,15 @@ void DesignExtractor::extractNext(std::map<int, std::set<int>>& nextTable) {
             dfsNext(stmtNo, visited, stmtListHead, nextTable);
     }
 }
+
+template<typename U, typename V>
+void DesignExtractor::computeReverse(std::map<U, std::set<V>>& normalMap, std::map<V, std::set<U>>& reverseMap) {
+    for (const auto& [leftSide, rightSides] : normalMap)
+        for (const auto& rightSide : rightSides)
+            reverseMap[rightSide].insert(leftSide);
+}
+
+template void DesignExtractor::computeReverse<int, int>(std::map<int, std::set<int>>& normalMap, std::map<int, std::set<int>>& reverseMap);
+template void DesignExtractor::computeReverse<int, std::string>(std::map<int, std::set<std::string>>& normalMap, std::map<std::string, std::set<int>>& reverseMap);
+template void DesignExtractor::computeReverse<std::string, std::string>(std::map<std::string, std::set<std::string>>& normalMap, std::map<std::string, std::set<std::string>>& reverseMap);
+template void DesignExtractor::computeReverse<std::string, int>(std::map<std::string, std::set<int>>& normalMap, std::map<int, std::set<std::string>>& reverseMap);

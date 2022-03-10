@@ -62,7 +62,9 @@ void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& pro
 
     // extract design abstractions
     designExtractor.extractCalls(db->callsTable);
+    DesignExtractor::computeReverse(db->callsTable, db->callsTableR);
     designExtractor.extractCallsT(db->callsTTable);
+    DesignExtractor::computeReverse(db->callsTTable, db->callsTTableR);
 
     // validate design abstractions
     pkbValidator.validateNoCyclicCall();
@@ -71,12 +73,21 @@ void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& pro
 
     // extract design abstractions (these assume that data is clean)
     designExtractor.extractFollows(db->followsTable);
+    DesignExtractor::computeReverse(db->followsTable, db->followsTableR);
     designExtractor.extractFollowsT(db->followsTTable);
+    DesignExtractor::computeReverse(db->followsTTable, db->followsTTableR);
     designExtractor.extractParent(db->parentTable);
+    DesignExtractor::computeReverse(db->parentTable, db->parentTableR);
     designExtractor.extractParentT(db->parentTTable);
+    DesignExtractor::computeReverse(db->parentTTable, db->parentTTableR);
     designExtractor.extractModifiesP(db->modifiesPTable);
+    DesignExtractor::computeReverse(db->modifiesPTable, db->modifiesPTableR);
     designExtractor.extractModifiesS(db->modifiesSTable);
+    DesignExtractor::computeReverse(db->modifiesSTable, db->modifiesSTableR);
     designExtractor.extractUsesP(db->usesPTable);
+    DesignExtractor::computeReverse(db->usesPTable, db->usesPTableR);
     designExtractor.extractUsesS(db->usesSTable);
+    DesignExtractor::computeReverse(db->usesSTable, db->usesSTableR);
     designExtractor.extractNext(db->nextTable);
+    DesignExtractor::computeReverse(db->nextTable, db->nextTableR);
 }

@@ -24,6 +24,9 @@ public:
     void extractUsesP(std::map<std::string, std::set<std::string>>& usesPTable);
     void extractUsesS(std::map<int, std::set<std::string>>& usesSTable);
     void extractNext(std::map<int, std::set<int>>& nextTable);
+
+    template<typename U, typename V>
+    static void computeReverse(std::map<U, std::set<V>>& normalMap, std::map<V, std::set<U>>& reverseMap);
 };
 
 #endif //SPA_TEAM35_CODE35_SRC_SPA_SRC_PKB_DESIGNEXTRACTOR_H_
