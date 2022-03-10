@@ -25,10 +25,6 @@ void PkbSetter::handleProcedure(const ParsedStatement& parsedStatement) {
     db->procedures.insert(parsedStatement.procedure_name);
 }
 
-void PkbSetter::handleStatementType(const ParsedStatement& parsedStatement) {
-    db->stmtTypeTable[parsedStatement.stmt_no] = spTypeToElementTypeTable.at(parsedStatement.statement_type);
-}
-
 void PkbSetter::handleConstants(const ParsedStatement& statement) {
     for (const std::string& c : statement.constant) {
         db->constantToStmtTable[c].insert(statement.stmt_no);
@@ -37,13 +33,25 @@ void PkbSetter::handleConstants(const ParsedStatement& statement) {
     }
 }
 
+ProgramElement PkbSetter::convertParsedStatement(const ParsedStatement& statement) {
+    ElementType elementType = spTypeToElementTypeTable.at(statement.statement_type);
+    std::string procOrVarName = ProgramElement::nullStringValue;
+    if (elementType == ElementType::kRead)
+        procOrVarName = *statement.var_modified.begin();
+    if (elementType == ElementType::kPrint)
+        procOrVarName = *statement.var_used.begin();
+    if (elementType == ElementType::kCall)
+        procOrVarName = statement.procedure_called;
+    return ProgramElement::createStatement(elementType, statement.stmt_no, procOrVarName);
+}
+
 void PkbSetter::insertStmt(const ParsedStatement& parsedStatement) {
     db->stmtTable[parsedStatement.stmt_no] = parsedStatement;
+    db->elementStmtTable.insert({parsedStatement.stmt_no, convertParsedStatement(parsedStatement)});
     // handle entity
     handleVariables(parsedStatement);
     handleConstants(parsedStatement);
     handleProcedure(parsedStatement);
-    handleStatementType(parsedStatement);
 }
 
 void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& procedures) {
@@ -54,7 +62,9 @@ void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& pro
 
     // extract design abstractions
     designExtractor.extractCalls(db->callsTable);
+    DesignExtractor::computeReverse(db->callsTable, db->callsTableR);
     designExtractor.extractCallsT(db->callsTTable);
+    DesignExtractor::computeReverse(db->callsTTable, db->callsTTableR);
 
     // validate design abstractions
     pkbValidator.validateNoCyclicCall();
@@ -63,11 +73,21 @@ void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& pro
 
     // extract design abstractions (these assume that data is clean)
     designExtractor.extractFollows(db->followsTable);
+    DesignExtractor::computeReverse(db->followsTable, db->followsTableR);
     designExtractor.extractFollowsT(db->followsTTable);
+    DesignExtractor::computeReverse(db->followsTTable, db->followsTTableR);
     designExtractor.extractParent(db->parentTable);
+    DesignExtractor::computeReverse(db->parentTable, db->parentTableR);
     designExtractor.extractParentT(db->parentTTable);
+    DesignExtractor::computeReverse(db->parentTTable, db->parentTTableR);
     designExtractor.extractModifiesP(db->modifiesPTable);
+    DesignExtractor::computeReverse(db->modifiesPTable, db->modifiesPTableR);
     designExtractor.extractModifiesS(db->modifiesSTable);
+    DesignExtractor::computeReverse(db->modifiesSTable, db->modifiesSTableR);
     designExtractor.extractUsesP(db->usesPTable);
+    DesignExtractor::computeReverse(db->usesPTable, db->usesPTableR);
     designExtractor.extractUsesS(db->usesSTable);
+    DesignExtractor::computeReverse(db->usesSTable, db->usesSTableR);
+    designExtractor.extractNext(db->nextTable);
+    DesignExtractor::computeReverse(db->nextTable, db->nextTableR);
 }

@@ -1,5 +1,4 @@
 #include <set>
-#include <cassert>
 
 #include "PkbGetter.h"
 #include "ProgramElement.h"
@@ -9,6 +8,11 @@
 // TODO: rename
 bool inline isStatementTypeToGet(const ElementType& typeToGet, const ElementType& targetType) {
     return (typeToGet == ElementType::kStatement) || (typeToGet == targetType);
+}
+
+void PkbGetter::insertStmtElement(std::set<ProgramElement>& result, const ProgramElement& statement, const ElementType& typeToGet) {
+    if (isStatementTypeToGet(typeToGet, statement.elementType))
+        result.insert(statement);
 }
 
 bool PkbGetter::isExists(const ProgramElement& elementToCheck) const {
@@ -21,8 +25,10 @@ bool PkbGetter::isExists(const ProgramElement& elementToCheck) const {
         case ElementType::kIf:
         case ElementType::kAssignment: {
             int stmtNo = elementToCheck.stmtNo;
-            if (db->stmtTable.find(stmtNo) == db->stmtTable.end()) return false;
-            return isStatementTypeToGet(elementToCheck.elementType, getStmtType(stmtNo));
+            auto stmt = db->elementStmtTable.find(stmtNo);
+            if (stmt == db->elementStmtTable.end()) return false;
+            ElementType existingType = stmt->second.elementType;
+            return isStatementTypeToGet(elementToCheck.elementType, existingType);
         }
         case ElementType::kProcedure:
             return db->procedures.count(elementToCheck.procName);
@@ -35,18 +41,10 @@ bool PkbGetter::isExists(const ProgramElement& elementToCheck) const {
     }
 }
 
-// TODO: move this to db
-// TODO: maybe use custom map
 std::set<int> PkbGetter::getUsesStmtNosGivenConstant(const std::string& c) const {
     if (db->constantToStmtTable.count(c) == 0)
         return {};
     return db->constantToStmtTable.at(c);
-}
-
-ElementType PkbGetter::getStmtType(int stmtNo) const {
-    if (db->stmtTypeTable.count(stmtNo) == 0)
-        assert(false);  // should've been caught
-    return db->stmtTypeTable.at(stmtNo);
 }
 
 PkbGetter::PkbGetter(DB* db) : db(db) {}
@@ -133,9 +131,15 @@ bool PkbGetter::isRelationship(const PkbRelationshipType& r, const ProgramElemen
             result = (callsT != db->callsTTable.end() && callsT->second.find(rightSide.procName) != callsT->second.end());
             break;
         }
-        default: {
-            assert(false);
+        case PkbRelationshipType::kNext : {
+            if(!(isStatementType(leftSide.elementType) && isStatementType(rightSide.elementType)))
+                throw std::invalid_argument("Wrong element type for isNext");
+            auto next = db->nextTable.find(leftSide.stmtNo);
+            result = (next != db->nextTable.end() && next->second.find(rightSide.stmtNo) != next->second.end());
+            break;
         }
+        default:
+            throw std::invalid_argument("Unknown relationshipType for isRelationship");
     }
 
     return result;
@@ -152,9 +156,8 @@ std::set<ProgramElement> PkbGetter::getEntity(const ElementType& typeToGet) cons
         case ElementType::kWhile:
         case ElementType::kIf:
         case ElementType::kAssignment: {
-            for (const auto&[stmtNo, eType] : db->stmtTypeTable)
-                if (isStatementTypeToGet(typeToGet, eType))
-                    result.insert(ProgramElement::createStatement(typeToGet, stmtNo));
+            for (const auto&[stmtNo, elementStmt] : db->elementStmtTable)
+                insertStmtElement(result, elementStmt, typeToGet);
             break;
         }
         case ElementType::kVariable: {
@@ -172,15 +175,13 @@ std::set<ProgramElement> PkbGetter::getEntity(const ElementType& typeToGet) cons
                 result.insert(ProgramElement::createConstant(c));
             break;
         }
-        default: {
-            assert(false);
-        }
+        default:
+            throw std::invalid_argument("Unknown typeToGet for getEntity");
     }
 
     return result;
 }
 
-// TODO: optimise for reverse relationship
 std::set<ProgramElement> PkbGetter::getLeftSide(const PkbRelationshipType& r, const ProgramElement& rightSide,
                                                 const ElementType& typeToGet) const {
     if (!isExists(rightSide)) return {};
@@ -195,15 +196,16 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const PkbRelationshipType& r, co
                 throw std::invalid_argument("Wrong rightSide type for getLeftSide for Modifies");
 
             if (isStatementType(typeToGet)) {
-                for (const auto&[stmtNo, modifiedVars] : db->modifiesSTable)
-                    if (modifiedVars.find(rightSide.varName) != modifiedVars.end() &&
-                            isStatementTypeToGet(typeToGet, db->stmtTypeTable.at(stmtNo)))
-                        result.insert(ProgramElement::createStatement(typeToGet, stmtNo));
+                auto modifiesStmtNos = db->modifiesSTableR.find(rightSide.varName);
+                if (modifiesStmtNos == db->modifiesSTableR.end()) break;
+                for (const auto& stmtNo : modifiesStmtNos->second)
+                    insertStmtElement(result, db->elementStmtTable.at(stmtNo), typeToGet);
             }
             if (typeToGet == ElementType::kProcedure) {
-                for (const auto&[proc, modifiedVars] : db->modifiesPTable)
-                    if (modifiedVars.find(rightSide.varName) != modifiedVars.end())
-                        result.insert(ProgramElement::createProcedure(proc));
+                auto modifiesProcs = db->modifiesPTableR.find(rightSide.varName);
+                if (modifiesProcs == db->modifiesPTableR.end()) break;
+                for (const auto& proc : modifiesProcs->second)
+                    result.insert(ProgramElement::createProcedure(proc));
             }
             break;
         }
@@ -216,82 +218,85 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const PkbRelationshipType& r, co
             // TODO: remove once expression is supported
             if (rightSide.elementType == ElementType::kConstant) {
                 for (const int& stmtNo : getUsesStmtNosGivenConstant(rightSide.value))
-                    if (isStatementTypeToGet(typeToGet, getStmtType(stmtNo)))
-                        result.insert(ProgramElement::createStatement(typeToGet, stmtNo));
+                    insertStmtElement(result, db->elementStmtTable.at(stmtNo), typeToGet);
                 break;
             }
 
             if (isStatementType(typeToGet)) {
-                for (const auto&[stmtNo, usedVars] : db->usesSTable)
-                    if (usedVars.find(rightSide.varName) != usedVars.end() &&
-                            isStatementTypeToGet(typeToGet, db->stmtTypeTable.at(stmtNo)))
-                        result.insert(ProgramElement::createStatement(typeToGet, stmtNo));
+                auto usesStmtNos = db->usesSTableR.find(rightSide.varName);
+                if (usesStmtNos == db->usesSTableR.end()) break;
+                for (const auto& stmtNo : usesStmtNos->second)
+                    insertStmtElement(result, db->elementStmtTable.at(stmtNo), typeToGet);
             }
             if (typeToGet == ElementType::kProcedure) {
-                for (const auto&[proc, usedVars] : db->usesPTable)
-                    if (usedVars.find(rightSide.varName) != usedVars.end())
-                        result.insert(ProgramElement::createProcedure(proc));
+                auto usesProcs = db->usesPTableR.find(rightSide.varName);
+                if (usesProcs == db->usesPTableR.end()) break;
+                for (const auto& proc : usesProcs->second)
+                    result.insert(ProgramElement::createProcedure(proc));
             }
             break;
         }
         case PkbRelationshipType::kFollows: {
             if(!(isStatementType(rightSide.elementType) && isStatementType(typeToGet)))
                 throw std::invalid_argument("Wrong element type for getLeftSide on Follows");
-            for (const auto&[stmtNo, followsStmtNos] : db->followsTable) {
-                if (followsStmtNos.find(rightSide.stmtNo) == followsStmtNos.end()) continue;
-                ElementType stmtType = db->stmtTypeTable.at(stmtNo);
-                if (isStatementTypeToGet(typeToGet, stmtType))
-                    result.insert(ProgramElement::createStatement(typeToGet, stmtNo));
-            }
+            auto preceding = db->followsTableR.find(rightSide.stmtNo);
+            if (preceding == db->followsTableR.end()) break;
+            for (const int& precedingStmtNo : preceding->second)
+                insertStmtElement(result, db->elementStmtTable.at(precedingStmtNo), typeToGet);
             break;
         }
         case PkbRelationshipType::kFollowsT: {
             if(!(isStatementType(rightSide.elementType) && isStatementType(typeToGet)))
                 throw std::invalid_argument("Wrong element type for getLeftSide on FollowsT");
-            for (const auto&[stmtNo, followsTStmtNos] : db->followsTTable) {
-                if (followsTStmtNos.find(rightSide.stmtNo) == followsTStmtNos.end()) continue;
-                ElementType stmtType = db->stmtTypeTable.at(stmtNo);
-                if (isStatementTypeToGet(typeToGet, stmtType))
-                    result.insert(ProgramElement::createStatement(typeToGet, stmtNo));
-            }
+            auto precedingT = db->followsTTableR.find(rightSide.stmtNo);
+            if (precedingT == db->followsTTableR.end()) break;
+            for (const int& precedingTStmtNo : precedingT->second)
+                insertStmtElement(result, db->elementStmtTable.at(precedingTStmtNo), typeToGet);
             break;
         }
         case PkbRelationshipType::kParent: {
             if(!(isStatementType(rightSide.elementType) && isStatementType(typeToGet)))
                 throw std::invalid_argument("Wrong element type for getLeftSide on Parent");
-            for (const auto&[stmtNo, childrenStmtNos] : db->parentTable) {
-                if (childrenStmtNos.find(rightSide.stmtNo) == childrenStmtNos.end()) continue;
-                ElementType stmtType = db->stmtTypeTable.at(stmtNo);
-                if (isStatementTypeToGet(typeToGet, stmtType))
-                    result.insert(ProgramElement::createStatement(typeToGet, stmtNo));
-            }
+            auto parent = db->parentTableR.find(rightSide.stmtNo);
+            if (parent == db->parentTableR.end()) break;
+            for (const int& parentStmtNo : parent->second)
+                insertStmtElement(result, db->elementStmtTable.at(parentStmtNo), typeToGet);
             break;
         }
         case PkbRelationshipType::kParentT: {
             if(!(isStatementType(rightSide.elementType) && isStatementType(typeToGet)))
                 throw std::invalid_argument("Wrong element type for getLeftSide on ParentT");
-            for (const auto&[stmtNo, childrenTStmtNos] : db->parentTTable) {
-                if (childrenTStmtNos.find(rightSide.stmtNo) == childrenTStmtNos.end()) continue;
-                ElementType stmtType = db->stmtTypeTable.at(stmtNo);
-                if (isStatementTypeToGet(typeToGet, stmtType))
-                    result.insert(ProgramElement::createStatement(typeToGet, stmtNo));
-            }
+            auto parentT = db->parentTTableR.find(rightSide.stmtNo);
+            if (parentT == db->parentTTableR.end()) break;
+            for (const int& parentTStmtNo : parentT->second)
+                insertStmtElement(result, db->elementStmtTable.at(parentTStmtNo), typeToGet);
             break;
         }
         case PkbRelationshipType::kCalls: {
             if (!(typeToGet == ElementType::kProcedure && rightSide.elementType == ElementType::kProcedure))
                 throw std::invalid_argument("Wrong element type for getLeftSide on Calls");
-            for (const auto&[callsProc, calledProcs] : db->callsTable)
-                if (calledProcs.find(rightSide.procName) != calledProcs.end())
-                    result.insert(ProgramElement::createProcedure(callsProc));
+            auto caller = db->callsTableR.find(rightSide.procName);
+            if (caller == db->callsTableR.end()) break;
+            for (const std::string& callerProc : caller->second)
+                result.insert(ProgramElement::createProcedure(callerProc));
             break;
         }
         case PkbRelationshipType::kCallsT: {
             if (!(typeToGet == ElementType::kProcedure && rightSide.elementType == ElementType::kProcedure))
                 throw std::invalid_argument("Wrong element type for getLeftSide on CallsT");
-            for (const auto&[callsTProc, calledTProcs] : db->callsTTable)
-                if (calledTProcs.find(rightSide.procName) != calledTProcs.end())
-                    result.insert(ProgramElement::createProcedure(callsTProc));
+            auto callerT = db->callsTTableR.find(rightSide.procName);
+            if (callerT == db->callsTTableR.end()) break;
+            for (const std::string& callerTProc : callerT->second)
+                result.insert(ProgramElement::createProcedure(callerTProc));
+            break;
+        }
+        case PkbRelationshipType::kNext: {
+            if(!(isStatementType(rightSide.elementType) && isStatementType(typeToGet)))
+                throw std::invalid_argument("Wrong element type for getLeftSide on Next");
+            auto previous = db->nextTableR.find(rightSide.stmtNo);
+            if (previous == db->nextTableR.end()) break;
+            for (const int& previousStmtNo : previous->second)
+                insertStmtElement(result, db->elementStmtTable.at(previousStmtNo), typeToGet);
             break;
         }
         default:
@@ -351,11 +356,8 @@ std::set<ProgramElement> PkbGetter::getRightSide(const PkbRelationshipType& r, c
                 throw std::invalid_argument("Wrong element type for getRightSide on Follows");
             auto follows = db->followsTable.find(leftSide.stmtNo);
             if (follows == db->followsTable.end()) break;
-            for (const int& followsStmtNo : follows->second) {
-                ElementType followsStmtType = db->stmtTypeTable.at(followsStmtNo);
-                if (isStatementTypeToGet(typeToGet, followsStmtType))
-                    result.insert(ProgramElement::createStatement(typeToGet, followsStmtNo));
-            }
+            for (const int& followsStmtNo : follows->second)
+                insertStmtElement(result, db->elementStmtTable.at(followsStmtNo), typeToGet);
             break;
         }
         case PkbRelationshipType::kFollowsT: {
@@ -363,11 +365,8 @@ std::set<ProgramElement> PkbGetter::getRightSide(const PkbRelationshipType& r, c
                 throw std::invalid_argument("Wrong element type for getRightSide on FollowsT");
             auto followsT = db->followsTTable.find(leftSide.stmtNo);
             if (followsT == db->followsTTable.end()) break;
-            for (const int& followsTStmtNo : followsT->second) {
-                ElementType followsTStmtType = db->stmtTypeTable.at(followsTStmtNo);
-                if (isStatementTypeToGet(typeToGet, followsTStmtType))
-                    result.insert(ProgramElement::createStatement(typeToGet, followsTStmtNo));
-            }
+            for (const int& followsTStmtNo : followsT->second)
+                insertStmtElement(result, db->elementStmtTable.at(followsTStmtNo), typeToGet);
             break;
         }
         case PkbRelationshipType::kParent: {
@@ -375,11 +374,8 @@ std::set<ProgramElement> PkbGetter::getRightSide(const PkbRelationshipType& r, c
                 throw std::invalid_argument("Wrong element type for getRightSide on Parent");
             auto children = db->parentTable.find(leftSide.stmtNo);
             if (children == db->parentTable.end()) break;
-            for (const int& childStmtNo : children->second) {
-                ElementType childStmtType = db->stmtTypeTable.at(childStmtNo);
-                if (isStatementTypeToGet(typeToGet, childStmtType))
-                    result.insert(ProgramElement::createStatement(typeToGet, childStmtNo));
-            }
+            for (const int& childStmtNo : children->second)
+                insertStmtElement(result, db->elementStmtTable.at(childStmtNo), typeToGet);
             break;
         }
         case PkbRelationshipType::kParentT: {
@@ -387,11 +383,8 @@ std::set<ProgramElement> PkbGetter::getRightSide(const PkbRelationshipType& r, c
                 throw std::invalid_argument("Wrong element type for getRightSide on ParentT");
             auto childrenT = db->parentTTable.find(leftSide.stmtNo);
             if (childrenT == db->parentTTable.end()) break;
-            for (const int& childTStmtNo : childrenT->second) {
-                ElementType childTStmtType = db->stmtTypeTable.at(childTStmtNo);
-                if (isStatementTypeToGet(typeToGet, childTStmtType))
-                    result.insert(ProgramElement::createStatement(typeToGet, childTStmtNo));
-            }
+            for (const int& childTStmtNo : childrenT->second)
+                insertStmtElement(result, db->elementStmtTable.at(childTStmtNo), typeToGet);
             break;
         }
         case PkbRelationshipType::kCalls: {
@@ -412,10 +405,28 @@ std::set<ProgramElement> PkbGetter::getRightSide(const PkbRelationshipType& r, c
                 result.insert(ProgramElement::createProcedure(calledProc));
             break;
         }
+        case PkbRelationshipType::kNext: {
+            if (!(isStatementType(leftSide.elementType) && isStatementType(typeToGet)))
+                throw std::invalid_argument("Wrong element type for getRightSide on Next");
+            auto next = db->nextTable.find(leftSide.stmtNo);
+            if (next == db->nextTable.end()) break;
+            for (const int& nextStmtNo : next->second)
+                insertStmtElement(result, db->elementStmtTable.at(nextStmtNo), typeToGet);
+            break;
+        }
         default:
             throw std::invalid_argument("Unknown relationship type for getRightSide or didn't break");
     }
 
+    return result;
+}
+
+std::set<std::pair<ProgramElement, ProgramElement>> PkbGetter::getRelationshipPairs(const PkbRelationshipType& r, const ElementType& leftTypeToGet, const ElementType& rightTypeToGet) const {
+    std::set<std::pair<ProgramElement, ProgramElement>> result;
+    std::set<ProgramElement> leftSides = getEntity(leftTypeToGet);
+    for (const auto& leftSide : leftSides)
+        for (const auto& rightSide : getRightSide(r, leftSide, rightTypeToGet))
+            result.insert(std::make_pair(leftSide, rightSide));
     return result;
 }
 
