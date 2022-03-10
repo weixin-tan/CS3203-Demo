@@ -67,9 +67,16 @@ void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& pro
     DesignExtractor::computeReverse(db->callsTTable, db->callsTTableR);
 
     // validate design abstractions
-    pkbValidator.validateNoCyclicCall();
-    pkbValidator.validateCallsExists();
-    PkbValidator::validateNoDuplicateProcedure(procedures);
+    try {
+        pkbValidator.validateNoCyclicCall();
+        pkbValidator.validateCallsExists();
+        PkbValidator::validateNoDuplicateProcedure(procedures);
+    } catch (const std::exception& e) {
+        std::cout <<
+            "SIMPLE source semantic error detected. Details following:\n" <<
+            e.what() << '\n';
+        exit(1);
+    }
 
     // extract design abstractions (these assume that data is clean)
     designExtractor.extractFollows(db->followsTable);
