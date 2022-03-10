@@ -298,7 +298,13 @@ TEST_CASE("test advanced queries without with clauses"){
 
 TEST_CASE("debugging"){
   QueryProcessor qp = QueryProcessor();
-  qp.parsePQL("while w1, w2, w3; Select <w1.stmt#, w2.stmt#, w3.stmt#> such that Parent* (w1, w2) and Parent* (w2, w3)");
+  vector<Clause> x = qp.parsePQL("while w1; Select w1.stmt# with _ = 1");
+  if (x.empty()){
+    cout << " is invalid!\n";
+  }else{
+    cout << " is valid!\n";
+    cout << x[0].toString() << "\n";
+  }
 }
 /*
 METHODS TO TEST
