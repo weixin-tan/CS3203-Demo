@@ -3,6 +3,7 @@
 #include "PKB.h"
 #include "PkbRelationshipType.h"
 #include "PkbUtil.h"
+#include "DesignExtractor.h"
 
 #include "catch.hpp"
 
@@ -1221,4 +1222,13 @@ TEST_CASE("PKB Validation") {
     SECTION("Undefined call") {
         REQUIRE_THROWS(pkbSetter->insertStmts(tcData.UNDEFINITED_CALL_STMT_LIST));
     }
+}
+
+TEST_CASE("Compute Reverse") {
+    std::map<int, std::set<std::string>> normalMap {
+            {1, {"a", "b", "c"}}
+    };
+    std::map<std::string, std::set<int>> reverseMap;
+    DesignExtractor::computeReverse<int, std::string>(normalMap, reverseMap);
+    REQUIRE(!reverseMap.empty());
 }
