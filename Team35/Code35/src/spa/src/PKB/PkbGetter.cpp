@@ -431,15 +431,31 @@ std::set<std::pair<ProgramElement, ProgramElement>> PkbGetter::getRelationshipPa
 }
 
 // TODO: temporary, expression currently is just a constant or variable used
-std::set<ProgramElement> PkbGetter::getAssignmentGivenExpression(const ProgramElement& expression) const {
-    return getLeftSide(PkbRelationshipType::kUses, expression, ElementType::kAssignment);
+std::set<ProgramElement> PkbGetter::getAssignmentGivenExpression(const std::string expr, const ExpressionIndicator indicator) const {
+    return;
+    
 }
 
-std::set<ProgramElement> PkbGetter::getAssignmentGivenVariableAndExpression(const ProgramElement& variable, const ProgramElement& expression) const {
+std::set<ProgramElement> PkbGetter::getAssignmentGivenVariableAndExpression(const ProgramElement& variable, const std::string expr, const ExpressionIndicator indicator) const {
+    /*
     std::set<ProgramElement> result;
     std::set<ProgramElement> assignments = getAssignmentGivenExpression(expression);
     for (const auto& assignment : assignments)
         if (getRightSide(PkbRelationshipType::kModifies, assignment, ElementType::kVariable).count(variable) != 0)
             result.insert(assignment);
     return result;
+    */
+    return;
+}
+
+std::set<std::pair<ProgramElement, ProgramElement>> PkbGetter::getAssignmentWithVariableGivenExpression(const std::string expr, const ExpressionIndicator indicator) const {
+    return;
+}
+
+std::set<ProgramElement> PkbGetter::getIfGivenVariable(const ProgramElement& variable) const {
+    return;
+}
+
+std::set<ProgramElement> PkbGetter::getWhileGivenVariable(const ProgramElement& variable) const {
+    return;
 }
