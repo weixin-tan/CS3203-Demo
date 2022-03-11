@@ -41,7 +41,10 @@ PkbGetter::PkbGetter(DB* db) :
     followsGetter(db),
     followsTGetter(db),
     parentGetter(db),
-    parentTGetter(db)
+    parentTGetter(db),
+    callsGetter(db),
+    callsTGetter(db),
+    nextGetter(db)
     {}
 
 std::set<ProgramElement> PkbGetter::getEntity(const ElementType& typeToGet) const {
@@ -112,24 +115,15 @@ bool PkbGetter::isRelationship(const PkbRelationshipType& r, const ProgramElemen
             break;
         }
         case PkbRelationshipType::kCalls: {
-            if (!(leftSide.elementType == ElementType::kProcedure && rightSide.elementType == ElementType::kProcedure))
-                throw std::invalid_argument("Wrong element type for isCalls");
-            auto calls = db->callsTable.find(leftSide.procName);
-            result = (calls != db->callsTable.end() && calls->second.find(rightSide.procName) != calls->second.end());
+            result = callsGetter.isCalls(leftSide, rightSide);
             break;
         }
         case PkbRelationshipType::kCallsT: {
-            if (!(leftSide.elementType == ElementType::kProcedure && rightSide.elementType == ElementType::kProcedure))
-                throw std::invalid_argument("Wrong element type for isCallsT");
-            auto callsT = db->callsTTable.find(leftSide.procName);
-            result = (callsT != db->callsTTable.end() && callsT->second.find(rightSide.procName) != callsT->second.end());
+            result = callsTGetter.isCallsT(leftSide, rightSide);
             break;
         }
         case PkbRelationshipType::kNext : {
-            if(!(isStatementType(leftSide.elementType) && isStatementType(rightSide.elementType)))
-                throw std::invalid_argument("Wrong element type for isNext");
-            auto next = db->nextTable.find(leftSide.stmtNo);
-            result = (next != db->nextTable.end() && next->second.find(rightSide.stmtNo) != next->second.end());
+            result = nextGetter.isNext(leftSide, rightSide);
             break;
         }
         default:
@@ -171,30 +165,15 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const PkbRelationshipType& r, co
             break;
         }
         case PkbRelationshipType::kCalls: {
-            if (!(typeToGet == ElementType::kProcedure && rightSide.elementType == ElementType::kProcedure))
-                throw std::invalid_argument("Wrong element type for getLeftSide on Calls");
-            auto caller = db->callsTableR.find(rightSide.procName);
-            if (caller == db->callsTableR.end()) break;
-            for (const std::string& callerProc : caller->second)
-                result.insert(ProgramElement::createProcedure(callerProc));
+            result = callsGetter.getLeftCalls(rightSide, typeToGet);
             break;
         }
         case PkbRelationshipType::kCallsT: {
-            if (!(typeToGet == ElementType::kProcedure && rightSide.elementType == ElementType::kProcedure))
-                throw std::invalid_argument("Wrong element type for getLeftSide on CallsT");
-            auto callerT = db->callsTTableR.find(rightSide.procName);
-            if (callerT == db->callsTTableR.end()) break;
-            for (const std::string& callerTProc : callerT->second)
-                result.insert(ProgramElement::createProcedure(callerTProc));
+            result = callsTGetter.getLeftCallsT(rightSide, typeToGet);
             break;
         }
         case PkbRelationshipType::kNext: {
-            if(!(isStatementType(rightSide.elementType) && isStatementType(typeToGet)))
-                throw std::invalid_argument("Wrong element type for getLeftSide on Next");
-            auto previous = db->nextTableR.find(rightSide.stmtNo);
-            if (previous == db->nextTableR.end()) break;
-            for (const int& previousStmtNo : previous->second)
-                TemplateGetter::insertStmtElement(result, db->elementStmtTable.at(previousStmtNo), typeToGet);
+            result = nextGetter.getLeftNext(rightSide, typeToGet);
             break;
         }
         default:
@@ -234,30 +213,15 @@ std::set<ProgramElement> PkbGetter::getRightSide(const PkbRelationshipType& r, c
             break;
         }
         case PkbRelationshipType::kCalls: {
-            if (!(leftSide.elementType == ElementType::kProcedure && typeToGet == ElementType::kProcedure))
-                throw std::invalid_argument("Wrong element type for getRightSide on Calls");
-            auto calls = db->callsTable.find(leftSide.procName);
-            if (calls == db->callsTable.end()) break;
-            for (const std::string& calledProc : calls->second)
-                result.insert(ProgramElement::createProcedure(calledProc));
+            result = callsGetter.getRightCalls(leftSide, typeToGet);
             break;
         }
         case PkbRelationshipType::kCallsT: {
-            if (!(leftSide.elementType == ElementType::kProcedure && typeToGet == ElementType::kProcedure))
-                throw std::invalid_argument("Wrong element type for getRightSide on CallsT");
-            auto callsT = db->callsTTable.find(leftSide.procName);
-            if (callsT == db->callsTTable.end()) break;
-            for (const std::string& calledProc : callsT->second)
-                result.insert(ProgramElement::createProcedure(calledProc));
+            result = callsTGetter.getRightCallsT(leftSide, typeToGet);
             break;
         }
         case PkbRelationshipType::kNext: {
-            if (!(isStatementType(leftSide.elementType) && isStatementType(typeToGet)))
-                throw std::invalid_argument("Wrong element type for getRightSide on Next");
-            auto next = db->nextTable.find(leftSide.stmtNo);
-            if (next == db->nextTable.end()) break;
-            for (const int& nextStmtNo : next->second)
-                TemplateGetter::insertStmtElement(result, db->elementStmtTable.at(nextStmtNo), typeToGet);
+            result = nextGetter.getRightNext(leftSide, typeToGet);
             break;
         }
         default:

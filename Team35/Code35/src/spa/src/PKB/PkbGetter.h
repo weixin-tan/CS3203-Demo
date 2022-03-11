@@ -11,6 +11,9 @@
 #include "FollowsTGetter.h"
 #include "ParentGetter.h"
 #include "ParentTGetter.h"
+#include "CallsGetter.h"
+#include "CallsTGetter.h"
+#include "NextGetter.h"
 
 class PkbGetter {
 private:
@@ -21,6 +24,9 @@ private:
     FollowsTGetter followsTGetter;
     ParentGetter parentGetter;
     ParentTGetter parentTGetter;
+    CallsGetter callsGetter;
+    CallsTGetter callsTGetter;
+    NextGetter nextGetter;
 
 private:
     bool isExists(const ProgramElement& elementToCheck) const;
