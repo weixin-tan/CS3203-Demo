@@ -1211,16 +1211,16 @@ TEST_CASE("PKB Validation") {
     std::set<ProgramElement> resultElementSet, expectedElementSet;
     PKB_VALIDATION_TEST_CASES tcData;
     SECTION("Recursive call") {
-        REQUIRE_THROWS(pkbSetter->insertStmts(tcData.RECURSIVE_CALL_STMT_LIST));
+        REQUIRE_THROWS(pkbSetter->insertStmts(tcData.RECURSIVE_CALL_STMT_LIST, true));
     }
     SECTION("Cyclic call") {
-        REQUIRE_THROWS(pkbSetter->insertStmts(tcData.CYCLIC_CALL_STMT_LIST));
+        REQUIRE_THROWS(pkbSetter->insertStmts(tcData.CYCLIC_CALL_STMT_LIST, true));
     }
     SECTION("Duplicate Procedure") {
-        REQUIRE_THROWS(pkbSetter->insertStmts(tcData.DUPLICATE_PROCEDURE_STMT_LIST));
+        REQUIRE_THROWS(pkbSetter->insertStmts(tcData.DUPLICATE_PROCEDURE_STMT_LIST, true));
     }
     SECTION("Undefined call") {
-        REQUIRE_THROWS(pkbSetter->insertStmts(tcData.UNDEFINITED_CALL_STMT_LIST));
+        REQUIRE_THROWS(pkbSetter->insertStmts(tcData.UNDEFINITED_CALL_STMT_LIST, true));
     }
 }
 

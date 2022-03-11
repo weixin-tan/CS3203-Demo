@@ -54,7 +54,7 @@ void PkbSetter::insertStmt(const ParsedStatement& parsedStatement) {
     handleProcedure(parsedStatement);
 }
 
-void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& procedures) {
+void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& procedures, bool testing) {
     // insert legacy stuff, might be deprecated
     for (const auto& procedure : procedures)
         for (const auto& parsedStatement : procedure)
@@ -72,6 +72,7 @@ void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& pro
         pkbValidator.validateCallsExists();
         PkbValidator::validateNoDuplicateProcedure(procedures);
     } catch (const std::exception& e) {
+        if (testing) throw e;  // testing purpose
         std::cout <<
             "SIMPLE source semantic error detected. Details following:\n" <<
             e.what() << '\n';
