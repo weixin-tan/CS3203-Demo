@@ -174,7 +174,10 @@ bool checkRelRefList(std::vector<std::string> sArr){
 bool checkPatternList(std::vector<std::string> patternList, std::unordered_map<std::string, Entity>* entityMap){
   if (patternList.size() == 3 && isEntRef(patternList[1]) && entityMapContains(patternList[0], entityMap)){
     Entity e = (*entityMap)[patternList[0]];
-    return e.eType == EntityType::Assignment || e.eType == EntityType::If || e.eType == EntityType::While;
+    return e.eType == EntityType::Assignment || (e.eType == EntityType::While && isWildCard(patternList[2]));
+  }else if (patternList.size() == 4 && isEntRef(patternList[1]) && entityMapContains(patternList[0], entityMap)){
+    Entity e = (*entityMap)[patternList[0]];
+    return e.eType == EntityType::If && isWildCard(patternList[2]) && isWildCard(patternList[3]);
   }
   return false;
 }
@@ -668,6 +671,20 @@ std::vector<std::string> extractItemsInBrackets(const std::string& s){
     returnList.push_back(stripString(s.substr(0, openBracketPosition)));
     returnList.push_back(stripString(s.substr(openBracketPosition+1, commaPosition - openBracketPosition - 1)));
     returnList.push_back(stripString(s.substr(commaPosition+1, closeBracketPosition - commaPosition - 1)));
+  }
+  return returnList;
+}
+
+std::vector<std::string> extractPatternBrackets(const std::string& s ){
+  std::vector<std::string> returnList;
+  long openBracketPosition = s.find('(');
+  long closeBracketPosition = s.find(')');
+
+  if (openBracketPosition != std::string::npos && closeBracketPosition != std::string::npos ){
+    returnList.push_back(stripString(s.substr(0, openBracketPosition)));
+    std::string temp =  extractStringWithoutFirstAndLastChar(s.substr(openBracketPosition, closeBracketPosition));
+    std::vector<std::string> tempArr = splitString(temp, ",");
+    returnList.insert(std::end(returnList), std::begin(tempArr), std::end(tempArr));
   }
   return returnList;
 }

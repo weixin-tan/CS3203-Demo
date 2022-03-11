@@ -16,6 +16,7 @@ public:
   void appendRef(const RelationshipRef& r);
   std::string toString();
   bool operator==(const Clause & c1);
+  bool equals(const Clause &c1);
 };
 
 
