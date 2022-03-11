@@ -538,11 +538,34 @@ std::vector<std::string> extractWithClauses(const std::string& s){
   std::vector<std::string> toReturn;
   std::string temp = std::regex_replace( s, std::regex( "=" ), " " );
   std::vector<std::string> tempList = splitStringBySpaces(temp);
-  while (tempList.size() % 3 != 0){
-    tempList.emplace_back("");
+  std::vector<std::string> tokenList;
+
+  std::string tempString;
+  bool afterDot = false;
+  int i = 0;
+  int j = 0;
+
+  while (i < tempList.size()){
+    if (tempList[i] == "."){
+      afterDot = true;
+    }else if (afterDot){
+      j = j - 1;
+      tokenList[j] = tokenList[j] + "." + tempList[i];
+      j = j + 1;
+      afterDot = false;
+    }else{
+      tokenList.push_back(tempList[i]);
+      j = j + 1;
+    }
+    i = i + 1;
   }
-  for (int i = 0; i < tempList.size(); i=i+3){
-    temp = tempList[i] + " " + tempList[i+1] + " " + tempList[i+2];
+
+  while (tokenList.size() % 3 != 0){
+    tokenList.emplace_back("");
+  }
+
+  for (int i = 0; i < tokenList.size(); i=i+3){
+    temp = tokenList[i] + " " + tokenList[i+1] + " " + tokenList[i+2];
     toReturn.push_back(temp);
   }
   return toReturn;

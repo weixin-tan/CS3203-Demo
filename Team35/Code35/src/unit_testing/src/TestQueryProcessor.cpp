@@ -391,8 +391,15 @@ TEST_CASE("test advanced queries without with clauses"){
 
 TEST_CASE("debugging"){
   QueryProcessor qp = QueryProcessor();
-  //Clause c = qp.parsePQL(  "if ifs; while w; Select ifs pattern ifs(\"a\",_,_)")[0];
-  //cout << c.toString() << "\n";
+  vector<Clause> c = qp.parsePQL(  "if\tifs\n,\tx; assign such; while w;\nSelect\n<such,\nifs\n.\nstmt#\n,\nx\n>\nwith ifs    .    stmt# = 13 and x   .   stmt#  =   x\t.\tstmt# such that Follows(such,2) pattern ifs(\n_\"test\"_\n,\n_\n,\n_\t)");
+  /*
+  if (c.empty()){
+    cout << "invalid!" << "\n";
+  }else{
+    cout << c[0].toString() << "\n";
+  }
+  */
+
 }
 /*
 METHODS TO TEST
