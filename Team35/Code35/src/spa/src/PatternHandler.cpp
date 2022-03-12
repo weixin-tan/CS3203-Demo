@@ -1,5 +1,5 @@
 #include "PatternHandler.h"
-#include "EntityToElementConverter.h"
+#include "QpsTypeToPkbTypeConvertor.h"
 
 PatternHandler::PatternHandler(PkbGetter* pg) {
   PatternHandler::pg = pg;
@@ -11,7 +11,7 @@ Result PatternHandler::handlePattern(const Entity& entityToGet, const Relationsh
   Entity left = relRef.leftEntity;
   Entity right = relRef.rightEntity;
   Entity assign = relRef.AssignmentEntity;
-  ElementType pkbElement = EntityToElementConverter::extractElementType(entityToGet);
+  ElementType pkbElement = QpsTypeToPkbTypeConvertor::extractElementType(entityToGet);
   Result result;
 
   if (left.eType == EntityType::Wildcard && right.eType == EntityType::Wildcard) {
@@ -40,7 +40,7 @@ Result PatternHandler::handleDoubleWildcard() {
 Result PatternHandler::handleLeftWildcard(const Entity& rightEntity) {
   assert(rightEntity.eType == EntityType::FixedStringWithinWildcard); //Iteration 1
   Result result;
-  ProgramElement rightElement = EntityToElementConverter::fixedEntityConverter(rightEntity);
+  ProgramElement rightElement = QpsTypeToPkbTypeConvertor::fixedEntityConverter(rightEntity);
   std::set<ProgramElement> resultElements = pg->getLeftSide(PkbRelationshipType::kUses, rightElement, ElementType::kAssignment);
   result.setPatternElements(resultElements);
   return result;
@@ -51,7 +51,7 @@ Result PatternHandler::handleRightWildcard(const Entity& leftEntity) {
   std::set<ProgramElement> resultElements;
   std::set<std::pair<ProgramElement,ProgramElement>> entRefResultElements;
   if (leftEntity.eType == EntityType::FixedString) {
-    ProgramElement leftElement = EntityToElementConverter::fixedEntityConverter(leftEntity);
+    ProgramElement leftElement = QpsTypeToPkbTypeConvertor::fixedEntityConverter(leftEntity);
     resultElements = pg->getLeftSide(PkbRelationshipType::kModifies, leftElement, ElementType::kAssignment);
   } else if (leftEntity.eType == EntityType::Variable) {
     result.setAssignEntRef(leftEntity);

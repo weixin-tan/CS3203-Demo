@@ -1,5 +1,5 @@
 #include "QPSHandler.h"
-#include "EntityToElementConverter.h"
+#include "QpsTypeToPkbTypeConvertor.h"
 
 QPSHandler::QPSHandler(PkbGetter* pg) {
   QPSHandler::pg = pg;
@@ -23,10 +23,10 @@ std::vector<Result> QPSHandler::processClause(const std::vector<Clause> &clauses
 
     for (const RelationshipRef& r : refList) {
       assert(("Relationship type is Null", r.rType != RelationshipType::Null));
-      bool a = !EntityToElementConverter::isValid(r.leftEntity.name) ;
-      bool b = !EntityToElementConverter::isValid(r.rightEntity.name);
-      bool c = !EntityToElementConverter::isValid(r.AssignmentEntity.name);
-      if (!EntityToElementConverter::isValid(r.leftEntity.name) || !EntityToElementConverter::isValid(r.rightEntity.name) || !EntityToElementConverter::isValid(r.AssignmentEntity.name)) {
+      bool a = !QpsTypeToPkbTypeConvertor::isValid(r.leftEntity.name) ;
+      bool b = !QpsTypeToPkbTypeConvertor::isValid(r.rightEntity.name);
+      bool c = !QpsTypeToPkbTypeConvertor::isValid(r.AssignmentEntity.name);
+      if (!QpsTypeToPkbTypeConvertor::isValid(r.leftEntity.name) || !QpsTypeToPkbTypeConvertor::isValid(r.rightEntity.name) || !QpsTypeToPkbTypeConvertor::isValid(r.AssignmentEntity.name)) {
         std::vector<Result> empty = {};
         return empty;
       }
@@ -43,7 +43,7 @@ std::vector<Result> QPSHandler::processClause(const std::vector<Clause> &clauses
 
 Result QPSHandler::handleNoRelationshipRef(const Entity& entityToFind) const {
   Result result;
-  ElementType elementTypeToGet = EntityToElementConverter::extractElementType(entityToFind);
+  ElementType elementTypeToGet = QpsTypeToPkbTypeConvertor::extractElementType(entityToFind);
   std::set<ProgramElement> resultElements = pg->getEntity(elementTypeToGet);
   result.setNoClauseElements(resultElements);
   result.setResultEntity(entityToFind);

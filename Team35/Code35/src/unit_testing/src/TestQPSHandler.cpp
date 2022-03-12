@@ -2,7 +2,7 @@
 #include "PKB.h"
 #include "QueryProcessor.h"
 #include "QPSMainLogic.h"
-#include "EntityToElementConverter.h"
+#include "QpsTypeToPkbTypeConvertor.h"
 
 PKB pkb = PKB();
 QPSMainLogic* qr = QPSMainLogic::getInstance(pkb.getGetter());
