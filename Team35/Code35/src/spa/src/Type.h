@@ -3,6 +3,7 @@
 
 #include <map>
 #include <string>
+#include <unordered_map>
 
 enum class EntityType {
   Statement,
@@ -49,11 +50,22 @@ enum class EntityAttributeType{
   Null
 };
 
+enum class ResultType{
+  NoClause,
+  SuchThatClause,
+  PatternClause,
+  WithClause
+};
+
 class Type{
+ private:
+  static const std::unordered_map<ResultType, std::string> resultTypeToStringMap;
+
  public:
   static std::string entityTypeToString(EntityType e);
   static std::string relationshipTypeToString(RelationshipType r);
   static std::string attributeTypeToString(EntityAttributeType a);
+  static std::string resultTypeToString(ResultType r);
 };
 
 #endif //SPA_TYPE_H

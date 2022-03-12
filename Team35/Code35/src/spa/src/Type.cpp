@@ -1,4 +1,12 @@
+#include <unordered_map>
 #include "Type.h"
+
+const std::unordered_map<ResultType, std::string> Type::resultTypeToStringMap = {
+  {ResultType::NoClause, "NoClause"},
+  {ResultType::SuchThatClause, "SuchThatClause"},
+  {ResultType::PatternClause, "PatternClause"},
+  {ResultType::WithClause, "WithClause"}
+};
 
 std::string Type::entityTypeToString(EntityType e){
   switch(e){
@@ -51,3 +59,7 @@ std::string Type::attributeTypeToString(EntityAttributeType a) {
   }
 }
 
+std::string Type::resultTypeToString(ResultType r) {
+  auto iter = Type::resultTypeToStringMap.find(r);
+  return iter->second;
+}
