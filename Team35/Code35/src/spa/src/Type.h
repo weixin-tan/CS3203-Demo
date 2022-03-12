@@ -54,7 +54,8 @@ enum class ResultType{
   NoClause,
   SuchThatClause,
   PatternClause,
-  WithClause
+  WithClause,
+  NullClause
 };
 
 class Type{

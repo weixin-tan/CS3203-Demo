@@ -5,7 +5,8 @@ const std::unordered_map<ResultType, std::string> Type::resultTypeToStringMap = 
   {ResultType::NoClause, "NoClause"},
   {ResultType::SuchThatClause, "SuchThatClause"},
   {ResultType::PatternClause, "PatternClause"},
-  {ResultType::WithClause, "WithClause"}
+  {ResultType::WithClause, "WithClause"},
+  {ResultType::NullClause, "NullClause"}
 };
 
 std::string Type::entityTypeToString(EntityType e){

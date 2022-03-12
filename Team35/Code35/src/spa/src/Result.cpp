@@ -2,85 +2,60 @@
 
 #include <utility>
 
-Result::Result() = default;
-
-void Result::setNoClauseElements(std::set<ProgramElement> elements) {
-  Result::noClauseElements = elements;
+// To initialise empty result class
+Result::Result() {
+  type = ResultType::NullClause;
+  valid = false;
+  oneSynEntity = Entity();
+  oneSynSet = {};
+  twoSynEntities = std::pair<Entity, Entity>(Entity(), Entity());
+  twoSynSet = {};
 }
 
-void Result::setSuchThatElements(std::set<std::pair<ProgramElement, ProgramElement>> elements) {
-    Result::suchThatElements = elements;
+void Result::setResultType(ResultType r) {
+  Result::type = r;
 }
 
-void Result::setPatternElements(std::set<ProgramElement> elements) {
-  Result::patternElements = elements;
+void Result::setValid(bool b) {
+  Result::valid = b;
 }
 
-void Result::setResultEntity(Entity entityToGet) {
-  Result::resultEntity = entityToGet;
+void Result::setOneSynEntity(Entity e) {
+  Result::oneSynEntity = e;
 }
 
-void Result::setLeftSuchThatEntity(Entity left) {
-  Result::leftSuchThatEntity = left;
+void Result::setOneSynSet(std::set<ProgramElement> s) {
+  Result::oneSynSet = s;
 }
 
-void Result::setRightSuchThatEntity(Entity right) {
-  Result::rightSuchThatEntity = right;
+void Result::setTwoSynEntities(std::pair<Entity, Entity> p) {
+  Result::twoSynEntities = p;
 }
 
-void Result::setAssignEntity(Entity assign) {
-  Result::assignEntity = assign;
+void Result::setTwoSynSet(std::set<std::pair<ProgramElement, ProgramElement>> t) {
+  Result::twoSynSet = t;
 }
 
-void Result::setAssignEntRef(Entity entRef) {
-  Result::assignEntRef = entRef;
+ResultType Result::getResultType() {
+  return Result::type;
 }
 
-void Result::setEntRefElements(std::set<std::pair<ProgramElement, ProgramElement>> elements) {
-  Result::entRefElements = elements;
+bool Result::getValid() {
+  return Result::valid;
 }
 
-std::set<ProgramElement> Result::getNoClauseElements() {
-    return Result::noClauseElements;
+Entity Result::getOneSynEntity() {
+  return Result::oneSynEntity;
 }
 
-std::set<ProgramElement> Result::getPatternElements() {
-  return Result::patternElements;
+std::set<ProgramElement> Result::getOneSynSet() {
+  return Result::oneSynSet;
 }
 
-std::set<std::pair < ProgramElement, ProgramElement>> Result::getSuchThatElements() {
-  return Result::suchThatElements;
+std::pair<Entity, Entity> Result::getTwoSynEntities() {
+  return Result::twoSynEntities;
 }
 
-Entity Result::getResultEntity() {
-    return Result::resultEntity;
-}
-
-Entity Result::getLeftSuchThatEntity() {
-    return Result::leftSuchThatEntity;
-}
-
-Entity Result::getRightSuchThatEntity() {
-    return Result::rightSuchThatEntity;
-}
-
-Entity Result::getAssignEntity() {
-    return Result::assignEntity;
-}
-
-Entity Result::getAssignEntRef() {
-  return Result::assignEntRef;
-}
-
-std::set<std::pair<ProgramElement, ProgramElement>> Result::getEntRefElements() {
-    return Result::entRefElements;
-}
-
-bool Result::allSuchThatAndPatternEntitiesNull() {
-    if (Result::leftSuchThatEntity.eType == EntityType::Null && Result::rightSuchThatEntity.eType == EntityType::Null
-    && Result::assignEntity.eType == EntityType::Null) {
-      return true;
-    } else {
-      return false;
-    }
+std::set<std::pair<ProgramElement, ProgramElement>> Result::getTwoSynSet() {
+  return Result::twoSynSet;
 }
