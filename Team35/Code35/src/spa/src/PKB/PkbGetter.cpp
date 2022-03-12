@@ -430,32 +430,108 @@ std::set<std::pair<ProgramElement, ProgramElement>> PkbGetter::getRelationshipPa
     return result;
 }
 
-// TODO: temporary, expression currently is just a constant or variable used
-std::set<ProgramElement> PkbGetter::getAssignmentGivenExpression(const std::string expr, const ExpressionIndicator indicator) const {
-    return;
+// This would give the assignments that fulfills the following expression. 
+std::set<ProgramElement> PkbGetter::getAssignmentGivenExpression(const Expr expr, const ExpressionIndicator indicator) const{
+    std::set<ProgramElement> result;
+    // Converting it to an expression first
+    Expr expr1 = expr;
+
+    std::map<int, Expr>::iterator it;
+    for (it = db->exprTable.begin(); it != db->exprTable.end(); it++) {
+        // if expression does not exist. 
+        if (it->second.isNullExpr()) { continue; }
+        if (expressionProcessor.fullfillsMatching(expr1, it->second, indicator)) {
+            // get the assignment
+            ProgramElement res = db->elementStmtTable.at(it->first);
+            result.insert(res);
+        }
+    }
+    return result;
     
 }
 
-std::set<ProgramElement> PkbGetter::getAssignmentGivenVariableAndExpression(const ProgramElement& variable, const std::string expr, const ExpressionIndicator indicator) const {
-    /*
+std::set<ProgramElement> PkbGetter::getAssignmentGivenVariableAndExpression(const ProgramElement& variable, const Expr expr, const ExpressionIndicator indicator) const {
+
     std::set<ProgramElement> result;
-    std::set<ProgramElement> assignments = getAssignmentGivenExpression(expression);
-    for (const auto& assignment : assignments)
-        if (getRightSide(PkbRelationshipType::kModifies, assignment, ElementType::kVariable).count(variable) != 0)
-            result.insert(assignment);
+    // Converting it to an expression first
+    Expr expr1 = expr;
+
+    // Get the assignments that match the variable. 
+    std::set<ProgramElement> assignments = getLeftSide(PkbRelationshipType::kModifies, variable, ElementType::kAssignment);
+    // Get the line numbers for the assignments only. 
+    std::set<int> assignmentNo;
+    for (const auto &itset : assignments) {
+        assignmentNo.insert(itset.stmtNo);
+    }
+    
+    // iterate through the DB stmt table to find the assignments only that match variable. 
+    for (const auto it: assignmentNo) {
+        // get the expression
+        Expr expr2 = db->exprTable[it];
+        // if it exists, we will then check if it is the correct expression 
+        if (expressionProcessor.fullfillsMatching(expr1, expr2, indicator)) {
+            
+            //if it is the correct expression, we get the program element and
+            //put into the results
+            result.insert(db->elementStmtTable.at(it));
+        }
+        
+    }
     return result;
-    */
-    return;
 }
 
-std::set<std::pair<ProgramElement, ProgramElement>> PkbGetter::getAssignmentWithVariableGivenExpression(const std::string expr, const ExpressionIndicator indicator) const {
-    return;
+std::set<std::pair<ProgramElement, ProgramElement>> PkbGetter::getAssignmentWithVariableGivenExpression(const Expr expr, const ExpressionIndicator indicator) const {
+    
+    std::set<std::pair<ProgramElement, ProgramElement>> result;
+    // Converting it to an expression first
+    Expr expr1 = expr;
+
+    std::map<int, Expr>::iterator it;
+    for (it = db->exprTable.begin(); it != db->exprTable.end(); it++) {
+        // if expression does not exist. 
+        if (it->second.isNullExpr()) { continue; }
+        if (expressionProcessor.fullfillsMatching(expr1, it->second, indicator)) {
+            // get the assignment
+            auto elementIter = db->elementStmtTable.find(it->first);
+
+            ProgramElement first = ProgramElement::createVariable(db->stmtTable.at(it->first).var_modified.at(0));
+            ProgramElement second = db->elementStmtTable.at(it->first);
+            result.insert(std::make_pair(first, second));
+        }
+    }
+    return result;
 }
 
 std::set<ProgramElement> PkbGetter::getIfGivenVariable(const ProgramElement& variable) const {
-    return;
+    std::set<ProgramElement> result; 
+    std::map<int, ParsedStatement>::iterator it;
+    for (it = db->stmtTable.begin(); it != db->stmtTable.end(); it++) {
+        // if the statement is a if statement
+        // and the variable USED in the if statement (statically)
+        // contains the variable
+        std::vector<std::string> varUsed = it->second.var_used;
+        bool isVarPresent = std::find(varUsed.begin(), varUsed.end(), variable.varName) != varUsed.end();
+        if (it->second.statement_type == StatementType::kif_stmt &&
+             isVarPresent){
+            result.insert(db->elementStmtTable.at(it->first));
+        }
+    }
+    return result;
 }
 
 std::set<ProgramElement> PkbGetter::getWhileGivenVariable(const ProgramElement& variable) const {
-    return;
+    std::set<ProgramElement> result;
+    std::map<int, ParsedStatement>::iterator it;
+    for (it = db->stmtTable.begin(); it != db->stmtTable.end(); it++) {
+        // if the statement is a while statement
+        // and the variable USED in the while statement (statically)
+        // contains the variable
+        std::vector<std::string> varUsed = it->second.var_used;
+        bool isVarPresent = std::find(varUsed.begin(), varUsed.end(), variable.varName) != varUsed.end();
+        if (it->second.statement_type == StatementType::kwhile_stmt &&
+            isVarPresent) {
+            result.insert(db->elementStmtTable.at(it->first));
+        }
+    }
+    return result;
 }

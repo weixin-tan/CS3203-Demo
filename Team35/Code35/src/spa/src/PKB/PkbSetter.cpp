@@ -33,6 +33,10 @@ void PkbSetter::handleConstants(const ParsedStatement& statement) {
     }
 }
 
+void PkbSetter::handleExpression(const ParsedStatement& statement) {
+    db->exprTable[statement.stmt_no] = statement.pattern;
+}
+
 ProgramElement PkbSetter::convertParsedStatement(const ParsedStatement& statement) {
     ElementType elementType = spTypeToElementTypeTable.at(statement.statement_type);
     std::string procOrVarName = ProgramElement::nullStringValue;
@@ -52,6 +56,7 @@ void PkbSetter::insertStmt(const ParsedStatement& parsedStatement) {
     handleVariables(parsedStatement);
     handleConstants(parsedStatement);
     handleProcedure(parsedStatement);
+    handleExpression(parsedStatement);
 }
 
 void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& procedures) {

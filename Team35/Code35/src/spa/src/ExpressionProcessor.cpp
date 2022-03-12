@@ -4,7 +4,7 @@
 #include <iostream>
 
 // code to be refactored
-Expr ExpressionProcessor::stringToExpr(std::string query) {
+Expr ExpressionProcessor::stringToExpr(std::string query) const {
 	query = query + ";";
 	Tokeniser tokeniser;
 	std::queue<Token> tokenQueue = tokeniser.putInQueue(query);
@@ -12,7 +12,8 @@ Expr ExpressionProcessor::stringToExpr(std::string query) {
 	return validator.parseExpr(tokenQueue);
 }
 
-bool ExpressionProcessor::fullfillsMatching(Expr exp1, Expr exp2, ExpressionIndicator expressionIndicator) {
+// Checks if exp1 is a subset of exp2. 
+bool ExpressionProcessor::fullfillsMatching(Expr exp1, Expr exp2, ExpressionIndicator expressionIndicator) const {
 	if (expressionIndicator == ExpressionIndicator::FULL_MATCH) {
 		return areIdenticalExpr(&exp1, &exp2);
 	}
@@ -40,7 +41,7 @@ bool ExpressionProcessor::fullfillsMatching(Expr exp1, Expr exp2, ExpressionIndi
 
 // We can only check whether expressions are similar. 
 // returns True or False if the expressions are similar. 
-bool ExpressionProcessor::areIdenticalExpr(Expr *root1, Expr *root2) {
+bool ExpressionProcessor::areIdenticalExpr(Expr *root1, Expr *root2) const {
 	if (root1 == nullptr && root2 == nullptr) {
 		return true; 
 	}
@@ -53,7 +54,7 @@ bool ExpressionProcessor::areIdenticalExpr(Expr *root1, Expr *root2) {
 		areIdenticalTerm(root1->getTermPtr(), root2->getTermPtr());
 }
 
-bool ExpressionProcessor::areIdenticalTerm(Term* root1, Term* root2) {
+bool ExpressionProcessor::areIdenticalTerm(Term* root1, Term* root2) const {
 	if (root1 == nullptr && root2 == nullptr) {
 		return true;
 	}
@@ -66,7 +67,7 @@ bool ExpressionProcessor::areIdenticalTerm(Term* root1, Term* root2) {
 
 }
 
-bool ExpressionProcessor::areIdenticalFactor(Factor* root1, Factor* root2) {
+bool ExpressionProcessor::areIdenticalFactor(Factor* root1, Factor* root2) const {
 	if (root1 == nullptr && root2 == nullptr) {
 		return true;
 	}
@@ -82,7 +83,7 @@ bool ExpressionProcessor::areIdenticalFactor(Factor* root1, Factor* root2) {
 
 // Checking if they are partial match or not. 
 // returns TRUE if root 1 is a subtree of root2 
-bool ExpressionProcessor::isSubtree(Expr* root1, Expr* root2) {
+bool ExpressionProcessor::isSubtree(Expr* root1, Expr* root2) const {
 	bool res = false;
 	if (root1 == nullptr) {
 		return true; 
@@ -102,7 +103,7 @@ bool ExpressionProcessor::isSubtree(Expr* root1, Expr* root2) {
 	
 }
 
-bool ExpressionProcessor::isSubtree(Term* term1, Term* term2) {
+bool ExpressionProcessor::isSubtree(Term* term1, Term* term2) const {
 	bool res = false;
 	if (term1 == nullptr) {
 		return true;
@@ -118,7 +119,7 @@ bool ExpressionProcessor::isSubtree(Term* term1, Term* term2) {
 }
 
 
-bool ExpressionProcessor::isSubtree(Term* term1, Expr* root2) {
+bool ExpressionProcessor::isSubtree(Term* term1, Expr* root2) const {
 	if (term1 == nullptr) {
 		std::cout << "it shouldnt activate";
 		return true;
@@ -130,7 +131,7 @@ bool ExpressionProcessor::isSubtree(Term* term1, Expr* root2) {
 }
 
 
-bool ExpressionProcessor::isSubtree(Expr* root1, Term* term2) {
+bool ExpressionProcessor::isSubtree(Expr* root1, Term* term2) const {
 	if (term2 == nullptr) {
 		return false; 
 	}
@@ -145,7 +146,7 @@ bool ExpressionProcessor::isSubtree(Expr* root1, Term* term2) {
 }
 
 // To get the nested expression from the root. 
-std::shared_ptr<Expr> ExpressionProcessor::getNestedExpr(Term* root2)
+std::shared_ptr<Expr> ExpressionProcessor::getNestedExpr(Term* root2) const
 {
 	if (root2->getFactorPtr() != nullptr) {
 		Factor* factor = root2->getFactorPtr();

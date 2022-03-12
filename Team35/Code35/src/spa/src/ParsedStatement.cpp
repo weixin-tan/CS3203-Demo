@@ -4,7 +4,7 @@
 //Defining static const variables here
 
 int ParsedStatement::default_null_stmt_no = -1;
-std::string ParsedStatement::default_pattern = "";
+Expr ParsedStatement::default_pattern;
 std::string ParsedStatement::default_procedure_name = "";
 
 ParsedStatement::ParsedStatement() {
@@ -12,7 +12,7 @@ ParsedStatement::ParsedStatement() {
 	this->if_stmt_no = default_null_stmt_no; //if statement number refers to the statement number of if
 	this->while_stmt_no = default_null_stmt_no; // while statement number refers to the statement number of while
 	this->statement_type = StatementType::knone; // what kind of statement it is.
-	this->pattern = default_pattern; // implementation not done
+	this->pattern = default_pattern; 
 	this->procedure_name = default_procedure_name;
 	this->var_used;
 	this->var_modified;
@@ -22,7 +22,7 @@ ParsedStatement::ParsedStatement() {
 }
 
 ParsedStatement::ParsedStatement(int stmt_no, int if_stmt_no, int while_stmt_no,
-	StatementType statement_type, std::string pattern, std::string procedure_name,
+	StatementType statement_type, Expr pattern, std::string procedure_name,
 	std::vector<std::string> var_used, std::vector<std::string> var_modified, std::vector<std::string> constant,
 	std::string procedure_called, int preceding) {
 
@@ -37,7 +37,5 @@ ParsedStatement::ParsedStatement(int stmt_no, int if_stmt_no, int while_stmt_no,
 	this->constant = constant;
 	this->procedure_called = procedure_called;
 	this->preceding = preceding;
-	
-
 
 }
