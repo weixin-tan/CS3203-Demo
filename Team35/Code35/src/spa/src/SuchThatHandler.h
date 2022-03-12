@@ -11,18 +11,19 @@
 class SuchThatHandler {
 private:
   PkbGetter* pg;
-  const bool LEFT = true;
-  const bool RIGHT = false;
-  Result handleBoolCheck(const Entity& entityToGet, const RelationshipRef& relRef);
-  Result handleLeftSide(const Entity& entityToGet, const Entity& rightEntity, PkbRelationshipType relType);
-  Result handleRightSide(const Entity& entityToGet, const Entity& leftEntity, PkbRelationshipType relType);
-  std::set<std::pair<ProgramElement, ProgramElement>> getFixedEntityPairs(PkbRelationshipType relType, const Entity& givenEntity, ElementType t, bool direction);
-  std::set<std::pair<ProgramElement, ProgramElement>> getAllCombinationsOfPairs(PkbRelationshipType relType, const Entity& givenEntity, ElementType t, bool direction);
-  PkbRelationshipType convertRel(RelationshipType r);
-  Result handleCalls(PkbRelationshipType pkbRel, const Entity& leftEntity, const Entity& rightEntity);
+
+  bool handleNoSynonyms(PkbRelationshipType r, Entity left, Entity right);
+  bool handleNoSynProcWildcard(PkbRelationshipType r, Entity left, Entity right);
+  bool handleNoSynStmtWildcard(PkbRelationshipType r, Entity left, Entity right);
+  bool handleNoSynVarWildcard(PkbRelationshipType r, Entity left);
+  std::set<ProgramElement> handleRightSyn(PkbRelationshipType r, Entity left, Entity right);
+  std::set<ProgramElement> handleLeftSyn(PkbRelationshipType r, Entity left, Entity right);
+  std::set<std::pair<ProgramElement, ProgramElement>> handleTwoSyn(PkbRelationshipType r, Entity left, Entity right);
+
 public:
   explicit SuchThatHandler(PkbGetter* pg);
-  Result handleSuchThat(const Entity& entityToGet, const RelationshipRef& relRef);
+  Result handleSuchThat(const RelationshipRef& relRef);
+
 };
 
 

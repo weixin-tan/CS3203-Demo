@@ -1,5 +1,5 @@
 #include "SuchThatHandler.h"
-#include "EntityToElementConverter.h"
+#include "QpsTypeToPkbTypeConvertor.h"
 
 //Constructor
 SuchThatHandler::SuchThatHandler(PkbGetter *pg) {
@@ -7,256 +7,207 @@ SuchThatHandler::SuchThatHandler(PkbGetter *pg) {
 }
 
 //Handles Such That relationships
-Result SuchThatHandler::handleSuchThat(const Entity& entityToGet, const RelationshipRef& relRef) {
+Result SuchThatHandler::handleSuchThat(const RelationshipRef& relRef) {
   Result result;
-  RelationshipType relType = relRef.rType;
-  PkbRelationshipType pkbRel = convertRel(relType);
+  std::set<ProgramElement> oneSynSet;
+  std::set<std::pair<ProgramElement, ProgramElement>> twoSynSet;
+
+  PkbRelationshipType relType = QpsTypeToPkbTypeConvertor::convertToPkbRelType(relRef.rType);
   Entity left = relRef.leftEntity;
   Entity right = relRef.rightEntity;
 
-  if (pkbRel == PkbRelationshipType::kCalls || pkbRel == PkbRelationshipType::kCallsT) {
-    result = handleCalls(pkbRel, left, right);
-  } else if (left == entityToGet && right == entityToGet) {
-      //Iteration 1 has no cases where both sides are the same result and so empty Result is appropriate
-  } else if (left == entityToGet) { //If left side is the entity being searched for
-    result = handleLeftSide(entityToGet, right, pkbRel);
-  } else if (right == entityToGet) { //If right side is the entity being searched for
-    result = handleRightSide(entityToGet, left, pkbRel);
+  result.setResultType(ResultType::SuchThatClause);
+
+  if (
+    (left.eType == EntityType::Wildcard || left.eType == EntityType::FixedString || left.eType == EntityType::FixedInteger)
+    &&
+    (right.eType == EntityType::Wildcard || right.eType == EntityType::FixedString || right.eType == EntityType::FixedInteger)
+    ) {
+    result.setValid(handleNoSynonyms(relType, left, right));
+    return result;
+  } else if (
+    (left.eType == EntityType::Wildcard || left.eType == EntityType::FixedString || left.eType == EntityType::FixedInteger)
+    ) {
+    oneSynSet = handleRightSyn(relType, left, right);
+    result.setOneSynEntity(right);
+    result.setOneSynSet(oneSynSet);
+  } else if (
+    (right.eType == EntityType::Wildcard || right.eType == EntityType::FixedString || right.eType == EntityType::FixedInteger)
+    ) {
+    oneSynSet = handleLeftSyn(relType, left, right);
+    result.setOneSynEntity(left);
+    result.setOneSynSet(oneSynSet);
   } else {
-    result = handleBoolCheck(entityToGet, relRef); //If both sides are not the entity being searched for
+    twoSynSet = handleTwoSyn(relType, left, right);
+    result.setTwoSynEntities(std::pair<Entity, Entity>(left, right));
+    result.setTwoSynSet(twoSynSet);
   }
 
-  result.setLeftSuchThatEntity(left);
-  result.setRightSuchThatEntity(right);
-  result.setResultEntity(entityToGet);
+  if (oneSynSet.empty() && twoSynSet.empty()) {
+    result.setValid(false);
+  } else {
+    result.setValid(true);
+  }
+
   return result;
 }
 
-//Get all instances of the searched entity based on whether the relationship exists in PKB
-Result SuchThatHandler::handleBoolCheck(const Entity& entityToGet, const RelationshipRef& relRef) {
-    Result result;
-    bool check;
-    Entity left = relRef.leftEntity;
-    Entity right = relRef.rightEntity;
-    std::set<std::pair<ProgramElement, ProgramElement>> checkElements;
-    ElementType elementTypeToGet = EntityToElementConverter::extractElementType(entityToGet);
-    PkbRelationshipType pkbRel = convertRel(relRef.rType);
+// Handles cases where there are no synonyms on either side.
+bool SuchThatHandler::handleNoSynonyms(PkbRelationshipType r, Entity left, Entity right) {
+  // If there are wildcards present, then move to wildcard handlers based on relationship type
+  if (left.eType == EntityType::Wildcard || right.eType == EntityType::Wildcard) {
+    if (r == PkbRelationshipType::kCalls || r == PkbRelationshipType::kCallsT) {
+      return handleNoSynProcWildcard(r, left, right);
+    } else if (r == PkbRelationshipType::kModifies || r == PkbRelationshipType::kUses) {
+      return handleNoSynVarWildcard(r, left);
+    } else {
+      return handleNoSynStmtWildcard(r, left, right);
+    }
+  }
+
+  // If both sides are fixed entities, then check pkb if the relationship exists
+  if (left.eType == EntityType::FixedString && right.eType == EntityType::FixedString) {
+    return pg->isRelationship(r,ProgramElement::createProcedure(left.name),
+      ProgramElement::createProcedure(left.name));
+  } else if (left.eType == EntityType::FixedInteger && right.eType == EntityType::FixedInteger) {
+    return pg->isRelationship(r, ProgramElement::createStatement(ElementType::kStatement, std::stoi(left.name)),
+      ProgramElement::createStatement(ElementType::kStatement, std::stoi(right.name)));
+  } else if (left.eType == EntityType::FixedInteger && right.eType == EntityType::FixedString) {
+    return pg->isRelationship(r, ProgramElement::createStatement(ElementType::kStatement, std::stoi(left.name)),
+      ProgramElement::createVariable(right.name));
+  } else if (left.eType == EntityType::FixedString && right.eType == EntityType::FixedString) {
+    return pg->isRelationship(r,ProgramElement::createProcedure(left.name),
+      ProgramElement::createVariable(right.name));
+  } else {
+    return false;
+  }
+}
+
+// Handles cases where there are wildcards in Calls/CallsT
+bool SuchThatHandler::handleNoSynProcWildcard(PkbRelationshipType r, Entity left, Entity right) {
+  bool valid = false;
 
   if (left.eType == EntityType::Wildcard && right.eType == EntityType::Wildcard) {
-    assert(relRef.rType != RelationshipType::Modifies || relRef.rType != RelationshipType::Uses);
-    std::set<ProgramElement> elements = pg->getEntity(ElementType::kStatement);
-    check = false;
-    for (const ProgramElement& e1 : elements) {
-      for (const ProgramElement& e2 : elements) {
-        bool isRel = pg->isRelationship(pkbRel, e1, e2);
-        if (isRel) {
-          check = true;
-          checkElements.insert(std::pair<ProgramElement, ProgramElement> (e1, e2));
-          break;
-        }
-      }
+    std::set<std::pair<ProgramElement, ProgramElement>> check = pg->getRelationshipPairs(r, ElementType::kProcedure, ElementType::kProcedure);
+    if (!check.empty()) {
+      valid = true;
     }
-  } else if (left.eType == EntityType::Wildcard) { //Case where the left side is a wildcard
-    assert(relRef.rType != RelationshipType::Modifies || relRef.rType != RelationshipType::Uses);
-    left.eType = EntityType::Statement;
-    Result r = handleLeftSide(left, right, pkbRel);
-    checkElements = r.getSuchThatElements();
-    check = !checkElements.empty();
-  } else if (right.eType == EntityType::Wildcard) { //Case where the right side is a wildcard
-    if (relRef.rType == RelationshipType::Modifies || relRef.rType == RelationshipType::Uses) {
-      right.eType = EntityType::Variable;
-    } else {
-      right.eType = EntityType::Statement;
-    }
-    Result r = handleRightSide(right, left, pkbRel);
-    checkElements = r.getSuchThatElements();
-    check = !checkElements.empty();
-  } else if (left.eType == EntityType::FixedInteger && (right.eType == EntityType::FixedString || right.eType == EntityType::FixedInteger)) {
-    ProgramElement leftElement = EntityToElementConverter::fixedEntityConverter(left);
-    ProgramElement rightElement = EntityToElementConverter::fixedEntityConverter(right);
-    check = pg->isRelationship(pkbRel, leftElement, rightElement);
-    std::pair<ProgramElement, ProgramElement> fixedPair(leftElement, rightElement);
-    checkElements.insert(fixedPair);
-  } else if (left.eType == EntityType::FixedInteger){
-    Result r = handleRightSide(right, left, pkbRel);
-    checkElements = r.getSuchThatElements();
-    check = !checkElements.empty();
-  } else if (right.eType == EntityType::FixedInteger || right.eType == EntityType::FixedString) {
-    Result r = handleLeftSide(left, right, pkbRel);
-    checkElements = r.getSuchThatElements();
-    check = !checkElements.empty();
-  } else { // For all other cases handleLeftSide or handleRightSide would work
-    Result r = handleLeftSide(left, right, pkbRel);
-    checkElements = r.getSuchThatElements();
-    check = !checkElements.empty();
-  }
-
-  // If conditions are met return all entities belonging to the type requested and if not, return empty Result
-  if (check) {
-    std::set<ProgramElement> resultElements = pg->getEntity(elementTypeToGet);
-    result.setSuchThatElements(checkElements);
-    result.setNoClauseElements(resultElements);
-    return result;
-  } else {
-    return {};
-  }
-}
-
-//If the entity being searched for is on the left side, find all instances that match the conditions
-Result SuchThatHandler::handleLeftSide(const Entity& entityToGet, const Entity& rightEntity, PkbRelationshipType relType) {
-  Result result;
-  std::set<std::pair<ProgramElement, ProgramElement>> resultPairs;
-  ElementType elementTypeToGet = EntityToElementConverter::extractElementType(entityToGet);
-
-  if (relType == PkbRelationshipType::kModifies || relType == PkbRelationshipType::kUses) {
-    if (rightEntity.eType == EntityType::FixedString) {
-      resultPairs = getFixedEntityPairs(relType, rightEntity, elementTypeToGet, LEFT);
-    } else if (rightEntity.eType == EntityType::Variable || rightEntity.eType == EntityType::Wildcard) {
-      resultPairs = getAllCombinationsOfPairs(relType, rightEntity, elementTypeToGet, LEFT);
-    } else {
-      assert(false);
-    }
-  } else if (relType == PkbRelationshipType::kFollows || relType == PkbRelationshipType::kFollowsT
-      || relType == PkbRelationshipType::kParent || relType == PkbRelationshipType::kParentT) {
-    if (rightEntity.eType == EntityType::FixedInteger) {
-      resultPairs = getFixedEntityPairs(relType, rightEntity, elementTypeToGet, LEFT);
-    } else {
-      resultPairs = getAllCombinationsOfPairs(relType, rightEntity, elementTypeToGet, LEFT);
+  } else if (left.eType == EntityType::Wildcard) {
+    std::set<ProgramElement> check = pg->getLeftSide(r, ProgramElement::createProcedure(right.name), ElementType::kProcedure);
+    if (!check.empty()) {
+      valid = true;
     }
   } else {
-    assert(false);
+    std::set<ProgramElement> check = pg->getRightSide(r, ProgramElement::createProcedure(left.name), ElementType::kProcedure);
+    if (!check.empty()) {
+      valid = true;
+    }
   }
-  result.setSuchThatElements(resultPairs);
-  return result;
+
+  return valid;
 }
 
-Result SuchThatHandler::handleRightSide(const Entity& entityToGet, const Entity& leftEntity, PkbRelationshipType relType) {
-  Result result;
-  std::set<std::pair<ProgramElement, ProgramElement>> resultPairs;
-  ElementType elementTypeToGet = EntityToElementConverter::extractElementType(entityToGet);
+// Handles cases where there are wildcards in Follows/FollowsT/Parent/ParentT/Next/NextT/Affects/AffectsT
+bool SuchThatHandler::handleNoSynStmtWildcard(PkbRelationshipType r, Entity left, Entity right) {
+  bool valid = false;
 
-  if (relType == PkbRelationshipType::kModifies || relType == PkbRelationshipType::kUses) {
-    assert(("Cannot be Wildcard for Modifies and Uses!", leftEntity.eType != EntityType::Wildcard));
-  }
-
-  if (leftEntity.eType == EntityType::FixedInteger) {
-    resultPairs = getFixedEntityPairs(relType, leftEntity, elementTypeToGet, RIGHT);
+  if (left.eType == EntityType::Wildcard && right.eType == EntityType::Wildcard) {
+    std::set<std::pair<ProgramElement, ProgramElement>> check = pg->getRelationshipPairs(r, ElementType::kStatement, ElementType::kStatement);
+    if (!check.empty()) {
+      valid = true;
+    }
+  } else if (left.eType == EntityType::Wildcard) {
+    std::set<ProgramElement> check = pg->getLeftSide(r, ProgramElement::createStatement(ElementType::kStatement, std::stoi(right.name)), ElementType::kStatement);
+    if (!check.empty()) {
+      valid = true;
+    }
   } else {
-    resultPairs = getAllCombinationsOfPairs(relType, leftEntity, elementTypeToGet, RIGHT);
+    std::set<ProgramElement> check = pg->getRightSide(r, ProgramElement::createStatement(ElementType::kStatement, std::stoi(left.name)), ElementType::kStatement);
+    if (!check.empty()) {
+      valid = true;
+    }
   }
 
-  result.setSuchThatElements(resultPairs);
-  return result;
+  return valid;
 }
 
+// Handles cases where there are wildcards in Modifies/Uses
+bool SuchThatHandler::handleNoSynVarWildcard(PkbRelationshipType r, Entity left) {
+  bool valid = false;
+
+  if (left.eType == EntityType::FixedString) {
+    std::set<ProgramElement> check = pg->getRightSide(r, ProgramElement::createProcedure(left.name), ElementType::kVariable);
+    if (!check.empty()) {
+      valid = true;
+    }
+  }
+  if (left.eType == EntityType::FixedInteger) {
+    std::set<ProgramElement> check = pg->getRightSide(r,
+      ProgramElement::createStatement(ElementType::kStatement, std::stoi(left.name)), ElementType::kVariable);
+    if (!check.empty()) {
+      valid = true;
+    }
+  }
+
+  return valid;
+}
+
+// Handles cases where there is a synonym on right side
+std::set<ProgramElement> SuchThatHandler::handleRightSyn(PkbRelationshipType r, Entity left, Entity right) {
+  std::set<ProgramElement> oneSynSet;
+  ElementType rightElemType = QpsTypeToPkbTypeConvertor::convertToPkbElement(right.eType);
+
+  if (left.eType == EntityType::FixedString) {
+    oneSynSet = pg->getRightSide(r, ProgramElement::createProcedure(left.name), rightElemType);
+  } else if (left.eType == EntityType::FixedInteger) {
+    oneSynSet = pg->getRightSide(r,
+      ProgramElement::createStatement(ElementType::kStatement, std::stoi(left.name)), rightElemType);
+  } else { // Handles cases where left side is a wildcard
+    std::set<std::pair<ProgramElement, ProgramElement>> pairs = pg->getRelationshipPairs(r,
+      ElementType::kStatement, rightElemType);
+    for (const auto& p : pairs) {
+      oneSynSet.insert(p.second);
+    }
+  }
+
+  return oneSynSet;
+}
+
+// Handles cases where there is a synonym on left side
+std::set<ProgramElement> SuchThatHandler::handleLeftSyn(PkbRelationshipType r, Entity left, Entity right) {
+  std::set<ProgramElement> oneSynSet;
+  ElementType leftElemType = QpsTypeToPkbTypeConvertor::convertToPkbElement(left.eType);
+
+  if (right.eType == EntityType::FixedInteger) {
+    oneSynSet = pg->getLeftSide(r,
+      ProgramElement::createStatement(ElementType::kStatement, std::stoi(right.name)), leftElemType);
+  } else if (right.eType == EntityType::FixedString) {
+    if (r == PkbRelationshipType::kModifies || r == PkbRelationshipType::kUses) {
+      oneSynSet = pg->getLeftSide(r, ProgramElement::createVariable(right.name), leftElemType);
+    } else {
+      oneSynSet = pg->getLeftSide(r, ProgramElement::createProcedure(right.name), leftElemType);
+    }
+  } else {
+    std::set<std::pair<ProgramElement, ProgramElement>> pairs;
+    if (r == PkbRelationshipType::kCalls || r == PkbRelationshipType::kCallsT) {
+      pairs = pg->getRelationshipPairs(r, leftElemType, ElementType::kProcedure);
+    } else if (r == PkbRelationshipType::kModifies || r == PkbRelationshipType::kUses) {
+      pairs = pg->getRelationshipPairs(r, leftElemType, ElementType::kVariable);
+    } else {
+      pairs = pg->getRelationshipPairs(r, leftElemType, ElementType::kStatement);
+    }
+    for (const auto& p : pairs) {
+      oneSynSet.insert(p.first);
+    }
+  }
+
+  return oneSynSet;
+}
+
+// Handles cases where there are synonyms on both sides
 std::set<std::pair<ProgramElement, ProgramElement>>
-SuchThatHandler::getFixedEntityPairs(PkbRelationshipType relType, const Entity& givenEntity, ElementType t, bool direction) {
-  std::set<std::pair<ProgramElement, ProgramElement>> finalResult;
-  std::set<ProgramElement> pkbResult;
-  ProgramElement programElement = EntityToElementConverter::fixedEntityConverter(givenEntity);
-
-  if (direction == LEFT) {
-    pkbResult = pg->getLeftSide(relType, programElement, t);
-    for (const auto& e : pkbResult) {
-      std::pair <ProgramElement, ProgramElement> combination (e, programElement);
-      finalResult.insert(combination);
-    }
-  } else {
-    pkbResult = pg->getRightSide(relType, programElement, t);
-    for (const auto& e : pkbResult) {
-      std::pair <ProgramElement, ProgramElement> combination (programElement, e);
-      finalResult.insert(combination);
-    }
-  }
-  return finalResult;
-}
-
-std::set<std::pair<ProgramElement, ProgramElement>>
-SuchThatHandler::getAllCombinationsOfPairs(PkbRelationshipType relType, const Entity& givenEntity, ElementType t, bool direction) {
-  std::set<std::pair<ProgramElement, ProgramElement>> finalResult;
-  std::set<ProgramElement> pkbResult;
-  ElementType elementToIterate;
-
-  if (direction == LEFT && (relType == PkbRelationshipType::kModifies || relType == PkbRelationshipType::kUses)) {
-    elementToIterate = ElementType::kVariable;
-  } else {
-    if (givenEntity.eType == EntityType::Wildcard) {
-      elementToIterate = ElementType::kStatement;
-    } else {
-      elementToIterate = EntityToElementConverter::extractElementType(givenEntity);
-    }
-  }
-
-  std::set<ProgramElement> iterables = pg->getEntity(elementToIterate);
-  for (const ProgramElement& e : iterables) {
-    if (direction == LEFT) {
-      pkbResult = pg->getLeftSide(relType, e, t);
-      for (const auto& r : pkbResult) {
-        std::pair <ProgramElement, ProgramElement> combination (r, e);
-        finalResult.insert(combination);
-      }
-    } else {
-      pkbResult = pg->getRightSide(relType, e, t);
-      for (const auto& r : pkbResult) {
-        std::pair <ProgramElement, ProgramElement> combination (e, r);
-        finalResult.insert(combination);
-      }
-    }
-  }
-  return finalResult;
-}
-
-PkbRelationshipType SuchThatHandler::convertRel(RelationshipType r) {
-  switch(r){
-    case RelationshipType::Modifies: return PkbRelationshipType::kModifies;
-    case RelationshipType::Uses: return PkbRelationshipType::kUses;
-    case RelationshipType::Parent: return PkbRelationshipType::kParent;
-    case RelationshipType::ParentT: return PkbRelationshipType::kParentT;
-    case RelationshipType::Follows: return PkbRelationshipType::kFollows;
-    case RelationshipType::FollowsT: return PkbRelationshipType::kFollowsT;
-    case RelationshipType::Calls: return PkbRelationshipType::kCalls;
-    case RelationshipType::CallsT: return PkbRelationshipType::kCallsT;
-  }
-}
-
-Result SuchThatHandler::handleCalls(PkbRelationshipType pkbRel, const Entity &leftEntity, const Entity &rightEntity) {
-  std::set<std::pair<ProgramElement, ProgramElement>> resultElements;
-  if (leftEntity.eType == EntityType::FixedString && rightEntity.eType == EntityType::FixedString) {
-    ProgramElement left = ProgramElement::createProcedure(leftEntity.name);
-    ProgramElement right = ProgramElement::createProcedure(rightEntity.name);
-    bool check = pg->isRelationship(pkbRel, left, right);
-    if (check) {
-      std::pair<ProgramElement, ProgramElement> pair(left, right);
-      resultElements.insert(pair);
-    }
-  } else if (leftEntity.eType == EntityType::FixedString) {
-    ProgramElement left = ProgramElement::createProcedure(leftEntity.name);
-    std::set<ProgramElement> rightElements = pg->getRightSide(pkbRel, left, ElementType::kProcedure);
-    for (const auto& e: rightElements) {
-      std::pair<ProgramElement, ProgramElement> pair(left, e);
-      resultElements.insert(pair);
-    }
-  } else if (rightEntity.eType == EntityType::FixedString) {
-    ProgramElement right = ProgramElement::createProcedure(rightEntity.name);
-    std::set<ProgramElement> leftElements = pg->getLeftSide(pkbRel, right, ElementType::kProcedure);
-    for (const auto& e: leftElements) {
-      std::pair<ProgramElement, ProgramElement> pair(e, right);
-      resultElements.insert(pair);
-    }
-  } else {
-    std::set<ProgramElement> allCalls = pg->getEntity(ElementType::kProcedure);
-    for (const auto& c1 : allCalls) {
-      for (const auto& c2 : allCalls) {
-        bool isRel = pg->isRelationship(pkbRel, c1, c2);
-        if (isRel) {
-          std::pair<ProgramElement, ProgramElement> pair(c1, c2);
-          resultElements.insert(pair);
-        }
-      }
-    }
-  }
-  Result result;
-  result.setSuchThatElements(resultElements);
-  result.setNoClauseElements(pg->getEntity(ElementType::kProcedure));
-  return result;
+SuchThatHandler::handleTwoSyn(PkbRelationshipType r, Entity left, Entity right) {
+  ElementType leftElemType = QpsTypeToPkbTypeConvertor::convertToPkbElement(left.eType);
+  ElementType rightElemType = QpsTypeToPkbTypeConvertor::convertToPkbElement(right.eType);
+  return pg->getRelationshipPairs(r, leftElemType, rightElemType);
 }
