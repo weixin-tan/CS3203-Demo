@@ -1205,7 +1205,7 @@ TEST_CASE("PKB Next") {
         REQUIRE(resultElementSet == expectedElementSet);
     }
 }
-/*
+
 TEST_CASE("PKB Validation") {
     PKB pkb;
     PkbSetter* pkbSetter = pkb.getSetter();
@@ -1225,7 +1225,7 @@ TEST_CASE("PKB Validation") {
         REQUIRE_THROWS(pkbSetter->insertStmts(tcData.UNDEFINITED_CALL_STMT_LIST, true));
     }
 }
-*/
+
 
 TEST_CASE("Compute Reverse") {
     std::map<int, std::set<std::string>> normalMap {
