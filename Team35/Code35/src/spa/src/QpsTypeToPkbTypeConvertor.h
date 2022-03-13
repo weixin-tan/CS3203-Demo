@@ -16,8 +16,6 @@ class QpsTypeToPkbTypeConvertor {
   static ElementType convertToPkbElement(EntityType e);
   static PkbRelationshipType convertToPkbRelType(RelationshipType t);
   static ProgramElement fixedEntityConverter(const Entity& e);
-  static bool isInteger(std::string s);
-  static bool isValid(std::string s);
 };
 
 
