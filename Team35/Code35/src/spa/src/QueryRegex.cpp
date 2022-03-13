@@ -288,12 +288,19 @@ long findWithClause(const std::string& s){
   return findClauseStartPosition(s, "with");
 }
 
-long findPatternClauseInSubstring(const std::string& s){
+long findPatternClauseInSubstring(const std::string& s, std::string original){
   long patternPosition = s.rfind("pattern");
-  if (s.substr(patternPosition, s.length() - patternPosition).find('(') != std::string::npos){
-    return patternPosition;
+  long bracketPosition = original.rfind("(");
+  int patternLength = 7;
+  if (patternPosition != std::string::npos){
+    if (original.substr(patternPosition, original.length() - patternPosition).find('(') != std::string::npos &&
+        !stripString(original.substr(patternPosition+patternLength, bracketPosition-patternPosition-patternLength)).empty() ){
+      return patternPosition;
+    }else{
+      return findPatternClauseInSubstring(s.substr(0, patternPosition), original);
+    }
   }else{
-    return findPatternClauseInSubstring(s.substr(0, patternPosition));
+    return std::string::npos;
   }
 }
 
@@ -584,8 +591,8 @@ std::vector<std::string> splitPatternAndSuchThatClauses(const std::string& s){
     if (!stmt.empty()){
       if (!isWith(stmt)){
         returnList.push_back(stmt + ")");
-      }else if (isWith(stmt) && stmt.find("pattern") != std::string::npos){
-        long x = findPatternClauseInSubstring(stmt);
+      }else if (isWith(stmt) && findPatternClauseInSubstring(stmt, stmt) != std::string::npos){
+        long x = findPatternClauseInSubstring(stmt, stmt);
         std::string first = stmt.substr(0, x);
         std::string second = stmt.substr(x, stmt.length()-x);
         temp = extractWithClauses(first);
@@ -643,6 +650,7 @@ std::vector<std::vector<std::string>> extractClauses(const std::string& s){
   std::vector<std::string> patternList;
   std::vector<std::string> withList;
   std::vector<std::string> everythingList = splitVariablesAndClauses(s);
+
   if (everythingList.size() == 2) {
     std::string clausesString = everythingList[1];
     std::vector<std::string> clausesList = splitPatternAndSuchThatClauses(clausesString);

@@ -42,7 +42,7 @@ std::string removeWith(const std::string& s);
 long findClauseStartPosition(const std::string& s, const std::string& commandWord);
 long findPatternClause(const std::string& s);
 long findWithClause(const std::string& s);
-long findPatternClauseInSubstring(const std::string& s);
+long findPatternClauseInSubstring(const std::string& s, std::string original);
 std::vector<long> findSuchThatClause(const std::string& s);
 long smallestNumber(const long positionList[3]);
 
