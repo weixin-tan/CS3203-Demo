@@ -1,5 +1,4 @@
 #include "ExpressionProcessor.h"
-#include "ConcreteSyntaxWithValidation.h"
 #include "Tokeniser.h"
 #include <iostream>
 
@@ -8,8 +7,150 @@ Expr ExpressionProcessor::stringToExpr(std::string query) const {
 	query = query + ";";
 	Tokeniser tokeniser;
 	std::queue<Token> tokenQueue = tokeniser.putInQueue(query);
-	ConcreteSyntaxWithValidation validator;
-	return validator.parseExpr(tokenQueue);
+	return ExpressionProcessor::parseExpr(tokenQueue);
+}
+
+Expr ExpressionProcessor::tokenQueueToExpr(std::queue<Token> tokenQueue) {
+	return ExpressionProcessor::parseExpr(tokenQueue);
+}
+
+// for iteration 2.
+// Returns a Expr object.
+// tokensQueue is a queue of Token objects.
+// parseExpr takes inorder, returns reverse
+Expr ExpressionProcessor::parseExpr(std::queue<Token>& tokensQueue) {
+	std::stack<Token> exprStack;
+	while (tokensQueue.front().getToken() != TokenType::SEMICOLON) {
+		exprStack.push(tokensQueue.front());
+		tokensQueue.pop();
+	}
+	return ExpressionProcessor::parseExprRecursion(exprStack);
+}
+
+// for Iteration 2.
+// Returns a Expr object.
+// exprStack is a stack of Token objects.
+// parseExprRecursion takes reverse, returns reverse
+Expr ExpressionProcessor::parseExprRecursion(std::stack<Token>& exprStack) {
+	Expr expr;
+	std::queue<Token> termQueue;
+	int closure = 0;
+	while (!exprStack.empty()) {
+		if (exprStack.top().getToken() == TokenType::RIGHT_BRACE) {
+			closure++;
+		}
+		if (exprStack.top().getToken() == TokenType::LEFT_BRACE) {
+			closure--;
+		}
+		if ((closure == 0) && ((exprStack.top().getToken() == TokenType::ADD) || (exprStack.top().getToken() == TokenType::SUBTRACT))) {
+			break;
+		}
+		termQueue.push(exprStack.top());
+		exprStack.pop();
+	}
+	expr.setTerm(ExpressionProcessor::parseTerm(termQueue));
+
+	if (!exprStack.empty()) {
+		expr.setOperator(exprStack.top().getToken());
+		exprStack.pop();
+		Expr another_expr;
+		try {
+			another_expr = ExpressionProcessor::parseExprRecursion(exprStack);
+		}
+		catch (const std::invalid_argument& e) {
+			throw;
+		}
+		std::shared_ptr<Expr> ex = std::make_shared<Expr>(another_expr);
+		expr.setExpr(ex);
+	}
+	return expr;
+}
+
+// for Iteration 2.
+// Returns a Term object.
+// termQueue is a queue of Token objects.
+// parseTerm takes reverse, returns reverse
+Term ExpressionProcessor::parseTerm(std::queue<Token>& termQueue) {
+	Term term;
+	std::queue<Token> factorQueue;
+	int closure = 0;
+	while (!termQueue.empty()) {
+		if (termQueue.front().getToken() == TokenType::RIGHT_BRACE) {
+			closure++;
+		}
+		if (termQueue.front().getToken() == TokenType::LEFT_BRACE) {
+			closure--;
+		}
+		if ((closure == 0) && ((termQueue.front().getToken() == TokenType::MULTIPLY) || (termQueue.front().getToken() == TokenType::DIVIDE) || (termQueue.front().getToken() == TokenType::MODULO))) {
+			break;
+		}
+		factorQueue.push(termQueue.front());
+		termQueue.pop();
+	}
+	term.setFactor(ExpressionProcessor::parseFactor(factorQueue));
+
+	if (!termQueue.empty()) {
+		term.setOperator(termQueue.front().getToken());
+		termQueue.pop();
+		Term another_term;
+		try {
+			another_term = ExpressionProcessor::parseTerm(termQueue);
+		}
+		catch (const std::invalid_argument& e) {
+			throw;
+		}
+		std::shared_ptr<Term> te = std::make_shared<Term>(another_term);
+		term.setTerm(te);
+	}
+	return term;
+}
+
+// for Iteration 2.
+// Returns a Factor object.
+// factorQueue is a queue of Token objects.
+// parseFactor takes reverse, returns reverse
+Factor ExpressionProcessor::parseFactor(std::queue<Token>& factorQueue) {
+	Factor factor;
+	if (factorQueue.front().getToken() == TokenType::RIGHT_BRACE) {
+		// remove right_brace
+		factorQueue.pop();
+		// intermediate stack
+		std::stack<Token> factorExprStack;
+		while (!factorQueue.empty()) {
+			factorExprStack.push(factorQueue.front());
+			factorQueue.pop();
+		}
+		// remove left_brace
+		factorExprStack.pop();
+		// output stack in reverse
+		std::stack<Token> exprStack;
+		while (!factorExprStack.empty()) {
+			exprStack.push(factorExprStack.top());
+			factorExprStack.pop();
+		}
+
+		Expr expr;
+		try {
+			expr = ExpressionProcessor::parseExprRecursion(exprStack);
+		}
+		catch (const std::invalid_argument& e) {
+			throw;
+		}
+		std::shared_ptr<Expr> ex = std::make_shared<Expr>(expr);
+		factor.setExpr(ex);
+		factor.setType(FactorType::EXPR);
+	}
+	else if (factorQueue.front().getToken() == TokenType::NAME) {
+		factor.setVarName(factorQueue.front());
+		factor.setType(FactorType::VAR);
+		factorQueue.pop();
+	}
+	else if ((factorQueue.front().getToken() == TokenType::INTEGER) || (factorQueue.front().getToken() == TokenType::DIGIT)) {
+		factor.setConstValue(factorQueue.front());
+		factor.setType(FactorType::CONST);
+		factorQueue.pop();
+	}
+	return factor;
 }
 
 // Checks if exp1 is a subset of exp2. 

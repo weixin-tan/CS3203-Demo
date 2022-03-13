@@ -2,6 +2,8 @@
 #include "Expr.h"
 #include "ExpressionIndicator.h"
 #include "stdio.h"
+#include <queue>
+#include <stack>
 
 class ExpressionProcessor {
 
@@ -18,5 +20,10 @@ class ExpressionProcessor {
 public:
 
 	Expr stringToExpr(std::string query) const;
+	Expr tokenQueueToExpr(std::queue<Token> tokenQueue);
+	Expr parseExpr(std::queue<Token>& tokensQueue);
+	Expr parseExprRecursion(std::stack<Token>& exprStack);
+	Term parseTerm(std::queue<Token>& termQueue);
+	Factor parseFactor(std::queue<Token>& factorQueue);
 	bool fullfillsMatching(Expr exp1, Expr exp2, ExpressionIndicator expressionIndicator) const;
 };
