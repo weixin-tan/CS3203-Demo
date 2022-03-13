@@ -3,7 +3,7 @@
 #include <iostream>
 
 // code to be refactored
-Expr ExpressionProcessor::stringToExpr(std::string query) const {
+Expr ExpressionProcessor::stringToExpr(std::string query) {
 	query = query + ";";
 	Tokeniser tokeniser;
 	std::queue<Token> tokenQueue = tokeniser.putInQueue(query);

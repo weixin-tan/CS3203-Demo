@@ -19,7 +19,7 @@ class ExpressionProcessor {
 
 public:
 
-	Expr stringToExpr(std::string query) const;
+	Expr stringToExpr(std::string query);
 	Expr tokenQueueToExpr(std::queue<Token> tokenQueue);
 	Expr parseExpr(std::queue<Token>& tokensQueue);
 	Expr parseExprRecursion(std::stack<Token>& exprStack);

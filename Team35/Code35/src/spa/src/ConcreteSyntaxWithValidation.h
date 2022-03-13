@@ -7,7 +7,6 @@
 #include "CondExpr.h"
 #include "TokenType.h"
 #include "FactorType.h"
-#include "ExpressionProcessor.h"
 
 class ConcreteSyntaxWithValidation {
 public:

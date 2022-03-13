@@ -1,4 +1,5 @@
 #include "ConcreteSyntaxWithValidation.h"
+#include "ExpressionProcessor.h"
 
 // Statement count
 int stmt_count = 1;
