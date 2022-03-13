@@ -1235,3 +1235,140 @@ TEST_CASE("Compute Reverse") {
     DesignExtractor::computeReverse<int, std::string>(normalMap, reverseMap);
     REQUIRE(!reverseMap.empty());
 }
+
+TEST_CASE("PATTERN RECOGNITION") {
+    PKB pkb = PKB();
+    PkbGetter* pkb_getter = pkb.getGetter();
+    PkbSetter* pkb_setter = pkb.getSetter();
+
+    ExpressionProcessor ep;
+
+    PKB_PATTERN_TEST_CASE tcData;
+    pkb_setter->insertStmts(tcData.stmtLists);
+
+    SECTION("Pattern") {
+        std::set<std::pair<ProgramElement, ProgramElement>> pairResult;
+        std::set<std::pair<ProgramElement, ProgramElement>> pairExpected;
+        std::set<ProgramElement> result;
+        std::set<ProgramElement> expected;
+        SECTION("get assignment given expression - SINGLE VAR") {
+            result = pkb_getter->getAssignmentGivenExpression(ep.stringToExpr("y"), ExpressionIndicator::FULL_MATCH);
+            expected = {
+                    tcData.stmt.at(2)
+            };
+            REQUIRE(result == expected);
+
+            result = pkb_getter->getAssignmentGivenExpression(ep.stringToExpr("y"), ExpressionIndicator::PARTIAL_MATCH);
+            expected = {
+                    tcData.stmt.at(2),
+                    tcData.stmt.at(7),
+                    tcData.stmt.at(8),
+                    tcData.stmt.at(9)
+            };
+            REQUIRE(result == expected);
+        }
+
+        SECTION("get assignment given expression - MULTI VAR") {
+            result = pkb_getter->getAssignmentGivenExpression(ep.stringToExpr("x * y"), ExpressionIndicator::PARTIAL_MATCH);
+            expected = {
+                    tcData.stmt.at(7),
+                    tcData.stmt.at(9)
+            };
+            REQUIRE(result == expected);
+
+            result = pkb_getter->getAssignmentGivenExpression(ep.stringToExpr("x + 5"), ExpressionIndicator::FULL_MATCH);
+            expected = {
+                    tcData.stmt.at(1)
+            };
+            REQUIRE(result == expected);
+        }
+
+        SECTION("get assignment given var and expression - SINGLE var") {
+            result = pkb_getter->getAssignmentGivenVariableAndExpression(ProgramElement::createVariable("x"), ep.stringToExpr("pattern"), ExpressionIndicator::FULL_MATCH);
+            expected = {
+                    tcData.stmt.at(3)
+            };
+            REQUIRE(result == expected);
+
+            result = pkb_getter->getAssignmentGivenVariableAndExpression(ProgramElement::createVariable("y"), ep.stringToExpr("y"), ExpressionIndicator::PARTIAL_MATCH);
+            expected = {
+                    tcData.stmt.at(2),
+                    tcData.stmt.at(9)
+            };
+            REQUIRE(result == expected);
+        }
+
+        SECTION("get assignment given var and expression - MULTI var") {
+            result = pkb_getter->getAssignmentGivenVariableAndExpression(ProgramElement::createVariable("y"), ep.stringToExpr("x * y"), ExpressionIndicator::PARTIAL_MATCH);
+            expected = {
+                    tcData.stmt.at(9)
+            };
+            REQUIRE(result == expected);
+        }
+
+        SECTION("get assignment given var and expression") {
+            pairResult = pkb_getter->getAssignmentWithVariableGivenExpression(ep.stringToExpr("x"), ExpressionIndicator::PARTIAL_MATCH);
+            pairExpected = {
+                std::make_pair(ProgramElement::createVariable("x"), tcData.stmt.at(1)),
+                std::make_pair(ProgramElement::createVariable("x"), tcData.stmt.at(7)),
+                std::make_pair(ProgramElement::createVariable("z"), tcData.stmt.at(8)),
+                std::make_pair(ProgramElement::createVariable("y"), tcData.stmt.at(9))
+                    
+            };
+            REQUIRE(pairResult == pairExpected);
+
+            pairResult = pkb_getter->getAssignmentWithVariableGivenExpression(ep.stringToExpr("x * y + 100"), ExpressionIndicator::FULL_MATCH);
+            pairExpected = {
+                std::make_pair(ProgramElement::createVariable("x"), tcData.stmt.at(7))
+
+            };
+            REQUIRE(pairResult == pairExpected);
+        }
+
+        SECTION("get if/while expression given variable") {
+            result = pkb_getter->getIfGivenVariable(ProgramElement::createVariable("z"));
+            expected = {
+                tcData.stmt.at(6)
+
+            };
+            REQUIRE(result == expected);
+
+            result = pkb_getter->getIfGivenVariable(ProgramElement::createVariable("y"));
+            expected = {
+                tcData.stmt.at(6),
+            };
+            REQUIRE(result == expected);
+
+            result = pkb_getter->getWhileGivenVariable(ProgramElement::createVariable("y"));
+            expected = {
+                tcData.stmt.at(4)
+
+            };
+            REQUIRE(result == expected);
+
+            result = pkb_getter->getWhileGivenVariable(ProgramElement::createVariable("x"));
+            expected = {
+                tcData.stmt.at(4),
+            };
+            REQUIRE(result == expected);
+        }
+
+        SECTION("get if/while with variable") {
+            pairResult = pkb_getter->getIfWithVariable();
+            pairExpected = {
+                std::make_pair(ProgramElement::createVariable("y"), tcData.stmt.at(6)),
+                std::make_pair(ProgramElement::createVariable("z"), tcData.stmt.at(6))
+
+            };
+            REQUIRE(pairResult == pairExpected);
+
+            pairResult = pkb_getter->getWhileWithVariable();
+            pairExpected = {
+                std::make_pair(ProgramElement::createVariable("y"), tcData.stmt.at(4)),
+                std::make_pair(ProgramElement::createVariable("x"), tcData.stmt.at(4))
+
+            };
+            REQUIRE(pairResult == pairExpected);
+        }
+    }
+}

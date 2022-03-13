@@ -440,6 +440,7 @@ std::set<ProgramElement> PkbGetter::getAssignmentGivenExpression(const Expr expr
     for (it = db->exprTable.begin(); it != db->exprTable.end(); it++) {
         // if expression does not exist. 
         if (it->second.isNullExpr()) { continue; }
+        if (db->stmtTable[it->first].statement_type != StatementType::kassign_stmt) { continue; }
         if (expressionProcessor.fullfillsMatching(expr1, it->second, indicator)) {
             // get the assignment
             ProgramElement res = db->elementStmtTable.at(it->first);
@@ -535,3 +536,37 @@ std::set<ProgramElement> PkbGetter::getWhileGivenVariable(const ProgramElement& 
     }
     return result;
 }
+
+std::set<std::pair<ProgramElement, ProgramElement>> PkbGetter::getIfWithVariable() const {
+    std::set<std::pair<ProgramElement, ProgramElement>> result;
+    std::set<ProgramElement> ifStatements = getEntity(ElementType::kIf);
+
+
+    for (const auto& itset : ifStatements) {
+        if (db->stmtTable[itset.stmtNo].var_used.size() != 0) {
+            for (const auto& i : db->stmtTable[itset.stmtNo].var_used) {
+                ProgramElement var = ProgramElement::createVariable(i);
+                ProgramElement ifStmt = itset;
+                result.insert(std::make_pair(var, ifStmt));
+            }
+        }
+    }
+    return result; 
+};
+
+std::set<std::pair<ProgramElement, ProgramElement>>PkbGetter::getWhileWithVariable() const {
+    std::set<std::pair<ProgramElement, ProgramElement>> result;
+    std::set<ProgramElement> ifStatements = getEntity(ElementType::kWhile);
+
+
+    for (const auto& itset : ifStatements) {
+        if (db->stmtTable[itset.stmtNo].var_used.size() != 0) {
+            for (const auto& i : db->stmtTable[itset.stmtNo].var_used) {
+                ProgramElement var = ProgramElement::createVariable(i);
+                ProgramElement ifStmt = itset;
+                result.insert(std::make_pair(var, ifStmt));
+            }
+        }
+    }
+    return result;
+}; 

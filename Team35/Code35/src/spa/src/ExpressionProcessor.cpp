@@ -252,7 +252,11 @@ bool ExpressionProcessor::isSubtree(Term* term1, Term* term2) const {
 	if (term2 == nullptr) {
 		return false;
 	}
-	if (areIdenticalTerm(term1, term2)) {
+	if (areIdenticalTerm(term1, term2) ) {
+		return true;
+	}
+	if (term1->hasFactor() && term2->hasFactor() && areIdenticalFactor(term1->getFactorPtr(), term2->getFactorPtr())
+		&& !term1->hasTerm()) {
 		return true;
 	}
 
