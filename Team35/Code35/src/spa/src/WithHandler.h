@@ -9,7 +9,7 @@
 class WithHandler {
  public:
   explicit WithHandler(PkbGetter* pg);
-  Result handleWith(const Entity& entityToGet, const RelationshipRef& relRef);
+  Result handleWith(const RelationshipRef& relRef);
 
  private:
   PkbGetter* pg;

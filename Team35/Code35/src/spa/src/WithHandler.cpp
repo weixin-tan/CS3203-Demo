@@ -3,7 +3,7 @@ WithHandler::WithHandler(PkbGetter *pg) {
   WithHandler::pg = pg;
 }
 
-Result WithHandler::handleWith(const Entity &entityToGet, const RelationshipRef &relRef) {
+Result WithHandler::handleWith(const RelationshipRef &relRef) {
   Result result;
   std::set<ProgramElement> oneSynSet;
   std::set<std::pair<ProgramElement, ProgramElement>> twoSynSet;
@@ -25,6 +25,8 @@ Result WithHandler::handleWith(const Entity &entityToGet, const RelationshipRef 
     result.setOneSynSet(oneSynSet);
   }else{
     twoSynSet = handleNoSideFixed(left, right);
+    result.setTwoSynEntities(std::pair<Entity, Entity>(left, right));
+    result.setTwoSynSet(twoSynSet);
   }
 
   if (oneSynSet.empty() && twoSynSet.empty()) {

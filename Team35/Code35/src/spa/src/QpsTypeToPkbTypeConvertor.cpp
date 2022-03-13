@@ -1,6 +1,7 @@
 #include <cassert>
 #include <regex>
 #include "QpsTypeToPkbTypeConvertor.h"
+#include "QueryRegex.h"
 
 const std::unordered_map<RelationshipType, PkbRelationshipType> QpsTypeToPkbTypeConvertor::qpsRelToPkbRelMap = {
   {RelationshipType::Modifies, PkbRelationshipType::kModifies},
