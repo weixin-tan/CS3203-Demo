@@ -10,45 +10,42 @@ QPSHandler::QPSHandler(PkbGetter* pg) {
 
 std::vector<Result> QPSHandler::processClause(const std::vector<Clause> &clauses) const {
   std::vector<Result> results;
-  for(const Clause& c : clauses) {
-    std::vector<Entity> entityToFindList = c.entityToFindList;
-    Entity entityToFind = entityToFindList.front(); // Only 1 entity to find for now.
-    std::vector<RelationshipRef> refList = c.refList;
+
+  Clause c = clauses[0];
+  Entity entityToFind = c.entityToFindList.front(); // Only returning 1 entity is supported
+
+  Result noClauseResult = getNoClauseResult(entityToFind);
+  results.push_back(noClauseResult);
+
+  for (const auto& r : c.refList) {
     Result result;
-
-    if (refList.empty()) {
-      result = handleNoRelationshipRef(entityToFind);
-      results.push_back(result);
-      continue;
+    if (r.rType == RelationshipType::Pattern) {
+      result = patternHandler->handlePattern(r);
+    } else if (r.rType == RelationshipType::With) {
+      result = withHandler->handleWith(r);
+    } else {
+      result = suchThatHandler->handleSuchThat(r);
     }
-
-    for (const RelationshipRef& r : refList) {
-      assert(("Relationship type is Null", r.rType != RelationshipType::Null));
-      bool a = !QpsTypeToPkbTypeConvertor::isValid(r.leftEntity.name) ;
-      bool b = !QpsTypeToPkbTypeConvertor::isValid(r.rightEntity.name);
-      bool c = !QpsTypeToPkbTypeConvertor::isValid(r.AssignmentEntity.name);
-      if (!QpsTypeToPkbTypeConvertor::isValid(r.leftEntity.name) || !QpsTypeToPkbTypeConvertor::isValid(r.rightEntity.name) || !QpsTypeToPkbTypeConvertor::isValid(r.AssignmentEntity.name)) {
-        std::vector<Result> empty = {};
-        return empty;
-      }
-      if (r.rType == RelationshipType::Pattern) {
-        result = patternHandler->handlePattern(entityToFind, r);
-      } else if (r.rType == RelationshipType::With){
-        result = withHandler->handleWith(entityToFind, r);
-      }else {
-        result = suchThatHandler->handleSuchThat(entityToFind, r);
-      }
-      results.push_back(result);
-    }
+    results.push_back(result);
   }
+  
   return results;
 }
 
-Result QPSHandler::handleNoRelationshipRef(const Entity& entityToFind) const {
+Result QPSHandler::getNoClauseResult(const Entity& entityToFind) const {
   Result result;
-  ElementType elementTypeToGet = QpsTypeToPkbTypeConvertor::extractElementType(entityToFind);
-  std::set<ProgramElement> resultElements = pg->getEntity(elementTypeToGet);
-  result.setNoClauseElements(resultElements);
-  result.setResultEntity(entityToFind);
+  result.setResultType(ResultType::NoClause);
+
+  ElementType elementTypeToGet = QpsTypeToPkbTypeConvertor::convertToPkbElement(entityToFind.eType);
+  std::set<ProgramElement> oneSyn = pg->getEntity(elementTypeToGet);
+
+  if (oneSyn.empty()) {
+    result.setValid(false);
+  } else {
+    result.setValid(true);
+    result.setOneSynEntity(entityToFind);
+    result.setOneSynSet(oneSyn);
+  }
+
   return result;
 }

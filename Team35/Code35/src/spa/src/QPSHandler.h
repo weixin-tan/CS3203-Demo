@@ -15,10 +15,12 @@ private:
   SuchThatHandler* suchThatHandler;
   PatternHandler* patternHandler;
   WithHandler* withHandler;
+
+  Result getNoClauseResult(const Entity &entityToFind) const;
 public:
   explicit QPSHandler(PkbGetter* pg);
   std::vector<Result> processClause(const std::vector<Clause>& clauses) const;
-  Result handleNoRelationshipRef(const Entity& entityToFind) const;
+
 };
 
 
