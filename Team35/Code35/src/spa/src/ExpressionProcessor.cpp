@@ -7,7 +7,8 @@ Expr ExpressionProcessor::stringToExpr(std::string query) {
 	query = query + ";";
 	Tokeniser tokeniser;
 	std::queue<Token> tokenQueue = tokeniser.putInQueue(query);
-	return ExpressionProcessor::parseExpr(tokenQueue);
+	ExpressionProcessor ep = ExpressionProcessor();
+	return ep.parseExpr(tokenQueue);
 }
 
 Expr ExpressionProcessor::tokenQueueToExpr(std::queue<Token> tokenQueue) {
