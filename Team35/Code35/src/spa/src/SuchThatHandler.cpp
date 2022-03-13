@@ -18,22 +18,14 @@ Result SuchThatHandler::handleSuchThat(const RelationshipRef& relRef) {
 
   result.setResultType(ResultType::SuchThatClause);
 
-  if (
-    (left.eType == EntityType::Wildcard || left.eType == EntityType::FixedString || left.eType == EntityType::FixedInteger)
-    &&
-    (right.eType == EntityType::Wildcard || right.eType == EntityType::FixedString || right.eType == EntityType::FixedInteger)
-    ) {
+  if (isNonSynonymEntity(left.eType) && isNonSynonymEntity(right.eType)) {
     result.setValid(handleNoSynonyms(relType, left, right));
     return result;
-  } else if (
-    (left.eType == EntityType::Wildcard || left.eType == EntityType::FixedString || left.eType == EntityType::FixedInteger)
-    ) {
+  } else if (isNonSynonymEntity(left.eType)) {
     oneSynSet = handleRightSyn(relType, left, right);
     result.setOneSynEntity(right);
     result.setOneSynSet(oneSynSet);
-  } else if (
-    (right.eType == EntityType::Wildcard || right.eType == EntityType::FixedString || right.eType == EntityType::FixedInteger)
-    ) {
+  } else if (isNonSynonymEntity(right.eType)) {
     oneSynSet = handleLeftSyn(relType, left, right);
     result.setOneSynEntity(left);
     result.setOneSynSet(oneSynSet);
@@ -50,6 +42,11 @@ Result SuchThatHandler::handleSuchThat(const RelationshipRef& relRef) {
   }
 
   return result;
+}
+
+// Checks if entity is not a synonym
+bool SuchThatHandler::isNonSynonymEntity(EntityType e) {
+  return e == EntityType::Wildcard || e == EntityType::FixedString || e == EntityType::FixedInteger;
 }
 
 // Handles cases where there are no synonyms on either side.
@@ -88,17 +85,20 @@ bool SuchThatHandler::handleNoSynProcWildcard(PkbRelationshipType r, Entity left
   bool valid = false;
 
   if (left.eType == EntityType::Wildcard && right.eType == EntityType::Wildcard) {
-    std::set<std::pair<ProgramElement, ProgramElement>> check = pg->getRelationshipPairs(r, ElementType::kProcedure, ElementType::kProcedure);
+    std::set<std::pair<ProgramElement, ProgramElement>> check = pg->getRelationshipPairs(r,
+                                                                  ElementType::kProcedure, ElementType::kProcedure);
     if (!check.empty()) {
       valid = true;
     }
   } else if (left.eType == EntityType::Wildcard) {
-    std::set<ProgramElement> check = pg->getLeftSide(r, ProgramElement::createProcedure(right.name), ElementType::kProcedure);
+    std::set<ProgramElement> check = pg->getLeftSide(r,
+                                       ProgramElement::createProcedure(right.name), ElementType::kProcedure);
     if (!check.empty()) {
       valid = true;
     }
   } else {
-    std::set<ProgramElement> check = pg->getRightSide(r, ProgramElement::createProcedure(left.name), ElementType::kProcedure);
+    std::set<ProgramElement> check = pg->getRightSide(r,
+                                       ProgramElement::createProcedure(left.name), ElementType::kProcedure);
     if (!check.empty()) {
       valid = true;
     }
@@ -112,17 +112,22 @@ bool SuchThatHandler::handleNoSynStmtWildcard(PkbRelationshipType r, Entity left
   bool valid = false;
 
   if (left.eType == EntityType::Wildcard && right.eType == EntityType::Wildcard) {
-    std::set<std::pair<ProgramElement, ProgramElement>> check = pg->getRelationshipPairs(r, ElementType::kStatement, ElementType::kStatement);
+    std::set<std::pair<ProgramElement, ProgramElement>> check = pg->getRelationshipPairs(r,
+                                                                  ElementType::kStatement, ElementType::kStatement);
     if (!check.empty()) {
       valid = true;
     }
   } else if (left.eType == EntityType::Wildcard) {
-    std::set<ProgramElement> check = pg->getLeftSide(r, ProgramElement::createStatement(ElementType::kStatement, std::stoi(right.name)), ElementType::kStatement);
+    std::set<ProgramElement> check = pg->getLeftSide(r,
+                                       ProgramElement::createStatement(ElementType::kStatement,
+                                       std::stoi(right.name)), ElementType::kStatement);
     if (!check.empty()) {
       valid = true;
     }
   } else {
-    std::set<ProgramElement> check = pg->getRightSide(r, ProgramElement::createStatement(ElementType::kStatement, std::stoi(left.name)), ElementType::kStatement);
+    std::set<ProgramElement> check = pg->getRightSide(r,
+                                       ProgramElement::createStatement(ElementType::kStatement,
+                                       std::stoi(left.name)), ElementType::kStatement);
     if (!check.empty()) {
       valid = true;
     }
@@ -136,14 +141,16 @@ bool SuchThatHandler::handleNoSynVarWildcard(PkbRelationshipType r, Entity left)
   bool valid = false;
 
   if (left.eType == EntityType::FixedString) {
-    std::set<ProgramElement> check = pg->getRightSide(r, ProgramElement::createProcedure(left.name), ElementType::kVariable);
+    std::set<ProgramElement> check = pg->getRightSide(r,
+                                       ProgramElement::createProcedure(left.name), ElementType::kVariable);
     if (!check.empty()) {
       valid = true;
     }
   }
   if (left.eType == EntityType::FixedInteger) {
     std::set<ProgramElement> check = pg->getRightSide(r,
-      ProgramElement::createStatement(ElementType::kStatement, std::stoi(left.name)), ElementType::kVariable);
+                                       ProgramElement::createStatement(ElementType::kStatement,
+                                       std::stoi(left.name)), ElementType::kVariable);
     if (!check.empty()) {
       valid = true;
     }
