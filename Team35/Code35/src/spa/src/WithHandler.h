@@ -4,18 +4,27 @@
 #include "PkbGetter.h"
 #include "Result.h"
 #include "RelationshipRef.h"
+#include "QpsTypeToPkbTypeConvertor.h"
 
 class WithHandler {
  public:
   explicit WithHandler(PkbGetter* pg);
-  void handlePattern(const Entity& entityToGet, const RelationshipRef& relRef);
- private:
-  void handleBothSidesFixed(const Entity& leftEntity, const Entity& rightEntity);
-  void handleOneSideFixed(const Entity& leftEntity, const Entity& rightEntity);
-  void handleNoSideFixed(const Entity& leftEntity, const Entity& rightEntity);
+  Result handleWith(const Entity& entityToGet, const RelationshipRef& relRef);
 
-  void getAllProgramElements(const RelationshipType& rtype);
-  void matchProgramElements();
+ private:
+  PkbGetter* pg;
+  static bool isFixedEntity(const Entity& entity);
+  std::set<ProgramElement> getProgramElements(const EntityType& eType);
+  static std::string getStringToMatch(const ProgramElement& element, EntityAttributeType elementType);
+  static std::set<ProgramElement> matchProgramElements(const std::set<ProgramElement>& setA, const Entity& fixedEntity, EntityAttributeType aType);
+  static std::set<std::pair<ProgramElement, ProgramElement>> matchProgramElements(const std::set<ProgramElement>& setA,
+                                                                                  const std::set<ProgramElement>& setB,
+                                                                                  EntityAttributeType aType,
+                                                                                  EntityAttributeType bType);
+
+  bool handleBothSidesFixed(const Entity& leftEntity, const Entity& rightEntity);
+  std::set<ProgramElement> handleOneSideFixed(const Entity& fixedSide, const Entity& notFixedSide);
+  std::set<std::pair<ProgramElement, ProgramElement>> handleNoSideFixed(const Entity& leftEntity, const Entity& rightEntity);
 };
 
 #endif //SPA_SRC_SPA_SRC_WITHHANDLER_H_

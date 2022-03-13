@@ -5,6 +5,7 @@ QPSHandler::QPSHandler(PkbGetter* pg) {
   QPSHandler::pg = pg;
   QPSHandler::patternHandler = new PatternHandler(pg);
   QPSHandler::suchThatHandler = new SuchThatHandler(pg);
+  QPSHandler::withHandler = new WithHandler(pg);
 }
 
 std::vector<Result> QPSHandler::processClause(const std::vector<Clause> &clauses) const {
@@ -32,7 +33,9 @@ std::vector<Result> QPSHandler::processClause(const std::vector<Clause> &clauses
       }
       if (r.rType == RelationshipType::Pattern) {
         result = patternHandler->handlePattern(entityToFind, r);
-      } else {
+      } else if (r.rType == RelationshipType::With){
+        result = withHandler->handleWith(entityToFind, r);
+      }else {
         result = suchThatHandler->handleSuchThat(entityToFind, r);
       }
       results.push_back(result);
