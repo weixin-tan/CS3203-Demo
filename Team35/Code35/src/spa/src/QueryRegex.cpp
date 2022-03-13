@@ -289,10 +289,11 @@ long findWithClause(const std::string& s){
 }
 
 long findPatternClauseInSubstring(const std::string& s, std::string original){
+  std::cout << s << "\n";
   long patternPosition = s.rfind("pattern");
   long bracketPosition = original.rfind("(");
   int patternLength = 7;
-  if (patternPosition != std::string::npos){
+  if (patternPosition != std::string::npos && patternPosition < bracketPosition){
     if (original.substr(patternPosition, original.length() - patternPosition).find('(') != std::string::npos &&
         !stripString(original.substr(patternPosition+patternLength, bracketPosition-patternPosition-patternLength)).empty() ){
       return patternPosition;
@@ -592,6 +593,7 @@ std::vector<std::string> splitPatternAndSuchThatClauses(const std::string& s){
       if (!isWith(stmt)){
         returnList.push_back(stmt + ")");
       }else if (isWith(stmt) && findPatternClauseInSubstring(stmt, stmt) != std::string::npos){
+        std::cout << "in here \n";
         long x = findPatternClauseInSubstring(stmt, stmt);
         std::string first = stmt.substr(0, x);
         std::string second = stmt.substr(x, stmt.length()-x);
@@ -599,6 +601,8 @@ std::vector<std::string> splitPatternAndSuchThatClauses(const std::string& s){
         returnList.insert( returnList.end(), temp.begin(), temp.end());
         returnList.push_back(second + ")");
       }else if (isWith(stmt) && existSuchThat(stmt)){
+        std::cout << "in here 1 \n";
+
         long x = findSuchThatClause(stmt)[0];
         std::string first = stmt.substr(0, x);
         std::string second = stmt.substr(x, stmt.length()-x);
