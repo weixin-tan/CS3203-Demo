@@ -39,6 +39,7 @@ public:
     std::map<std::string, std::set<int>> usesSTableR;
     std::map<int, std::set<int>> nextTable;
     std::map<int, std::set<int>> nextTableR;
+    std::map<int, Expr> exprTable;
 
     // entity tables
     std::set<std::string> variables;

@@ -1,11 +1,12 @@
 #include "ConcreteSyntaxWithValidation.h"
+#include "ExpressionProcessor.h"
 
 // Statement count
 int stmt_count = 1;
 
 // Default constructor
 ConcreteSyntaxWithValidation::ConcreteSyntaxWithValidation() {
-
+	stmt_count = 1;
 }
 
 // Returns a Program object containing a ProcedureLst object.
@@ -187,7 +188,8 @@ Statement ConcreteSyntaxWithValidation::parseAssign(std::queue<Token>& tokensQue
 	assignStmt.constant = resultString[1];
 	
 	// Iteration 2 passing Expression class
-	assignStmt.expression = ConcreteSyntaxWithValidation::parseExpr(tokensQueue);
+	ExpressionProcessor ep = ExpressionProcessor();
+	assignStmt.expression = ep.parseExpr(tokensQueue);
 
 	// semicolon
 	if (tokensQueue.front().getToken() != TokenType::SEMICOLON) {
@@ -232,145 +234,6 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseExprStr
 		tokensQueue.pop();
 	}
 	return result;
-}
-
-// for iteration 2.
-// Returns a Expr object.
-// tokensQueue is a queue of Token objects.
-// parseExpr takes inorder, returns reverse
-Expr ConcreteSyntaxWithValidation::parseExpr(std::queue<Token>& tokensQueue) {
-	std::stack<Token> exprStack;
-	while (tokensQueue.front().getToken() != TokenType::SEMICOLON) {
-		exprStack.push(tokensQueue.front());
-		tokensQueue.pop();
-	}
-	return ConcreteSyntaxWithValidation::parseExprRecursion(exprStack);
-}
-
-// for Iteration 2.
-// Returns a Expr object.
-// exprStack is a stack of Token objects.
-// parseExprRecursion takes reverse, returns reverse
-Expr ConcreteSyntaxWithValidation::parseExprRecursion(std::stack<Token>& exprStack) {
-	Expr expr;
-	std::queue<Token> termQueue;
-	int closure = 0;
-	while (!exprStack.empty()) {
-		if (exprStack.top().getToken() == TokenType::RIGHT_BRACE) {
-			closure++;
-		}
-		if (exprStack.top().getToken() == TokenType::LEFT_BRACE) {
-			closure--;
-		}
-		if ((closure == 0) && ((exprStack.top().getToken() == TokenType::ADD) || (exprStack.top().getToken() == TokenType::SUBTRACT))) {
-			break;
-		}
-		termQueue.push(exprStack.top());
-		exprStack.pop();
-	}
-	expr.setTerm(ConcreteSyntaxWithValidation::parseTerm(termQueue));
-
-	if (!exprStack.empty()) {
-		expr.setOperator(exprStack.top().getToken());
-		exprStack.pop();
-		Expr another_expr;
-		try {
-			another_expr = ConcreteSyntaxWithValidation::parseExprRecursion(exprStack);
-		}
-		catch (const std::invalid_argument& e) {
-			throw;
-		}
-		std::shared_ptr<Expr> ex = std::make_shared<Expr>(another_expr);
-		expr.setExpr(ex);
-	}
-	return expr;
-}
-
-// for Iteration 2.
-// Returns a Term object.
-// termQueue is a queue of Token objects.
-// parseTerm takes reverse, returns reverse
-Term ConcreteSyntaxWithValidation::parseTerm(std::queue<Token>& termQueue) {
-	Term term;
-	std::queue<Token> factorQueue;
-	int closure = 0;
-	while (!termQueue.empty()) {
-		if (termQueue.front().getToken() == TokenType::RIGHT_BRACE) {
-			closure++;
-		}
-		if (termQueue.front().getToken() == TokenType::LEFT_BRACE) {
-			closure--;
-		}
-		if ((closure == 0) && ((termQueue.front().getToken() == TokenType::MULTIPLY) || (termQueue.front().getToken() == TokenType::DIVIDE) || (termQueue.front().getToken() == TokenType::MODULO))) {
-			break;
-		}
-		factorQueue.push(termQueue.front());
-		termQueue.pop();
-	}
-	term.setFactor(ConcreteSyntaxWithValidation::parseFactor(factorQueue));
-
-	if (!termQueue.empty()) {
-		term.setOperator(termQueue.front().getToken());
-		termQueue.pop();
-		Term another_term;
-		try {
-			another_term = ConcreteSyntaxWithValidation::parseTerm(termQueue);
-		}
-		catch (const std::invalid_argument& e) {
-			throw;
-		}
-		std::shared_ptr<Term> te = std::make_shared<Term>(another_term);
-		term.setTerm(te);
-	}
-	return term;
-}
-
-// for Iteration 2.
-// Returns a Factor object.
-// factorQueue is a queue of Token objects.
-// parseFactor takes reverse, returns reverse
-Factor ConcreteSyntaxWithValidation::parseFactor(std::queue<Token>& factorQueue) {
-	Factor factor;
-	if (factorQueue.front().getToken() == TokenType::RIGHT_BRACE) {
-		// remove right_brace
-		factorQueue.pop();
-		// intermediate stack
-		std::stack<Token> factorExprStack;
-		while (!factorQueue.empty()) {
-			factorExprStack.push(factorQueue.front());
-			factorQueue.pop();
-		}
-		// remove left_brace
-		factorExprStack.pop();
-		// output stack in reverse
-		std::stack<Token> exprStack;
-		while (!factorExprStack.empty()) {
-			exprStack.push(factorExprStack.top());
-			factorExprStack.pop();
-		}
-
-		Expr expr;
-		try {
-			expr = ConcreteSyntaxWithValidation::parseExprRecursion(exprStack);
-		}
-		catch (const std::invalid_argument& e) {
-			throw;
-		}
-		std::shared_ptr<Expr> ex = std::make_shared<Expr>(expr);
-		factor.setExpr(ex);
-		factor.setType(FactorType::EXPR);
-	}
-	else if (factorQueue.front().getToken() == TokenType::NAME) {
-		factor.setVarName(factorQueue.front());
-		factor.setType(FactorType::VAR);
-		factorQueue.pop();
-	}
-	else if ((factorQueue.front().getToken() == TokenType::INTEGER) || (factorQueue.front().getToken() == TokenType::DIGIT)) {
-		factor.setConstValue(factorQueue.front());
-		factor.setType(FactorType::CONST);
-		factorQueue.pop();
-	}
-	return factor;
 }
 
 // end of chaining methods for parsing Assign
@@ -606,13 +469,14 @@ RelExpr ConcreteSyntaxWithValidation::parseRelExpr(std::queue<Token>& relExprQue
 // parse rel_factor
 RelFactor ConcreteSyntaxWithValidation::parseRelFactor(std::queue<Token>& relFactorQueue) {
 	RelFactor relFactor;
+	ExpressionProcessor ep = ExpressionProcessor();
 	if (relFactorQueue.size() != 1) {
 		std::stack<Token> exprStack;
 		while (!relFactorQueue.empty()) {
 			exprStack.push(relFactorQueue.front());
 			relFactorQueue.pop();
 		}
-		relFactor.setExpr(parseExprRecursion(exprStack));
+		relFactor.setExpr(ep.parseExprRecursion(exprStack));
 		relFactor.setType(FactorType::EXPR);
 	}
 	else if (relFactorQueue.front().getToken() == TokenType::NAME) {

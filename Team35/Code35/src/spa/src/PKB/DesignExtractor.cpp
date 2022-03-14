@@ -1,4 +1,4 @@
-#include "DesignExtractor.h"
+    #include "DesignExtractor.h"
 #include <queue>
 
 DesignExtractor::DesignExtractor(DB* db) : db(db) {}

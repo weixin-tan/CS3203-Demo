@@ -25,6 +25,10 @@ TokenType Expr::getOperator() const {
 	return this->tokenType;
 }
 
+bool Expr::isNullExpr() const {
+	return this->tokenType == TokenType::NONE && !this->hasTerm() && !this->hasExpr();
+}
+
 std::shared_ptr<Expr> Expr::getExpr() const {
 	return expr;
 }

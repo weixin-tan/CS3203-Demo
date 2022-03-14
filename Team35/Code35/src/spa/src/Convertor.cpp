@@ -102,6 +102,7 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 		current_statement.var_modified = stmt.var_name;
 		current_statement.var_used = stmt.expr;
 		current_statement.constant = stmt.constant;
+		current_statement.pattern = stmt.expression;
 		break;
 		//Pattern recogniser here
 	case StatementType::kread_stmt:
@@ -113,6 +114,7 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 	case StatementType::kif_stmt:
 		current_statement.var_used = stmt.cond_expr;
 		current_statement.constant = stmt.constant;
+		current_statement.pattern = stmt.expression;
 
 		// In this case, if statement will have 2 statement lists (if and then) 
 		this->StatementListReader(*stmt.ifthen_stmt_list.get(), stmt.stmt_no);
@@ -122,6 +124,7 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 	case StatementType::kwhile_stmt:
 		current_statement.var_used = stmt.cond_expr;
 		current_statement.constant = stmt.constant;
+		current_statement.pattern = stmt.expression;
 		//In this case, this statement will a while statement list. 
 		this->StatementListReader(*stmt.while_stmt_list.get(), stmt.stmt_no);
 		break;
