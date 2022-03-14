@@ -29,3 +29,7 @@ std::vector<std::vector<ProgramElement>> getBody(){
 void inputProgramElements(std::vector<ProgramElement> ProgramElements,std::vector<std::vector<ProgramElement>> body){
     body.push_back(ProgramElements);
 }
+
+void inputProgramElementsPair(std::vector<ProgramElement> ProgramElements,std::vector<std::vector<ProgramElement>> body){
+    body.push_back(ProgramElements);
+}

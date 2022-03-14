@@ -65,8 +65,13 @@ std::set<ProgramElement> processResults(std::vector<Result> results){
                     table.inputElementPair(entity,table.getHeader());
                 }
                 //do similar thing for body of table
-                
-
+                if(std::find(body.begin(), body.end(), programElementVector)
+                   != body.end()){
+                    //body contains program entities requiring cross product
+                } else{
+                    //body does not contain programElement
+                    table.inputProgramElements(programElementVector,table.getBody());
+                }
             } else{
                 //continue
             }
