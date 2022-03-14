@@ -12,39 +12,39 @@ class StmtLst;
 
 class Statement {
 public:
-	Statement();
+    Statement();
 
-	Statement(int stmt_no, StatementType statement_type,
-		std::vector<std::string> var_name, std::vector<std::string> expr,
-		std::vector<std::string> cond_expr, std::string proc_name,
-		std::vector<std::string> constant, std::shared_ptr<StmtLst> ifthen_stmt_list,
-		std::shared_ptr<StmtLst> ifelse_stmt_list, std::shared_ptr<StmtLst> while_stmt_list);
+    Statement(int stmtNo, StatementType statementType,
+        std::vector<std::string> varName, std::vector<std::string> expr,
+        std::vector<std::string> condExpr, std::string procName,
+        std::vector<std::string> constant, std::shared_ptr<StmtLst> ifthenStmtList,
+        std::shared_ptr<StmtLst> ifelseStmtList, std::shared_ptr<StmtLst> whileStmtList);
 
-	int stmt_no;
+    int stmtNo;
 
-	StatementType statement_type;
-	
-	// For read, print and assignment statements
-	std::vector<std::string> var_name;
-	
-	// For assignment statements
-	std::vector<std::string> expr;
-	Expr expression;
+    StatementType statementType;
+    
+    // For read, print and assignment statements
+    std::vector<std::string> varName;
+    
+    // For assignment statements
+    std::vector<std::string> expr;
+    Expr expression;
 
-	// for while, if statements
-	std::vector<std::string> cond_expr;
-	Expr cond_expression;
+    // for while, if statements
+    std::vector<std::string> condExpr;
+    Expr condExpression;
 
-	// for call statements
-	std::string proc_name;
+    // for call statements
+    std::string procName;
 
-	//for Constant variables
-	std::vector<std::string> constant; 
+    //for Constant variables
+    std::vector<std::string> constant; 
 
-	// for then, else, while statements. 
-	std::shared_ptr<StmtLst> ifthen_stmt_list;
-	std::shared_ptr<StmtLst> ifelse_stmt_list;
-	std::shared_ptr<StmtLst> while_stmt_list;
+    // for then, else, while statements. 
+    std::shared_ptr<StmtLst> ifthenStmtList;
+    std::shared_ptr<StmtLst> ifelseStmtList;
+    std::shared_ptr<StmtLst> whileStmtList;
 
 };
 #endif

@@ -23,7 +23,7 @@ void PkbValidator::validateCallsExists() {
 void PkbValidator::validateNoDuplicateProcedure(const std::vector<std::vector<ParsedStatement>>& procedures) {
     std::set<std::string> definedProcs;
     for (const auto& procedure : procedures) {
-        std::string proc = procedure.begin()->procedure_name;
+        std::string proc = procedure.begin()->procedureName;
         if (definedProcs.count(proc) != 0)
             throw std::invalid_argument("Procedure " + proc + " redefined!\n");
         definedProcs.insert(proc);

@@ -12,63 +12,63 @@ void setExpr(Expr);
 void setTerm(Term);
 
 Expr::Expr() {
-	this->termFlag = false; 
-	this->exprFlag = false;
-	this->tokenType = TokenType::NONE;
+    this->termFlag = false; 
+    this->exprFlag = false;
+    this->tokenType = TokenType::NONE;
 }
 
 bool Expr::hasOperator() const {
-	return this->tokenType != TokenType::NONE;
+    return this->tokenType != TokenType::NONE;
 }
 
 TokenType Expr::getOperator() const {
-	return this->tokenType;
+    return this->tokenType;
 }
 
 bool Expr::isNullExpr() const {
-	return this->tokenType == TokenType::NONE && !this->hasTerm() && !this->hasExpr();
+    return this->tokenType == TokenType::NONE && !this->hasTerm() && !this->hasExpr();
 }
 
 std::shared_ptr<Expr> Expr::getExpr() const {
-	return expr;
+    return expr;
 }
 
 Expr* Expr::getExprPtr() const {
-	if (!this->hasExpr()) {
-		return nullptr; 
-	}
-	return expr.get(); 
+    if (!this->hasExpr()) {
+        return nullptr; 
+    }
+    return expr.get(); 
 }
 
 Term Expr::getTerm() const {
-	return term;
+    return term;
 }
 
 Term* Expr::getTermPtr() {
-	if (!this->hasTerm()) {
-		return nullptr;
-	}
-	return &term;
+    if (!this->hasTerm()) {
+        return nullptr;
+    }
+    return &term;
 }
 
 bool Expr::hasExpr() const {
-	return exprFlag; 
+    return exprFlag; 
 }
 
 bool Expr::hasTerm() const {
-	return termFlag; 
+    return termFlag; 
 }
 
 void Expr::setOperator(TokenType tokenType) {
-	this->tokenType = tokenType;
+    this->tokenType = tokenType;
 }
 
 void Expr::setExpr(std::shared_ptr<Expr> expr) {
-	this->expr = expr;
-	this->exprFlag = true;
+    this->expr = expr;
+    this->exprFlag = true;
 }
 
 void Expr::setTerm(Term term) {
-	this->term = term;
-	this->termFlag = true; 
+    this->term = term;
+    this->termFlag = true; 
 }

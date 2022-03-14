@@ -440,7 +440,7 @@ std::set<ProgramElement> PkbGetter::getAssignmentGivenExpression(const Expr expr
     for (it = db->exprTable.begin(); it != db->exprTable.end(); it++) {
         // if expression does not exist. 
         if (it->second.isNullExpr()) { continue; }
-        if (db->stmtTable[it->first].statement_type != StatementType::kassign_stmt) { continue; }
+        if (db->stmtTable[it->first].statementType != StatementType::kassign_stmt) { continue; }
         if (expressionProcessor.fullfillsMatching(expr1, it->second, indicator)) {
             // get the assignment
             ProgramElement res = db->elementStmtTable.at(it->first);
@@ -495,7 +495,7 @@ std::set<std::pair<ProgramElement, ProgramElement>> PkbGetter::getAssignmentWith
             // get the assignment
             auto elementIter = db->elementStmtTable.find(it->first);
 
-            ProgramElement first = ProgramElement::createVariable(db->stmtTable.at(it->first).var_modified.at(0));
+            ProgramElement first = ProgramElement::createVariable(db->stmtTable.at(it->first).varModified.at(0));
             ProgramElement second = db->elementStmtTable.at(it->first);
             result.insert(std::make_pair(first, second));
         }
@@ -510,9 +510,9 @@ std::set<ProgramElement> PkbGetter::getIfGivenVariable(const ProgramElement& var
         // if the statement is a if statement
         // and the variable USED in the if statement (statically)
         // contains the variable
-        std::vector<std::string> varUsed = it->second.var_used;
+        std::vector<std::string> varUsed = it->second.varUsed;
         bool isVarPresent = std::find(varUsed.begin(), varUsed.end(), variable.varName) != varUsed.end();
-        if (it->second.statement_type == StatementType::kif_stmt &&
+        if (it->second.statementType == StatementType::kif_stmt &&
              isVarPresent){
             result.insert(db->elementStmtTable.at(it->first));
         }
@@ -527,9 +527,9 @@ std::set<ProgramElement> PkbGetter::getWhileGivenVariable(const ProgramElement& 
         // if the statement is a while statement
         // and the variable USED in the while statement (statically)
         // contains the variable
-        std::vector<std::string> varUsed = it->second.var_used;
+        std::vector<std::string> varUsed = it->second.varUsed;
         bool isVarPresent = std::find(varUsed.begin(), varUsed.end(), variable.varName) != varUsed.end();
-        if (it->second.statement_type == StatementType::kwhile_stmt &&
+        if (it->second.statementType == StatementType::kwhile_stmt &&
             isVarPresent) {
             result.insert(db->elementStmtTable.at(it->first));
         }
@@ -543,8 +543,8 @@ std::set<std::pair<ProgramElement, ProgramElement>> PkbGetter::getIfWithVariable
 
 
     for (const auto& itset : ifStatements) {
-        if (db->stmtTable[itset.stmtNo].var_used.size() != 0) {
-            for (const auto& i : db->stmtTable[itset.stmtNo].var_used) {
+        if (db->stmtTable[itset.stmtNo].varUsed.size() != 0) {
+            for (const auto& i : db->stmtTable[itset.stmtNo].varUsed) {
                 ProgramElement var = ProgramElement::createVariable(i);
                 ProgramElement ifStmt = itset;
                 result.insert(std::make_pair(var, ifStmt));
@@ -560,8 +560,8 @@ std::set<std::pair<ProgramElement, ProgramElement>>PkbGetter::getWhileWithVariab
 
 
     for (const auto& itset : ifStatements) {
-        if (db->stmtTable[itset.stmtNo].var_used.size() != 0) {
-            for (const auto& i : db->stmtTable[itset.stmtNo].var_used) {
+        if (db->stmtTable[itset.stmtNo].varUsed.size() != 0) {
+            for (const auto& i : db->stmtTable[itset.stmtNo].varUsed) {
                 ProgramElement var = ProgramElement::createVariable(i);
                 ProgramElement ifStmt = itset;
                 result.insert(std::make_pair(var, ifStmt));

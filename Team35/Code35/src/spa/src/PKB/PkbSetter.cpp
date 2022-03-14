@@ -15,43 +15,43 @@ const std::map<StatementType, ElementType> PkbSetter::spTypeToElementTypeTable =
 PkbSetter::PkbSetter(DB* db) : db(db), designExtractor(db), pkbValidator(db) {}
 
 void PkbSetter::handleVariables(const ParsedStatement& parsedStatement) {
-    for (const auto& var: parsedStatement.var_modified)
+    for (const auto& var: parsedStatement.varModified)
         db->variables.insert(var);
-    for (const auto& var: parsedStatement.var_used)
+    for (const auto& var: parsedStatement.varUsed)
         db->variables.insert(var);
 }
 
 void PkbSetter::handleProcedure(const ParsedStatement& parsedStatement) {
-    db->procedures.insert(parsedStatement.procedure_name);
+    db->procedures.insert(parsedStatement.procedureName);
 }
 
 void PkbSetter::handleConstants(const ParsedStatement& statement) {
     for (const std::string& c : statement.constant) {
-        db->constantToStmtTable[c].insert(statement.stmt_no);
-        db->usesStmtToConstantTable[statement.stmt_no].insert(c);
+        db->constantToStmtTable[c].insert(statement.stmtNo);
+        db->usesStmtToConstantTable[statement.stmtNo].insert(c);
         db->constants.insert(c);
     }
 }
 
 void PkbSetter::handleExpression(const ParsedStatement& statement) {
-    db->exprTable[statement.stmt_no] = statement.pattern;
+    db->exprTable[statement.stmtNo] = statement.pattern;
 }
 
 ProgramElement PkbSetter::convertParsedStatement(const ParsedStatement& statement) {
-    ElementType elementType = spTypeToElementTypeTable.at(statement.statement_type);
+    ElementType elementType = spTypeToElementTypeTable.at(statement.statementType);
     std::string procOrVarName = ProgramElement::nullStringValue;
     if (elementType == ElementType::kRead)
-        procOrVarName = *statement.var_modified.begin();
+        procOrVarName = *statement.varModified.begin();
     if (elementType == ElementType::kPrint)
-        procOrVarName = *statement.var_used.begin();
+        procOrVarName = *statement.varUsed.begin();
     if (elementType == ElementType::kCall)
-        procOrVarName = statement.procedure_called;
-    return ProgramElement::createStatement(elementType, statement.stmt_no, procOrVarName);
+        procOrVarName = statement.procedureCalled;
+    return ProgramElement::createStatement(elementType, statement.stmtNo, procOrVarName);
 }
 
 void PkbSetter::insertStmt(const ParsedStatement& parsedStatement) {
-    db->stmtTable[parsedStatement.stmt_no] = parsedStatement;
-    db->elementStmtTable.insert({parsedStatement.stmt_no, convertParsedStatement(parsedStatement)});
+    db->stmtTable[parsedStatement.stmtNo] = parsedStatement;
+    db->elementStmtTable.insert({parsedStatement.stmtNo, convertParsedStatement(parsedStatement)});
     // handle entity
     handleVariables(parsedStatement);
     handleConstants(parsedStatement);
