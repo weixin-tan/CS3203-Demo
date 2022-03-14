@@ -5,7 +5,7 @@ PkbValidator::PkbValidator(DB *db) : db(db) {}
 void PkbValidator::validateNoCyclicCall() {
     for (const auto&[proc, calledTProc] : db->callsTTable) {
         if (calledTProc.count(proc) != 0)
-            throw std::invalid_argument("Cyclic call detected!\n" + proc);
+            throw std::invalid_argument("Cyclic call detected! Offending procedure: " + proc);
     }
 }
 
@@ -17,15 +17,15 @@ void PkbValidator::validateCallsExists() {
 
     for (const auto& calledProc : calledProcs)
         if (db->procedures.count(calledProc) == 0)
-            throw std::invalid_argument("Undefined procedure called!");
+            throw std::invalid_argument("Undefined " + calledProc + " procedure called!");
 }
 
 void PkbValidator::validateNoDuplicateProcedure(const std::vector<std::vector<ParsedStatement>>& procedures) {
     std::set<std::string> definedProcs;
     for (const auto& procedure : procedures) {
-        std::string proc = procedure.begin()->procedure_name;
+        std::string proc = procedure.begin()->procedureName;
         if (definedProcs.count(proc) != 0)
-            throw std::invalid_argument("Procedure redefined!\n" + proc);
+            throw std::invalid_argument("Procedure " + proc + " redefined!\n");
         definedProcs.insert(proc);
     }
 }

@@ -5,25 +5,25 @@ RelExpr::RelExpr() {
 }
 
 TokenType RelExpr::getOperator() const {
-	return this->tokenType;
+    return this->tokenType;
 }
 
 RelFactor RelExpr::getRelFactorOne() const {
-	return this->relFactorOne;
+    return this->relFactorOne;
 }
 
 RelFactor RelExpr::getRelFactorTwo() const {
-	return this->relFactorTwo;
+    return this->relFactorTwo;
 }
 
 void RelExpr::setOperator(TokenType tokenType) {
-	this->tokenType = tokenType;
+    this->tokenType = tokenType;
 }
 
 void RelExpr::setRelFactorOne(RelFactor relFactorOne) {
-	this->relFactorOne = relFactorOne;
+    this->relFactorOne = relFactorOne;
 }
 
 void RelExpr::setRelFactorTwo(RelFactor relFactorTwo) {
-	this->relFactorTwo = relFactorTwo;
+    this->relFactorTwo = relFactorTwo;
 }

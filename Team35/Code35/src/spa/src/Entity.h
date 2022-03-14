@@ -16,6 +16,7 @@ public:
   std::string name;
 
   std::string toString();
+  bool equals(const Entity & e1);
   bool operator==(const Entity & e1) const;
   bool operator!=(const Entity & e1) const;
 };

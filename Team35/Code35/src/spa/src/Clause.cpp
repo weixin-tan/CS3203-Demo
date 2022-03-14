@@ -33,7 +33,7 @@ bool Clause::operator==(const Clause & c1) {
     }
     toReturn = toReturn && temp;
   }
-  for (auto r: refList){
+  for (const auto& r: refList){
     temp = false;
     for (const auto& r1: c1.refList){
       temp = temp || (r == r1);
@@ -42,4 +42,25 @@ bool Clause::operator==(const Clause & c1) {
   }
   return toReturn;
 }
+bool Clause::equals(const Clause &c1) {
+  bool toReturn = true;
+  bool temp;
+  for(Entity e: entityToFindList){
+    temp = false;
+    for (const auto& e1 : c1.entityToFindList){
+      temp = temp || (e.equals(e1));
+    }
+    toReturn = toReturn && temp;
+  }
+  for (RelationshipRef r: refList){
+    temp = false;
+    for (const auto& r1: c1.refList){
+      temp = temp || (r.equals(r1));
+    }
+    toReturn = toReturn && temp;
+  }
+  return toReturn;
+}
+
+
 

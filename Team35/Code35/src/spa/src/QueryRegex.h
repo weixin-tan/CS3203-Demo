@@ -42,7 +42,7 @@ std::string removeWith(const std::string& s);
 long findClauseStartPosition(const std::string& s, const std::string& commandWord);
 long findPatternClause(const std::string& s);
 long findWithClause(const std::string& s);
-long findPatternClauseInSubstring(const std::string& s);
+long findPatternClauseInSubstring(const std::string& s, std::string original);
 std::vector<long> findSuchThatClause(const std::string& s);
 long smallestNumber(const long positionList[3]);
 
@@ -71,6 +71,7 @@ std::vector<std::string> extractVariablesToSelect(const std::string& s);
 std::vector<std::vector<std::string>> extractClauses(const std::string& s);
 
 std::vector<std::string> extractItemsInBrackets(const std::string& s);
+std::vector<std::string> extractPatternBrackets(const std::string& s);
 
 bool checkRelationshipRef(const RelationshipRef& r);
 bool checkEntityIsStmtRef(const Entity& e);

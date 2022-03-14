@@ -12,6 +12,8 @@ struct PKB_BASIC_TEST_CASE {
     std::map<std::string, ProgramElement> procs;
     std::map<std::string, ProgramElement> vars;
     std::map<std::string, ProgramElement> constants;
+    ExpressionProcessor ep;
+
 
     /* FOR TESTING REFERENCE
     procedure f {
@@ -36,125 +38,125 @@ struct PKB_BASIC_TEST_CASE {
                     {
                             {
                                     ParsedStatement(1,
-                                                    ParsedStatement::default_null_stmt_no,
-                                                    ParsedStatement::default_null_stmt_no,
+                                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
                                                     StatementType::kassign_stmt,
-                                                    ParsedStatement::default_pattern,
+                                                    ep.stringToExpr("5"),
                                                     "f",
                                                     {},
                                                     {"x"},
                                                     {"5"},
-                                                    ParsedStatement::default_procedure_name,
-                                                    ParsedStatement::default_null_stmt_no),
+                                                    ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                                    ParsedStatement::DEFAULT_NULL_STMT_NO),
                                     ParsedStatement(2,
-                                                    ParsedStatement::default_null_stmt_no,
-                                                    ParsedStatement::default_null_stmt_no,
+                                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
                                                     StatementType::kassign_stmt,
-                                                    ParsedStatement::default_pattern,
+                                                    ep.stringToExpr("x"),
                                                     "f",
                                                     {"x"},
                                                     {"y"},
                                                     {},
-                                                    ParsedStatement::default_procedure_name,
+                                                    ParsedStatement::DEFAULT_PROCEDURE_NAME,
                                                     1),
                                     ParsedStatement(3,
-                                                    ParsedStatement::default_null_stmt_no,
-                                                    ParsedStatement::default_null_stmt_no,
+                                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
                                                     StatementType::kassign_stmt,
-                                                    ParsedStatement::default_pattern,
+                                                    ep.stringToExpr("5"),
                                                     "f",
                                                     {},
                                                     {"x"},
                                                     {"5"},
-                                                    ParsedStatement::default_procedure_name,
+                                                    ParsedStatement::DEFAULT_PROCEDURE_NAME,
                                                     2),
                                     ParsedStatement(4,
-                                                    ParsedStatement::default_null_stmt_no,
-                                                    ParsedStatement::default_null_stmt_no,
+                                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
                                                     StatementType::kwhile_stmt,
-                                                    ParsedStatement::default_pattern,
+                                                    ep.stringToExpr("x > 4"),
                                                     "f",
                                                     {"x"},
                                                     {},
                                                     {"4"},
-                                                    ParsedStatement::default_procedure_name,
+                                                    ParsedStatement::DEFAULT_PROCEDURE_NAME,
                                                     3),
                                     ParsedStatement(5,
-                                                    ParsedStatement::default_null_stmt_no,
+                                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
                                                     4,
                                                     StatementType::kread_stmt,
-                                                    ParsedStatement::default_pattern,
+                                                    ParsedStatement::defaultPattern,
                                                     "f",
                                                     {},
                                                     {"z"},
                                                     {},
-                                                    ParsedStatement::default_procedure_name,
-                                                    ParsedStatement::default_null_stmt_no),
+                                                    ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                                    ParsedStatement::DEFAULT_NULL_STMT_NO),
                                     ParsedStatement(6,
-                                                    ParsedStatement::default_null_stmt_no,
+                                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
                                                     4,
                                                     StatementType::kif_stmt,
-                                                    ParsedStatement::default_pattern,
+                                                    ep.stringToExpr("z > 10"),
                                                     "f",
                                                     {"z"},
                                                     {},
                                                     {"10"},
-                                                    ParsedStatement::default_procedure_name,
+                                                    ParsedStatement::DEFAULT_PROCEDURE_NAME,
                                                     5),
                                     ParsedStatement(7,
                                                     6,
-                                                    ParsedStatement::default_null_stmt_no,
+                                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
                                                     StatementType::kassign_stmt,
-                                                    ParsedStatement::default_pattern,
+                                                    ep.stringToExpr("100"),
                                                     "f",
                                                     {},
                                                     {"x"},
                                                     {"100"},
-                                                    ParsedStatement::default_procedure_name,
-                                                    ParsedStatement::default_null_stmt_no),
+                                                    ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                                    ParsedStatement::DEFAULT_NULL_STMT_NO),
                                     ParsedStatement(8,
                                                     6,
-                                                    ParsedStatement::default_null_stmt_no,
+                                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
                                                     StatementType::kassign_stmt,
-                                                    ParsedStatement::default_pattern,
+                                                    ep.stringToExpr("5"),
                                                     "f",
                                                     {},
                                                     {"z"},
                                                     {"5"},
-                                                    ParsedStatement::default_procedure_name,
+                                                    ParsedStatement::DEFAULT_PROCEDURE_NAME,
                                                     7),
                                     ParsedStatement(9,
                                                     6,
-                                                    ParsedStatement::default_null_stmt_no,
+                                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
                                                     StatementType::kassign_stmt,
-                                                    ParsedStatement::default_pattern,
+                                                    ep.stringToExpr("100"),
                                                     "f",
                                                     {},
                                                     {"y"},
                                                     {"100"},
-                                                    ParsedStatement::default_procedure_name,
-                                                    ParsedStatement::default_null_stmt_no),
+                                                    ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                                    ParsedStatement::DEFAULT_NULL_STMT_NO),
                                     ParsedStatement(10,
                                                     6,
-                                                    ParsedStatement::default_null_stmt_no,
+                                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
                                                     StatementType::kassign_stmt,
-                                                    ParsedStatement::default_pattern,
+                                                    ep.stringToExpr("0"),
                                                     "f",
                                                     {},
                                                     {"z"},
                                                     {"0"},
-                                                    ParsedStatement::default_procedure_name,
+                                                    ParsedStatement::DEFAULT_PROCEDURE_NAME,
                                                     9),
                                     ParsedStatement(11,
-                                                    ParsedStatement::default_null_stmt_no,
-                                                    ParsedStatement::default_null_stmt_no,
+                                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
                                                     StatementType::kprint_stmt,
-                                                    ParsedStatement::default_pattern,
+                                                    ParsedStatement::defaultPattern,
                                                     "f",
                                                     {"x"},
                                                     {},
                                                     {},
-                                                    ParsedStatement::default_procedure_name,
+                                                    ParsedStatement::DEFAULT_PROCEDURE_NAME,
                                                     4),
                             }
                     }
@@ -221,38 +223,38 @@ struct PKB_CALLS_TEST_CASE {
                             {
                                     ParsedStatement(
                                             1,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kcall_stmt,
-                                            "",
+                                            Expr(),
                                             "proc1",
                                             {},
                                             {},
                                             {},
                                             "proc2",
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     )
                             },
                             {
                                     ParsedStatement(
                                             2,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kcall_stmt,
-                                            "",
+                                            Expr(),
                                             "proc2",
                                             {},
                                             {},
                                             {},
                                             "proc3",
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             3,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kcall_stmt,
-                                            "",
+                                            Expr(),
                                             "proc2",
                                             {},
                                             {},
@@ -264,74 +266,74 @@ struct PKB_CALLS_TEST_CASE {
                             {
                                     ParsedStatement(
                                             4,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kcall_stmt,
-                                            "",
+                                            Expr(),
                                             "proc3",
                                             {},
                                             {},
                                             {},
                                             "proc4",
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                             },
                             {
                                     ParsedStatement(
                                             5,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kcall_stmt,
-                                            "",
+                                            Expr(),
                                             "proc4",
                                             {},
                                             {},
                                             {},
                                             "proc5",
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             6,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kcall_stmt,
-                                            "",
+                                            Expr(),
                                             "proc4",
                                             {},
                                             {},
                                             {},
                                             "proc6",
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                             },
                             {
                                     ParsedStatement(
                                             7,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kassign_stmt,
-                                            "",
+                                            Expr(),
                                             "proc5",
                                             {"b"},
                                             {"a"},
                                             {},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                             },
                             {
                                     ParsedStatement(
                                             8,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kassign_stmt,
-                                            "",
+                                            Expr(),
                                             "proc6",
                                             {},
                                             {"c"},
                                             {"100"},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                             },
                     }
@@ -387,23 +389,23 @@ struct PKB_MODIFIES_P_TEST_CASE {
                             {
                                     ParsedStatement(
                                             1,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kread_stmt,
-                                            "",
+                                            Expr(),
                                             "proc1",
                                             {"x"},
                                             {"proc1Var"},
                                             {"5"},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             2,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kcall_stmt,
-                                            "",
+                                            Expr(),
                                             "proc1",
                                             {},
                                             {},
@@ -413,10 +415,10 @@ struct PKB_MODIFIES_P_TEST_CASE {
                                     ),
                                     ParsedStatement(
                                             3,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kcall_stmt,
-                                            "",
+                                            Expr(),
                                             "proc1",
                                             {},
                                             {},
@@ -428,23 +430,23 @@ struct PKB_MODIFIES_P_TEST_CASE {
                             {
                                     ParsedStatement(
                                             4,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kread_stmt,
-                                            "",
+                                            Expr(),
                                             "proc2",
                                             {},
                                             {"proc2Var"},
                                             {},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             5,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kcall_stmt,
-                                            "",
+                                            Expr(),
                                             "proc2",
                                             {},
                                             {},
@@ -454,10 +456,10 @@ struct PKB_MODIFIES_P_TEST_CASE {
                                     ),
                                     ParsedStatement(
                                             6,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kcall_stmt,
-                                            "",
+                                            Expr(),
                                             "proc2",
                                             {},
                                             {},
@@ -469,23 +471,23 @@ struct PKB_MODIFIES_P_TEST_CASE {
                             {
                                     ParsedStatement(
                                             7,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kread_stmt,
-                                            "",
+                                            Expr(),
                                             "proc3",
                                             {},
                                             {"proc3Var"},
                                             {},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             8,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kcall_stmt,
-                                            "",
+                                            Expr(),
                                             "proc3",
                                             {},
                                             {},
@@ -497,31 +499,31 @@ struct PKB_MODIFIES_P_TEST_CASE {
                             {
                                     ParsedStatement(
                                             9,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kassign_stmt,
-                                            "",
+                                            Expr(),
                                             "proc4",
                                             {},
                                             {"proc4Var"},
                                             {"123"},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     )
                             },
                             {
                                     ParsedStatement(
                                             10,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kassign_stmt,
-                                            "",
+                                            Expr(),
                                             "proc5",
                                             {},
                                             {"proc5Var"},
                                             {"456"},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     )
                             }
                     }
@@ -577,36 +579,36 @@ struct PKB_MODIFIES_S_TEST_CASE {
                             {
                                     ParsedStatement(
                                             1,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kwhile_stmt,
-                                            "",
+                                            Expr(),
                                             "proc1",
                                             {"proc1Var1"},
                                             {},
                                             {"5"},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             2,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             1,
                                             StatementType::kread_stmt,
-                                            "",
+                                            Expr(),
                                             "proc1",
                                             {},
                                             {"proc1Var2"},
                                             {},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             3,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             1,
                                             StatementType::kcall_stmt,
-                                            "",
+                                            Expr(),
                                             "proc1",
                                             {},
                                             {},
@@ -618,23 +620,23 @@ struct PKB_MODIFIES_S_TEST_CASE {
                             {
                                     ParsedStatement(
                                             4,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kassign_stmt,
-                                            "",
+                                            Expr(),
                                             "proc2",
                                             {},
                                             {"proc2Var"},
                                             {"100"},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             5,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kcall_stmt,
-                                            "",
+                                            Expr(),
                                             "proc2",
                                             {},
                                             {},
@@ -646,16 +648,16 @@ struct PKB_MODIFIES_S_TEST_CASE {
                             {
                                     ParsedStatement(
                                             6,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kread_stmt,
-                                            "",
+                                            Expr(),
                                             "proc3",
                                             {},
                                             {"proc3Var"},
                                             {},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                             }
                     }
@@ -728,23 +730,23 @@ struct PKB_USES_P_TEST_CASE {
                             {
                                     ParsedStatement(
                                             1,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kread_stmt,
-                                            "",
+                                            Expr(),
                                             "proc1",
                                             {"x"},
                                             {"proc1Var"},
                                             {"5"},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             2,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kcall_stmt,
-                                            "",
+                                            Expr(),
                                             "proc1",
                                             {},
                                             {},
@@ -754,10 +756,10 @@ struct PKB_USES_P_TEST_CASE {
                                     ),
                                     ParsedStatement(
                                             3,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kcall_stmt,
-                                            "",
+                                            Expr(),
                                             "proc1",
                                             {},
                                             {},
@@ -769,23 +771,23 @@ struct PKB_USES_P_TEST_CASE {
                             {
                                     ParsedStatement(
                                             4,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kprint_stmt,
-                                            "",
+                                            Expr(),
                                             "proc2",
                                             {"proc2Var"},
                                             {},
                                             {},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             5,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kcall_stmt,
-                                            "",
+                                            Expr(),
                                             "proc2",
                                             {},
                                             {},
@@ -795,10 +797,10 @@ struct PKB_USES_P_TEST_CASE {
                                     ),
                                     ParsedStatement(
                                             6,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kcall_stmt,
-                                            "",
+                                            Expr(),
                                             "proc2",
                                             {},
                                             {},
@@ -810,23 +812,23 @@ struct PKB_USES_P_TEST_CASE {
                             {
                                     ParsedStatement(
                                             7,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kprint_stmt,
-                                            "",
+                                            Expr(),
                                             "proc3",
                                             {"proc3Var"},
                                             {},
                                             {},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             8,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kcall_stmt,
-                                            "",
+                                            Expr(),
                                             "proc3",
                                             {},
                                             {},
@@ -838,31 +840,31 @@ struct PKB_USES_P_TEST_CASE {
                             {
                                     ParsedStatement(
                                             9,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kassign_stmt,
-                                            "",
+                                            Expr(),
                                             "proc4",
                                             {"proc4Var"},
                                             {"abc"},
                                             {},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     )
                             },
                             {
                                     ParsedStatement(
                                             10,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kassign_stmt,
-                                            "",
+                                            Expr(),
                                             "proc5",
                                             {"proc5Var"},
                                             {"def"},
                                             {},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     )
                             }
                     }
@@ -919,36 +921,36 @@ struct PKB_USES_S_TEST_CASE {
                             {
                                     ParsedStatement(
                                             1,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kwhile_stmt,
-                                            "",
+                                            Expr(),
                                             "proc1",
                                             {"proc1Var1"},
                                             {},
                                             {"5"},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             2,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             1,
                                             StatementType::kprint_stmt,
-                                            "",
+                                            Expr(),
                                             "proc1",
                                             {"proc1Var2"},
                                             {},
                                             {},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             3,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             1,
                                             StatementType::kcall_stmt,
-                                            "",
+                                            Expr(),
                                             "proc1",
                                             {},
                                             {},
@@ -960,23 +962,23 @@ struct PKB_USES_S_TEST_CASE {
                             {
                                     ParsedStatement(
                                             4,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kassign_stmt,
-                                            "",
+                                            Expr(),
                                             "proc2",
                                             {"proc2Var"},
                                             {"abc"},
                                             {},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             5,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kcall_stmt,
-                                            "",
+                                            Expr(),
                                             "proc2",
                                             {},
                                             {},
@@ -988,16 +990,16 @@ struct PKB_USES_S_TEST_CASE {
                             {
                                     ParsedStatement(
                                             6,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kprint_stmt,
-                                            "",
+                                            Expr(),
                                             "proc3",
                                             {"proc3Var"},
                                             {},
                                             {},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                             }
                     }
@@ -1076,62 +1078,62 @@ struct PKB_NEXT_TEST_CASE {
                             {
                                     ParsedStatement(
                                             1,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kassign_stmt,
-                                            "",
+                                            Expr(),
                                             "Second",
                                             {},
                                             {"x"},
                                             {"0"},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             2,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kassign_stmt,
-                                            "",
+                                            Expr(),
                                             "Second",
                                             {},
                                             {"i"},
                                             {"5"},
-                                            ParsedStatement::default_procedure_name,
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
                                             1
                                     ),
                                     ParsedStatement(
                                             3,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kwhile_stmt,
-                                            "",
+                                            Expr(),
                                             "Second",
                                             {"i"},
                                             {},
                                             {"0"},
-                                            ParsedStatement::default_procedure_name,
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
                                             2
                                     ),
                                     ParsedStatement(
                                             4,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             3,
                                             StatementType::kassign_stmt,
-                                            "",
+                                            Expr(),
                                             "Second",
                                             {"x", "y"},
                                             {"x"},
                                             {"2"},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             5,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             3,
                                             StatementType::kcall_stmt,
-                                            "",
+                                            Expr(),
                                             "Second",
                                             {},
                                             {},
@@ -1141,225 +1143,225 @@ struct PKB_NEXT_TEST_CASE {
                                     ),
                                     ParsedStatement(
                                             6,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             3,
                                             StatementType::kassign_stmt,
-                                            "",
+                                            Expr(),
                                             "Second",
                                             {"i"},
                                             {"i"},
                                             {"1"},
-                                            ParsedStatement::default_procedure_name,
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
                                             5
                                     ),
                                     ParsedStatement(
                                             7,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kif_stmt,
-                                            "",
+                                            Expr(),
                                             "Second",
                                             {"x"},
                                             {},
                                             {"1"},
-                                            ParsedStatement::default_procedure_name,
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
                                             3
                                     ),
                                     ParsedStatement(
                                             8,
                                             7,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kassign_stmt,
-                                            "",
+                                            Expr(),
                                             "Second",
                                             {"x"},
                                             {"x"},
                                             {"1"},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             9,
                                             7,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kassign_stmt,
-                                            "",
+                                            Expr(),
                                             "Second",
                                             {},
                                             {"z"},
                                             {"1"},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             10,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kassign_stmt,
-                                            "",
+                                            Expr(),
                                             "Second",
                                             {"z", "x"},
                                             {"z"},
                                             {"1"},
-                                            ParsedStatement::default_procedure_name,
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
                                             7
                                     ),
                                     ParsedStatement(
                                             11,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kassign_stmt,
-                                            "",
+                                            Expr(),
                                             "Second",
                                             {"z"},
                                             {"y"},
                                             {"2"},
-                                            ParsedStatement::default_procedure_name,
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
                                             10
                                     ),
                                     ParsedStatement(
                                             12,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kassign_stmt,
-                                            "",
+                                            Expr(),
                                             "Second",
                                             {"x", "y", "z"},
                                             {"x"},
                                             {},
-                                            ParsedStatement::default_procedure_name,
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
                                             11
                                     ),
                             },
                             {
                                     ParsedStatement(
                                             13,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kwhile_stmt,
-                                            "",
+                                            Expr(),
                                             "Third",
                                             {"c"},
                                             {},
                                             {"0"},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             14,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             13,
                                             StatementType::kif_stmt,
-                                            "",
+                                            Expr(),
                                             "Third",
                                             {"b"},
                                             {},
                                             {"0"},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             15,
                                             14,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kassign_stmt,
-                                            "",
+                                            Expr(),
                                             "Third",
                                             {"v", "a"},
                                             {"d"},
                                             {},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             16,
                                             14,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kassign_stmt,
-                                            "",
+                                            Expr(),
                                             "Third",
                                             {"x", "y", "v", "d"},
                                             {"a"},
                                             {},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             17,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kif_stmt,
-                                            "",
+                                            Expr(),
                                             "Third",
                                             {"b"},
                                             {},
                                             {"0"},
-                                            ParsedStatement::default_procedure_name,
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
                                             13
                                     ),
                                     ParsedStatement(
                                             18,
                                             17,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kif_stmt,
-                                            "",
+                                            Expr(),
                                             "Third",
                                             {"b"},
                                             {},
                                             {"0"},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             19,
                                             18,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kassign_stmt,
-                                            "",
+                                            Expr(),
                                             "Third",
                                             {"v", "a"},
                                             {"d"},
                                             {},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             20,
                                             18,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kassign_stmt,
-                                            "",
+                                            Expr(),
                                             "Third",
                                             {"x", "y", "v", "d"},
                                             {"a"},
                                             {},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             21,
                                             17,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kassign_stmt,
-                                            "",
+                                        Expr(),
                                             "Third",
                                             {"x", "y", "v", "d"},
                                             {"a"},
                                             {},
-                                            ParsedStatement::default_procedure_name,
-                                            ParsedStatement::default_null_stmt_no
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
                                     ),
                                     ParsedStatement(
                                             22,
-                                            ParsedStatement::default_null_stmt_no,
-                                            ParsedStatement::default_null_stmt_no,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
                                             StatementType::kassign_stmt,
-                                            "",
+                                        Expr(),
                                             "Third",
                                             {"v", "a"},
                                             {"d"},
                                             {},
-                                            ParsedStatement::default_procedure_name,
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
                                             17
                                     ),
                             }
@@ -1399,16 +1401,16 @@ struct PKB_VALIDATION_TEST_CASES {
                     {
                             ParsedStatement(
                                     1,
-                                    ParsedStatement::default_null_stmt_no,
-                                    ParsedStatement::default_null_stmt_no,
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
                                     StatementType::kcall_stmt,
-                                    "",
+                                    Expr(),
                                     "proc1",
                                     {},
                                     {},
                                     {},
                                     "proc1",
-                                    ParsedStatement::default_null_stmt_no
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO
                             )
                     }
             };
@@ -1417,38 +1419,38 @@ struct PKB_VALIDATION_TEST_CASES {
                     {
                             ParsedStatement(
                                     1,
-                                    ParsedStatement::default_null_stmt_no,
-                                    ParsedStatement::default_null_stmt_no,
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
                                     StatementType::kcall_stmt,
-                                    "",
+                                    Expr(),
                                     "proc1",
                                     {},
                                     {},
                                     {},
                                     "proc2",
-                                    ParsedStatement::default_null_stmt_no
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO
                             )
                     },
                     {
                             ParsedStatement(
                                     2,
-                                    ParsedStatement::default_null_stmt_no,
-                                    ParsedStatement::default_null_stmt_no,
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
                                     StatementType::kcall_stmt,
-                                    "",
+                                    Expr(),
                                     "proc2",
                                     {},
                                     {},
                                     {},
                                     "proc3",
-                                    ParsedStatement::default_null_stmt_no
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO
                             ),
                             ParsedStatement(
                                     3,
-                                    ParsedStatement::default_null_stmt_no,
-                                    ParsedStatement::default_null_stmt_no,
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
                                     StatementType::kcall_stmt,
-                                    "",
+                                    Expr(),
                                     "proc4",
                                     {},
                                     {},
@@ -1460,44 +1462,44 @@ struct PKB_VALIDATION_TEST_CASES {
                     {
                             ParsedStatement(
                                     4,
-                                    ParsedStatement::default_null_stmt_no,
-                                    ParsedStatement::default_null_stmt_no,
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
                                     StatementType::kcall_stmt,
-                                    "",
+                                    Expr(),
                                     "proc3",
                                     {},
                                     {},
                                     {},
                                     "proc4",
-                                    ParsedStatement::default_null_stmt_no
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO
                             ),
                     },
                     {
                             ParsedStatement(
                                     5,
-                                    ParsedStatement::default_null_stmt_no,
-                                    ParsedStatement::default_null_stmt_no,
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
                                     StatementType::kcall_stmt,
-                                    "",
+                                    Expr(),
                                     "proc4",
                                     {},
                                     {},
                                     {},
                                     "proc5",
-                                    ParsedStatement::default_null_stmt_no
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO
                             ),
                             ParsedStatement(
                                     6,
-                                    ParsedStatement::default_null_stmt_no,
-                                    ParsedStatement::default_null_stmt_no,
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
                                     StatementType::kcall_stmt,
-                                    "",
+                                    Expr(),
                                     "proc4",
                                     {},
                                     {},
                                     {},
                                     "proc6",
-                                    ParsedStatement::default_null_stmt_no
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO
                             ),
                     },
             };
@@ -1506,46 +1508,46 @@ struct PKB_VALIDATION_TEST_CASES {
                     {
                             ParsedStatement(
                                     1,
-                                    ParsedStatement::default_null_stmt_no,
-                                    ParsedStatement::default_null_stmt_no,
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
                                     StatementType::kcall_stmt,
-                                    "",
+                                    Expr(),
                                     "proc1",
                                     {},
                                     {},
                                     {},
                                     "proc2",
-                                    ParsedStatement::default_null_stmt_no
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO
                             )
                     },
                     {
                             ParsedStatement(
                                     2,
-                                    ParsedStatement::default_null_stmt_no,
-                                    ParsedStatement::default_null_stmt_no,
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
                                     StatementType::kprint_stmt,
-                                    "",
+                                    Expr(),
                                     "proc2",
                                     {"abc"},
                                     {},
                                     {},
-                                    ParsedStatement::default_procedure_name,
-                                    ParsedStatement::default_null_stmt_no
+                                    ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO
                             )
                     },
                     {
                             ParsedStatement(
                                     3,
-                                    ParsedStatement::default_null_stmt_no,
-                                    ParsedStatement::default_null_stmt_no,
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
                                     StatementType::kprint_stmt,
-                                    "",
+                                    Expr(),
                                     "proc1",
                                     {"abc"},
                                     {},
                                     {},
-                                    ParsedStatement::default_procedure_name,
-                                    ParsedStatement::default_null_stmt_no
+                                    ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO
                             )
                     },
             };
@@ -1554,20 +1556,219 @@ struct PKB_VALIDATION_TEST_CASES {
                     {
                             ParsedStatement(
                                     1,
-                                    ParsedStatement::default_null_stmt_no,
-                                    ParsedStatement::default_null_stmt_no,
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO,
                                     StatementType::kcall_stmt,
-                                    "",
+                                    Expr(),
                                     "proc1",
                                     {},
                                     {},
                                     {},
                                     "proc2",
-                                    ParsedStatement::default_null_stmt_no
+                                    ParsedStatement::DEFAULT_NULL_STMT_NO
                             )
                     },
             };
 
+};
+
+
+/* FOR TESTING REFERENCE
+    procedure f {
+      x = x+5;  // 1
+      y = y;  // 2
+      x = pattern;  // 3
+      while (x > y) {  // 4
+        read z;  // 5
+        if (z > y) then {  // 6
+          x = x * y + 100;  // 7
+          z = (x+y) * z;  // 8
+        } else {
+          y = x * y * z - y + (y * f);  // 9
+          z = 0;  // 10
+        }
+      }
+      print x; // 11
+    }
+    */
+
+struct PKB_PATTERN_TEST_CASE {
+    std::vector<std::vector<ParsedStatement>> stmtLists;
+    std::map<int, ProgramElement> stmt;
+    std::map<std::string, ProgramElement> procs;
+    std::map<std::string, ProgramElement> vars;
+    std::map<std::string, ProgramElement> constants;
+    ExpressionProcessor ep;
+    
+    PKB_PATTERN_TEST_CASE():
+    stmtLists(
+        {
+                {
+                        ParsedStatement(1,
+                                        ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                        ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                        StatementType::kassign_stmt,
+                                        ep.stringToExpr("x + 5"),
+                                        "f",
+                                        {"x"},
+                                        {"x"},
+                                        {"5"},
+                                        ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                        ParsedStatement::DEFAULT_NULL_STMT_NO),
+                        ParsedStatement(2,
+                                        ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                        ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                        StatementType::kassign_stmt,
+                                        ep.stringToExpr("y"),
+                                        "f",
+                                        {"y"},
+                                        {"y"},
+                                        {},
+                                        ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                        1),
+                        ParsedStatement(3,
+                                        ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                        ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                        StatementType::kassign_stmt,
+                                        ep.stringToExpr("pattern"),
+                                        "f",
+                                        {"pattern"},
+                                        {"x"},
+                                        {},
+                                        ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                        2),
+                        ParsedStatement(4,
+                                        ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                        ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                        StatementType::kwhile_stmt,
+                                        ep.stringToExpr("x > y"),
+                                        "f"
+                                        ,
+                                        {"x", "y"},
+                                        {},
+                                        {},
+                                        ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                        3),
+                        ParsedStatement(5,
+                                        ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                        4,
+                                        StatementType::kread_stmt,
+                                        ParsedStatement::defaultPattern,
+                                        "f",
+                                        {},
+                                        {"z"},
+                                        {},
+                                        ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                        ParsedStatement::DEFAULT_NULL_STMT_NO),
+                        ParsedStatement(6,
+                                        ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                        4,
+                                        StatementType::kif_stmt,
+                                        ep.stringToExpr("z > y"),
+                                        "f",
+                                        {"y","z"},
+                                        {},
+                                        {},
+                                        ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                        5),
+                        ParsedStatement(7,
+                                        6,
+                                        ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                        StatementType::kassign_stmt,
+                                        ep.stringToExpr("x * y + 100"),
+                                        "f",
+                                        {"x", "y"},
+                                        {"x"},
+                                        {"100"},
+                                        ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                        ParsedStatement::DEFAULT_NULL_STMT_NO),
+                        ParsedStatement(8,
+                                        6,
+                                        ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                        StatementType::kassign_stmt,
+                                        ep.stringToExpr("(x+y) * z"),
+                                        "f",
+                                        {"x","y","z"},
+                                        {"z"},
+                                        {},
+                                        ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                        7),
+                        ParsedStatement(9,
+                                        6,
+                                        ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                        StatementType::kassign_stmt,
+                                        ep.stringToExpr("x * y * z - y + (y * f)"),
+                                        "f",
+                                        {"y","x","z","f"},
+                                        {"y"},
+                                        {},
+                                        ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                        ParsedStatement::DEFAULT_NULL_STMT_NO),
+                        ParsedStatement(10,
+                                        6,
+                                        ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                        StatementType::kassign_stmt,
+                                        ep.stringToExpr("0"),
+                                        "f",
+                                        {},
+                                        {"z"},
+                                        {"0"},
+                                        ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                        9),
+                        ParsedStatement(11,
+                                        ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                        ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                        StatementType::kprint_stmt,
+                                        ParsedStatement::defaultPattern,
+                                        "f",
+                                        {"x"},
+                                        {},
+                                        {},
+                                        ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                        4),
+                }
+        }
+
+    ),
+    stmt(
+        {
+                {1, ProgramElement::createStatement(ElementType::kAssignment, 1)},
+                {2, ProgramElement::createStatement(ElementType::kAssignment, 2)},
+                {3, ProgramElement::createStatement(ElementType::kAssignment, 3)},
+                {4, ProgramElement::createStatement(ElementType::kWhile, 4)},
+                {5, ProgramElement::createStatement(ElementType::kRead, 5, "z")},
+                {6, ProgramElement::createStatement(ElementType::kIf, 6)},
+                {7, ProgramElement::createStatement(ElementType::kAssignment, 7)},
+                {8, ProgramElement::createStatement(ElementType::kAssignment, 8)},
+                {9, ProgramElement::createStatement(ElementType::kAssignment, 9)},
+                {10, ProgramElement::createStatement(ElementType::kAssignment, 10)},
+                {11, ProgramElement::createStatement(ElementType::kPrint, 11, "x")},
+        }
+
+        ),
+    vars(
+        {       
+                {"f", ProgramElement::createVariable("f")},
+                {"pattern", ProgramElement::createVariable("pattern")},
+                {"x", ProgramElement::createVariable("x")},
+                {"y", ProgramElement::createVariable("y")},
+                {"z", ProgramElement::createVariable("z")},
+        }
+        ),
+    procs(
+        {
+                {"f", ProgramElement::createProcedure("f")},
+        }
+        ),
+    constants(
+        {
+                {"5", ProgramElement::createVariable("5")},
+                {"10", ProgramElement::createVariable("10")},
+                {"100", ProgramElement::createVariable("100")},
+                {"0", ProgramElement::createVariable("0")},
+        }
+        )
+{}
 };
 
 #endif //SPA_TEAM35_CODE35_SRC_UNIT_TESTING_SRC_PKBUTIL_H_

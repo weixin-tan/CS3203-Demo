@@ -2,9 +2,9 @@
 #define FACTORTYPE_H
 
 enum class FactorType {
-	VAR,
-	CONST,
-	EXPR
+    VAR,
+    CONST,
+    EXPR
 };
 
 #endif

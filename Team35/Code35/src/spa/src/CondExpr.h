@@ -6,17 +6,17 @@
 
 class CondExpr {
 private:
-	TokenType tokenType;
-	CondExpr* condExpr;
-	RelExpr relExpr;
+    TokenType tokenType;
+    CondExpr* condExpr;
+    RelExpr relExpr;
 public:
-	CondExpr();
-	TokenType getOperator() const;
-	CondExpr getCondExpr() const;
-	RelExpr getRelExpr() const;
-	void setOperator(TokenType tokenType);
-	void setCondExpr(CondExpr condExpr);
-	void setRelExpr(RelExpr relExpr);
+    CondExpr();
+    TokenType getOperator() const;
+    CondExpr getCondExpr() const;
+    RelExpr getRelExpr() const;
+    void setOperator(TokenType tokenType);
+    void setCondExpr(CondExpr condExpr);
+    void setRelExpr(RelExpr relExpr);
 };
 
 #endif

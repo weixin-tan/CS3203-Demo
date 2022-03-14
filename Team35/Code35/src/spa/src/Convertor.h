@@ -18,16 +18,16 @@ class Convertor {
 public:
 
 	PkbSetter* pkb_setter;
-	static std::string curr_procedure_name;
+	static std::string currProcedureName;
 	static std::vector<ParsedStatement> finalResults;
 
 	Convertor(PkbSetter* pkb_setter);
 
-	std::vector<std::vector<ParsedStatement>> ProcedureReader(ProcedureLst procedurelist);
+	std::vector<std::vector<ParsedStatement>> procedureReader(ProcedureLst procedureList);
 
-	std::vector<ParsedStatement> StatementListReader(StmtLst statement_list, int container_number);
+	std::vector<ParsedStatement> statementListReader(StmtLst statementList, int containerNumber);
 	
-	ParsedStatement readStatement(Statement stmt, ContainerType containertype,
-		std::stack<int>& nestedstack, int container_number);
+	ParsedStatement readStatement(Statement stmt, ContainerType containerType,
+		std::stack<int>& nestedStack, int containerNumber);
 
 };

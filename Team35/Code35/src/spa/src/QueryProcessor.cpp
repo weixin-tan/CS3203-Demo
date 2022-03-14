@@ -271,7 +271,7 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
     }
 
     for (const auto& s: PatternClauses){
-      std::vector<std::string> patternList = extractItemsInBrackets(s);
+      std::vector<std::string> patternList = extractPatternBrackets(s);
       isValid = isValid && checkPatternList(patternList, &entityMap);
       if (isValid){
         RelationshipRef newRef = createPatternObject(patternList, &entityMap);

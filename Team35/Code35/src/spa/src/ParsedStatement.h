@@ -8,30 +8,30 @@
 #define PARSED_STATEMENT_H
 
 class ParsedStatement {
-	
+    
 public:
-	static int default_null_stmt_no;
-	static std::string default_pattern;
-	static std::string default_procedure_name;
+    static int DEFAULT_NULL_STMT_NO;
+    static Expr defaultPattern;
+    static std::string DEFAULT_PROCEDURE_NAME;
 
-	int stmt_no; // statement number 
-	int if_stmt_no; //if statement number refers to the statement number of if
-	int while_stmt_no; // while statement number refers to the statement number of while
-	StatementType statement_type; // what kind of statement it is.
-	std::string pattern = default_pattern; // implementation not done
-	std::string procedure_name;
-	std::vector<std::string> var_used;
-	std::vector<std::string> var_modified;
-	std::string procedure_called;
-	std::vector<std::string> constant;
-	int preceding = -1; 
+    int stmtNo; // statement number 
+    int ifStmtNo; //if statement number refers to the statement number of if
+    int whileStmtNo; // while statement number refers to the statement number of while
+    StatementType statementType; // what kind of statement it is.
+    Expr pattern = defaultPattern; 
+    std::string procedureName;
+    std::vector<std::string> varUsed;
+    std::vector<std::string> varModified;
+    std::string procedureCalled;
+    std::vector<std::string> constant;
+    int preceding = -1; 
 
-	ParsedStatement();
+    ParsedStatement();
 
-	ParsedStatement(int stmt_no, int if_stmt_no, int while_stmt_no,
-		StatementType statement_type, std::string pattern, std::string procedure_name,
-		std::vector<std::string> var_used, std::vector<std::string> var_modified, std::vector<std::string> constant, 
-		std::string procedure_called, int preceding);
+    ParsedStatement(int stmtNo, int ifStmtNo, int whileStmtNo,
+        StatementType statementType, Expr pattern, std::string procedureName,
+        std::vector<std::string> varUsed, std::vector<std::string> varModified, std::vector<std::string> constant,
+        std::string procedureCalled, int preceding);
 };
 
 #endif
