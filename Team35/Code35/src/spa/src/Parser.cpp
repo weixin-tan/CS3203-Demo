@@ -10,5 +10,5 @@ using namespace std;
 
 int Parse () {
 
-	return 0;
+    return 0;
 }

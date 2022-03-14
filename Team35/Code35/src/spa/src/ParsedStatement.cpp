@@ -3,39 +3,39 @@
 
 //Defining static const variables here
 
-int ParsedStatement::default_null_stmt_no = -1;
-Expr ParsedStatement::default_pattern;
-std::string ParsedStatement::default_procedure_name = "";
+int ParsedStatement::DEFAULT_NULL_STMT_NO = -1;
+Expr ParsedStatement::defaultPattern;
+std::string ParsedStatement::DEFAULT_PROCEDURE_NAME = "";
 
 ParsedStatement::ParsedStatement() {
-	this->stmt_no = default_null_stmt_no; // statement number 
-	this->if_stmt_no = default_null_stmt_no; //if statement number refers to the statement number of if
-	this->while_stmt_no = default_null_stmt_no; // while statement number refers to the statement number of while
-	this->statement_type = StatementType::knone; // what kind of statement it is.
-	this->pattern = default_pattern; 
-	this->procedure_name = default_procedure_name;
-	this->var_used;
-	this->var_modified;
-	this->procedure_called = default_procedure_name;
-	this->preceding = default_null_stmt_no;
-	this->constant; 
+    this->stmtNo = DEFAULT_NULL_STMT_NO; // statement number 
+    this->ifStmtNo = DEFAULT_NULL_STMT_NO; //if statement number refers to the statement number of if
+    this->whileStmtNo = DEFAULT_NULL_STMT_NO; // while statement number refers to the statement number of while
+    this->statementType = StatementType::knone; // what kind of statement it is.
+    this->pattern = defaultPattern; 
+    this->procedureName = DEFAULT_PROCEDURE_NAME;
+    this->varUsed;
+    this->varModified;
+    this->procedureCalled = DEFAULT_PROCEDURE_NAME;
+    this->preceding = DEFAULT_NULL_STMT_NO;
+    this->constant; 
 }
 
-ParsedStatement::ParsedStatement(int stmt_no, int if_stmt_no, int while_stmt_no,
-	StatementType statement_type, Expr pattern, std::string procedure_name,
-	std::vector<std::string> var_used, std::vector<std::string> var_modified, std::vector<std::string> constant,
-	std::string procedure_called, int preceding) {
+ParsedStatement::ParsedStatement(int stmtNo, int ifStmtNo, int whileStmtNo,
+    StatementType statementType, Expr pattern, std::string procedureName,
+    std::vector<std::string> varUsed, std::vector<std::string> varModified, std::vector<std::string> constant,
+    std::string procedureCalled, int preceding) {
 
-	this->stmt_no = stmt_no;
-	this->if_stmt_no = if_stmt_no; //if statement number refers to the statement number of if
-	this->while_stmt_no = while_stmt_no; // while statement number refers to the statement number of while
-	this->statement_type = statement_type; // what kind of statement it is.
-	this->pattern = pattern; // implementation not done
-	this->procedure_name = procedure_name;
-	this->var_used = var_used;
-	this->var_modified = var_modified;
-	this->constant = constant;
-	this->procedure_called = procedure_called;
-	this->preceding = preceding;
+    this->stmtNo = stmtNo;
+    this->ifStmtNo = ifStmtNo; //if statement number refers to the statement number of if
+    this->whileStmtNo = whileStmtNo; // while statement number refers to the statement number of while
+    this->statementType = statementType; // what kind of statement it is.
+    this->pattern = pattern; // implementation not done
+    this->procedureName = procedureName;
+    this->varUsed = varUsed;
+    this->varModified = varModified;
+    this->constant = constant;
+    this->procedureCalled = procedureCalled;
+    this->preceding = preceding;
 
 }

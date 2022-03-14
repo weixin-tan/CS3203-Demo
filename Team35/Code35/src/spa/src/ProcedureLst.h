@@ -6,12 +6,12 @@
 
 class ProcedureLst {
 private:
-	std::vector<Procedure> procedures;
+    std::vector<Procedure> procedures;
 public:
-	ProcedureLst();
-	Procedure getProcedureAtIndex(int index) const;
-	std::size_t getSize() const;
-	void setNextProcedure(Procedure procedure);
+    ProcedureLst();
+    Procedure getProcedureAtIndex(int index) const;
+    std::size_t getSize() const;
+    void setNextProcedure(Procedure procedure);
 };
 
 #endif
