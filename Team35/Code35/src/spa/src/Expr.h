@@ -14,7 +14,7 @@ private:
 	bool exprFlag;
 public:
 	Expr();
-	bool Expr::isNullExpr() const;
+	bool isNullExpr() const;
 	TokenType getOperator() const;
 	bool hasOperator() const;
 	std::shared_ptr<Expr> getExpr() const;
