@@ -22,6 +22,8 @@ private:
     void handleVariables(const ParsedStatement& parsedStatement);
     void handleProcedure(const ParsedStatement& parsedStatement);
     void handleConstants(const ParsedStatement &statement);
+    void handleExpression(const ParsedStatement& statement);
+    
 
 public:
     explicit PkbSetter(DB* db);

@@ -5,12 +5,12 @@
 
 class Program {
 private:
-	ProcedureLst procedure_lst;
+    ProcedureLst procedure_lst;
 
 public:
-	Program();
-	ProcedureLst getProcedureLst() const;
-	void setProcedureLst(ProcedureLst procedure_lst);
+    Program();
+    ProcedureLst getProcedureLst() const;
+    void setProcedureLst(ProcedureLst procedure_lst);
 };
 
 #endif

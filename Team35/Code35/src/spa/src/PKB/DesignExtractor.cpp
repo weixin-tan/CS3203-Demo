@@ -1,4 +1,4 @@
-#include "DesignExtractor.h"
+    #include "DesignExtractor.h"
 #include <queue>
 
 DesignExtractor::DesignExtractor(DB* db) : db(db) {}
@@ -92,8 +92,8 @@ void DesignExtractor::dfsNext(const int& originStmt, std::set<int>& visited, con
 
 void DesignExtractor::extractFollows(std::map<int, std::set<int>>& followsTable) {
     for (const auto&[stmtNo, parsedStatement] : db->stmtTable) {
-        if (parsedStatement.preceding != ParsedStatement::default_null_stmt_no)
-            followsTable[parsedStatement.preceding].insert(parsedStatement.stmt_no);
+        if (parsedStatement.preceding != ParsedStatement::DEFAULT_NULL_STMT_NO)
+            followsTable[parsedStatement.preceding].insert(parsedStatement.stmtNo);
     }
 }
 
@@ -104,11 +104,11 @@ void DesignExtractor::extractFollowsT(std::map<int, std::set<int>>& followsTTabl
 
 void DesignExtractor::extractParent(std::map<int, std::set<int>>& parentTable) {
     for (const auto&[stmtNo, parsedStatement] : db->stmtTable) {
-        int parentStmtNo = ((parsedStatement.if_stmt_no != ParsedStatement::default_null_stmt_no)
-                ? parsedStatement.if_stmt_no
-                : parsedStatement.while_stmt_no);
-        if (parentStmtNo != ParsedStatement::default_null_stmt_no)
-            parentTable[parentStmtNo].insert(parsedStatement.stmt_no);
+        int parentStmtNo = ((parsedStatement.ifStmtNo != ParsedStatement::DEFAULT_NULL_STMT_NO)
+                ? parsedStatement.ifStmtNo
+                : parsedStatement.whileStmtNo);
+        if (parentStmtNo != ParsedStatement::DEFAULT_NULL_STMT_NO)
+            parentTable[parentStmtNo].insert(parsedStatement.stmtNo);
     }
 }
 
@@ -119,8 +119,8 @@ void DesignExtractor::extractParentT(std::map<int, std::set<int>>& parentTTable)
 
 void DesignExtractor::extractCalls(std::map<std::string, std::set<std::string>>& callsTable) {
     for (const auto&[stmtNo, parsedStatement] : db->stmtTable) {
-        if (parsedStatement.statement_type == StatementType::kcall_stmt)
-            callsTable[parsedStatement.procedure_name].insert(parsedStatement.procedure_called);
+        if (parsedStatement.statementType == StatementType::kcall_stmt)
+            callsTable[parsedStatement.procedureName].insert(parsedStatement.procedureCalled);
     }
 }
 
@@ -132,7 +132,7 @@ void DesignExtractor::extractCallsT(std::map<std::string, std::set<std::string>>
 void DesignExtractor::extractModifiesP(std::map<std::string, std::set<std::string>>& modifiesPTable) {
     // insert local
     for (const auto&[_, parsedStatement] : db->stmtTable)
-        modifiesPTable[parsedStatement.procedure_name].insert(parsedStatement.var_modified.begin(), parsedStatement.var_modified.end());
+        modifiesPTable[parsedStatement.procedureName].insert(parsedStatement.varModified.begin(), parsedStatement.varModified.end());
 
     for (const auto&[callingProc, calledTProcs] : db->callsTTable) {
         for (const auto& calledTProc : calledTProcs) {
@@ -146,12 +146,12 @@ void DesignExtractor::extractModifiesP(std::map<std::string, std::set<std::strin
 void DesignExtractor::extractModifiesS(std::map<int, std::set<std::string>>& modifiesSTable) {
     // insert local
     for (const auto&[_, parsedStatement] : db->stmtTable) {
-        modifiesSTable[parsedStatement.stmt_no].insert(parsedStatement.var_modified.begin(),
-                                                       parsedStatement.var_modified.end());
-        if (parsedStatement.statement_type == StatementType::kcall_stmt) {
-            auto modifiedVars = db->modifiesPTable.find(parsedStatement.procedure_called);
+        modifiesSTable[parsedStatement.stmtNo].insert(parsedStatement.varModified.begin(),
+                                                       parsedStatement.varModified.end());
+        if (parsedStatement.statementType == StatementType::kcall_stmt) {
+            auto modifiedVars = db->modifiesPTable.find(parsedStatement.procedureCalled);
             if (modifiedVars == db->modifiesPTable.end()) continue;
-            modifiesSTable[parsedStatement.stmt_no].insert(modifiedVars->second.begin(), modifiedVars->second.end());
+            modifiesSTable[parsedStatement.stmtNo].insert(modifiedVars->second.begin(), modifiedVars->second.end());
         }
     }
 
@@ -167,7 +167,7 @@ void DesignExtractor::extractModifiesS(std::map<int, std::set<std::string>>& mod
 void DesignExtractor::extractUsesP(std::map<std::string, std::set<std::string>>& usesPTable) {
     // insert local
     for (const auto&[_, parsedStatement] : db->stmtTable)
-        usesPTable[parsedStatement.procedure_name].insert(parsedStatement.var_used.begin(), parsedStatement.var_used.end());
+        usesPTable[parsedStatement.procedureName].insert(parsedStatement.varUsed.begin(), parsedStatement.varUsed.end());
 
     for (const auto&[callingProc, calledTProcs] : db->callsTTable) {
         for (const auto& calledTProc : calledTProcs) {
@@ -181,12 +181,12 @@ void DesignExtractor::extractUsesP(std::map<std::string, std::set<std::string>>&
 void DesignExtractor::extractUsesS(std::map<int, std::set<std::string>>& usesSTable) {
     // insert local
     for (const auto&[_, parsedStatement] : db->stmtTable) {
-        usesSTable[parsedStatement.stmt_no].insert(parsedStatement.var_used.begin(),
-                                                       parsedStatement.var_used.end());
-        if (parsedStatement.statement_type == StatementType::kcall_stmt) {
-            auto usedVars = db->usesPTable.find(parsedStatement.procedure_called);
+        usesSTable[parsedStatement.stmtNo].insert(parsedStatement.varUsed.begin(),
+                                                       parsedStatement.varUsed.end());
+        if (parsedStatement.statementType == StatementType::kcall_stmt) {
+            auto usedVars = db->usesPTable.find(parsedStatement.procedureCalled);
             if (usedVars == db->usesPTable.end()) continue;
-            usesSTable[parsedStatement.stmt_no].insert(usedVars->second.begin(), usedVars->second.end());
+            usesSTable[parsedStatement.stmtNo].insert(usedVars->second.begin(), usedVars->second.end());
         }
     }
 
@@ -202,20 +202,20 @@ void DesignExtractor::extractUsesS(std::map<int, std::set<std::string>>& usesSTa
 void DesignExtractor::extractNext(std::map<int, std::set<int>>& nextTable) {
     std::map<int, std::set<int>> stmtListHead;
     for (const auto& [stmtNo, parsedStatement]: db->stmtTable) {
-        int parentStmtNo = ((parsedStatement.if_stmt_no != ParsedStatement::default_null_stmt_no)
-                            ? parsedStatement.if_stmt_no
-                            : parsedStatement.while_stmt_no);
-        if (parentStmtNo != ParsedStatement::default_null_stmt_no
-            && parsedStatement.preceding == ParsedStatement::default_null_stmt_no) {  // first in a statement list
+        int parentStmtNo = ((parsedStatement.ifStmtNo != ParsedStatement::DEFAULT_NULL_STMT_NO)
+                            ? parsedStatement.ifStmtNo
+                            : parsedStatement.whileStmtNo);
+        if (parentStmtNo != ParsedStatement::DEFAULT_NULL_STMT_NO
+            && parsedStatement.preceding == ParsedStatement::DEFAULT_NULL_STMT_NO) {  // first in a statement list
             stmtListHead[parentStmtNo].insert(stmtNo);
         }
     }
     for (const auto& [stmtNo, parsedStatement]: db->stmtTable) {
-        int parentStmtNo = ((parsedStatement.if_stmt_no != ParsedStatement::default_null_stmt_no)
-                            ? parsedStatement.if_stmt_no
-                            : parsedStatement.while_stmt_no);
-        if (parentStmtNo != ParsedStatement::default_null_stmt_no
-                && parsedStatement.preceding == ParsedStatement::default_null_stmt_no) {  // first in a statement list
+        int parentStmtNo = ((parsedStatement.ifStmtNo != ParsedStatement::DEFAULT_NULL_STMT_NO)
+                            ? parsedStatement.ifStmtNo
+                            : parsedStatement.whileStmtNo);
+        if (parentStmtNo != ParsedStatement::DEFAULT_NULL_STMT_NO
+                && parsedStatement.preceding == ParsedStatement::DEFAULT_NULL_STMT_NO) {  // first in a statement list
             stmtListHead[parentStmtNo].insert(stmtNo);
         }
     }

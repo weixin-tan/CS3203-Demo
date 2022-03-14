@@ -15,6 +15,10 @@
 #include "CallsTGetter.h"
 #include "NextGetter.h"
 
+//TODO: FILE NAME CHANGE 
+#include "../ExpressionProcessor.h"
+#include "../ExpressionIndicator.h"
+
 class PkbGetter {
 private:
     DB* db;
@@ -27,6 +31,7 @@ private:
     CallsGetter callsGetter;
     CallsTGetter callsTGetter;
     NextGetter nextGetter;
+    ExpressionProcessor expressionProcessor;
 
 private:
     bool isExists(const ProgramElement& elementToCheck) const;
@@ -38,8 +43,16 @@ public:
     std::set<ProgramElement> getLeftSide(const PkbRelationshipType& r, const ProgramElement& rightSide, const ElementType& typeToGet) const;
     std::set<ProgramElement> getRightSide(const PkbRelationshipType& r, const ProgramElement& leftSide, const ElementType& typeToGet) const;
     std::set<std::pair<ProgramElement, ProgramElement>> getRelationshipPairs(const PkbRelationshipType& r, const ElementType& leftTypeToGet, const ElementType& rightTypeToGet) const;
-    std::set<ProgramElement> getAssignmentGivenExpression(const ProgramElement& expression) const; // TODO: temporary pattern
-    std::set<ProgramElement> getAssignmentGivenVariableAndExpression(const ProgramElement& variable, const ProgramElement& expression) const;
+    std::set<ProgramElement> getAssignmentGivenExpression(const Expr expr, const ExpressionIndicator indicator) const;
+    std::set<ProgramElement> getAssignmentGivenVariableAndExpression(const ProgramElement& variable, const Expr expr, const ExpressionIndicator indicator) const;
+    std::set<std::pair<ProgramElement, ProgramElement>>getAssignmentWithVariableGivenExpression(const Expr expr, const ExpressionIndicator indicator) const;
+    std::set<ProgramElement> getIfGivenVariable(const ProgramElement& variable) const;
+    std::set<ProgramElement> getWhileGivenVariable(const ProgramElement& variable) const;
+    std::set<std::pair<ProgramElement, ProgramElement>>getIfWithVariable() const;
+    std::set<std::pair<ProgramElement, ProgramElement>>getWhileWithVariable() const;
+
+
+
 };
 
 #endif //SPA_PKBGETTER_H

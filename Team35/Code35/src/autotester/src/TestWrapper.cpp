@@ -1,4 +1,5 @@
 #include "TestWrapper.h"
+#include "AbstractWrapper.h"
 #include "PKB/PKB.h"
 #include "SP.h"
 #include <iostream>
@@ -14,11 +15,14 @@ AbstractWrapper* WrapperFactory::createWrapper() {
 }
 // Do not modify the following line
 volatile bool AbstractWrapper::GlobalStop = false;
+AbstractWrapper::~AbstractWrapper() = default;
 
 // a default constructor
-TestWrapper::TestWrapper(): pkb(), sp(pkb.getSetter()) {
-  TestWrapper::qpsMainLogic = QPSMainLogic::getInstance(pkb.getGetter());
+TestWrapper::TestWrapper() : pkb(), sp(pkb.getSetter()) {
+	TestWrapper::qpsMainLogic = QPSMainLogic::getInstance(pkb.getGetter());
 }
+
+TestWrapper::~TestWrapper() = default;
 
 // method for parsing the SIMPLE source
 void TestWrapper::parse(std::string filename) {
@@ -26,9 +30,10 @@ void TestWrapper::parse(std::string filename) {
 }
 
 // method to evaluating a query
-void TestWrapper::evaluate(std::string query, std::list<std::string>& results){
-  std::list<std::string> resultStr = qpsMainLogic->parse(query);
-  for (const auto& s : resultStr) {
-      results.push_back(s);
-  }
+void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
+	std::list<std::string> resultStr = qpsMainLogic->parse(query);
+	for (const auto& s : resultStr) {
+		results.push_back(s);
+	}
 }
+
