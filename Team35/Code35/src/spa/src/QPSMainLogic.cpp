@@ -17,6 +17,7 @@ QPSMainLogic* QPSMainLogic::getInstance(PkbGetter* pg) {
 QPSMainLogic::QPSMainLogic(PkbGetter* pg) {
   QPSMainLogic::queryProcessor = new QueryProcessor();
   QPSMainLogic::qpsHandler = new QPSHandler(pg);
+  QPSMainLogic::optimiser = new Optimiser();
   QPSMainLogic::resultProcessor = new ResultProcessor();
   QPSMainLogic::resultFormatter = new ResultFormatter();
 }
@@ -25,7 +26,8 @@ QPSMainLogic::QPSMainLogic(PkbGetter* pg) {
 std::list<std::string> QPSMainLogic::parse(std::string query) {
   std::vector<Clause> clauses = callParser(query);
   std::vector<Result> matchingEntities = callHandler(clauses);
-  std::set<ProgramElement> processedEntities = callProcessor(matchingEntities);
+  std::vector<Group> optimisedGroups = callOptimiser(matchingEntities);
+  std::set<ProgramElement> processedEntities = callProcessor(optimisedGroups);
   std::list<std::string> finalResult = callFormatter(processedEntities);
   return finalResult;
 }
@@ -40,8 +42,13 @@ std::vector<Result> QPSMainLogic::callHandler(std::vector<Clause> clauses) {
   return matchingEntities;
 }
 
-std::set<ProgramElement> QPSMainLogic::callProcessor(std::vector<Result> matchingEntities) {
-  std::set<ProgramElement> processedEntities = resultProcessor->processResults(matchingEntities);
+std::vector<Group> QPSMainLogic::callOptimiser(std::vector<Result> results) {
+    std::vector<Group> optimisedGroups = optimiser->optimize(results);
+    return optimisedGroups;
+}
+
+std::set<ProgramElement> QPSMainLogic::callProcessor(std::vector<Group> optimisedGroups) {
+  std::set<ProgramElement> processedEntities = resultProcessor->processResults(optimisedGroups);
   return processedEntities;
 }
 

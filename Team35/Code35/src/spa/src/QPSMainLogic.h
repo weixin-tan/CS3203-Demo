@@ -3,6 +3,7 @@
 
 
 #include <string>
+#include "Optimiser.h"
 #include "QueryProcessor.h"
 #include "Result.h"
 #include "ResultProcessor.h"
@@ -21,12 +22,14 @@ class QPSMainLogic {
   static QPSMainLogic* instance; // The instance of QPSMainLogic will be stored here
   QueryProcessor* queryProcessor;
   QPSHandler* qpsHandler;
+  Optimiser* optimiser;
   ResultProcessor* resultProcessor;
   ResultFormatter* resultFormatter;
 
   std::vector<Clause> callParser(std::string query);
   std::vector<Result> callHandler(std::vector<Clause> clauses);
-  std::set<ProgramElement> callProcessor(std::vector<Result> results);
+  std::vector<Group> callOptimiser(std::vector<Result> results);
+  std::set<ProgramElement> callProcessor(std::vector<Group> groups);
   std::list<std::string> callFormatter(std::set<ProgramElement> result);
 };
 
