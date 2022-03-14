@@ -6,7 +6,7 @@ int stmt_count = 1;
 
 // Default constructor
 ConcreteSyntaxWithValidation::ConcreteSyntaxWithValidation() {
-
+	stmt_count = 1;
 }
 
 // Returns a Program object containing a ProcedureLst object.
