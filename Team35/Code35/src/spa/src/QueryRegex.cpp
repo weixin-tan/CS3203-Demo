@@ -288,12 +288,20 @@ long findWithClause(const std::string& s){
   return findClauseStartPosition(s, "with");
 }
 
-long findPatternClauseInSubstring(const std::string& s){
+long findPatternClauseInSubstring(const std::string& s, std::string original){
   long patternPosition = s.rfind("pattern");
-  if (s.substr(patternPosition, s.length() - patternPosition).find('(') != std::string::npos){
-    return patternPosition;
+  long bracketPosition = original.rfind("(");
+  int patternLength = 7;
+  if (patternPosition != std::string::npos){
+    if (original.substr(patternPosition, original.length() - patternPosition).find('(') != std::string::npos &&
+        !stripString(original.substr(patternPosition+patternLength, bracketPosition-patternPosition-patternLength)).empty()
+        && patternPosition < bracketPosition){
+      return patternPosition;
+    }else{
+      return findPatternClauseInSubstring(s.substr(0, patternPosition), original);
+    }
   }else{
-    return findPatternClauseInSubstring(s.substr(0, patternPosition));
+    return std::string::npos;
   }
 }
 
@@ -538,11 +546,34 @@ std::vector<std::string> extractWithClauses(const std::string& s){
   std::vector<std::string> toReturn;
   std::string temp = std::regex_replace( s, std::regex( "=" ), " " );
   std::vector<std::string> tempList = splitStringBySpaces(temp);
-  while (tempList.size() % 3 != 0){
-    tempList.emplace_back("");
+  std::vector<std::string> tokenList;
+
+  std::string tempString;
+  bool afterDot = false;
+  int i = 0;
+  int j = 0;
+
+  while (i < tempList.size()){
+    if (tempList[i] == "."){
+      afterDot = true;
+    }else if (afterDot){
+      j = j - 1;
+      tokenList[j] = tokenList[j] + "." + tempList[i];
+      j = j + 1;
+      afterDot = false;
+    }else{
+      tokenList.push_back(tempList[i]);
+      j = j + 1;
+    }
+    i = i + 1;
   }
-  for (int i = 0; i < tempList.size(); i=i+3){
-    temp = tempList[i] + " " + tempList[i+1] + " " + tempList[i+2];
+
+  while (tokenList.size() % 3 != 0){
+    tokenList.emplace_back("");
+  }
+
+  for (int i = 0; i < tokenList.size(); i=i+3){
+    temp = tokenList[i] + " " + tokenList[i+1] + " " + tokenList[i+2];
     toReturn.push_back(temp);
   }
   return toReturn;
@@ -561,15 +592,15 @@ std::vector<std::string> splitPatternAndSuchThatClauses(const std::string& s){
     if (!stmt.empty()){
       if (!isWith(stmt)){
         returnList.push_back(stmt + ")");
-      }else if (isWith(stmt) && stmt.find("pattern") != std::string::npos){
-        long x = findPatternClauseInSubstring(stmt);
+      }else if (isWith(stmt) && existSuchThat(stmt)){
+        long x = findSuchThatClause(stmt)[0];
         std::string first = stmt.substr(0, x);
         std::string second = stmt.substr(x, stmt.length()-x);
         temp = extractWithClauses(first);
         returnList.insert( returnList.end(), temp.begin(), temp.end());
         returnList.push_back(second + ")");
-      }else if (isWith(stmt) && existSuchThat(stmt)){
-        long x = findSuchThatClause(stmt)[0];
+      }else if (isWith(stmt) && findPatternClauseInSubstring(stmt, stmt) != std::string::npos){
+        long x = findPatternClauseInSubstring(stmt, stmt);
         std::string first = stmt.substr(0, x);
         std::string second = stmt.substr(x, stmt.length()-x);
         temp = extractWithClauses(first);
@@ -620,6 +651,7 @@ std::vector<std::vector<std::string>> extractClauses(const std::string& s){
   std::vector<std::string> patternList;
   std::vector<std::string> withList;
   std::vector<std::string> everythingList = splitVariablesAndClauses(s);
+
   if (everythingList.size() == 2) {
     std::string clausesString = everythingList[1];
     std::vector<std::string> clausesList = splitPatternAndSuchThatClauses(clausesString);
