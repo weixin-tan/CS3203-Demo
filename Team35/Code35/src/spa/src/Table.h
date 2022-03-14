@@ -16,8 +16,8 @@ public:
     //constructor
     Table();
     //attributes
-    std::vector<Entity> header;
-    std::vector<std::vector<ProgramElement>> body;
+    static std::vector<Entity> header;
+    static std::vector<std::vector<ProgramElement>> body;
     std::vector<Entity> getHeader();
     void inputElement(Entity input,std::vector<Entity> header);
     std::vector<std::vector<ProgramElement>> getBody();
