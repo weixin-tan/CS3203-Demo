@@ -5,6 +5,15 @@
 #include "ProgramElement.h"
 #include "DB.h"
 #include "PkbRelationshipType.h"
+#include "ModifiesGetter.h"
+#include "UsesGetter.h"
+#include "FollowsGetter.h"
+#include "FollowsTGetter.h"
+#include "ParentGetter.h"
+#include "ParentTGetter.h"
+#include "CallsGetter.h"
+#include "CallsTGetter.h"
+#include "NextGetter.h"
 
 //TODO: FILE NAME CHANGE 
 #include "../ExpressionProcessor.h"
@@ -13,12 +22,19 @@
 class PkbGetter {
 private:
     DB* db;
+    ModifiesGetter modifiesGetter;
+    UsesGetter usesGetter;
+    FollowsGetter followsGetter;
+    FollowsTGetter followsTGetter;
+    ParentGetter parentGetter;
+    ParentTGetter parentTGetter;
+    CallsGetter callsGetter;
+    CallsTGetter callsTGetter;
+    NextGetter nextGetter;
     ExpressionProcessor expressionProcessor;
 
 private:
     bool isExists(const ProgramElement& elementToCheck) const;
-    std::set<int> getUsesStmtNosGivenConstant(const std::string& c) const;
-    static void insertStmtElement(std::set<ProgramElement>& result, const ProgramElement& statement, const ElementType& typeToGet);
 
 public:
     explicit PkbGetter(DB* db);
