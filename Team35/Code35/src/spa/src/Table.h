@@ -20,6 +20,7 @@ public:
     static std::vector<std::vector<ProgramElement>> body;
     std::vector<Entity> getHeader();
     void inputElement(Entity input,std::vector<Entity> header);
+    void inputElementPair(std::pair<Entity, Entity> input,std::vector<Entity> header);
     std::vector<std::vector<ProgramElement>> getBody();
     void inputProgramElements(std::vector<ProgramElement> ProgramElements,std::vector<std::vector<ProgramElement>> body);
 };

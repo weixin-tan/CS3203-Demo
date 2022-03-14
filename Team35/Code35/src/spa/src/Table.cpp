@@ -17,6 +17,11 @@ Table::Table() {
 void inputElement(Entity input,std::vector<Entity> header){
     header.push_back(input);
 }
+void inputElementPair(std::pair<Entity, Entity> input,std::vector<Entity> header){
+    //check with viv
+    header.push_back(input.first);
+    header.push_back(input.second);
+}
 //methods for body
 std::vector<std::vector<ProgramElement>> getBody(){
     return Table::body;
