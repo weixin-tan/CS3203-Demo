@@ -430,10 +430,10 @@ TEST_CASE("test advanced queries"){
   Entity pProcname = Entity(EntityType::Procedure, "p", EntityAttributeType::ProcName);
 
   string s1 = "\nSelect       BOOLEAN\t\t\t\tsuch\n\n\n\nthat     Next* (\t1\t,\t2\t)\n\n";
-  string s2 = "assign a1, a2;Select <a1, a2.stmt#, BOOLEAN> such that Affects (a1, a2)";
-  string s3 = "procedure p; call c; Select c.procName with c.procName = p.procName";
+  string s2 = "assign a1, a2;Select <a1, a2\n.\nstmt#, BOOLEAN> such that Affects (a1, a2)";
+  string s3 = "procedure p; call c; Select c.procName with c\t.\tprocName = p    .    procName";
   string s4 = "while w; if ifs; Select w pattern w (\"x\", _) and ifs (\"x\", _, _)";
-  string s5 = "stmt s;Select s such that Next* (1, s) such that Next* (s, 3) such that Follows*(1,3)";
+  string s5 = "stmt s;Select s such that Next*\n(\n1\n,\ns\n) such that Next*\t(\ts\t,\t3\t)\tsuch that Follows*(1,3)";
   string s6 = "stmt s;Select s such that Next* (1, s) and Next* (s, 3) such that Follows*(1,3)";
   string s7 = "stmt s;Select s such that Next* (1, s) and Next* (s, 3) and Follows*(1,3)";
   string s8 = "assign a; while w; if ifs; Select a pattern a (\"pattern\", _) pattern w (\"pattern\", _) pattern ifs (\"pattern\", _, _)";
@@ -563,11 +563,97 @@ TEST_CASE("test advanced queries"){
   }
 }
 
-TEST_CASE("debugging"){
-  //pattern w ("x", _)
-  string s15 = "stmt s; assign a, a1; while w; Select s with a1.stmt# = 3 such that Next* (1, s) and Next* (s, 3) pattern w (\"x\", _)";
+TEST_CASE("advanced trippy queries"){
   QueryProcessor qp = QueryProcessor();
-  vector<Clause> c = qp.parsePQL(s15);
+  //default string
+  string s1 = "assign a, b; variable v; "
+              "Select <a.stmt#, b.stmt#, v.varName> "
+              "such that Next(a, b) and Next(b, a) "
+              "pattern a (v, \"x+1\") and b (v, \"(x+y)\") "
+              "with b.stmt# = a.stmt# and v.varName = a.stmt#";
+
+  //with -> such that -> pattern
+  string s2 = "assign pattern, with; variable and; "
+              "Select <pattern.stmt#, pattern.stmt#, with.stmt#, with.stmt#, and.varName>"
+              "with with.stmt# = pattern.stmt# and and.varName = pattern.stmt# "
+              "such that Next(pattern, with) and Next(with, pattern) "
+              "pattern pattern (and, \"(x)*(y)*(z)\") and with (and, \"(1*(1+2)%3)\")";
+
+  //with -> pattern -> such that
+  string s3 = "assign pattern, with; variable and;"
+              "Select <pattern.stmt#, with.stmt#, and.varName> "
+              "with with.stmt# = pattern.stmt# and and.varName = pattern.stmt# "
+              "pattern pattern (and, \"such + that\") and with (and, _\"suchthat\"_) "
+              "such that Next(pattern, with) and Next(with, pattern)";
+
+  //such that -> with -> pattern
+  string s4 = "assign pattern, with; variable and; "
+              "Select <pattern.stmt#, with.stmt#, and.varName> "
+              "such that Next(pattern, with) and Next(with, pattern) "
+              "with with.stmt# = pattern.stmt# and and.varName = pattern.stmt# "
+              "pattern pattern (and, \"pattern\") and with (and, _\"and\"_)";
+
+  //interleave
+  string s5 = "assign pattern, with; variable and;\n"
+              "Select <pattern.stmt#, with.stmt#, and.varName, BOOLEAN>\n"
+              "with pattern.stmt# = with.stmt# pattern pattern (and, \"Modifies\") such that Next(pattern, with)\n"
+              "such that Next(with, pattern) with and.varName = pattern.stmt# pattern with (and, \"Follows\")";
+
+  //such that -> pattern -> with
+  string s6 = "assign with, and; variable pattern;\n"
+              "Select with\n"
+              "such that Next(with, and) and Next(and, with)\n"
+              "pattern with (pattern, \"(idea) * ()\") and and (pattern, \"(((testing)))\")\n"
+              "with and.stmt# = and.stmt# and pattern.varName = and.stmt#";
+
+  //with -> such that -> pattern
+  string s7 = "assign with, and; variable pattern;\n"
+              "Select with\n"
+              "with and.stmt# = and.stmt# and pattern.varName = and.stmt#\n"
+              "such that Next(with, and) and Next(and, with)\n"
+              "pattern with (pattern, \"_(((x+1)+(y+1)))_\") and and (pattern, _\"(((x*y)))\"_)";
+
+  //with -> pattern -> such that
+  string s8 = "assign with, and; variable pattern;\n"
+              "Select with\n"
+              "with and.stmt# = and.stmt# and pattern.varName = and.stmt#\n"
+              "pattern with (pattern, _\"1+2\"_) and and (pattern, _\"3*4\"_)\n"
+              "such that Next(with, and) and Next(and, with)";
+
+  //pattern -> with -> such that
+  string s9 = "assign with, and; variable pattern;\n"
+              "Select with\n"
+              "pattern with (pattern, \"(1%2-10)\") and and (pattern, _\"(3*4-5)\"_)\n"
+              "with and.stmt# = and.stmt# and pattern.varName = and.stmt#\n"
+              "such that Next(with, and) and Next(and, with)";
+
+  //interleave
+  string s10 = "assign with, and; variable pattern;\n"
+               "Select with\n"
+               "with and.stmt# = and.stmt# "
+               "pattern and (pattern, _\"(((((x)))))*((((y)))))\"_)\n"
+               "such that Next(and, with)"
+               "pattern with (pattern, \"((pattern)+(with)+(and)*(such)(that)(wow)(hello))\") "
+               "with pattern.varName = and.stmt#\n"
+               "such that Next(with, and) ";
+
+  SECTION("test not empty aka valid"){
+    REQUIRE(!qp.parsePQL(  s1).empty());
+    REQUIRE(!qp.parsePQL(  s2).empty());
+    REQUIRE(!qp.parsePQL(  s3).empty());
+    REQUIRE(!qp.parsePQL(  s4).empty());
+    REQUIRE(!qp.parsePQL(  s5).empty());
+    REQUIRE(!qp.parsePQL(  s6).empty());
+    REQUIRE(!qp.parsePQL(  s7).empty());
+    REQUIRE(!qp.parsePQL(  s8).empty());
+    REQUIRE(!qp.parsePQL(  s9).empty());
+    REQUIRE(!qp.parsePQL(  s10).empty());
+  }
+}
+
+TEST_CASE("debugging"){
+  QueryProcessor qp = QueryProcessor();
+  vector<Clause> c = qp.parsePQL(  "");
 
   if (c.empty()){
     cout << "invalid!" << "\n";
@@ -575,10 +661,3 @@ TEST_CASE("debugging"){
     cout << c[0].toString() << "\n";
   }
 }
-/*
-METHODS TO TEST
-static void createDeclarationObjects(std::vector<std::string> designEntityArr, std::unordered_map<std::string, Entity>* entityMap);
-static RelationshipRef createRelationshipObject(std::vector<std::string> relRefList, std::unordered_map<std::string, Entity>* entityMap);
-static Entity findRelationshipEntity(const std::string& s, std::unordered_map<std::string, Entity>* entityMap);
-static RelationshipRef createPatternObject(std::vector<std::string> patternList, std::unordered_map<std::string, Entity>* entityMap);
-*/
