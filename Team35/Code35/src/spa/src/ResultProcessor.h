@@ -9,6 +9,7 @@ class ResultProcessor {
  public:
   ResultProcessor();
   std::set<ProgramElement> processResults(std::vector<Result> results);
+  int getIndexEntity(std::vector<Entity> v, Entity K);
 };
 
 

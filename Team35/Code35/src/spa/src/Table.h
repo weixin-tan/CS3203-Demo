@@ -19,11 +19,18 @@ public:
     static std::vector<Entity> header;
     static std::vector<std::vector<ProgramElement>> body;
     std::vector<Entity> getHeader();
-    void inputElement(Entity input,std::vector<Entity> header);
-    void inputElementPair(std::pair<Entity, Entity> input,std::vector<Entity> header);
+    int getIndexEntity(std::vector<ProgramElement> v, ProgramElement K);
+    void inputElement(Entity input);
     std::vector<std::vector<ProgramElement>> getBody();
-    void inputProgramElements(std::vector<ProgramElement> ProgramElements,std::vector<std::vector<ProgramElement>> body);
-    void inputProgramElementsPair(std::vector<ProgramElement> ProgramElements,std::vector<std::vector<ProgramElement>> body);
+    void inputProgramElements(std::vector<ProgramElement> ProgramElements);
+    bool isTableEmpty;
+    bool doesElementExist(Entity entity);
+    void eliminate1syn(std::vector<ProgramElement> programElementVector, int pos);
+    void crossProduct1syn(std::vector<ProgramElement> programElementVector);
+    void eliminate2synBoth(std::vector<ProgramElement> left, std::vector<ProgramElement> right, int pos1, int pos2);
+    void eliminate2synOne(std::vector<ProgramElement> left, std::vector<ProgramElement> right, int pos1, int pos2);
+    void crossProduct2syn(std::vector<ProgramElement> left, std::vector<ProgramElement> right);
+
 };
 
 
