@@ -63,10 +63,9 @@ std::set<ProgramElement> WithHandler::matchProgramElements(const std::set<Progra
                                                            EntityAttributeType aType) {
   std::set<ProgramElement> toReturn;
   std::string stringA;
-  std::string stringB;
+  std::string stringB = fixedEntity.name;
   for (const auto& element: setA){
     stringA = getStringToMatch(element, aType);
-    stringB = fixedEntity.name;
     if (stringA == stringB){
       toReturn.insert(element);
     }
@@ -110,11 +109,7 @@ std::set<std::pair<ProgramElement, ProgramElement>> WithHandler::handleNoSideFix
   std::set<ProgramElement> setA = getProgramElements(leftEntity.eType);
   std::set<ProgramElement> setB = getProgramElements(rightEntity.eType);
 
-  if (setA.size() < setB.size()){
-    return matchProgramElements(setA, setB, leftEntity.aType, rightEntity.aType);
-  }else{
-    return matchProgramElements(setB, setA, rightEntity.aType, leftEntity.aType);
-  }
+  return matchProgramElements(setA, setB, leftEntity.aType, rightEntity.aType);
 }
 
 
