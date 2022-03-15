@@ -5,6 +5,14 @@ bool firstWordChecker(const std::string& s, const std::string& targetWord){
   return s.find(targetWord) == startPosition;
 }
 
+bool isSpaces(const std::string& s){
+  return stripString(s).empty();
+}
+
+bool doesStringExist(const std::string& s, const std::string& substring){
+  return s.find(substring) != std::string::npos;
+}
+
 /**
  * @param s some string
  * @param entityMap entity Map to reference to
@@ -51,6 +59,11 @@ bool isQuotationIdent(const std::string& s){
     return isIdent(temp);
   }
   return false;
+}
+
+bool isStringWithinQuotations(const std::string& s){
+  std::string temp;
+  return firstWordChecker(extractFirstChar(s),"\"") && firstWordChecker(extractLastChar(s),"\"");
 }
 
 /**
@@ -111,7 +124,7 @@ bool existSuchThat(const std::string &s) {
   long suchPosition = myList[0];
   long thatPosition = myList[1];
   int suchLength = 4;
-  if ((suchPosition == std::string::npos || thatPosition == std::string::npos)){
+  if (suchPosition == std::string::npos || thatPosition == std::string::npos){
     return false;
   }else{
     return thatPosition - suchPosition - suchLength > 0;
@@ -128,18 +141,17 @@ bool checkDesignEntitySynonymsList(std::vector<std::string> sArr) {
   if (sArr.size() <= 1){
     return false;
   }else{
-    bool returnBool;
     std::string designStr = sArr[0];
     if (std::find(std::begin(designEntity), std::end(designEntity), designStr) != std::end(designEntity)){
       //designStr contains one of the design entity keywords
-      returnBool = true;
+      bool returnBool = true;
+      for (int i=1; i<sArr.size(); i++){
+        returnBool = returnBool && isIdent(sArr[i]);
+      }
+      return returnBool;
     }else{
-      returnBool = false;
+      return false;
     }
-    for (int i=1; i<sArr.size(); i++){
-      returnBool = returnBool && isIdent(sArr[i]);
-    }
-    return returnBool;
   }
 }
 
@@ -226,9 +238,10 @@ std::string removeSuchThat(const std::string &s){
   std::vector<long> myList = findSuchThatClause(s);
   long suchPosition = myList[0];
   long thatPosition = myList[1];
+  long suchLength = 4;
   if (suchPosition != std::string::npos){
     // remove such that
-    return stripString(s.substr(0, suchPosition) + s.substr(thatPosition+4, s.length() - thatPosition-4));
+    return stripString(s.substr(0, suchPosition) + s.substr(thatPosition+suchLength, s.length() - thatPosition-suchLength));
   }else{
     return s;
   }
@@ -257,22 +270,26 @@ std::string removeWith(const std::string& s){
   }
 }
 
-long findClauseStartPosition(const std::string& s, const std::string& commandWord){
+long findClauseStartPosition(const std::string& s, const std::string& commandWord, const std::string& original){
   long selectLength = 6;
   long commandWordLength = commandWord.length();
   long temp;
   std::string placeholder;
   long patternPosition = s.find(commandWord);
 
-  if (stripString(s.substr(selectLength, patternPosition-selectLength)).empty()){
-    //find a new command word
-    placeholder = s.substr (patternPosition+commandWordLength, s.size() - patternPosition);
-    temp = placeholder.find(commandWord);
-    if (temp != std::string::npos){
-      patternPosition = temp + patternPosition + commandWordLength;
+  if (patternPosition != std::string::npos) {
+    if (doesStringExist(s.substr(patternPosition, s.length() - patternPosition), ">") || isSpaces(original.substr(selectLength, patternPosition - selectLength))){
+      temp = findClauseStartPosition(s.substr(patternPosition + commandWordLength, s.size() - patternPosition), commandWord, original);
+      if (temp != std::string::npos) {
+        patternPosition = temp + patternPosition + commandWordLength;
+      } else {
+        patternPosition = std::string::npos;
+      }
     }
+    return patternPosition;
+  }else{
+    return std::string::npos;
   }
-  return patternPosition;
 }
 
 /**
@@ -281,21 +298,24 @@ long findClauseStartPosition(const std::string& s, const std::string& commandWor
  * @return returns first index of pattern clause
  */
 long findPatternClause(const std::string& s){
-  return findClauseStartPosition(s, "pattern");
+  return findClauseStartPosition(s, "pattern", s);
 }
 
 long findWithClause(const std::string& s){
-  return findClauseStartPosition(s, "with");
+  return findClauseStartPosition(s, "with", s);
 }
 
 long findPatternClauseInSubstring(const std::string& s, std::string original){
+  long commaPosition = original.rfind(',');
+  if (commaPosition != std::string::npos){
+    original = original.substr(0, commaPosition);
+  }
   long patternPosition = s.rfind("pattern");
   long bracketPosition = original.rfind("(");
   int patternLength = 7;
+
   if (patternPosition != std::string::npos){
-    if (original.substr(patternPosition, original.length() - patternPosition).find('(') != std::string::npos &&
-        !stripString(original.substr(patternPosition+patternLength, bracketPosition-patternPosition-patternLength)).empty()
-        && patternPosition < bracketPosition){
+    if (bracketPosition > patternPosition && !isSpaces(original.substr(patternPosition+patternLength, bracketPosition-patternPosition-patternLength))){
       return patternPosition;
     }else{
       return findPatternClauseInSubstring(s.substr(0, patternPosition), original);
@@ -373,7 +393,10 @@ std::vector<std::string> splitString(const std::string& s, const std::string& de
     strList.push_back(stripString(placeholder));
     endPosition = s.find(delimiter, startPosition);
   }
-  strList.push_back(stripString(s.substr(startPosition)));
+  placeholder = stripString(s.substr(startPosition));
+  if (!isSpaces(placeholder)){
+    strList.push_back(placeholder);
+  }
   return strList;
 }
 
@@ -408,7 +431,7 @@ std::string removeVBrackets(const std::string& s){
 bool checkAndCommandWord(const std::vector<std::string>& clausesList, bool (*existCommandWordFunction)(const std::string &s)){
   bool returnBool = true;
   for(auto & i : clausesList){
-    returnBool = returnBool && i.find("and") == 0 || existCommandWordFunction( i);
+    returnBool = returnBool && firstWordChecker(i, "and") || existCommandWordFunction( i);
   }
   return returnBool;
 }
@@ -416,7 +439,7 @@ bool checkAndCommandWord(const std::vector<std::string>& clausesList, bool (*exi
 void removeAndCommandWord(std::vector<std::string>* clausesList, std::string (*removeCommandWordFunction)(const std::string &s)){
   int andLength = 3;
   for(auto & i : *clausesList){
-    if (i.find("and") == 0){
+    if (firstWordChecker(i, "and")){
       i = stripString(i.substr(andLength, i.length()-andLength));
     }else{
       i = removeCommandWordFunction(i);
@@ -484,10 +507,8 @@ std::vector<std::string> extractDesignEntityAndSynonyms(const std::string& s){
   std::vector<std::string> returnList;
   std::vector<std::string> laterSynonymsList = splitString(s, ",");
   std::vector<std::string> frontDesignEntityAndSynonym = splitStringBySpaces(laterSynonymsList.front());
-  std::string tempString;
   for(auto & i : frontDesignEntityAndSynonym){
-    tempString = stripString(i);
-    if (!tempString.empty()){
+    if (!isSpaces(i)){
       returnList.push_back(i);
     }
   }
@@ -498,8 +519,7 @@ std::vector<std::string> extractDesignEntityAndSynonyms(const std::string& s){
   }
 
   for(int i=1; i<laterSynonymsList.size(); i++){
-    tempString = stripString(laterSynonymsList[i]);
-    if (!tempString.empty()){
+    if (!isSpaces(laterSynonymsList[i])){
       returnList.push_back(stripString(laterSynonymsList[i]));
     }
   }
@@ -557,9 +577,7 @@ std::vector<std::string> extractWithClauses(const std::string& s){
     if (tempList[i] == "."){
       afterDot = true;
     }else if (afterDot){
-      j = j - 1;
-      tokenList[j] = tokenList[j] + "." + tempList[i];
-      j = j + 1;
+      tokenList[j-1] = tokenList[j-1] + "." + tempList[i];
       afterDot = false;
     }else{
       tokenList.push_back(tempList[i]);
@@ -572,8 +590,8 @@ std::vector<std::string> extractWithClauses(const std::string& s){
     tokenList.emplace_back("");
   }
 
-  for (int i = 0; i < tokenList.size(); i=i+3){
-    temp = tokenList[i] + " " + tokenList[i+1] + " " + tokenList[i+2];
+  for (int q = 0; q < tokenList.size(); q=q+3){
+    temp = tokenList[q] + " " + tokenList[q+1] + " " + tokenList[q+2];
     toReturn.push_back(temp);
   }
   return toReturn;
@@ -584,12 +602,33 @@ std::vector<std::string> extractWithClauses(const std::string& s){
  * @param s some string to be split
  * @return a list of clauses, either pattern or such that
  */
-std::vector<std::string> splitPatternAndSuchThatClauses(const std::string& s){
+std::vector<std::string> splitSuchThatPatternWithClauses(const std::string& s){
   std::vector<std::string> returnList;
   std::vector<std::string> temp;
-  std::vector<std::string> wordsList = splitString(s, ")");
+  std::vector<std::string> tempList = splitString(s, ")"); //tempList = splitString(s, ")");
+  std::vector<std::string> wordsList;
+
+  int count = 0;
+  for (const auto& stmt: tempList){
+    if (!stmt.empty()){
+      if (firstWordChecker(stmt, "and") || isWith(stmt) ||
+      firstWordChecker(stmt, "such") || isPattern(stmt)){
+        wordsList.push_back(stmt);
+        count = count + 1;
+      }else{
+        wordsList[count-1] = wordsList[count-1] + ")" + stmt ;
+      }
+    }else{
+      wordsList[count-1] = wordsList[count-1] + ")";
+    }
+  }
+
   for (const auto& stmt: wordsList){
     if (!stmt.empty()){
+      !isWith(stmt);
+      existSuchThat(stmt);
+      findPatternClauseInSubstring(stmt, stmt);
+
       if (!isWith(stmt)){
         returnList.push_back(stmt + ")");
       }else if (isWith(stmt) && existSuchThat(stmt)){
@@ -654,7 +693,7 @@ std::vector<std::vector<std::string>> extractClauses(const std::string& s){
 
   if (everythingList.size() == 2) {
     std::string clausesString = everythingList[1];
-    std::vector<std::string> clausesList = splitPatternAndSuchThatClauses(clausesString);
+    std::vector<std::string> clausesList = splitSuchThatPatternWithClauses(clausesString);
     lastClauseType lastType = lastClauseType::None;
 
     for (const auto &stmt : clausesList) {
@@ -703,6 +742,11 @@ std::vector<std::string> extractItemsInBrackets(const std::string& s){
     returnList.push_back(stripString(s.substr(0, openBracketPosition)));
     returnList.push_back(stripString(s.substr(openBracketPosition+1, commaPosition - openBracketPosition - 1)));
     returnList.push_back(stripString(s.substr(commaPosition+1, closeBracketPosition - commaPosition - 1)));
+
+    if (s.size() -1 > closeBracketPosition && !isSpaces(s.substr(closeBracketPosition+1))){
+      returnList.push_back(stripString(s.substr(closeBracketPosition+1)));
+    }
+
   }
   return returnList;
 }
@@ -710,7 +754,7 @@ std::vector<std::string> extractItemsInBrackets(const std::string& s){
 std::vector<std::string> extractPatternBrackets(const std::string& s ){
   std::vector<std::string> returnList;
   long openBracketPosition = s.find('(');
-  long closeBracketPosition = s.find(')');
+  long closeBracketPosition = s.rfind(')');
 
   if (openBracketPosition != std::string::npos && closeBracketPosition != std::string::npos ){
     returnList.push_back(stripString(s.substr(0, openBracketPosition)));
@@ -727,8 +771,9 @@ bool checkRelationshipRef(const RelationshipRef& r){
   }else{
     bool returnBool;
     if (r.rType == RelationshipType::Follows || r.rType == RelationshipType::FollowsT ||
-    r.rType == RelationshipType::Parent || r.rType == RelationshipType::ParentT ||
-    r.rType == RelationshipType::Next || r.rType == RelationshipType::NextT || r.rType == RelationshipType::Affects){
+        r.rType == RelationshipType::Parent || r.rType == RelationshipType::ParentT ||
+        r.rType == RelationshipType::Next || r.rType == RelationshipType::NextT ||
+        r.rType == RelationshipType::Affects){
       returnBool = checkFollowsOrParentsOrNextOrAffects(r);
     } else if (r.rType == RelationshipType::Uses){
       returnBool = checkUses(r);
