@@ -44,7 +44,8 @@ PkbGetter::PkbGetter(DB* db) :
     parentTGetter(db),
     callsGetter(db),
     callsTGetter(db),
-    nextGetter(db)
+    nextGetter(db),
+    nextTGetter(db)
     {}
 
 std::set<ProgramElement> PkbGetter::getEntity(const ElementType& typeToGet) const {
@@ -84,10 +85,10 @@ std::set<ProgramElement> PkbGetter::getEntity(const ElementType& typeToGet) cons
     return result;
 }
 
-bool PkbGetter::isRelationship(const PkbRelationshipType& r, const ProgramElement& leftSide, const ProgramElement& rightSide) const {
+bool PkbGetter::isRelationship(const PkbRelationshipType& r, const ProgramElement& leftSide, const ProgramElement& rightSide) {
     if (!isExists(leftSide) || !isExists(rightSide)) return false;
 
-    bool result = false;
+    bool result;
 
     switch (r) {
         case PkbRelationshipType::kModifies : {
@@ -126,6 +127,10 @@ bool PkbGetter::isRelationship(const PkbRelationshipType& r, const ProgramElemen
             result = nextGetter.isNext(leftSide, rightSide);
             break;
         }
+        case PkbRelationshipType::kNextT : {
+            result = nextTGetter.isNextT(leftSide, rightSide);
+            break;
+        }
         default:
             throw std::invalid_argument("Unknown relationshipType for isRelationship");
     }
@@ -134,7 +139,7 @@ bool PkbGetter::isRelationship(const PkbRelationshipType& r, const ProgramElemen
 }
 
 std::set<ProgramElement> PkbGetter::getLeftSide(const PkbRelationshipType& r, const ProgramElement& rightSide,
-                                                const ElementType& typeToGet) const {
+                                                const ElementType& typeToGet) {
     if (!isExists(rightSide)) return {};
 
     std::set<ProgramElement> result;
@@ -176,6 +181,10 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const PkbRelationshipType& r, co
             result = nextGetter.getLeftNext(rightSide, typeToGet);
             break;
         }
+        case PkbRelationshipType::kNextT: {
+            result = nextTGetter.getLeftNextT(rightSide, typeToGet);
+            break;
+        }
         default:
             throw std::invalid_argument("Unknown relationship type for getLeftSide or didn't break");
     }
@@ -184,7 +193,7 @@ std::set<ProgramElement> PkbGetter::getLeftSide(const PkbRelationshipType& r, co
 }
 
 std::set<ProgramElement> PkbGetter::getRightSide(const PkbRelationshipType& r, const ProgramElement& leftSide,
-                                                 const ElementType& typeToGet) const {
+                                                 const ElementType& typeToGet) {
     if (!isExists(leftSide)) return {};
     std::set<ProgramElement> result;
     switch (r) {
@@ -224,6 +233,10 @@ std::set<ProgramElement> PkbGetter::getRightSide(const PkbRelationshipType& r, c
             result = nextGetter.getRightNext(leftSide, typeToGet);
             break;
         }
+        case PkbRelationshipType::kNextT: {
+            result = nextTGetter.getRightNextT(leftSide, typeToGet);
+            break;
+        }
         default:
             throw std::invalid_argument("Unknown relationship type for getRightSide or didn't break");
     }
@@ -231,7 +244,7 @@ std::set<ProgramElement> PkbGetter::getRightSide(const PkbRelationshipType& r, c
     return result;
 }
 
-std::set<std::pair<ProgramElement, ProgramElement>> PkbGetter::getRelationshipPairs(const PkbRelationshipType& r, const ElementType& leftTypeToGet, const ElementType& rightTypeToGet) const {
+std::set<std::pair<ProgramElement, ProgramElement>> PkbGetter::getRelationshipPairs(const PkbRelationshipType& r, const ElementType& leftTypeToGet, const ElementType& rightTypeToGet) {
     std::set<std::pair<ProgramElement, ProgramElement>> result;
     std::set<ProgramElement> leftSides = getEntity(leftTypeToGet);
     for (const auto& leftSide : leftSides)
@@ -261,7 +274,7 @@ std::set<ProgramElement> PkbGetter::getAssignmentGivenExpression(const Expr expr
     
 }
 
-std::set<ProgramElement> PkbGetter::getAssignmentGivenVariableAndExpression(const ProgramElement& variable, const Expr expr, const ExpressionIndicator indicator) const {
+std::set<ProgramElement> PkbGetter::getAssignmentGivenVariableAndExpression(const ProgramElement& variable, const Expr expr, const ExpressionIndicator indicator) {
 
     std::set<ProgramElement> result;
     // Converting it to an expression first

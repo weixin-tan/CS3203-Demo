@@ -1,8 +1,5 @@
 #include "TestWrapper.h"
 #include "AbstractWrapper.h"
-#include "PKB/PKB.h"
-#include "SP.h"
-#include <iostream>
 #include <fstream>
 #include <vector>
 
@@ -35,5 +32,6 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
 	for (const auto& s : resultStr) {
 		results.push_back(s);
 	}
+    pkb.clearCache();  // should this be moved inside QPS?
 }
 
