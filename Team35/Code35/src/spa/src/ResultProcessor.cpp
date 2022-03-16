@@ -18,27 +18,39 @@ int ResultProcessor::getIndexEntity(std::vector<Entity> v, Entity K){
     }
 }
 
-std::set<ProgramElement> ResultProcessor::processResults(std::vector<Result> results){
+std::vector<ProgramElement> ResultProcessor::processResults(std::vector<Group> groups){
+    std::vector<Result> results;
+
+    Group group1 = groups[0];
+    results.push_back(group1.getGroup()[0]);
+    if (groups.size() != 1) {
+        Group group2 = groups[1];
+        for (Result r : groups[1].getGroup()) {
+            results.push_back(r);
+        }
+    }
+
     //get front of list
-    Result FirsElement = results[0];
+    Result firstResult = results[0];
     results.erase(results.begin());
     //check if valid
-    if(FirsElement.getValid()){
+    if(firstResult.getValid()){
         //pass
     } else{
-        std::set<ProgramElement> emptySet = {};
-        return emptySet;
+        std::vector<ProgramElement> empty = {};
+        return empty;
     }
     Table table;
     std::vector<Entity> header = table.header;
     std::vector<std::vector<ProgramElement>> body = table.body;
     //2 until last
     for (Result result : results) {  //for each result in the results list
-        if(result.getResultType()==ResultType::SuchThatClause){
+        if(result.getResultType()==ResultType::SuchThatClause || result.getResultType()==ResultType::WithClause ||
+                result.getResultType()==ResultType::PatternClause){
             //case where invalid
             if(!result.getValid()){
-                std::set<ProgramElement> emptySet = {};
-                return emptySet;
+                std::vector<ProgramElement> empty = {};
+                return empty;
                 //case where oneSyn and twoSyn are empty
             }else if(result.getOneSynSet().empty() and result.getTwoSynSet().empty()) {
                 continue;
@@ -101,9 +113,49 @@ std::set<ProgramElement> ResultProcessor::processResults(std::vector<Result> res
 
             }
             //table is empty so can add straight to it
-
+            if(!result.getOneSynSet().empty()){
+                //append 1syn
+                table.inputElement(result.getOneSynEntity());
+                //convert the set into vector
+                std::vector<ProgramElement> bodyVector(result.getOneSynSet().begin(), result.getOneSynSet().end());
+                table.inputProgramElements(bodyVector);
+            }else{
+                //append 2syn
+                //push entity head one at a time
+                table.inputElement(result.getTwoSynEntities().first);
+                table.inputElement(result.getTwoSynEntities().second);
+                //push into body
+                std::set<std::pair<ProgramElement,ProgramElement>> programElementPair = result.getTwoSynSet();
+                std::vector<ProgramElement> left;
+                std::vector<ProgramElement> right;
+                for (std::pair<ProgramElement, ProgramElement> p : programElementPair) {
+                    left.push_back(p.first);
+                    right.push_back(p.second);
+                }
+                table.inputProgramElements(left);
+                table.inputProgramElements(right);
+            }
 
         }
+    }
+
+    Entity entityToReturn = firstResult.getOneSynEntity();
+
+    for (int i = 0 ; i < table.getHeader().size(); i++){
+        if(entityToReturn == table.getHeader()[i]){
+            std::vector<ProgramElement> peToReturn = table.getBody()[i];
+            return peToReturn;
+        }
+    }
+
+    if (table.getHeader().empty()) {
+        return std::vector<ProgramElement>{};
+    } else {
+        std::vector<ProgramElement> result;
+        for (ProgramElement e : firstResult.getOneSynSet()) {
+            result.push_back(e);
+        }
+        return result;
     }
 }
 
