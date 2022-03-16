@@ -9,7 +9,6 @@ void NextTGetter::dfsNextT(int src, std::set<int>& computedNextTSrc, const std::
     computedNextTSrc.insert(src);
     std::queue<int> q;
     std::set<int> visited;
-//    std::cerr << "Computing NextT for " << src << " for the first time!\n";
     q.push(src);
     while (!q.empty()) {
         int curStmtNo = q.front();
