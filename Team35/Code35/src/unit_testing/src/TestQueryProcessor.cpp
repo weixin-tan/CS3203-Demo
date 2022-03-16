@@ -182,7 +182,12 @@ TEST_CASE("invalid querys"){
   std::string patternIf5 = "if ifs; while w; Select ifs pattern ifs(\"a\",_,1)";
   std::string patternIf6 = "if ifs; while w; Select ifs pattern ifs(\"a\",_,ifs)";
 
-  vector<Clause> invalidWordOutput1 = qp.parsePQL(invalidWord1);
+  std::string boolean1 = "Select BOOLEAN.stmt#";
+  std::string boolean2 = "Select BOOLEAN.varName";
+  std::string boolean3 = "Select Boolean";
+
+
+    vector<Clause> invalidWordOutput1 = qp.parsePQL(invalidWord1);
   vector<Clause> invalidWordOutput2 = qp.parsePQL(invalidWord2);
   vector<Clause> invalidWordOutput3 = qp.parsePQL(invalidWord3);
   vector<Clause> invalidWordOutput4 = qp.parsePQL(invalidWord4);
@@ -245,7 +250,12 @@ TEST_CASE("invalid querys"){
   vector<Clause> patternIfOutput5 = qp.parsePQL(patternIf5);
   vector<Clause> patternIfOutput6 = qp.parsePQL(patternIf6);
 
-  SECTION("Invalid Word"){
+  vector<Clause> booleanOutput1 = qp.parsePQL(boolean1);
+  vector<Clause> booleanOutput2 = qp.parsePQL(boolean2);
+  vector<Clause> booleanOutput3 = qp.parsePQL(boolean3);
+
+
+    SECTION("Invalid Word"){
     REQUIRE(invalidWordOutput1.empty());
     REQUIRE(invalidWordOutput2.empty());
     REQUIRE(invalidWordOutput3.empty());
@@ -315,6 +325,12 @@ TEST_CASE("invalid querys"){
     REQUIRE(patternIfOutput5.empty());
     REQUIRE(patternIfOutput6.empty());
   }
+
+  SECTION("invalid boolean queries"){
+        REQUIRE(booleanOutput1.empty());
+        REQUIRE(booleanOutput2.empty());
+        REQUIRE(booleanOutput3.empty());
+    }
 }
 
 TEST_CASE("trippy queries"){
@@ -565,7 +581,7 @@ TEST_CASE("test advanced queries"){
 
 TEST_CASE("advanced trippy queries"){
   QueryProcessor qp = QueryProcessor();
-  //default string
+  //default query
   string s1 = "assign a, b; variable v; "
               "Select <a.stmt#, b.stmt#, v.varName> "
               "such that Next(a, b) and Next(b, a) "
@@ -653,7 +669,8 @@ TEST_CASE("advanced trippy queries"){
 
 TEST_CASE("debugging"){
   QueryProcessor qp = QueryProcessor();
-  vector<Clause> c = qp.parsePQL(  "");
+  string s= "Select BOOLEAN";
+  vector<Clause> c = qp.parsePQL(s);
 
   if (c.empty()){
     cout << "invalid!" << "\n";

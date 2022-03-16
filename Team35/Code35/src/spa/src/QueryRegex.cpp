@@ -625,10 +625,6 @@ std::vector<std::string> splitSuchThatPatternWithClauses(const std::string& s){
 
   for (const auto& stmt: wordsList){
     if (!stmt.empty()){
-      !isWith(stmt);
-      existSuchThat(stmt);
-      findPatternClauseInSubstring(stmt, stmt);
-
       if (!isWith(stmt)){
         returnList.push_back(stmt + ")");
       }else if (isWith(stmt) && existSuchThat(stmt)){
@@ -889,19 +885,23 @@ bool checkWith(const RelationshipRef& r){
 }
 
 bool checkWithEntity(const Entity& e){
-  if (e.eType == EntityType::Procedure || e.eType == EntityType::Call){
-    return e.aType == EntityAttributeType::ProcName;
-  }else if (e.eType == EntityType::Variable || e.eType == EntityType::Read || e.eType == EntityType::Print){
-    return e.aType == EntityAttributeType::VarName;
-  }else if (e.eType == EntityType::Constant){
-    return e.aType == EntityAttributeType::Value;
-  }else if (e.eType == EntityType::Statement || e.eType == EntityType::Read || e.eType == EntityType::Print ||
-      e.eType == EntityType::Call || e.eType == EntityType::While || e.eType == EntityType::If ||
-      e.eType == EntityType::Assignment){
-    return e.aType == EntityAttributeType::Stmt;
-  }else{
-    return e.eType == EntityType::FixedString ||  e.eType == EntityType::FixedInteger ;
-  }
+    if (e.aType == EntityAttributeType::ProcName){
+        return e.eType == EntityType::Procedure || e.eType == EntityType::Call;
+    }else if(e.aType == EntityAttributeType::VarName){
+        return e.eType == EntityType::Variable || e.eType == EntityType::Read || e.eType == EntityType::Print;
+    } else if (e.aType == EntityAttributeType::Value){
+        return e.eType == EntityType::Constant;
+    }else if (e.aType == EntityAttributeType::Stmt){
+        return e.eType == EntityType::Statement ||
+            e.eType == EntityType::Read ||
+            e.eType == EntityType::Print ||
+            e.eType == EntityType::Call ||
+            e.eType == EntityType::While ||
+            e.eType == EntityType::If ||
+            e.eType == EntityType::Assignment;
+    }else{
+        return  e.eType == EntityType::FixedString ||  e.eType == EntityType::FixedInteger;
+    }
 }
 
 bool checkVariableToSelect(const Entity& e){
@@ -912,6 +912,9 @@ bool checkVariableToSelect(const Entity& e){
   || e.eType == EntityType::Null ){
     return false;
   }else{
-    return isIdent(e.name);
+      if (e.eType == EntityType::Boolean){
+          return e.aType == EntityAttributeType::Null;
+      }
+      return isIdent(e.name);
   }
 }
