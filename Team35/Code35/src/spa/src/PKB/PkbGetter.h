@@ -33,6 +33,8 @@ private:
     CallsTGetter callsTGetter;
     NextGetter nextGetter;
     NextTGetter nextTGetter;
+    std::map<PkbRelationshipType, RelationshipGetter*> relationshipGetterMap;
+
     ExpressionProcessor expressionProcessor;
 
 private:

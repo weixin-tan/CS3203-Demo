@@ -2,7 +2,7 @@
 
 ModifiesGetter::ModifiesGetter(DB* db) : db(db) {}
 
-bool ModifiesGetter::isModifies(const ProgramElement& leftSide, const ProgramElement& rightSide) const {
+bool ModifiesGetter::isRelationship(const ProgramElement& leftSide, const ProgramElement& rightSide) {
     bool result = false;
     if (rightSide.elementType != ElementType::kVariable)
         throw std::invalid_argument("Wrong right element type for isModifies");
@@ -22,8 +22,7 @@ bool ModifiesGetter::isModifies(const ProgramElement& leftSide, const ProgramEle
 
 }
 
-std::set<ProgramElement> ModifiesGetter::getLeftModifies(const ProgramElement& rightSide,
-                                                         const ElementType& typeToGet) const {
+std::set<ProgramElement> ModifiesGetter::getLeftSide(const ProgramElement& rightSide, const ElementType& typeToGet) {
     std::set<ProgramElement> result;
     if (!(isStatementType(typeToGet) || typeToGet == ElementType::kProcedure))
         throw std::invalid_argument("Wrong typeToGet for getLeftSide for Modifies");
@@ -46,8 +45,7 @@ std::set<ProgramElement> ModifiesGetter::getLeftModifies(const ProgramElement& r
     return result;
 }
 
-std::set<ProgramElement> ModifiesGetter::getRightModifies(const ProgramElement& leftSide,
-                                                          const ElementType& typeToGet) const {
+std::set<ProgramElement> ModifiesGetter::getRightSide(const ProgramElement& leftSide, const ElementType& typeToGet) {
     std::set<ProgramElement> result;
     if (!(isStatementType(leftSide.elementType) || leftSide.elementType == ElementType::kProcedure))
         throw std::invalid_argument("Wrong leftSide element type for getRightSide for Modifies");
