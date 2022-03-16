@@ -10,24 +10,24 @@
 
 bool PkbGetter::isExists(const ProgramElement& elementToCheck) const {
     switch (elementToCheck.elementType) {
-        case ElementType::kStatement:
-        case ElementType::kRead:
-        case ElementType::kPrint:
-        case ElementType::kCall:
-        case ElementType::kWhile:
-        case ElementType::kIf:
-        case ElementType::kAssignment: {
+        case ElementType::STATEMENT:
+        case ElementType::READ:
+        case ElementType::PRINT:
+        case ElementType::CALL:
+        case ElementType::WHILE:
+        case ElementType::IF:
+        case ElementType::ASSIGNMENT: {
             int stmtNo = elementToCheck.stmtNo;
             auto stmt = db->elementStmtTable.find(stmtNo);
             if (stmt == db->elementStmtTable.end()) return false;
             ElementType existingType = stmt->second.elementType;
             return RelationshipGetter::isStatementTypeToGet(elementToCheck.elementType, existingType);
         }
-        case ElementType::kProcedure:
+        case ElementType::PROCEDURE:
             return db->procedures.count(elementToCheck.procName);
-        case ElementType::kVariable:
+        case ElementType::VARIABLE:
             return db->variables.count(elementToCheck.varName);
-        case ElementType::kConstant:
+        case ElementType::CONSTANT:
             return db->constants.count(elementToCheck.value);
         default:
             throw std::logic_error("Unknown element type to check, or didn't return");
@@ -47,16 +47,16 @@ PkbGetter::PkbGetter(DB* db) :
         nextGetter(db),
         nextTGetter(db),
         relationshipGetterMap({
-                                      {PkbRelationshipType::kModifies, &modifiesGetter},
-                                      {PkbRelationshipType::kUses, &usesGetter},
-                                      {PkbRelationshipType::kFollows, &followsGetter},
-                                      {PkbRelationshipType::kFollowsT, &followsTGetter},
-                                      {PkbRelationshipType::kParent, &parentGetter},
-                                      {PkbRelationshipType::kParentT, &parentTGetter},
-                                      {PkbRelationshipType::kCalls, &callsGetter},
-                                      {PkbRelationshipType::kCallsT, &callsTGetter},
-                                      {PkbRelationshipType::kNext, &nextGetter},
-                                      {PkbRelationshipType::kNextT, &nextTGetter},
+                                      {PkbRelationshipType::MODIFIES, &modifiesGetter},
+                                      {PkbRelationshipType::USES, &usesGetter},
+                                      {PkbRelationshipType::FOLLOWS, &followsGetter},
+                                      {PkbRelationshipType::FOLLOWS_T, &followsTGetter},
+                                      {PkbRelationshipType::PARENT, &parentGetter},
+                                      {PkbRelationshipType::PARENT_T, &parentTGetter},
+                                      {PkbRelationshipType::CALLS, &callsGetter},
+                                      {PkbRelationshipType::CALLS_T, &callsTGetter},
+                                      {PkbRelationshipType::NEXT, &nextGetter},
+                                      {PkbRelationshipType::NEXT_T, &nextTGetter},
                               })
 {
 }
@@ -65,28 +65,28 @@ std::set<ProgramElement> PkbGetter::getEntity(const ElementType& typeToGet) cons
     std::set<ProgramElement> result;
 
     switch (typeToGet) {
-        case ElementType::kStatement:
-        case ElementType::kRead:
-        case ElementType::kPrint:
-        case ElementType::kCall:
-        case ElementType::kWhile:
-        case ElementType::kIf:
-        case ElementType::kAssignment: {
+        case ElementType::STATEMENT:
+        case ElementType::READ:
+        case ElementType::PRINT:
+        case ElementType::CALL:
+        case ElementType::WHILE:
+        case ElementType::IF:
+        case ElementType::ASSIGNMENT: {
             for (const auto&[stmtNo, elementStmt] : db->elementStmtTable)
                 RelationshipGetter::insertStmtElement(result, elementStmt, typeToGet);
             break;
         }
-        case ElementType::kVariable: {
+        case ElementType::VARIABLE: {
             for (const std::string& var: db->variables)
                 result.insert(ProgramElement::createVariable(var));
             break;
         }
-        case ElementType::kProcedure: {
+        case ElementType::PROCEDURE: {
             for (const std::string& proc: db->procedures)
                 result.insert(ProgramElement::createProcedure(proc));
             break;
         }
-        case ElementType::kConstant: {
+        case ElementType::CONSTANT: {
             for (const std::string& c : db->constants)
                 result.insert(ProgramElement::createConstant(c));
             break;
@@ -155,7 +155,7 @@ std::set<ProgramElement> PkbGetter::getAssignmentGivenVariableAndExpression(cons
     Expr expr1 = expr;
 
     // Get the assignments that match the variable. 
-    std::set<ProgramElement> assignments = getLeftSide(PkbRelationshipType::kModifies, variable, ElementType::kAssignment);
+    std::set<ProgramElement> assignments = getLeftSide(PkbRelationshipType::MODIFIES, variable, ElementType::ASSIGNMENT);
     // Get the line numbers for the assignments only. 
     std::set<int> assignmentNo;
     for (const auto &itset : assignments) {
@@ -236,7 +236,7 @@ std::set<ProgramElement> PkbGetter::getWhileGivenVariable(const ProgramElement& 
 
 std::set<std::pair<ProgramElement, ProgramElement>> PkbGetter::getIfWithVariable() const {
     std::set<std::pair<ProgramElement, ProgramElement>> result;
-    std::set<ProgramElement> ifStatements = getEntity(ElementType::kIf);
+    std::set<ProgramElement> ifStatements = getEntity(ElementType::IF);
 
 
     for (const auto& itset : ifStatements) {
@@ -253,7 +253,7 @@ std::set<std::pair<ProgramElement, ProgramElement>> PkbGetter::getIfWithVariable
 
 std::set<std::pair<ProgramElement, ProgramElement>>PkbGetter::getWhileWithVariable() const {
     std::set<std::pair<ProgramElement, ProgramElement>> result;
-    std::set<ProgramElement> ifStatements = getEntity(ElementType::kWhile);
+    std::set<ProgramElement> ifStatements = getEntity(ElementType::WHILE);
 
 
     for (const auto& itset : ifStatements) {

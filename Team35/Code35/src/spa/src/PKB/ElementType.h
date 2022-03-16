@@ -4,20 +4,20 @@
 // TODO: rename to EntityType once deconflicted
 enum class ElementType {
   // statements
-  kStatement,
-  kRead,
-  kPrint,
-  kCall,
-  kWhile,
-  kIf,
-  kAssignment,
+  STATEMENT,
+  READ,
+  PRINT,
+  CALL,
+  WHILE,
+  IF,
+  ASSIGNMENT,
 
   // procedures
-  kProcedure,
+  PROCEDURE,
 
   // singles
-  kVariable,
-  kConstant,
+  VARIABLE,
+  CONSTANT,
 };
 
 bool isStatementType(const ElementType& element_type);

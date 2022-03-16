@@ -4,16 +4,16 @@ UsesGetter::UsesGetter(DB* db) : db(db) {}
 
 bool UsesGetter::isRelationship(const ProgramElement& leftSide, const ProgramElement& rightSide) {
     bool result = false;
-    if (rightSide.elementType != ElementType::kVariable)
+    if (rightSide.elementType != ElementType::VARIABLE)
         throw std::invalid_argument("Wrong right element type for isUses");
-    if (!(isStatementType(leftSide.elementType) || leftSide.elementType == ElementType::kProcedure))
+    if (!(isStatementType(leftSide.elementType) || leftSide.elementType == ElementType::PROCEDURE))
         throw std::invalid_argument("Wrong left element type for isUses");
     if (isStatementType(leftSide.elementType)) {
         auto usedVars = db->usesSTable.find(leftSide.stmtNo);
         if (usedVars == db->usesSTable.end()) return false;
         result = usedVars->second.find(rightSide.varName) != usedVars->second.end();
     }
-    if (leftSide.elementType == ElementType::kProcedure) {
+    if (leftSide.elementType == ElementType::PROCEDURE) {
         auto usedVars = db->usesPTable.find(leftSide.procName);
         if (usedVars == db->usesPTable.end()) return false;
         result = usedVars->second.find(rightSide.varName) != usedVars->second.end();
@@ -24,9 +24,9 @@ bool UsesGetter::isRelationship(const ProgramElement& leftSide, const ProgramEle
 
 std::set<ProgramElement> UsesGetter::getLeftSide(const ProgramElement& rightSide, const ElementType& typeToGet) {
     std::set<ProgramElement> result;
-    if (!(isStatementType(typeToGet) || typeToGet == ElementType::kProcedure))
+    if (!(isStatementType(typeToGet) || typeToGet == ElementType::PROCEDURE))
         throw std::invalid_argument("Wrong typeToGet for getLeftSide for Uses");
-    if (rightSide.elementType != ElementType::kVariable)
+    if (rightSide.elementType != ElementType::VARIABLE)
         throw std::invalid_argument("Wrong rightSide type for getLeftSide for Uses");
 
     if (isStatementType(typeToGet)) {
@@ -35,7 +35,7 @@ std::set<ProgramElement> UsesGetter::getLeftSide(const ProgramElement& rightSide
         for (const auto& stmtNo : usesStmtNos->second)
             RelationshipGetter::insertStmtElement(result, db->elementStmtTable.at(stmtNo), typeToGet);
     }
-    if (typeToGet == ElementType::kProcedure) {
+    if (typeToGet == ElementType::PROCEDURE) {
         auto usesProcs = db->usesPTableR.find(rightSide.varName);
         if (usesProcs == db->usesPTableR.end()) return {};
         for (const auto& proc : usesProcs->second)
@@ -46,9 +46,9 @@ std::set<ProgramElement> UsesGetter::getLeftSide(const ProgramElement& rightSide
 
 std::set<ProgramElement> UsesGetter::getRightSide(const ProgramElement& leftSide, const ElementType& typeToGet) {
     std::set<ProgramElement> result;
-    if (!(isStatementType(leftSide.elementType) || leftSide.elementType == ElementType::kProcedure))
+    if (!(isStatementType(leftSide.elementType) || leftSide.elementType == ElementType::PROCEDURE))
         throw std::invalid_argument("Wrong leftSide element type for getRightSide for Uses");
-    if (typeToGet != ElementType::kVariable)
+    if (typeToGet != ElementType::VARIABLE)
         throw std::invalid_argument("Wrong typeToGet for getRightSide for Uses");
 
     if (isStatementType(leftSide.elementType)) {
@@ -57,7 +57,7 @@ std::set<ProgramElement> UsesGetter::getRightSide(const ProgramElement& leftSide
         for (const auto& var : usedVars->second)
             result.insert(ProgramElement::createVariable(var));
     }
-    if (leftSide.elementType == ElementType::kProcedure) {
+    if (leftSide.elementType == ElementType::PROCEDURE) {
         auto usedVars = db->usesPTable.find(leftSide.procName);
         if (usedVars == db->usesPTable.end()) return {};
         for (const auto& var : usedVars->second)
