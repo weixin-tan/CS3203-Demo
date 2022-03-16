@@ -1,6 +1,7 @@
 #ifndef SPA_GROUP_H
 #define SPA_GROUP_H
 
+#include <vector>
 #include "Result.h"
 
 class Group {

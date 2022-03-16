@@ -1,9 +1,13 @@
+#ifndef SPA_EXPRESSIONPROCESSOR_H
+#define SPA_EXPRESSIONPROCESSOR_H
+
 #include "Token.h"
 #include "Expr.h"
 #include "ExpressionIndicator.h"
-#include "stdio.h"
+#include "Tokeniser.h"
 #include <queue>
 #include <stack>
+#include <iostream>
 
 class ExpressionProcessor {
 
@@ -27,3 +31,4 @@ public:
     Factor parseFactor(std::queue<Token>& factorQueue);
     bool fullfillsMatching(Expr exp1, Expr exp2, ExpressionIndicator expressionIndicator) const;
 };
+#endif //SPA_EXPRESSIONPROCESSOR_H

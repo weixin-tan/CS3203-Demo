@@ -1,6 +1,4 @@
 #include "PatternHandler.h"
-#include "QpsTypeToPkbTypeConvertor.h"
-#include "ExpressionProcessor.h"
 
 PatternHandler::PatternHandler(PkbGetter* pg) {
   PatternHandler::pg = pg;

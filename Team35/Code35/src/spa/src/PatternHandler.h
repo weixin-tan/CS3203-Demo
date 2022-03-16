@@ -5,6 +5,8 @@
 #include "PkbGetter.h"
 #include "Result.h"
 #include "RelationshipRef.h"
+#include "QpsTypeToPkbTypeConvertor.h"
+#include "ExpressionProcessor.h"
 
 class PatternHandler {
 private:
