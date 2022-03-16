@@ -1,8 +1,8 @@
-#include <vector>
-#include "Procedure.h"
-
 #ifndef PROCEDURELST_H
 #define PROCEDURELST_H
+
+#include <vector>
+#include "Procedure.h"
 
 class ProcedureLst {
 private:

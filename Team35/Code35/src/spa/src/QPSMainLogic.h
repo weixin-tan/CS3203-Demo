@@ -1,7 +1,6 @@
 #ifndef SPA_QPSMAINLOGIC_H
 #define SPA_QPSMAINLOGIC_H
 
-
 #include <string>
 #include "QueryProcessor.h"
 #include "Result.h"

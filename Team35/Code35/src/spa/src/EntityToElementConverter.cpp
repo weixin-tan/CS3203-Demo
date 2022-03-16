@@ -1,5 +1,3 @@
-#include <cassert>
-#include <regex>
 #include "EntityToElementConverter.h"
 
 EntityToElementConverter::EntityToElementConverter() = default;

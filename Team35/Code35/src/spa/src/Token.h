@@ -1,7 +1,3 @@
-//
-// Created by Prerthan Munireternam on 05/02/2022.
-//
-
 #ifndef SPA_TOKEN_H
 #define SPA_TOKEN_H
 

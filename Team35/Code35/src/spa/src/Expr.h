@@ -1,9 +1,9 @@
+#ifndef EXPR_H
+#define EXPR_H
+
 #include <memory>
 #include "Term.h"
 #include "TokenType.h"
-
-#ifndef EXPR_H
-#define EXPR_H
 
 class Expr {
 private:

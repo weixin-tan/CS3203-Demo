@@ -1,7 +1,5 @@
 #include "RelationshipRef.h"
 
-#include <utility>
-
 RelationshipRef::RelationshipRef() {
   RelationshipRef::rType = RelationshipType::Null;
 }

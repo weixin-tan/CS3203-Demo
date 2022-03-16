@@ -1,5 +1,4 @@
 #include "PatternHandler.h"
-#include "EntityToElementConverter.h"
 
 PatternHandler::PatternHandler(PkbGetter* pg) {
   PatternHandler::pg = pg;

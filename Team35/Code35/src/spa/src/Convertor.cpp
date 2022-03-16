@@ -1,13 +1,4 @@
-#include<stdio.h>
-#include <iostream>
-#include <string>
-#include <vector>
 #include "Convertor.h"
-#include "Statement.h"
-#include "StatementType.h"
-#include <PKB/PkbSetter.h>
-#include "Procedure.h"
-
 
 std::string Convertor::currProcedureName = "no_procedure";
 std::vector<ParsedStatement> Convertor::finalResults;

@@ -1,11 +1,11 @@
+#ifndef PARSED_STATEMENT_H
+#define PARSED_STATEMENT_H
+
 #include<stdio.h>
 #include <iostream>
 #include <string>
 #include <vector>
 #include "Statement.h"
-
-#ifndef PARSED_STATEMENT_H
-#define PARSED_STATEMENT_H
 
 class ParsedStatement {
     

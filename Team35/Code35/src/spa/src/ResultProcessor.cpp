@@ -1,4 +1,3 @@
-#include <iostream>
 #include "ResultProcessor.h"
 
 ResultProcessor::ResultProcessor() = default;

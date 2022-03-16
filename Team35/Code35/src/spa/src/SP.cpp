@@ -1,9 +1,5 @@
 #include "SP.h"
 
-#include <iostream>
-#include <fstream>
-#include <vector>
-
 SP::SP(PkbSetter* pkb_setter) : tokeniser(), concrete(), convertor(pkb_setter) {
 
 }

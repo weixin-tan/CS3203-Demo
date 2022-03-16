@@ -4,6 +4,7 @@
 #include <utility>
 #include <vector>
 #include "Entity.h"
+#include "EntityToElementConverter.h"
 #include "PKB/PkbGetter.h"
 #include "RelationshipRef.h"
 #include "Result.h"

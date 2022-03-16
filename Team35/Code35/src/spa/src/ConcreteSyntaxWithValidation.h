@@ -1,3 +1,6 @@
+#ifndef SPA_CONCRETESYNTAXWITHVALIDATION_H
+#define SPA_CONCRETESYNTAXWITHVALIDATION_H
+
 #include <queue>
 #include <stack>
 #include <stdexcept>
@@ -7,6 +10,7 @@
 #include "CondExpr.h"
 #include "TokenType.h"
 #include "FactorType.h"
+#include "ExpressionProcessor.h"
 
 class ConcreteSyntaxWithValidation {
 public:
@@ -29,3 +33,5 @@ public:
     std::vector<std::vector<std::string>> parseExprString(std::queue<Token> tokensQueue);
     std::vector<std::vector<std::string>> parseCondExprString(std::queue<Token>& tokensQueue);
 };
+
+#endif

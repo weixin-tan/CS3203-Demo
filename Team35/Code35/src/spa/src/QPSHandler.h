@@ -1,7 +1,7 @@
 #ifndef SPA_QPSHANDLER_H
 #define SPA_QPSHANDLER_H
 
-
+#include "EntityToElementConverter.h"
 #include "PkbGetter.h"
 #include "Result.h"
 #include "Clause.h"

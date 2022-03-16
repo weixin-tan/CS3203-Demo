@@ -1,5 +1,4 @@
 #include "SuchThatHandler.h"
-#include "EntityToElementConverter.h"
 
 //Constructor
 SuchThatHandler::SuchThatHandler(PkbGetter *pg) {

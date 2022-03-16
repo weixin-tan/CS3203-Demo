@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SPA_SP_H
+#define SPA_SP_H
 
 #include "Tokeniser.h"
 #include "ConcreteSyntaxWithValidation.h"
@@ -7,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
+#include <vector>
 
 class SP {
 
@@ -22,4 +24,6 @@ public:
     Program program; 
     std::queue<Token> tokenQueue;
 };
+
+#endif
 

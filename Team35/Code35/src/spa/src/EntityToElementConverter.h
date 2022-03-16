@@ -1,7 +1,8 @@
 #ifndef SPA_ENTITYTOELEMENTCONVERTER_H
 #define SPA_ENTITYTOELEMENTCONVERTER_H
 
-
+#include <cassert>
+#include <regex>
 #include "ProgramElement.h"
 #include "Entity.h"
 

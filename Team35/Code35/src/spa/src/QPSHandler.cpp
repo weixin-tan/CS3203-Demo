@@ -1,5 +1,5 @@
 #include "QPSHandler.h"
-#include "EntityToElementConverter.h"
+
 
 QPSHandler::QPSHandler(PkbGetter* pg) {
   QPSHandler::pg = pg;

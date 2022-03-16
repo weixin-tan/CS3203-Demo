@@ -1,4 +1,3 @@
-#include <string>
 #include "ParsedStatement.h"
 
 //Defining static const variables here

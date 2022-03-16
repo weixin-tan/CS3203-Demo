@@ -1,8 +1,5 @@
 #include "Entity.h"
 
-#include <utility>
-#include "Type.h"
-
 Entity::Entity() {
     Entity::eType = EntityType::Null;
     Entity::aType = EntityAttributeType::Null;

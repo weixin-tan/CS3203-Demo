@@ -1,8 +1,8 @@
-#include <string>
-#include "StmtLst.h"
-
 #ifndef PROCEDURE_H
 #define PROCEDURE_H
+
+#include <string>
+#include "StmtLst.h"
 
 class Procedure {
 private:

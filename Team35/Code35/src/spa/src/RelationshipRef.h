@@ -2,6 +2,7 @@
 #define SPA_RELATIONSHIPREF_H
 
 #include <cassert>
+#include <utility>
 #include "Type.h"
 #include "Entity.h"
 

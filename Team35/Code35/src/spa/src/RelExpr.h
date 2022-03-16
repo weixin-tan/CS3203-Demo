@@ -1,8 +1,8 @@
-#include "RelFactor.h"
-#include "TokenType.h"
-
 #ifndef RELEXPR_H
 #define RELEXPR_H
+
+#include "RelFactor.h"
+#include "TokenType.h"
 
 class RelExpr {
 private:

@@ -1,9 +1,9 @@
 #ifndef SPA_RESULTPROCESSOR_H
 #define SPA_RESULTPROCESSOR_H
 
-
-#include "Result.h"
 #include <vector>
+#include <iostream>
+#include "Result.h"
 
 class ResultProcessor {
  public:
