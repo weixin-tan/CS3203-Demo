@@ -103,21 +103,47 @@ void crossProduct1syn(std::vector<ProgramElement> programElementVector){
 }
 
 void eliminate2synBoth(std::vector<ProgramElement> left, std::vector<ProgramElement> right, int pos1, int pos2){
-    //preprocessing
-    std::vector<std::vector<ProgramElement>> toBeCheckedVec;
     std::vector<ProgramElement> temp1 = Table::body[pos1];
     std::vector<ProgramElement> temp2 = Table::body[pos2];
-    toBeCheckedVec.push_back(temp1);
-    toBeCheckedVec.push_back(temp2);
-    std::vector<int> toBeDeleted;
-    std::vector<std::vector<ProgramElement>>cache;
     //checking
-    
-
+    for(int i = left.size()-1; i <= 0; i--){
+        if(temp1[i] == left[i] and temp2[i] == right[i] ){
+            continue;
+        }else{
+            for(std::vector<ProgramElement> p : Table::body){
+                p.erase(p.begin()+i);
+            }
+        }
+    }
 }
 
-void eliminate2synOne(std::vector<ProgramElement> left, std::vector<ProgramElement> right, int pos1, int pos2){
 
+//left is the one to be eliminated
+void eliminate2synOne(std::vector<ProgramElement> left, std::vector<ProgramElement> right, int pos1, int pos2){
+    std::vector<ProgramElement> temp1 = Table::body[pos1];
+    std::vector<ProgramElement> temp2 = Table::body[pos2];
+    int originalSize = Table::body[0].size();
+    std::vector<ProgramElement> tempRight;
+    int originalSizeRight = right.size();
+    //place elements
+    for (int i = 0; i < originalSize; i++){
+        for(int j = 0; j < left.size(); j++){
+            if(temp2[i] == left[j]){
+                tempRight.push_back(right[j]);
+                for(std::vector<ProgramElement> p : Table::body){
+                    p.push_back(p[i]);
+                }
+            }
+        }
+    }
+    //trim table
+    for (int i = 0; i < originalSize; i++){
+        for (std::vector<ProgramElement> p : Table::body){
+            p.erase((p.begin()+i));
+        }
+    }
+    //add right to table
+    Table::body.push_back(tempRight);
 }
 
 void crossProduct2syn(std::vector<ProgramElement> left, std::vector<ProgramElement> right){

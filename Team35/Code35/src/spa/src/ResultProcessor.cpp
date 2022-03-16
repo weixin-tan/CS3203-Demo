@@ -102,6 +102,7 @@ std::set<ProgramElement> ResultProcessor::processResults(std::vector<Result> res
             }
             //table is empty so can add straight to it
 
+
         }
     }
 }
