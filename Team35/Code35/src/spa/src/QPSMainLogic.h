@@ -29,8 +29,8 @@ class QPSMainLogic {
   std::vector<Clause> callParser(std::string query);
   std::vector<Result> callHandler(std::vector<Clause> clauses);
   std::vector<Group> callOptimiser(std::vector<Result> results);
-  std::set<ProgramElement> callProcessor(std::vector<Group> groups);
-  std::list<std::string> callFormatter(std::set<ProgramElement> result);
+  std::vector<ProgramElement> callProcessor(std::vector<Group> groups);
+  std::list<std::string> callFormatter(std::vector<ProgramElement> result);
 };
 
 

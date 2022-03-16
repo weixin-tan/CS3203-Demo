@@ -27,7 +27,7 @@ std::list<std::string> QPSMainLogic::parse(std::string query) {
   std::vector<Clause> clauses = callParser(query);
   std::vector<Result> matchingEntities = callHandler(clauses);
   std::vector<Group> optimisedGroups = callOptimiser(matchingEntities);
-  std::set<ProgramElement> processedEntities = callProcessor(optimisedGroups);
+  std::vector<ProgramElement> processedEntities = callProcessor(optimisedGroups);
   std::list<std::string> finalResult = callFormatter(processedEntities);
   return finalResult;
 }
@@ -47,12 +47,12 @@ std::vector<Group> QPSMainLogic::callOptimiser(std::vector<Result> results) {
     return optimisedGroups;
 }
 
-std::set<ProgramElement> QPSMainLogic::callProcessor(std::vector<Group> optimisedGroups) {
-  std::set<ProgramElement> processedEntities = resultProcessor->processResults(optimisedGroups);
+std::vector<ProgramElement> QPSMainLogic::callProcessor(std::vector<Group> optimisedGroups) {
+  std::vector<ProgramElement> processedEntities = resultProcessor->processResults(optimisedGroups);
   return processedEntities;
 }
 
-std::list<std::string> QPSMainLogic::callFormatter(std::set<ProgramElement> processedEntities) {
+std::list<std::string> QPSMainLogic::callFormatter(std::vector<ProgramElement> processedEntities) {
   std::list<std::string> finalResult = resultFormatter->formatResult(processedEntities);
   return finalResult;
 }

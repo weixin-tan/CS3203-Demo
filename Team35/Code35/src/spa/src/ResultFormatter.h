@@ -9,7 +9,7 @@
 class ResultFormatter {
  public:
   ResultFormatter();
-  std::list<std::string> formatResult(const std::set<ProgramElement>& finalResult);
+  std::list<std::string> formatResult(const std::vector<ProgramElement>& finalResult);
 };
 
 

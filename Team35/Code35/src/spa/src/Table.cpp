@@ -11,7 +11,7 @@ Table::Table() {
     Table::body = {};
 }
 
-int getIndexEntity(std::vector<ProgramElement> v, ProgramElement K){
+int Table::getIndexEntity(std::vector<ProgramElement> v, ProgramElement K){
     auto it = find(v.begin(), v.end(), K);
     // If element was found
     if (it != v.end()){
@@ -19,29 +19,32 @@ int getIndexEntity(std::vector<ProgramElement> v, ProgramElement K){
         return index;
     }
     else {
+        return -1;
     }
 }
- //methods for header
- std::vector<Entity> getHeader(){
+
+//methods for header
+std::vector<Entity> Table::getHeader(){
     return Table::header;
 }
-void inputElement(Entity input){
+
+void Table::inputElement(Entity input){
     Table::header.push_back(input);
 }
 
 //methods for body
-std::vector<std::vector<ProgramElement>> getBody(){
+std::vector<std::vector<ProgramElement>> Table::getBody(){
     return Table::body;
 }
-void inputProgramElements(std::vector<ProgramElement> ProgramElements){
+void Table::inputProgramElements(std::vector<ProgramElement> ProgramElements){
     Table::body.push_back(ProgramElements);
 }
 
-bool isTableEmpty(){
+bool Table::isTableEmpty(){
     return Table::header.empty();
 }
 
-bool doesElementExist(Entity entity){
+bool Table::doesElementExist(Entity entity){
     std::vector<Entity> header = Table::header;
     if(std::find(header.begin(), header.end(), entity) != header.end()){
         return true;
@@ -50,7 +53,7 @@ bool doesElementExist(Entity entity){
     }
 }
 
-void eliminate1syn(std::vector<ProgramElement> programElementVector, int pos){
+void Table::eliminate1syn(std::vector<ProgramElement> programElementVector, int pos){
     //preprocessing
     std::vector<ProgramElement> toBeChecked = Table::body[pos];
     std::vector<int> toBeDeleted;
@@ -82,7 +85,7 @@ void eliminate1syn(std::vector<ProgramElement> programElementVector, int pos){
     }
 }
 
-void crossProduct1syn(std::vector<ProgramElement> programElementVector){
+void Table::crossProduct1syn(std::vector<ProgramElement> programElementVector){
     int originalSize = Table::body[0].size();
     int numberOfRepetition = programElementVector.size();
     for (std::vector<ProgramElement> p : Table::body){
@@ -102,12 +105,12 @@ void crossProduct1syn(std::vector<ProgramElement> programElementVector){
     Table::body.push_back(temp);
 }
 
-void eliminate2synBoth(std::vector<ProgramElement> left, std::vector<ProgramElement> right, int pos1, int pos2){
+void Table::eliminate2synBoth(std::vector<ProgramElement> left, std::vector<ProgramElement> right, int pos1, int pos2){
     std::vector<ProgramElement> temp1 = Table::body[pos1];
     std::vector<ProgramElement> temp2 = Table::body[pos2];
     //checking
     for(int i = left.size()-1; i <= 0; i--){
-        if(temp1[i] == left[i] and temp2[i] == right[i] ){
+        if(temp1[i] == left[i] && temp2[i] == right[i] ){
             continue;
         }else{
             for(std::vector<ProgramElement> p : Table::body){
@@ -119,7 +122,7 @@ void eliminate2synBoth(std::vector<ProgramElement> left, std::vector<ProgramElem
 
 
 //left is the one to be eliminated
-void eliminate2synOne(std::vector<ProgramElement> left, std::vector<ProgramElement> right, int pos1, int pos2){
+void Table::eliminate2synOne(std::vector<ProgramElement> left, std::vector<ProgramElement> right, int pos1, int pos2){
     std::vector<ProgramElement> temp1 = Table::body[pos1];
     std::vector<ProgramElement> temp2 = Table::body[pos2];
     int originalSize = Table::body[0].size();
@@ -146,7 +149,7 @@ void eliminate2synOne(std::vector<ProgramElement> left, std::vector<ProgramEleme
     Table::body.push_back(tempRight);
 }
 
-void crossProduct2syn(std::vector<ProgramElement> left, std::vector<ProgramElement> right){
+void Table::crossProduct2syn(std::vector<ProgramElement> left, std::vector<ProgramElement> right){
     int originalSize = Table::body[0].size();
     int numberOfRepetition = left.size();
     for (std::vector<ProgramElement> p : Table::body){

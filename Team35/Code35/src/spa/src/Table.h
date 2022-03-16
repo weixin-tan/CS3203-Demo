@@ -15,15 +15,16 @@ class Table {
 public:
     //constructor
     Table();
+
     //attributes
-    static std::vector<Entity> header;
-    static std::vector<std::vector<ProgramElement>> body;
+    std::vector<Entity> header;
+    std::vector<std::vector<ProgramElement>> body;
     std::vector<Entity> getHeader();
     int getIndexEntity(std::vector<ProgramElement> v, ProgramElement K);
     void inputElement(Entity input);
     std::vector<std::vector<ProgramElement>> getBody();
     void inputProgramElements(std::vector<ProgramElement> ProgramElements);
-    bool isTableEmpty;
+    bool isTableEmpty();
     bool doesElementExist(Entity entity);
     void eliminate1syn(std::vector<ProgramElement> programElementVector, int pos);
     void crossProduct1syn(std::vector<ProgramElement> programElementVector);

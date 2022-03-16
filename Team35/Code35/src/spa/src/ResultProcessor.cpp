@@ -15,6 +15,7 @@ int ResultProcessor::getIndexEntity(std::vector<Entity> v, Entity K){
         return index;
     }
     else {
+        return -1;
     }
 }
 
@@ -52,10 +53,9 @@ std::vector<ProgramElement> ResultProcessor::processResults(std::vector<Group> g
                 std::vector<ProgramElement> empty = {};
                 return empty;
                 //case where oneSyn and twoSyn are empty
-            }else if(result.getOneSynSet().empty() and result.getTwoSynSet().empty()) {
+            }else if(result.getOneSynSet().empty() && result.getTwoSynSet().empty()) {
                 continue;
-            }
-            else if(!table.isTableEmpty){
+            } else if(!table.isTableEmpty()){
                 //handle oneSyn set
                 if(!result.getOneSynSet().empty()){
                     std::set<ProgramElement> programElementsSet = result.getOneSynSet();
@@ -89,18 +89,18 @@ std::vector<ProgramElement> ResultProcessor::processResults(std::vector<Group> g
                     int pos2 = getIndexEntity(header, programEntityPair.second);
 
                     //both are in
-                    if(std::find(header.begin(), header.end(), programEntityPair.first) != header.end() and
+                    if(std::find(header.begin(), header.end(), programEntityPair.first) != header.end() &&
                        std::find(header.begin(), header.end(), programEntityPair.second) != header.end()){
                         table.eliminate2synBoth(left, right, pos1, pos2);
                     }
                         //first one is in
-                    else if(std::find(header.begin(), header.end(), programEntityPair.first) == header.end() and
+                    else if(std::find(header.begin(), header.end(), programEntityPair.first) == header.end() &&
                             std::find(header.begin(), header.end(), programEntityPair.second) != header.end()){
                         //eliminate 1st cross product 2nd
                         table.eliminate2synOne(left, right, pos1, pos2);
                     }
                         //2nd one is in
-                    else if(std::find(header.begin(), header.end(), programEntityPair.first) != header.end() and
+                    else if(std::find(header.begin(), header.end(), programEntityPair.first) != header.end() &&
                             std::find(header.begin(), header.end(), programEntityPair.second) == header.end()){
                         //eliminate 2nd cross product first
                         table.eliminate2synOne(right, left, pos1, pos2);
@@ -111,31 +111,34 @@ std::vector<ProgramElement> ResultProcessor::processResults(std::vector<Group> g
                     }
                 }
 
-            }
-            //table is empty so can add straight to it
-            if(!result.getOneSynSet().empty()){
-                //append 1syn
-                table.inputElement(result.getOneSynEntity());
-                //convert the set into vector
-                std::vector<ProgramElement> bodyVector(result.getOneSynSet().begin(), result.getOneSynSet().end());
-                table.inputProgramElements(bodyVector);
-            }else{
-                //append 2syn
-                //push entity head one at a time
-                table.inputElement(result.getTwoSynEntities().first);
-                table.inputElement(result.getTwoSynEntities().second);
-                //push into body
-                std::set<std::pair<ProgramElement,ProgramElement>> programElementPair = result.getTwoSynSet();
-                std::vector<ProgramElement> left;
-                std::vector<ProgramElement> right;
-                for (std::pair<ProgramElement, ProgramElement> p : programElementPair) {
-                    left.push_back(p.first);
-                    right.push_back(p.second);
+            } else {
+                //table is empty so can add straight to it
+                if(!result.getOneSynSet().empty()){
+                    //append 1syn
+                    table.inputElement(result.getOneSynEntity());
+                    //convert the set into vector
+                    std::vector<ProgramElement> bodyVector;
+                    for (ProgramElement e : result.getOneSynSet()) {
+                        bodyVector.push_back(e);
+                    }
+                    table.inputProgramElements(bodyVector);
+                }else{
+                    //append 2syn
+                    //push entity head one at a time
+                    table.inputElement(result.getTwoSynEntities().first);
+                    table.inputElement(result.getTwoSynEntities().second);
+                    //push into body
+                    std::set<std::pair<ProgramElement,ProgramElement>> programElementPair = result.getTwoSynSet();
+                    std::vector<ProgramElement> left;
+                    std::vector<ProgramElement> right;
+                    for (std::pair<ProgramElement, ProgramElement> p : programElementPair) {
+                        left.push_back(p.first);
+                        right.push_back(p.second);
+                    }
+                    table.inputProgramElements(left);
+                    table.inputProgramElements(right);
                 }
-                table.inputProgramElements(left);
-                table.inputProgramElements(right);
             }
-
         }
     }
 

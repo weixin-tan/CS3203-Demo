@@ -4,7 +4,6 @@
 #include "catch.hpp"
 #include "SuchThatHandler.h"
 #include "PKB.h"
-#include "PkbStub.h"
 
 
 
