@@ -3,12 +3,14 @@
 
 
 #include "Result.h"
+#include "Group.h"
 #include <vector>
 
 class ResultProcessor {
  public:
   ResultProcessor();
-  std::set<ProgramElement> processResults(std::vector<Result> results);
+  std::vector<ProgramElement> processResults(std::vector<Group> groups);
+  int getIndexEntity(std::vector<Entity> v, Entity K);
 };
 
 
