@@ -31,7 +31,7 @@ class Result {
   std::set<ProgramElement> getOneSynSet();
   std::pair<Entity, Entity> getTwoSynEntities();
   std::set<std::pair<ProgramElement, ProgramElement>> getTwoSynSet();
-
+  bool operator==(const Result& r1) const;
 };
 
 #endif //SPA_RESULT_H
