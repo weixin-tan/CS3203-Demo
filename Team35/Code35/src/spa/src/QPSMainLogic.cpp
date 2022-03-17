@@ -43,7 +43,7 @@ std::vector<Result> QPSMainLogic::callHandler(std::vector<Clause> clauses) {
 }
 
 std::vector<Group> QPSMainLogic::callOptimiser(std::vector<Result> results) {
-    std::vector<Group> optimisedGroups = optimiser->optimize(results);
+    std::vector<Group> optimisedGroups = optimiser->optimise(results);
     return optimisedGroups;
 }
 

@@ -7,7 +7,7 @@
 class Optimiser {
 public:
     Optimiser();
-    std::vector<Group> optimize(std::vector<Result> results);
+    std::vector<Group> optimise(std::vector<Result> results);
 };
 
 

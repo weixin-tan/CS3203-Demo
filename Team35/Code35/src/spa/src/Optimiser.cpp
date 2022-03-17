@@ -2,7 +2,7 @@
 
 Optimiser::Optimiser() = default;
 
-std::vector<Group> Optimiser::optimize(std::vector<Result> results) {
+std::vector<Group> Optimiser::optimise(std::vector<Result> results) {
     std::vector<Group> groups;
 
     std::vector<Result> firstResult;
