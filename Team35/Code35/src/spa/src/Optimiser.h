@@ -1,8 +1,8 @@
 #ifndef SPA_OPTIMISER_H
 #define SPA_OPTIMISER_H
 
-#include "Result.h"
 #include "Group.h"
+#include "Result.h"
 
 class Optimiser {
 public:

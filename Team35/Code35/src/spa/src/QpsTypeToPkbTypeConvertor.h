@@ -1,21 +1,19 @@
 #ifndef SPA_QPSTYPETOPKBTYPECONVERTOR_H
 #define SPA_QPSTYPETOPKBTYPECONVERTOR_H
 
-
-#include "ProgramElement.h"
 #include "Entity.h"
 #include "PkbRelationshipType.h"
+#include "ProgramElement.h"
 
 class QpsTypeToPkbTypeConvertor {
- private:
-  QpsTypeToPkbTypeConvertor();
-  static const std::unordered_map<EntityType, ElementType> entityToElementMap;
-  static const std::unordered_map<RelationshipType, PkbRelationshipType> qpsRelToPkbRelMap;
+private:
+    QpsTypeToPkbTypeConvertor();
+    static const std::unordered_map<EntityType, ElementType> entityToElementMap;
+    static const std::unordered_map<RelationshipType, PkbRelationshipType> qpsRelToPkbRelMap;
 
- public:
-  static ElementType convertToPkbElement(EntityType e);
-  static PkbRelationshipType convertToPkbRelType(RelationshipType t);
-  static ProgramElement fixedEntityConverter(const Entity& e);
+public:
+    static ElementType convertToPkbElement(EntityType e);
+    static PkbRelationshipType convertToPkbRelType(RelationshipType t);
 };
 
 

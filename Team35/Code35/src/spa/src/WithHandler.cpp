@@ -10,7 +10,7 @@ Result WithHandler::handleWith(const RelationshipRef &relRef) {
 
   Entity left = relRef.leftEntity;
   Entity right = relRef.rightEntity;
-  result.setResultType(ResultType::WithClause);
+  result.setResultType(ResultType::WITH_CLAUSE);
 
   if (isFixedEntity(left) && isFixedEntity(right)){
     result.setValid(handleBothSidesFixed(left, right));

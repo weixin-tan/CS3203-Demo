@@ -3,13 +3,14 @@
 
 #include <string>
 #include <list>
-#include "Result.h"
+
 #include "EntityToElementConverter.h"
+#include "Result.h"
 
 class ResultFormatter {
- public:
-  ResultFormatter();
-  std::list<std::string> formatResult(const std::vector<ProgramElement>& finalResult);
+public:
+    ResultFormatter();
+    std::list<std::string> formatResult(const std::vector<ProgramElement>& finalResult);
 };
 
 

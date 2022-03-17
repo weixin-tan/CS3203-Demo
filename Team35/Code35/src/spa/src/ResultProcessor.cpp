@@ -45,8 +45,8 @@ std::vector<ProgramElement> ResultProcessor::processResults(std::vector<Group> g
     std::vector<std::vector<ProgramElement>> body = table.body;
     //2 until last
     for (Result result : results) {  //for each result in the results list
-        if(result.getResultType()==ResultType::SuchThatClause || result.getResultType()==ResultType::WithClause ||
-                result.getResultType()==ResultType::PatternClause){
+        if(result.getResultType()==ResultType::SUCH_THAT_CLAUSE || result.getResultType() == ResultType::WITH_CLAUSE ||
+                result.getResultType()==ResultType::PATTERN_CLAUSE){
             //case where invalid
             if(!result.getValid()){
                 std::vector<ProgramElement> empty = {};

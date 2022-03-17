@@ -1,11 +1,11 @@
 #include "Group.h"
 
 Group::Group() {
-  Group::results = {};
+    Group::results = {};
 }
 
 void Group::setGroup(std::vector<Result> r) {
-  Group::results = r;
+    Group::results = r;
 }
 
 std::vector<Result> Group::getGroup() {

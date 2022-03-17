@@ -2,11 +2,11 @@
 #include "Type.h"
 
 const std::unordered_map<ResultType, std::string> Type::resultTypeToStringMap = {
-  {ResultType::NoClause, "NoClause"},
-  {ResultType::SuchThatClause, "SuchThatClause"},
-  {ResultType::PatternClause, "PatternClause"},
-  {ResultType::WithClause, "WithClause"},
-  {ResultType::NullClause, "NullClause"}
+  {ResultType::NO_CLAUSE,        "NoClause"},
+  {ResultType::SUCH_THAT_CLAUSE, "SuchThatClause"},
+  {ResultType::PATTERN_CLAUSE,   "PatternClause"},
+  {ResultType::WITH_CLAUSE,      "WithClause"},
+  {ResultType::NULL_CLAUSE, "NullClause"}
 };
 
 std::string Type::entityTypeToString(EntityType e){

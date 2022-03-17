@@ -51,11 +51,11 @@ enum class EntityAttributeType{
 };
 
 enum class ResultType{
-  NoClause,
-  SuchThatClause,
-  PatternClause,
-  WithClause,
-  NullClause
+  NO_CLAUSE,
+  SUCH_THAT_CLAUSE,
+  PATTERN_CLAUSE,
+  WITH_CLAUSE,
+  NULL_CLAUSE
 };
 
 class Type{

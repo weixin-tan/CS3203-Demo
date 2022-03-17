@@ -4,59 +4,41 @@
 #include "QueryRegex.h"
 
 const std::unordered_map<RelationshipType, PkbRelationshipType> QpsTypeToPkbTypeConvertor::qpsRelToPkbRelMap = {
-  {RelationshipType::Modifies, PkbRelationshipType::kModifies},
-  {RelationshipType::Uses, PkbRelationshipType::kUses},
-  {RelationshipType::Follows, PkbRelationshipType::kFollows},
-  {RelationshipType::FollowsT, PkbRelationshipType::kFollowsT},
-  {RelationshipType::Parent, PkbRelationshipType::kParent},
-  {RelationshipType::ParentT, PkbRelationshipType::kParentT},
-  {RelationshipType::Calls, PkbRelationshipType::kCalls},
-  {RelationshipType::CallsT, PkbRelationshipType::kCallsT},
-  {RelationshipType::Next, PkbRelationshipType::kNext},
-  {RelationshipType::NextT, PkbRelationshipType::kNextT},
-  {RelationshipType::Affects, PkbRelationshipType::kAffects},
-  {RelationshipType::AffectsT, PkbRelationshipType::kAffectsT}
+    {RelationshipType::Modifies, PkbRelationshipType::MODIFIES},
+    {RelationshipType::Uses, PkbRelationshipType::USES},
+    {RelationshipType::Follows, PkbRelationshipType::FOLLOWS},
+    {RelationshipType::FollowsT, PkbRelationshipType::FOLLOWS_T},
+    {RelationshipType::Parent, PkbRelationshipType::PARENT},
+    {RelationshipType::ParentT, PkbRelationshipType::PARENT_T},
+    {RelationshipType::Calls, PkbRelationshipType::CALLS},
+    {RelationshipType::CallsT, PkbRelationshipType::CALLS_T},
+    {RelationshipType::Next, PkbRelationshipType::NEXT},
+    {RelationshipType::NextT, PkbRelationshipType::NEXT_T},
+    {RelationshipType::Affects, PkbRelationshipType::AFFECTS},
+    {RelationshipType::AffectsT, PkbRelationshipType::AFFECTS_T}
 };
 
 const std::unordered_map<EntityType, ElementType> QpsTypeToPkbTypeConvertor::entityToElementMap = {
-  {EntityType::Statement, ElementType::kStatement},
-  {EntityType::Assignment, ElementType::kAssignment},
-  {EntityType::Variable, ElementType::kVariable},
-  {EntityType::Constant, ElementType::kConstant},
-  {EntityType::If, ElementType::kIf},
-  {EntityType::While, ElementType::kWhile},
-  {EntityType::Procedure, ElementType::kProcedure},
-  {EntityType::Read, ElementType::kRead},
-  {EntityType::Print, ElementType::kPrint},
-  {EntityType::Call, ElementType::kCall}
+    {EntityType::Statement, ElementType::STATEMENT},
+    {EntityType::Assignment, ElementType::ASSIGNMENT},
+    {EntityType::Variable, ElementType::VARIABLE},
+    {EntityType::Constant, ElementType::CONSTANT},
+    {EntityType::If, ElementType::IF},
+    {EntityType::While, ElementType::WHILE},
+    {EntityType::Procedure, ElementType::PROCEDURE},
+    {EntityType::Read, ElementType::READ},
+    {EntityType::Print, ElementType::PRINT},
+    {EntityType::Call, ElementType::CALL}
 };
 
 QpsTypeToPkbTypeConvertor::QpsTypeToPkbTypeConvertor() = default;
 
 PkbRelationshipType QpsTypeToPkbTypeConvertor::convertToPkbRelType(RelationshipType t) {
-  auto iter = QpsTypeToPkbTypeConvertor::qpsRelToPkbRelMap.find(t);
-  return iter->second;
+    auto iter = QpsTypeToPkbTypeConvertor::qpsRelToPkbRelMap.find(t);
+    return iter->second;
 }
 
 ElementType QpsTypeToPkbTypeConvertor::convertToPkbElement(EntityType e) {
-  auto iter = QpsTypeToPkbTypeConvertor::entityToElementMap.find(e);
-  return iter->second;
-}
-
-
-ProgramElement QpsTypeToPkbTypeConvertor::fixedEntityConverter(const Entity &e) {
-  switch (e.eType) {
-    case EntityType::FixedString:
-      return ProgramElement::createVariable(e.name);
-    case EntityType::FixedInteger:
-      return ProgramElement::createStatement(ElementType::kStatement, std::stoi(e.name));
-    case EntityType::FixedStringWithinWildcard:
-      if (isInteger(e.name)) {
-        return ProgramElement::createConstant(e.name);
-      } else {
-        return ProgramElement::createVariable(e.name);
-      }
-    default:
-      assert(false);
-  }
+    auto iter = QpsTypeToPkbTypeConvertor::entityToElementMap.find(e);
+    return iter->second;
 }
