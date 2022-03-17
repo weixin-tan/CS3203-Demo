@@ -1,8 +1,8 @@
 #include <regex>
 #include <unordered_map>
 
-#include "Entity.h"
-#include "QueryRegex.h"
+#include "QPS/Entity.h"
+#include "QPS/QueryRegex.h"
 #include "catch.hpp"
 
 using namespace std;

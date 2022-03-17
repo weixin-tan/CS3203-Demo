@@ -16,5 +16,4 @@ public:
 
 };
 
-
 #endif //SPA_GROUP_H

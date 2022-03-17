@@ -26,7 +26,7 @@ Result PatternHandler::handlePattern(const RelationshipRef& relRef) {
         result.setOneSynSet(oneSynSet);
     } else {
         twoSynSet = handleLeftVariable(left, right, patternType);
-        result.setTwoSynEntities(std::pair<Entity, Entity> (patternType, left));
+        result.setTwoSynEntities(std::pair<Entity, Entity>(patternType, left));
         result.setTwoSynSet(twoSynSet);
     }
 
@@ -43,7 +43,7 @@ Result PatternHandler::handlePattern(const RelationshipRef& relRef) {
 std::set<ProgramElement> PatternHandler::handleLeftWildcard(Entity right, Entity patternType) {
     ElementType patternElem = QpsTypeToPkbTypeConvertor::convertToPkbElement(patternType.eType);
     if (patternElem == ElementType::IF || patternElem == ElementType::WHILE ||
-       (patternElem == ElementType::ASSIGNMENT && right.eType == EntityType::WILDCARD)) {
+            (patternElem == ElementType::ASSIGNMENT && right.eType == EntityType::WILDCARD)) {
         return pg->getEntity(patternElem);
     } else if (right.eType == EntityType::FIXED_STRING) {
         Expr rhsPattern = ExpressionProcessor::stringToExpr(right.name);
@@ -64,7 +64,7 @@ std::set<ProgramElement> PatternHandler::handleLeftFixed(Entity left, Entity rig
             return pg->getIfGivenVariable(ProgramElement::createVariable(left.name));
         } else if (patternElem == ElementType::WHILE) {
             return pg->getWhileGivenVariable(ProgramElement::createVariable(left.name));
-        } else if (patternElem == ElementType::ASSIGNMENT){
+        } else if (patternElem == ElementType::ASSIGNMENT) {
             return pg->getLeftSide(PkbRelationshipType::MODIFIES,
                                    ProgramElement::createVariable(left.name),
                                    ElementType::ASSIGNMENT);

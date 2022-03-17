@@ -4,21 +4,19 @@
 
 ResultProcessor::ResultProcessor() = default;
 
-
 //helper functions
-int ResultProcessor::getIndexEntity(std::vector<Entity> v, Entity K){
+int ResultProcessor::getIndexEntity(std::vector<Entity> v, Entity K) {
     auto it = find(v.begin(), v.end(), K);
     // IF element was found
-    if (it != v.end()){
+    if (it != v.end()) {
         int index = it - v.begin();
         return index;
-    }
-    else {
+    } else {
         return -1;
     }
 }
 
-std::vector<ProgramElement> ResultProcessor::processResults(std::vector<Group> groups){
+std::vector<ProgramElement> ResultProcessor::processResults(std::vector<Group> groups) {
     std::vector<Result> results;
 
     Group group1 = groups[0];
@@ -34,9 +32,9 @@ std::vector<ProgramElement> ResultProcessor::processResults(std::vector<Group> g
     Result firstResult = results[0];
     results.erase(results.begin());
     //check if valid
-    if(firstResult.getValid()){
+    if (firstResult.getValid()) {
         //pass
-    } else{
+    } else {
         std::vector<ProgramElement> empty = {};
         return empty;
     }
@@ -45,35 +43,37 @@ std::vector<ProgramElement> ResultProcessor::processResults(std::vector<Group> g
     std::vector<std::vector<ProgramElement>> body = table.body;
     //2 until last
     for (Result result : results) {  //for each result in the results list
-        if(result.getResultType()==ResultType::SUCH_THAT_CLAUSE || result.getResultType() == ResultType::WITH_CLAUSE ||
-                result.getResultType()==ResultType::PATTERN_CLAUSE){
+        if (result.getResultType() == ResultType::SUCH_THAT_CLAUSE || result.getResultType() == ResultType::WITH_CLAUSE
+                ||
+                        result.getResultType() == ResultType::PATTERN_CLAUSE) {
             //case where invalid
-            if(!result.getValid()){
+            if (!result.getValid()) {
                 std::vector<ProgramElement> empty = {};
                 return empty;
                 //case where oneSyn and twoSyn are empty
-            }else if(result.getOneSynSet().empty() && result.getTwoSynSet().empty()) {
+            } else if (result.getOneSynSet().empty() && result.getTwoSynSet().empty()) {
                 continue;
-            } else if(!table.isTableEmpty()){
+            } else if (!table.isTableEmpty()) {
                 //handle oneSyn set
-                if(!result.getOneSynSet().empty()){
+                if (!result.getOneSynSet().empty()) {
                     std::set<ProgramElement> programElementsSet = result.getOneSynSet();
-                    std::vector<ProgramElement> programElementVector(programElementsSet.begin(), programElementsSet.end());
+                    std::vector<ProgramElement>
+                            programElementVector(programElementsSet.begin(), programElementsSet.end());
 
                     int pos = getIndexEntity(header, result.getOneSynEntity());
 
-                    if(std::find(header.begin(), header.end(), result.getOneSynEntity())
-                       != header.end()){
+                    if (std::find(header.begin(), header.end(), result.getOneSynEntity())
+                            != header.end()) {
                         //header contains entity requiring elimination
                         table.eliminate1syn(programElementVector, pos);
                     } else {
                         //header does not contain entity requiring cross product
                         table.crossProduct1syn(programElementVector);
                     }
-                //handle 2syn set
-                }else if(!result.getTwoSynSet().empty()){
+                    //handle 2syn set
+                } else if (!result.getTwoSynSet().empty()) {
                     std::pair<Entity, Entity> programEntityPair = result.getTwoSynEntities();
-                    std::set<std::pair<ProgramElement,ProgramElement>> programElementPair = result.getTwoSynSet();
+                    std::set<std::pair<ProgramElement, ProgramElement>> programElementPair = result.getTwoSynSet();
                     std::vector<Entity> programEntityVector;
                     programEntityVector.push_back(programEntityPair.first);
                     programEntityVector.push_back(programEntityPair.second);
@@ -88,23 +88,22 @@ std::vector<ProgramElement> ResultProcessor::processResults(std::vector<Group> g
                     int pos2 = getIndexEntity(header, programEntityPair.second);
 
                     //both are in
-                    if(std::find(header.begin(), header.end(), programEntityPair.first) != header.end() &&
-                       std::find(header.begin(), header.end(), programEntityPair.second) != header.end()){
+                    if (std::find(header.begin(), header.end(), programEntityPair.first) != header.end() &&
+                            std::find(header.begin(), header.end(), programEntityPair.second) != header.end()) {
                         table.eliminate2synBoth(left, right, pos1, pos2);
                     }
                         //first one is in
-                    else if(std::find(header.begin(), header.end(), programEntityPair.first) == header.end() &&
-                            std::find(header.begin(), header.end(), programEntityPair.second) != header.end()){
+                    else if (std::find(header.begin(), header.end(), programEntityPair.first) == header.end() &&
+                            std::find(header.begin(), header.end(), programEntityPair.second) != header.end()) {
                         //eliminate 1st cross product 2nd
                         table.eliminate2synOne(left, right, pos1, pos2);
                     }
                         //2nd one is in
-                    else if(std::find(header.begin(), header.end(), programEntityPair.first) != header.end() &&
-                            std::find(header.begin(), header.end(), programEntityPair.second) == header.end()){
+                    else if (std::find(header.begin(), header.end(), programEntityPair.first) != header.end() &&
+                            std::find(header.begin(), header.end(), programEntityPair.second) == header.end()) {
                         //eliminate 2nd cross product first
                         table.eliminate2synOne(right, left, pos1, pos2);
-                    }
-                    else {
+                    } else {
                         //cross product
                         table.crossProduct2syn(left, right);
                     }
@@ -112,7 +111,7 @@ std::vector<ProgramElement> ResultProcessor::processResults(std::vector<Group> g
 
             } else {
                 //table is empty so can add straight to it
-                if(!result.getOneSynSet().empty()){
+                if (!result.getOneSynSet().empty()) {
                     //append 1syn
                     table.inputElement(result.getOneSynEntity());
                     //convert the set into vector
@@ -121,13 +120,13 @@ std::vector<ProgramElement> ResultProcessor::processResults(std::vector<Group> g
                         bodyVector.push_back(e);
                     }
                     table.inputProgramElements(bodyVector);
-                }else{
+                } else {
                     //append 2syn
                     //push entity head one at a time
                     table.inputElement(result.getTwoSynEntities().first);
                     table.inputElement(result.getTwoSynEntities().second);
                     //push into body
-                    std::set<std::pair<ProgramElement,ProgramElement>> programElementPair = result.getTwoSynSet();
+                    std::set<std::pair<ProgramElement, ProgramElement>> programElementPair = result.getTwoSynSet();
                     std::vector<ProgramElement> left;
                     std::vector<ProgramElement> right;
                     for (std::pair<ProgramElement, ProgramElement> p : programElementPair) {
@@ -143,8 +142,8 @@ std::vector<ProgramElement> ResultProcessor::processResults(std::vector<Group> g
 
     Entity entityToReturn = firstResult.getOneSynEntity();
 
-    for (int i = 0 ; i < table.getHeader().size(); i++){
-        if(entityToReturn == table.getHeader()[i]){
+    for (int i = 0; i < table.getHeader().size(); i++) {
+        if (entityToReturn == table.getHeader()[i]) {
             std::vector<ProgramElement> peToReturn = table.getBody()[i];
             return peToReturn;
         }

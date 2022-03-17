@@ -5,11 +5,9 @@
 #ifndef SPA_TABLE_H
 #define SPA_TABLE_H
 
-
 #include <vector>
-#include "QPS/Entity.h"
-#include "ProgramElement.h"
-
+#include "Entity.h"
+#include "../PKB/ProgramElement.h"
 
 class Table {
 public:
@@ -33,6 +31,5 @@ public:
     void crossProduct2syn(std::vector<ProgramElement> left, std::vector<ProgramElement> right);
 
 };
-
 
 #endif //SPA_TABLE_H

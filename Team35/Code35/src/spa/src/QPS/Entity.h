@@ -8,19 +8,18 @@
 
 class Entity {
 public:
-  Entity();
-  Entity(EntityType eType, std::string name);
-  Entity(EntityType eType, std::string name, EntityAttributeType aType);
+    Entity();
+    Entity(EntityType eType, std::string name);
+    Entity(EntityType eType, std::string name, EntityAttributeType aType);
 
-  EntityType eType;
-  EntityAttributeType aType;
-  std::string name;
+    EntityType eType;
+    EntityAttributeType aType;
+    std::string name;
 
-  std::string toString();
-  bool equals(const Entity & e1);
-  bool operator==(const Entity & e1) const;
-  bool operator!=(const Entity & e1) const;
+    std::string toString();
+    bool equals(const Entity& e1);
+    bool operator==(const Entity& e1) const;
+    bool operator!=(const Entity& e1) const;
 };
-
 
 #endif //SPA_ENTITY_H

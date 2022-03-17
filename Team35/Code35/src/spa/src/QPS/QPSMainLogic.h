@@ -18,7 +18,7 @@ public:
 private:
     explicit QPSMainLogic(PkbGetter* pg); // Make constructor private
     QPSMainLogic(const QPSMainLogic&); // Make copy constructor private
-    QPSMainLogic& operator = (const QPSMainLogic&); // Make assignment operator private
+    QPSMainLogic& operator=(const QPSMainLogic&); // Make assignment operator private
     static QPSMainLogic* instance; // The instance of QPSMainLogic will be stored here
     QueryProcessor* queryProcessor;
     QPSHandler* qpsHandler;
@@ -32,6 +32,5 @@ private:
     std::vector<ProgramElement> callProcessor(std::vector<Group> groups);
     std::list<std::string> callFormatter(std::vector<ProgramElement> result);
 };
-
 
 #endif //SPA_QPSMAINLOGIC_H

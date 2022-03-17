@@ -60,11 +60,11 @@ std::set<std::pair<ProgramElement, ProgramElement>> Result::getTwoSynSet() {
     return Result::twoSynSet;
 }
 
-bool Result::operator==(const Result &r1) const {
+bool Result::operator==(const Result& r1) const {
     return type == r1.type &&
-           valid == r1.valid &&
-           oneSynEntity == r1.oneSynEntity &&
-           oneSynSet == r1.oneSynSet &&
-           twoSynEntities == r1.twoSynEntities &&
-           twoSynSet == r1.twoSynSet;
+            valid == r1.valid &&
+            oneSynEntity == r1.oneSynEntity &&
+            oneSynSet == r1.oneSynSet &&
+            twoSynEntities == r1.twoSynEntities &&
+            twoSynSet == r1.twoSynSet;
 }

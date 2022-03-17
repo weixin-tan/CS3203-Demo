@@ -1,7 +1,7 @@
 #ifndef SPA_TEAM35_CODE35_SRC_SPA_SRC_PKB_PROGRAMELEMENT_H_
 #define SPA_TEAM35_CODE35_SRC_SPA_SRC_PKB_PROGRAMELEMENT_H_
 
-#include "../Type.h"
+#include "../QPS/Type.h"
 #include "ElementType.h"
 #include <string>
 

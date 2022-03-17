@@ -1,9 +1,9 @@
 #ifndef SPA_PATTERNHANDLER_H
 #define SPA_PATTERNHANDLER_H
 
-#include "ExpressionProcessor.h"
-#include "PkbGetter.h"
-#include "QpsTypeToPkbTypeConvertor.h"
+#include "../ExpressionProcessor.h"
+#include "../PKB/PkbGetter.h"
+#include "../QpsTypeToPkbTypeConvertor.h"
 #include "RelationshipRef.h"
 #include "Result.h"
 
@@ -21,6 +21,5 @@ public:
     Result handlePattern(const RelationshipRef& relRef);
 
 };
-
 
 #endif //SPA_PATTERNHANDLER_H

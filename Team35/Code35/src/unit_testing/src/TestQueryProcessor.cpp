@@ -3,10 +3,10 @@
 #include <unordered_map>
 #include <iostream>
 
-#include "Clause.h"
-#include "QueryRegex.h"
+#include "QPS/Clause.h"
+#include "QPS/QueryRegex.h"
 #include "catch.hpp"
-#include "QueryProcessor.h"
+#include "QPS/QueryProcessor.h"
 
 using namespace std;
 

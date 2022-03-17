@@ -4,8 +4,8 @@
 #include <utility>
 #include <vector>
 
-#include "QPS/Entity.h"
-#include "PKB/PkbGetter.h"
+#include "Entity.h"
+#include "../PKB/PkbGetter.h"
 #include "RelationshipRef.h"
 #include "Result.h"
 
@@ -27,6 +27,5 @@ public:
     Result handleSuchThat(const RelationshipRef& relRef);
 
 };
-
 
 #endif //SPA_SUCHTHATHANDLER_H

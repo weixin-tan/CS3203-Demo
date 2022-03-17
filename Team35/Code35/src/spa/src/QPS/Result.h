@@ -4,7 +4,7 @@
 #include <set>
 #include <utility>
 
-#include "ProgramElement.h"
+#include "../PKB/ProgramElement.h"
 #include "RelationshipRef.h"
 
 class Result {

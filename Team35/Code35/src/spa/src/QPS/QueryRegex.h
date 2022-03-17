@@ -4,7 +4,7 @@
 #include <iostream>
 #include <regex>
 #include <unordered_map>
-#include "QPS/Entity.h"
+#include "Entity.h"
 #include "RelationshipRef.h"
 
 bool firstWordChecker(const std::string& s, const std::string& targetWord);
@@ -38,7 +38,7 @@ std::string extractStringFromWildCard(const std::string& s);
 std::string stripString(std::string s);
 
 std::string removeSelect(const std::string& s);
-std::string removeSuchThat(const std::string &s);
+std::string removeSuchThat(const std::string& s);
 std::string removePattern(const std::string& s);
 std::string removeWith(const std::string& s);
 
@@ -54,8 +54,10 @@ std::vector<std::string> splitStringBySpaces(const std::string& s);
 
 bool existVBrackets(const std::string& s);
 std::string removeVBrackets(const std::string& s);
-bool checkAndCommandWord(const std::vector<std::string>& clausesList, bool (*existCommandWordFunction)(const std::string &s));
-void removeAndCommandWord(std::vector<std::string>* clausesList, std::string (*removeCommandWordFunction)(const std::string &s));
+bool checkAndCommandWord(const std::vector<std::string>& clausesList,
+                         bool (* existCommandWordFunction)(const std::string& s));
+void removeAndCommandWord(std::vector<std::string>* clausesList,
+                          std::string (* removeCommandWordFunction)(const std::string& s));
 bool checkAndSuchThat(const std::vector<std::string>& clausesList);
 void removeAndSuchThat(std::vector<std::string>* clausesList);
 bool checkAndPattern(const std::vector<std::string>& clausesList);
@@ -89,7 +91,5 @@ bool checkPattern(const RelationshipRef& r);
 bool checkWith(const RelationshipRef& r);
 bool checkWithEntity(const Entity& e);
 bool checkVariableToSelect(const Entity& e);
-
-
 
 #endif //SPA_SRC_SPA_SRC_QUERYREGEX_H_

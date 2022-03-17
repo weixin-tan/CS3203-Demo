@@ -13,5 +13,4 @@ public:
     std::list<std::string> formatResult(const std::vector<ProgramElement>& finalResult);
 };
 
-
 #endif //SPA_RESULTFORMATTER_H

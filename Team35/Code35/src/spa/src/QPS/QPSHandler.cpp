@@ -1,5 +1,4 @@
 #include "QPSHandler.h"
-#include "QpsTypeToPkbTypeConvertor.h"
 
 QPSHandler::QPSHandler(PkbGetter* pg) {
     QPSHandler::pg = pg;
@@ -8,7 +7,7 @@ QPSHandler::QPSHandler(PkbGetter* pg) {
     QPSHandler::withHandler = new WithHandler(pg);
 }
 
-std::vector<Result> QPSHandler::processClause(const std::vector<Clause> &clauses) const {
+std::vector<Result> QPSHandler::processClause(const std::vector<Clause>& clauses) const {
     std::vector<Result> results;
 
     Clause c = clauses[0];

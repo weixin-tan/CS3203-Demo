@@ -1,8 +1,8 @@
 #include "catch.hpp"
-#include "Optimiser.h"
+#include "QPS/Optimiser.h"
 #include "PKB.h"
-#include "QueryProcessor.h"
-#include "QPSMainLogic.h"
+#include "QPS/QueryProcessor.h"
+#include "QPS/QPSMainLogic.h"
 #include "QpsTypeToPkbTypeConvertor.h"
 
 PKB pkb = PKB();
