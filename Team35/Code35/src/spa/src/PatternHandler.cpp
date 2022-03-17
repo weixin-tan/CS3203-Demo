@@ -31,7 +31,7 @@ Result PatternHandler::handlePattern(const Entity& entityToGet, const Relationsh
 
 Result PatternHandler::handleDoubleWildcard() {
   Result result;
-  std::set<ProgramElement> resultElements = pg->getEntity(ElementType::kAssignment);
+  std::set<ProgramElement> resultElements = pg->getEntity(ElementType::ASSIGNMENT);
   result.setPatternElements(resultElements);
   return result;
 }
@@ -40,7 +40,7 @@ Result PatternHandler::handleLeftWildcard(const Entity& rightEntity) {
   assert(rightEntity.eType == EntityType::FixedStringWithinWildcard); //Iteration 1
   Result result;
   ProgramElement rightElement = EntityToElementConverter::fixedEntityConverter(rightEntity);
-  std::set<ProgramElement> resultElements = pg->getLeftSide(PkbRelationshipType::kUses, rightElement, ElementType::kAssignment);
+  std::set<ProgramElement> resultElements = pg->getLeftSide(PkbRelationshipType::USES, rightElement, ElementType::ASSIGNMENT);
   result.setPatternElements(resultElements);
   return result;
 }
@@ -51,12 +51,12 @@ Result PatternHandler::handleRightWildcard(const Entity& leftEntity) {
   std::set<std::pair<ProgramElement,ProgramElement>> entRefResultElements;
   if (leftEntity.eType == EntityType::FixedString) {
     ProgramElement leftElement = EntityToElementConverter::fixedEntityConverter(leftEntity);
-    resultElements = pg->getLeftSide(PkbRelationshipType::kModifies, leftElement, ElementType::kAssignment);
+    resultElements = pg->getLeftSide(PkbRelationshipType::MODIFIES, leftElement, ElementType::ASSIGNMENT);
   } else if (leftEntity.eType == EntityType::Variable) {
     result.setAssignEntRef(leftEntity);
-    std::set<ProgramElement> entRefElements = pg->getEntity(ElementType::kVariable);
+    std::set<ProgramElement> entRefElements = pg->getEntity(ElementType::VARIABLE);
     for (const auto& e : entRefElements) {
-      std::set<ProgramElement> assign = pg->getLeftSide(PkbRelationshipType::kModifies, e, ElementType::kAssignment);
+      std::set<ProgramElement> assign = pg->getLeftSide(PkbRelationshipType::MODIFIES, e, ElementType::ASSIGNMENT);
       for (const auto& a : assign) {
         std::pair <ProgramElement, ProgramElement> combination (a, e);
         entRefResultElements.insert(combination);

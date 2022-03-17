@@ -3,22 +3,19 @@
 
 #include "DB.h"
 #include "ProgramElement.h"
-#include "TemplateGetter.h"
+#include "RelationshipGetter.h"
 #include <set>
 
-class UsesGetter : TemplateGetter {
+class UsesGetter : public RelationshipGetter {
 private:
     DB* db;
-
-private:
-    std::set<int> getUsesStmtNosGivenConstant(const std::string& c) const;
 
 public:
     explicit UsesGetter(DB* db);
 
-    bool isUses(const ProgramElement& leftSide, const ProgramElement& rightSide) const;
-    std::set<ProgramElement> getLeftUses(const ProgramElement& rightSide, const ElementType& typeToGet) const;
-    std::set<ProgramElement> getRightUses(const ProgramElement& leftSide, const ElementType& typeToGet) const;
+    bool isRelationship(const ProgramElement& leftSide, const ProgramElement& rightSide) override;
+    std::set<ProgramElement> getLeftSide(const ProgramElement& rightSide, const ElementType& typeToGet) override;
+    std::set<ProgramElement> getRightSide(const ProgramElement& leftSide, const ElementType& typeToGet) override;
 };
 
 #endif //SPA_TEAM35_CODE35_SRC_SPA_SRC_PKB_USESGETTER_H_

@@ -4,12 +4,12 @@
 #include "ElementType.h"
 
 const std::map<StatementType, ElementType> PkbSetter::spTypeToElementTypeTable = {
-        {StatementType::ASSIGNMENT_STMT, ElementType::kAssignment},
-        {StatementType::PRINT_STMT,  ElementType::kPrint},
-        {StatementType::CALL_STMT,   ElementType::kCall},
-        {StatementType::IF_STMT,     ElementType::kIf},
-        {StatementType::WHILE_STMT,  ElementType::kWhile},
-        {StatementType::READ_STMT,   ElementType::kRead}
+        {StatementType::ASSIGNMENT_STMT, ElementType::ASSIGNMENT},
+        {StatementType::PRINT_STMT,  ElementType::PRINT},
+        {StatementType::CALL_STMT,   ElementType::CALL},
+        {StatementType::IF_STMT,     ElementType::IF},
+        {StatementType::WHILE_STMT,  ElementType::WHILE},
+        {StatementType::READ_STMT,   ElementType::READ}
 };
 
 PkbSetter::PkbSetter(DB* db) : db(db), designExtractor(db), pkbValidator(db) {}
@@ -40,11 +40,11 @@ void PkbSetter::handleExpression(const ParsedStatement& statement) {
 ProgramElement PkbSetter::convertParsedStatement(const ParsedStatement& statement) {
     ElementType elementType = spTypeToElementTypeTable.at(statement.statementType);
     std::string procOrVarName = ProgramElement::nullStringValue;
-    if (elementType == ElementType::kRead)
+    if (elementType == ElementType::READ)
         procOrVarName = *statement.varModified.begin();
-    if (elementType == ElementType::kPrint)
+    if (elementType == ElementType::PRINT)
         procOrVarName = *statement.varUsed.begin();
-    if (elementType == ElementType::kCall)
+    if (elementType == ElementType::CALL)
         procOrVarName = statement.procedureCalled;
     return ProgramElement::createStatement(elementType, statement.stmtNo, procOrVarName);
 }

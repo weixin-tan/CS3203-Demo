@@ -3,19 +3,19 @@
 
 #include "DB.h"
 #include "ProgramElement.h"
-#include "TemplateGetter.h"
+#include "RelationshipGetter.h"
 #include <set>
 
-class NextGetter : TemplateGetter {
+class NextGetter : public RelationshipGetter {
 private:
     DB* db;
 
 public:
     explicit NextGetter(DB* db);
 
-    bool isNext(const ProgramElement& leftSide, const ProgramElement& rightSide) const;
-    std::set<ProgramElement> getLeftNext(const ProgramElement& rightSide, const ElementType& typeToGet) const;
-    std::set<ProgramElement> getRightNext(const ProgramElement& leftSide, const ElementType& typeToGet) const;
+    bool isRelationship(const ProgramElement& leftSide, const ProgramElement& rightSide) override;
+    std::set<ProgramElement> getLeftSide(const ProgramElement& rightSide, const ElementType& typeToGet) override;
+    std::set<ProgramElement> getRightSide(const ProgramElement& leftSide, const ElementType& typeToGet) override;
 };
 
 #endif //SPA_TEAM35_CODE35_SRC_SPA_SRC_PKB_NEXTGETTER_H_
