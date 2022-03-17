@@ -4,7 +4,7 @@
 #include <iostream>
 #include <regex>
 #include <unordered_map>
-#include "Entity.h"
+#include "QPS/Entity.h"
 #include "RelationshipRef.h"
 
 bool firstWordChecker(const std::string& s, const std::string& targetWord);

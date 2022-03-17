@@ -4,7 +4,7 @@
 #include <cassert>
 #include <utility>
 #include "Type.h"
-#include "Entity.h"
+#include "QPS/Entity.h"
 
 class RelationshipRef{
 public:

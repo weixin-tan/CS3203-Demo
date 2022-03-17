@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "Clause.h"
+#include "QPS/Clause.h"
 #include "QueryRegex.h"
 
 class QueryProcessor {

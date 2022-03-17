@@ -3,7 +3,7 @@
 //
 
 #include "Table.h"
-#include "Entity.h"
+#include "QPS/Entity.h"
 #include "ProgramElement.h"
 
 Table::Table() {

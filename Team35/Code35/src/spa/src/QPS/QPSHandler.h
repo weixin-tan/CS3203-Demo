@@ -1,7 +1,7 @@
 #ifndef SPA_QPSHANDLER_H
 #define SPA_QPSHANDLER_H
 
-#include "Clause.h"
+#include "QPS/Clause.h"
 #include "PatternHandler.h"
 #include "PkbGetter.h"
 #include "Result.h"

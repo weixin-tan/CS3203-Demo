@@ -4,7 +4,7 @@
 #include <utility>
 #include <vector>
 
-#include "Entity.h"
+#include "QPS/Entity.h"
 #include "PKB/PkbGetter.h"
 #include "RelationshipRef.h"
 #include "Result.h"
