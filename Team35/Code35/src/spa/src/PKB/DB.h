@@ -41,6 +41,12 @@ public:
     std::map<int, std::set<int>> nextTableR;
     std::map<int, Expr> exprTable;
 
+    // table for caching, to be cleared between queries
+    std::map<int, std::set<int>> nextTTable;
+    std::map<int, std::set<int>> nextTTableR;
+    std::set<int> computedNextTSrc;
+    std::set<int> computedNextTRSrc;
+
     // entity tables
     std::set<std::string> variables;
     std::set<std::string> procedures;
@@ -48,6 +54,7 @@ public:
 
 public:
     DB();
+    void clearCache();
 };
 
 

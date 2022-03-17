@@ -14,4 +14,5 @@ public:
   PKB();
   PkbGetter* getGetter();
   PkbSetter* getSetter();
+  void clearCache();
 };

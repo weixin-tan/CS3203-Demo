@@ -10,3 +10,7 @@ PkbGetter* PKB::getGetter() {
 PkbSetter* PKB::getSetter() {
   return &pkbSetter;
 }
+
+void PKB::clearCache() {
+    db.clearCache();
+}
