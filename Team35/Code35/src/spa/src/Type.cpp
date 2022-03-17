@@ -10,7 +10,7 @@ const std::unordered_map<ResultType, std::string> Type::resultTypeToStringMap = 
 };
 
 
-const std::unordered_map<EntityType, std::string> entityTypeToStringMap = {
+const std::unordered_map<EntityType, std::string> Type::entityTypeToStringMap = {
     {EntityType::STATEMENT, "STATEMENT"},
     {EntityType::ASSIGNMENT, "ASSIGNMENT"},
     {EntityType::VARIABLE, "VARIABLE"},
@@ -29,7 +29,7 @@ const std::unordered_map<EntityType, std::string> entityTypeToStringMap = {
     {EntityType::NULL_ENTITY, "NULL_ENTITY"}
 };
 
-const std::unordered_map<RelationshipType, std::string> relationshipTypeToStringMap = {
+const std::unordered_map<RelationshipType, std::string> Type::relationshipTypeToStringMap = {
     {RelationshipType::MODIFIES, "Modifies"},
     {RelationshipType::USES, "Uses"},
     {RelationshipType::PARENT, "Parent"},
@@ -47,7 +47,7 @@ const std::unordered_map<RelationshipType, std::string> relationshipTypeToString
     {RelationshipType::NULL_RELATIONSHIP, "NULL_ENTITY"}
 };
 
-const std::unordered_map<EntityAttributeType, std::string> attributeTypeToStringMap = {
+const std::unordered_map<EntityAttributeType, std::string> Type::attributeTypeToStringMap = {
     {EntityAttributeType::PROCNAME, "PROCNAME"},
     {EntityAttributeType::VARNAME, "VARNAME"},
     {EntityAttributeType::VALUE, "VALUE"},
