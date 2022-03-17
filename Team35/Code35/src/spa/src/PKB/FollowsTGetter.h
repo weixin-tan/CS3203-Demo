@@ -3,19 +3,19 @@
 
 #include "DB.h"
 #include "ProgramElement.h"
-#include "TemplateGetter.h"
+#include "RelationshipGetter.h"
 #include <set>
 
-class FollowsTGetter : TemplateGetter {
+class FollowsTGetter : public RelationshipGetter {
 private:
     DB* db;
 
 public:
     explicit FollowsTGetter(DB* db);
 
-    bool isFollowsT(const ProgramElement& leftSide, const ProgramElement& rightSide) const;
-    std::set<ProgramElement> getLeftFollowsT(const ProgramElement& rightSide, const ElementType& typeToGet) const;
-    std::set<ProgramElement> getRightFollowsT(const ProgramElement& leftSide, const ElementType& typeToGet) const;
+    bool isRelationship(const ProgramElement& leftSide, const ProgramElement& rightSide) override;
+    std::set<ProgramElement> getLeftSide(const ProgramElement& rightSide, const ElementType& typeToGet) override;
+    std::set<ProgramElement> getRightSide(const ProgramElement& leftSide, const ElementType& typeToGet) override;
 };
 
 

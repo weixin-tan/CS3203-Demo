@@ -2,17 +2,16 @@
 
 CallsTGetter::CallsTGetter(DB* db) : db(db) {}
 
-bool CallsTGetter::isCallsT(const ProgramElement& leftSide, const ProgramElement& rightSide) const {
-    if (!(leftSide.elementType == ElementType::kProcedure && rightSide.elementType == ElementType::kProcedure))
+bool CallsTGetter::isRelationship(const ProgramElement& leftSide, const ProgramElement& rightSide) {
+    if (!(leftSide.elementType == ElementType::PROCEDURE && rightSide.elementType == ElementType::PROCEDURE))
         throw std::invalid_argument("Wrong element type for isCallsT");
     auto callsT = db->callsTTable.find(leftSide.procName);
     return (callsT != db->callsTTable.end() && callsT->second.find(rightSide.procName) != callsT->second.end());
 }
 
-std::set<ProgramElement> CallsTGetter::getLeftCallsT(const ProgramElement& rightSide,
-                                                   const ElementType& typeToGet) const {
+std::set<ProgramElement> CallsTGetter::getLeftSide(const ProgramElement& rightSide, const ElementType& typeToGet) {
     std::set<ProgramElement> result;
-    if (!(typeToGet == ElementType::kProcedure && rightSide.elementType == ElementType::kProcedure))
+    if (!(typeToGet == ElementType::PROCEDURE && rightSide.elementType == ElementType::PROCEDURE))
         throw std::invalid_argument("Wrong element type for getLeftSide on CallsT");
     auto callerT = db->callsTTableR.find(rightSide.procName);
     if (callerT == db->callsTTableR.end()) return {};
@@ -21,10 +20,9 @@ std::set<ProgramElement> CallsTGetter::getLeftCallsT(const ProgramElement& right
     return result;
 }
 
-std::set<ProgramElement> CallsTGetter::getRightCallsT(const ProgramElement& leftSide,
-                                                    const ElementType& typeToGet) const {
+std::set<ProgramElement> CallsTGetter::getRightSide(const ProgramElement& leftSide, const ElementType& typeToGet) {
     std::set<ProgramElement> result;
-    if (!(leftSide.elementType == ElementType::kProcedure && typeToGet == ElementType::kProcedure))
+    if (!(leftSide.elementType == ElementType::PROCEDURE && typeToGet == ElementType::PROCEDURE))
         throw std::invalid_argument("Wrong element type for getRightSide on CallsT");
     auto callsT = db->callsTTable.find(leftSide.procName);
     if (callsT == db->callsTTable.end()) return {};

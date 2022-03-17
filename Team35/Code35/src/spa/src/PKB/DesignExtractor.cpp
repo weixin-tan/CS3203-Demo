@@ -64,13 +64,13 @@ void DesignExtractor::dfsNext(const int& originStmt, std::set<int>& visited, con
         q.pop();
         // Next is childStmtList
         ElementType stmtType = db->elementStmtTable.at(stmtNo).elementType;
-        if (stmtType == ElementType::kWhile || stmtType == ElementType::kIf)
+        if (stmtType == ElementType::WHILE || stmtType == ElementType::IF)
             for (const int& listHeadStmtNo : stmtListHead.at(stmtNo))
                 nextTable[stmtNo].insert(listHeadStmtNo);
-        if (stmtType == ElementType::kWhile)
+        if (stmtType == ElementType::WHILE)
             for (const int& listHeadStmtNo : stmtListHead.at(stmtNo))
                 q.push({listHeadStmtNo, stmtNo});
-        if (stmtType == ElementType::kIf) {
+        if (stmtType == ElementType::IF) {
             auto followsStmtNo = db->followsTable.find(stmtNo);
             int newReturnStmtNo = ((followsStmtNo != db->followsTable.end()) ? *followsStmtNo->second.begin() : returnStmtNo);
             for (const int& listHeadStmtNo : stmtListHead.at(stmtNo))
@@ -78,7 +78,7 @@ void DesignExtractor::dfsNext(const int& originStmt, std::set<int>& visited, con
         }
 
         auto followsStmtNo = db->followsTable.find(stmtNo);
-        if (stmtType != ElementType::kIf) {
+        if (stmtType != ElementType::IF) {
             if (followsStmtNo != db->followsTable.end()) {
                 nextTable[stmtNo].insert(*followsStmtNo->second.begin());
             } else if (returnStmtNo != nullReturnStmt)

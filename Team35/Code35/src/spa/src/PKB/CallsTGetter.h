@@ -3,19 +3,19 @@
 
 #include "DB.h"
 #include "ProgramElement.h"
-#include "TemplateGetter.h"
+#include "RelationshipGetter.h"
 #include <set>
 
-class CallsTGetter : TemplateGetter {
+class CallsTGetter : public RelationshipGetter {
 private:
     DB* db;
 
 public:
     explicit CallsTGetter(DB* db);
 
-    bool isCallsT(const ProgramElement& leftSide, const ProgramElement& rightSide) const;
-    std::set<ProgramElement> getLeftCallsT(const ProgramElement& rightSide, const ElementType& typeToGet) const;
-    std::set<ProgramElement> getRightCallsT(const ProgramElement& leftSide, const ElementType& typeToGet) const;
+    bool isRelationship(const ProgramElement& leftSide, const ProgramElement& rightSide) override;
+    std::set<ProgramElement> getLeftSide(const ProgramElement& rightSide, const ElementType& typeToGet) override;
+    std::set<ProgramElement> getRightSide(const ProgramElement& leftSide, const ElementType& typeToGet) override;
 };
 
 #endif //SPA_TEAM35_CODE35_SRC_SPA_SRC_PKB_CALLSTGETTER_H_

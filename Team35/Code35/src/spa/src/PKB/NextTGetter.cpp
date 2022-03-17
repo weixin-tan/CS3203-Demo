@@ -33,7 +33,7 @@ void NextTGetter::computeAndCacheNextTR(int src) {
     dfsNextT(src, db->computedNextTRSrc, db->nextTableR, db->nextTTableR);
 }
 
-bool NextTGetter::isNextT(const ProgramElement& leftSide, const ProgramElement& rightSide) {
+bool NextTGetter::isRelationship(const ProgramElement& leftSide, const ProgramElement& rightSide) {
     if (!(isStatementType(leftSide.elementType) && isStatementType(rightSide.elementType)))
         throw std::invalid_argument("Wrong element type for isNextT");
     computeAndCacheNextT(leftSide.stmtNo);
@@ -41,7 +41,7 @@ bool NextTGetter::isNextT(const ProgramElement& leftSide, const ProgramElement& 
     return (nextT != db->nextTTable.end() && nextT->second.find(rightSide.stmtNo) != nextT->second.end());
 }
 
-std::set<ProgramElement> NextTGetter::getLeftNextT(const ProgramElement& rightSide, const ElementType& typeToGet) {
+std::set<ProgramElement> NextTGetter::getLeftSide(const ProgramElement& rightSide, const ElementType& typeToGet) {
     std::set<ProgramElement> result;
     if(!(isStatementType(rightSide.elementType) && isStatementType(typeToGet)))
         throw std::invalid_argument("Wrong element type for getLeftSide on NextT");
@@ -49,11 +49,11 @@ std::set<ProgramElement> NextTGetter::getLeftNextT(const ProgramElement& rightSi
     auto previous = db->nextTTableR.find(rightSide.stmtNo);
     if (previous == db->nextTTableR.end()) return {};
     for (const int& previousStmtNo : previous->second)
-        TemplateGetter::insertStmtElement(result, db->elementStmtTable.at(previousStmtNo), typeToGet);
+        RelationshipGetter::insertStmtElement(result, db->elementStmtTable.at(previousStmtNo), typeToGet);
     return result;
 }
 
-std::set<ProgramElement> NextTGetter::getRightNextT(const ProgramElement& leftSide, const ElementType& typeToGet){
+std::set<ProgramElement> NextTGetter::getRightSide(const ProgramElement& leftSide, const ElementType& typeToGet) {
     std::set<ProgramElement> result;
     if(!(isStatementType(leftSide.elementType) && isStatementType(typeToGet)))
         throw std::invalid_argument("Wrong element type for getLeftSide on NextT");
@@ -61,6 +61,6 @@ std::set<ProgramElement> NextTGetter::getRightNextT(const ProgramElement& leftSi
     auto previous = db->nextTTable.find(leftSide.stmtNo);
     if (previous == db->nextTTable.end()) return {};
     for (const int& previousStmtNo : previous->second)
-        TemplateGetter::insertStmtElement(result, db->elementStmtTable.at(previousStmtNo), typeToGet);
+        RelationshipGetter::insertStmtElement(result, db->elementStmtTable.at(previousStmtNo), typeToGet);
     return result;
 }
