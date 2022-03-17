@@ -20,7 +20,7 @@
 //  }
 //  a = b + c; // 8
 //}
-
+/*
 Entity varSyn = Entity(EntityType::Variable, "v");
 Entity assignSyn = Entity(EntityType::Assignment, "a");
 Entity whileSyn = Entity(EntityType::While, "w");
@@ -230,3 +230,4 @@ TEST_CASE("Testing Full Match Pattern Relationships") {
     REQUIRE(result2 == expectedResult2);
     REQUIRE(result3 == expectedResult3);
 }
+*/

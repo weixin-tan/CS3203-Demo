@@ -1,4 +1,5 @@
 #include "catch.hpp"
+#include "Optimiser.h"
 #include "PKB.h"
 #include "QueryProcessor.h"
 #include "QPSMainLogic.h"
@@ -7,11 +8,10 @@
 PKB pkb = PKB();
 QPSMainLogic* qr = QPSMainLogic::getInstance(pkb.getGetter());
 QueryProcessor qp = QueryProcessor();
-auto qh = QPSHandler(pkb.getGetter());
+QPSHandler qh = QPSHandler(pkb.getGetter());
+Optimiser op = Optimiser();
 ResultProcessor rp = ResultProcessor();
 
-//TODO: Commented out test cases are those that failed since Expression Processor is pushed. DO remember to uncomment them!
-//      once they are resolved
 
 //SETUP:
 //procedure f {
@@ -46,16 +46,17 @@ std::vector<ParsedStatement> pStatements = {
 };
 
 
-TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
+TEST_CASE("Integration Testing") {
     std::vector<std::vector<ParsedStatement>> stmtlsts;
     std::vector<ParsedStatement> stmtlst;
+
     for (const ParsedStatement& parsedStatement : pStatements)
         stmtlst.push_back(parsedStatement);
 
 
     stmtlsts.push_back(stmtlst);
     pkb.getSetter()->insertStmts(stmtlsts);
-    std::set<ProgramElement> statements;
+    std::vector<ProgramElement> statements;
 
     ProgramElement s1 = ProgramElement::createStatement(ElementType::STATEMENT, 1);
     ProgramElement s2 = ProgramElement::createStatement(ElementType::STATEMENT, 2);
@@ -68,40 +69,41 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
     ProgramElement s9 = ProgramElement::createStatement(ElementType::STATEMENT, 9);
     ProgramElement s10 = ProgramElement::createStatement(ElementType::STATEMENT, 10);
     ProgramElement s11 = ProgramElement::createStatement(ElementType::STATEMENT, 11);
-    statements.insert(s1);
-    statements.insert(s2);
-    statements.insert(s3);
-    statements.insert(s4);
-    statements.insert(s5);
-    statements.insert(s6);
-    statements.insert(s7);
-    statements.insert(s8);
-    statements.insert(s9);
-    statements.insert(s10);
-    statements.insert(s11);
 
-    std::set<ProgramElement> variables;
+    statements.push_back(s1);
+    statements.push_back(s2);
+    statements.push_back(s3);
+    statements.push_back(s4);
+    statements.push_back(s5);
+    statements.push_back(s6);
+    statements.push_back(s7);
+    statements.push_back(s8);
+    statements.push_back(s9);
+    statements.push_back(s10);
+    statements.push_back(s11);
+
+    std::vector<ProgramElement> variables;
     ProgramElement vx = ProgramElement::createVariable("x");
     ProgramElement vy = ProgramElement::createVariable("y");
     ProgramElement vz = ProgramElement::createVariable("z");
-    variables.insert(vx);
-    variables.insert(vy);
-    variables.insert(vz);
+    variables.push_back(vx);
+    variables.push_back(vy);
+    variables.push_back(vz);
 
-    std::set<ProgramElement> constants;
+    std::vector<ProgramElement> constants;
     ProgramElement c0 = ProgramElement::createConstant("0");
     ProgramElement c100 = ProgramElement::createConstant("100");
     ProgramElement c5 = ProgramElement::createConstant("5");
     ProgramElement c10 = ProgramElement::createConstant("10");
     ProgramElement c4 = ProgramElement::createConstant("4");
-    constants.insert(c0);
-    constants.insert(c100);
-    constants.insert(c5);
-    constants.insert(c10);
-    constants.insert(c4);
+    constants.push_back(c0);
+    constants.push_back(c100);
+    constants.push_back(c5);
+    constants.push_back(c10);
+    constants.push_back(c4);
 
 
-    std::set<ProgramElement> assignments;
+    std::vector<ProgramElement> assignments;
     ProgramElement a1 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 1);
     ProgramElement a2 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 2);
     ProgramElement a3 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 3);
@@ -109,26 +111,26 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
     ProgramElement a8 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 8);
     ProgramElement a9 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 9);
     ProgramElement a10 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 10);
-    assignments.insert(a1);
-    assignments.insert(a2);
-    assignments.insert(a3);
-    assignments.insert(a7);
-    assignments.insert(a8);
-    assignments.insert(a9);
-    assignments.insert(a10);
+    assignments.push_back(a1);
+    assignments.push_back(a2);
+    assignments.push_back(a3);
+    assignments.push_back(a7);
+    assignments.push_back(a8);
+    assignments.push_back(a9);
+    assignments.push_back(a10);
 
 
-    std::set<ProgramElement> prints;
+    std::vector<ProgramElement> prints;
     ProgramElement print1 = ProgramElement::createStatement(ElementType::PRINT, 11);
-    prints.insert(print1);
+    prints.push_back(print1);
 
-    std::set<ProgramElement> reads;
+    std::vector<ProgramElement> reads;
     ProgramElement r1 = ProgramElement::createStatement(ElementType::READ, 5);
-    reads.insert(r1);
+    reads.push_back(r1);
 
-    std::set<ProgramElement> whiles;
+    std::vector<ProgramElement> whiles;
     ProgramElement w1 = ProgramElement::createStatement(ElementType::WHILE, 4);
-    whiles.insert(w1);
+    whiles.push_back(w1);
 
     SECTION("NO CLAUSES") {
         std::string nc1 = "variable v; Select v";
@@ -136,14 +138,14 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         std::string nc3 = "assign a; Select a";
         std::string nc4 = "print p; Select p";
 
-        std::set<ProgramElement> result1 = rp.processResults(qh.processClause(qp.parsePQL(nc1)));
-        std::set<ProgramElement> result2 = rp.processResults(qh.processClause(qp.parsePQL(nc2)));
-        std::set<ProgramElement> result3 = rp.processResults(qh.processClause(qp.parsePQL(nc3)));
-        std::set<ProgramElement> result4 = rp.processResults(qh.processClause(qp.parsePQL(nc4)));
+        std::vector<ProgramElement> result1 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(nc1))));
+        std::vector<ProgramElement> result2 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(nc2))));
+        std::vector<ProgramElement> result3 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(nc3))));
+        std::vector<ProgramElement> result4 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(nc4))));
         REQUIRE(result1 == variables);
         REQUIRE(result2 == constants);
         REQUIRE(result3 == assignments);
-        //REQUIRE(result4 == prints);
+        REQUIRE(result4 == prints);
     }
 
     SECTION("SUCH THAT CLAUSE - Follows/Follows*/Parent/Parent*") {
@@ -160,47 +162,47 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         std::string st11 = "read r; Select r such that Follows(_, 5)";
         std::string st12 = "assign a; Select a such that Follows*(7, 9)";
 
-        std::set<ProgramElement> empty = {};
-        std::set<ProgramElement> expectedResult2;
-        expectedResult2.insert(a7);
-        expectedResult2.insert(a8);
-        expectedResult2.insert(a9);
-        expectedResult2.insert(a10);
-        std::set<ProgramElement> expectedResult5;
-        expectedResult5.insert(s4);
-        expectedResult5.insert(s6);
-        std::set<ProgramElement> expectedResult7;
-        expectedResult7.insert(a1);
-        expectedResult7.insert(a2);
-        expectedResult7.insert(a7);
-        expectedResult7.insert(a9);
+        std::vector<ProgramElement> empty = {};
+        std::vector<ProgramElement> expectedResult2;
+        expectedResult2.push_back(a7);
+        expectedResult2.push_back(a8);
+        expectedResult2.push_back(a9);
+        expectedResult2.push_back(a10);
+        std::vector<ProgramElement> expectedResult5;
+        expectedResult5.push_back(s4);
+        expectedResult5.push_back(s6);
+        std::vector<ProgramElement> expectedResult7;
+        expectedResult7.push_back(a1);
+        expectedResult7.push_back(a2);
+        expectedResult7.push_back(a7);
+        expectedResult7.push_back(a9);
 
 
-        std::set<ProgramElement> result1 = rp.processResults(qh.processClause(qp.parsePQL(st1)));
-        std::set<ProgramElement> result2 = rp.processResults(qh.processClause(qp.parsePQL(st2)));
-        std::set<ProgramElement> result3 = rp.processResults(qh.processClause(qp.parsePQL(st3)));
-        std::set<ProgramElement> result4 = rp.processResults(qh.processClause(qp.parsePQL(st4)));
-        std::set<ProgramElement> result5 = rp.processResults(qh.processClause(qp.parsePQL(st5)));
-        std::set<ProgramElement> result6 = rp.processResults(qh.processClause(qp.parsePQL(st6)));
-        std::set<ProgramElement> result7 = rp.processResults(qh.processClause(qp.parsePQL(st7)));
-        std::set<ProgramElement> result8 = rp.processResults(qh.processClause(qp.parsePQL(st8)));
-        std::set<ProgramElement> result9 = rp.processResults(qh.processClause(qp.parsePQL(st9)));
-        std::set<ProgramElement> result10 = rp.processResults(qh.processClause(qp.parsePQL(st10)));
-        std::set<ProgramElement> result11 = rp.processResults(qh.processClause(qp.parsePQL(st11)));
-        std::set<ProgramElement> result12 = rp.processResults(qh.processClause(qp.parsePQL(st12)));
+        std::vector<ProgramElement> result1 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st1))));
+        std::vector<ProgramElement> result2 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st2))));
+        std::vector<ProgramElement> result3 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st3))));
+        std::vector<ProgramElement> result4 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st4))));
+        std::vector<ProgramElement> result5 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st5))));
+        std::vector<ProgramElement> result6 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st6))));
+        std::vector<ProgramElement> result7 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st7))));
+        std::vector<ProgramElement> result8 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st8))));
+        std::vector<ProgramElement> result9 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st9))));
+        std::vector<ProgramElement> result10 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st10))));
+        std::vector<ProgramElement> result11 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st11))));
+        std::vector<ProgramElement> result12 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st12))));
 
-        //REQUIRE(result1 == prints);
+        REQUIRE(result1 == prints);
         REQUIRE(result2 == expectedResult2);
-        //REQUIRE(result3 == prints);
-        //REQUIRE(result4 == reads);
-        //REQUIRE(result5 == expectedResult5);
-        //REQUIRE(result6 == statements);
-        //REQUIRE(result7 == expectedResult7);
-        //REQUIRE(result8 == constants);
-        //REQUIRE(result9 == reads);
-        //REQUIRE(result10 == whiles);
-        //REQUIRE(result11 == empty);
-        //REQUIRE(result12 == empty);
+        REQUIRE(result3 == prints);
+        REQUIRE(result4 == reads);
+        REQUIRE(result5 == expectedResult5);
+        REQUIRE(result6 == statements);
+        REQUIRE(result7 == expectedResult7);
+        REQUIRE(result8 == constants);
+        REQUIRE(result9 == reads);
+        REQUIRE(result10 == whiles);
+        REQUIRE(result11 == empty);
+        REQUIRE(result12 == empty);
     }
 
     SECTION("SUCH THAT CLAUSE - Modifies/Uses") {
@@ -218,42 +220,42 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         std::string st12 = "assign a; Select a such that Modifies(a, _)";
         std::string st13 = "stmt s; Select s such that Modifies(s, \"z\")";
 
-        std::set<ProgramElement> expectedResult3;
-        expectedResult3.insert(a1);
-        expectedResult3.insert(a3);
-        expectedResult3.insert(a7);
-        std::set<ProgramElement> expectedResult8;
-        expectedResult8.insert(ProgramElement::createStatement(ElementType::IF, 6));
-        std::set<ProgramElement> expectedResult9;
-        expectedResult9.insert(vx);
-        expectedResult9.insert(vz);
-        std::set<ProgramElement> expectedResult13;
-        expectedResult13.insert(s4);
-        expectedResult13.insert(s5);
-        expectedResult13.insert(s6);
-        expectedResult13.insert(s8);
-        expectedResult13.insert(s10);
+        std::vector<ProgramElement> expectedResult3;
+        expectedResult3.push_back(a1);
+        expectedResult3.push_back(a3);
+        expectedResult3.push_back(a7);
+        std::vector<ProgramElement> expectedResult8;
+        expectedResult8.push_back(ProgramElement::createStatement(ElementType::IF, 6));
+        std::vector<ProgramElement> expectedResult9;
+        expectedResult9.push_back(vx);
+        expectedResult9.push_back(vz);
+        std::vector<ProgramElement> expectedResult13;
+        expectedResult13.push_back(s4);
+        expectedResult13.push_back(s5);
+        expectedResult13.push_back(s6);
+        expectedResult13.push_back(s8);
+        expectedResult13.push_back(s10);
 
-        std::set<ProgramElement> empty = {};
-        std::set<ProgramElement> result1 = rp.processResults(qh.processClause(qp.parsePQL(st1)));
-        std::set<ProgramElement> result2 = rp.processResults(qh.processClause(qp.parsePQL(st2)));
-        std::set<ProgramElement> result3 = rp.processResults(qh.processClause(qp.parsePQL(st3)));
-        std::set<ProgramElement> result4 = rp.processResults(qh.processClause(qp.parsePQL(st4)));
-        std::set<ProgramElement> result5 = rp.processResults(qh.processClause(qp.parsePQL(st5)));
-        std::set<ProgramElement> result6 = rp.processResults(qh.processClause(qp.parsePQL(st6)));
-        std::set<ProgramElement> result7 = rp.processResults(qh.processClause(qp.parsePQL(st7)));
-        std::set<ProgramElement> result8 = rp.processResults(qh.processClause(qp.parsePQL(st8)));
-        std::set<ProgramElement> result9 = rp.processResults(qh.processClause(qp.parsePQL(st9)));
-        std::set<ProgramElement> result10 = rp.processResults(qh.processClause(qp.parsePQL(st10)));
-        std::set<ProgramElement> result11 = rp.processResults(qh.processClause(qp.parsePQL(st11)));
-        std::set<ProgramElement> result12 = rp.processResults(qh.processClause(qp.parsePQL(st12)));
-        std::set<ProgramElement> result13 = rp.processResults(qh.processClause(qp.parsePQL(st13)));
+        std::vector<ProgramElement> empty = {};
+        std::vector<ProgramElement> result1 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st1))));
+        std::vector<ProgramElement> result2 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st2))));
+        std::vector<ProgramElement> result3 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st3))));
+        std::vector<ProgramElement> result4 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st4))));
+        std::vector<ProgramElement> result5 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st5))));
+        std::vector<ProgramElement> result6 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st6))));
+        std::vector<ProgramElement> result7 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st7))));
+        std::vector<ProgramElement> result8 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st8))));
+        std::vector<ProgramElement> result9 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st9))));
+        std::vector<ProgramElement> result10 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st10))));
+        std::vector<ProgramElement> result11 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st11))));
+        std::vector<ProgramElement> result12 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st12))));
+        std::vector<ProgramElement> result13 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st13))));
 
         REQUIRE(result1 == assignments);
         REQUIRE(result2 == empty);
         REQUIRE(result3 == expectedResult3);
         REQUIRE(result4 == whiles);
-        //REQUIRE(result5 == reads);
+        REQUIRE(result5 == reads);
         REQUIRE(result6 == empty);
         REQUIRE(result7 == whiles);
         REQUIRE(result8 == expectedResult8);
@@ -261,7 +263,7 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         REQUIRE(result10 == constants);
         REQUIRE(result11 == empty);
         REQUIRE(result12 == assignments);
-        //REQUIRE(result13 == expectedResult13);
+        REQUIRE(result13 == expectedResult13);
     }
 
     SECTION("PATTERN CLAUSE") {
@@ -278,30 +280,30 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         std::string p11 = "assign a; variable v; Select v pattern a (v, _)";
         std::string p12 = "assign a; variable v; Select a pattern a (v, _)";
 
-        std::set<ProgramElement> empty = {};
-        std::set<ProgramElement> expectedResult1;
-        expectedResult1.insert(a1);
-        expectedResult1.insert(a3);
-        expectedResult1.insert(a8);
-        std::set<ProgramElement> expectedResult2;
-        expectedResult2.insert(a1);
-        expectedResult2.insert(a3);
-        expectedResult2.insert(a7);
-        std::set<ProgramElement> expectedResult3;
-        expectedResult3.insert(a2);
+        std::vector<ProgramElement> empty = {};
+        std::vector<ProgramElement> expectedResult1;
+        expectedResult1.push_back(a1);
+        expectedResult1.push_back(a3);
+        expectedResult1.push_back(a8);
+        std::vector<ProgramElement> expectedResult2;
+        expectedResult2.push_back(a1);
+        expectedResult2.push_back(a3);
+        expectedResult2.push_back(a7);
+        std::vector<ProgramElement> expectedResult3;
+        expectedResult3.push_back(a2);
 
-        std::set<ProgramElement> result1 = rp.processResults(qh.processClause(qp.parsePQL(p1)));
-        std::set<ProgramElement> result2 = rp.processResults(qh.processClause(qp.parsePQL(p2)));
-        std::set<ProgramElement> result3 = rp.processResults(qh.processClause(qp.parsePQL(p3)));
-        std::set<ProgramElement> result4 = rp.processResults(qh.processClause(qp.parsePQL(p4)));
-        std::set<ProgramElement> result5 = rp.processResults(qh.processClause(qp.parsePQL(p5)));
-        std::set<ProgramElement> result6 = rp.processResults(qh.processClause(qp.parsePQL(p6)));
-        std::set<ProgramElement> result7 = rp.processResults(qh.processClause(qp.parsePQL(p7)));
-        std::set<ProgramElement> result8 = rp.processResults(qh.processClause(qp.parsePQL(p8)));
-        std::set<ProgramElement> result9 = rp.processResults(qh.processClause(qp.parsePQL(p9)));
-        std::set<ProgramElement> result10 = rp.processResults(qh.processClause(qp.parsePQL(p10)));
-        std::set<ProgramElement> result11 = rp.processResults(qh.processClause(qp.parsePQL(p11)));
-        std::set<ProgramElement> result12 = rp.processResults(qh.processClause(qp.parsePQL(p12)));
+        std::vector<ProgramElement> result1 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(p1))));
+        std::vector<ProgramElement> result2 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(p2))));
+        std::vector<ProgramElement> result3 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(p3))));
+        std::vector<ProgramElement> result4 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(p4))));
+        std::vector<ProgramElement> result5 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(p5))));
+        std::vector<ProgramElement> result6 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(p6))));
+        std::vector<ProgramElement> result7 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(p7))));
+        std::vector<ProgramElement> result8 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(p8))));
+        std::vector<ProgramElement> result9 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(p9))));
+        std::vector<ProgramElement> result10 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(p10))));
+        std::vector<ProgramElement> result11 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(p11))));
+        std::vector<ProgramElement> result12 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(p12))));
 
         REQUIRE(result1 == expectedResult1);
         REQUIRE(result2 == expectedResult2);
@@ -329,37 +331,37 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         std::string com9 = "assign a; variable v; Select a such that Modifies (a, \"y\") pattern a (v, _\"100\"_)";
         std::string com10 = "print p; assign a; variable v; Select a such that Uses (p, \"x\") pattern a (v, _\"x\"_)";
 
-        std::set<ProgramElement> empty = {};
-        std::set<ProgramElement> expectedResult1;
-        expectedResult1.insert(a7);
-        expectedResult1.insert(a9);
-        std::set<ProgramElement> expectedResult2;
-        expectedResult2.insert(a8);
-        expectedResult2.insert(a10);
-        std::set<ProgramElement> expectedResult3;
-        expectedResult3.insert(a2);
-        expectedResult3.insert(a7);
-        std::set<ProgramElement> expectedResult6;
-        expectedResult6.insert(a1);
-        expectedResult6.insert(a3);
-        expectedResult6.insert(a7);
-        std::set<ProgramElement> expectedResult7;
-        expectedResult7.insert(vx);
-        std::set<ProgramElement> expectedResult9;
-        expectedResult9.insert(a9);
-        std::set<ProgramElement> expectedResult10;
-        expectedResult10.insert(a2);
+        std::vector<ProgramElement> empty = {};
+        std::vector<ProgramElement> expectedResult1;
+        expectedResult1.push_back(a7);
+        expectedResult1.push_back(a9);
+        std::vector<ProgramElement> expectedResult2;
+        expectedResult2.push_back(a8);
+        expectedResult2.push_back(a10);
+        std::vector<ProgramElement> expectedResult3;
+        expectedResult3.push_back(a2);
+        expectedResult3.push_back(a7);
+        std::vector<ProgramElement> expectedResult6;
+        expectedResult6.push_back(a1);
+        expectedResult6.push_back(a3);
+        expectedResult6.push_back(a7);
+        std::vector<ProgramElement> expectedResult7;
+        expectedResult7.push_back(vx);
+        std::vector<ProgramElement> expectedResult9;
+        expectedResult9.push_back(a9);
+        std::vector<ProgramElement> expectedResult10;
+        expectedResult10.push_back(a2);
 
-        std::set<ProgramElement> result1 = rp.processResults(qh.processClause(qp.parsePQL(com1)));
-        std::set<ProgramElement> result2 = rp.processResults(qh.processClause(qp.parsePQL(com2)));
-        std::set<ProgramElement> result3 = rp.processResults(qh.processClause(qp.parsePQL(com3)));
-        std::set<ProgramElement> result4 = rp.processResults(qh.processClause(qp.parsePQL(com4)));
-        std::set<ProgramElement> result5 = rp.processResults(qh.processClause(qp.parsePQL(com5)));
-        std::set<ProgramElement> result6 = rp.processResults(qh.processClause(qp.parsePQL(com6)));
-        std::set<ProgramElement> result7 = rp.processResults(qh.processClause(qp.parsePQL(com7)));
-        std::set<ProgramElement> result8 = rp.processResults(qh.processClause(qp.parsePQL(com8)));
-        std::set<ProgramElement> result9 = rp.processResults(qh.processClause(qp.parsePQL(com9)));
-        std::set<ProgramElement> result10 = rp.processResults(qh.processClause(qp.parsePQL(com10)));
+        std::vector<ProgramElement> result1 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(com1))));
+        std::vector<ProgramElement> result2 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(com2))));
+        std::vector<ProgramElement> result3 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(com3))));
+        std::vector<ProgramElement> result4 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(com4))));
+        std::vector<ProgramElement> result5 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(com5))));
+        std::vector<ProgramElement> result6 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(com6))));
+        std::vector<ProgramElement> result7 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(com7))));
+        std::vector<ProgramElement> result8 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(com8))));
+        std::vector<ProgramElement> result9 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(com9))));
+        std::vector<ProgramElement> result10 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(com10))));
 
         REQUIRE(result1 == expectedResult1);
         REQUIRE(result2 == expectedResult2);
