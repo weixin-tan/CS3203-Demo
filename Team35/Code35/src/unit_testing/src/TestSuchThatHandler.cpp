@@ -257,9 +257,9 @@ TEST_CASE("Testing Follows(*)/Parent(*)/Next(*) Relationships"){
     SuchThatHandler* st = new SuchThatHandler(pg);
 
     RelationshipRef followsRef_stmtSyn_stmtSyn = RelationshipRef(RelationshipType::Follows, printSyn, callSyn); // Follows(p, call)
-    RelationshipRef followsTRef_stmtSyn_fixedInt = RelationshipRef(RelationshipType::FollowsT, assignSyn, fixedIntCall); // Follows*(a, "12")
+    RelationshipRef followsTRef_stmtSyn_fixedInt = RelationshipRef(RelationshipType::FOLLOWS_T, assignSyn, fixedIntCall); // Follows*(a, "12")
     RelationshipRef parentRef_stmtSyn_wc = RelationshipRef(RelationshipType::Parent, whileSyn, wc); //Parent(w, _)
-    RelationshipRef parentTRef_fixedInt_stmtSyn = RelationshipRef(RelationshipType::ParentT, fixedIntWhile,  assignSyn);//Parent*("4", a)
+    RelationshipRef parentTRef_fixedInt_stmtSyn = RelationshipRef(RelationshipType::PARENT_T, fixedIntWhile,  assignSyn);//Parent*("4", a)
     RelationshipRef nextRef_fixedInt_fixedInt = RelationshipRef(RelationshipType::Next, fixedIntPrint, fixedIntCall); //Next("11", "12")
     RelationshipRef nextTRef_fixedInt_wc = RelationshipRef(RelationshipType::NextT, fixedIntStmt, wc); //Next*("1", _);
     RelationshipRef affectsRef_wc_stmtSyn = RelationshipRef(RelationshipType::Next, wc, callSyn); // Next(_, c)

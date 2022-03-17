@@ -38,7 +38,7 @@ Result WithHandler::handleWith(const RelationshipRef &relRef) {
 }
 
 bool WithHandler::isFixedEntity(const Entity &entity) {
-  return entity.eType == EntityType::FixedString || entity.eType == EntityType::FixedInteger;
+  return entity.eType == EntityType::FIXED_STRING || entity.eType == EntityType::FIXED_INTEGER;
 }
 
 std::set<ProgramElement> WithHandler::getProgramElements(const EntityType& eType) {
@@ -47,11 +47,11 @@ std::set<ProgramElement> WithHandler::getProgramElements(const EntityType& eType
 }
 
 std::string WithHandler::getStringToMatch(const ProgramElement& element, EntityAttributeType elementType) {
-  if (elementType == EntityAttributeType::ProcName){
+  if (elementType == EntityAttributeType::PROCNAME){
     return element.procName;
-  }else if(elementType == EntityAttributeType::VarName){
+  }else if(elementType == EntityAttributeType::VARNAME){
     return element.varName;
-  }else if(elementType == EntityAttributeType::Value){
+  }else if(elementType == EntityAttributeType::VALUE){
     return element.varName;
   }else{
     return std::to_string(element.stmtNo);

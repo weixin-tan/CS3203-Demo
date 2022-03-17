@@ -80,7 +80,7 @@ TEST_CASE("PKB Basic") {
 
                 REQUIRE(result == expected);
             }
-            SECTION("Read") {
+            SECTION("READ") {
                 std::set<ProgramElement> result = pkb_getter->getEntity(ElementType::READ);
                 std::set<ProgramElement> expected = {
                         tcData.stmt.at(5)
@@ -88,7 +88,7 @@ TEST_CASE("PKB Basic") {
 
                 REQUIRE(result == expected);
             }
-            SECTION("Print") {
+            SECTION("PRINT") {
                 std::set<ProgramElement> result = pkb_getter->getEntity(ElementType::PRINT);
                 std::set<ProgramElement> expected = {
                         tcData.stmt.at(11)
@@ -100,7 +100,7 @@ TEST_CASE("PKB Basic") {
     }
     SECTION("Modifies") {
         SECTION("isRelationship") {
-            SECTION("Statement and Variable") {
+            SECTION("STATEMENT and VARIABLE") {
                 REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::MODIFIES,
                                                    ProgramElement::createStatement(ElementType::ASSIGNMENT, 1),
                                                    ProgramElement::createVariable("x"))
@@ -118,14 +118,14 @@ TEST_CASE("PKB Basic") {
                                                    ProgramElement::createVariable("y"))
                                 == true);
             }
-            SECTION("Procedure and Variable") {
+            SECTION("PROCEDURE and VARIABLE") {
                 REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::MODIFIES,
                                                    ProgramElement::createProcedure("f"),
                                                    ProgramElement::createVariable("z")));
             }
         }
         SECTION("getLeftSide") {
-            SECTION("Assignment given Variable") {
+            SECTION("ASSIGNMENT given VARIABLE") {
                 std::set<ProgramElement> result = pkb_getter->getLeftSide(PkbRelationshipType::MODIFIES, ProgramElement::createVariable("x"), ElementType::ASSIGNMENT);
 
                 std::set<ProgramElement> expected = {
@@ -136,7 +136,7 @@ TEST_CASE("PKB Basic") {
 
                 REQUIRE(result == expected);
             }
-            SECTION("If given Variable") {
+            SECTION("IF given VARIABLE") {
                 std::set<ProgramElement> result =
                         pkb_getter->getLeftSide(PkbRelationshipType::MODIFIES, ProgramElement::createVariable("x"), ElementType::IF);
 
@@ -145,7 +145,7 @@ TEST_CASE("PKB Basic") {
                 };
                 REQUIRE(result == expected);
             }
-            SECTION("While given Variable") {
+            SECTION("WHILE given VARIABLE") {
                 std::set<ProgramElement> result =
                         pkb_getter->getLeftSide(PkbRelationshipType::MODIFIES, ProgramElement::createVariable("x"), ElementType::WHILE);
 
@@ -154,7 +154,7 @@ TEST_CASE("PKB Basic") {
                 };
                 REQUIRE(result == expected);
             }
-            SECTION("Statement given Variable") {
+            SECTION("STATEMENT given VARIABLE") {
                 std::set<ProgramElement> result =
                         pkb_getter->getLeftSide(PkbRelationshipType::MODIFIES, ProgramElement::createVariable("z"), ElementType::STATEMENT);
                 std::set<ProgramElement> expected = {
@@ -168,7 +168,7 @@ TEST_CASE("PKB Basic") {
             }
         }
         SECTION("getRightSide") {
-            SECTION("Variables given Assignment") {
+            SECTION("Variables given ASSIGNMENT") {
                 std::set<ProgramElement> result = pkb_getter->getRightSide(PkbRelationshipType::MODIFIES, ProgramElement::createStatement(ElementType::ASSIGNMENT, 1), ElementType::VARIABLE);
                 std::set<ProgramElement> expected = {
                         tcData.vars.at("x")
@@ -182,7 +182,7 @@ TEST_CASE("PKB Basic") {
                 };
                 REQUIRE(result == expected);
             }
-            SECTION("Variables given If") {
+            SECTION("Variables given IF") {
                 std::set<ProgramElement> result = pkb_getter->getRightSide(PkbRelationshipType::MODIFIES, ProgramElement::createStatement(ElementType::IF, 6), ElementType::VARIABLE);
                 std::set<ProgramElement> expected = {
                         tcData.vars.at("x"),
@@ -191,7 +191,7 @@ TEST_CASE("PKB Basic") {
                 };
                 REQUIRE(result == expected);
             }
-            SECTION("Variables given While") {
+            SECTION("Variables given WHILE") {
                 std::set<ProgramElement> result = pkb_getter->getRightSide(PkbRelationshipType::MODIFIES, ProgramElement::createStatement(ElementType::WHILE, 4), ElementType::VARIABLE);
                 std::set<ProgramElement> expected = {
                         tcData.vars.at("x"),
@@ -200,7 +200,7 @@ TEST_CASE("PKB Basic") {
                 };
                 REQUIRE(result == expected);
             }
-            SECTION("Variables given Statement") {
+            SECTION("Variables given STATEMENT") {
                 std::set<ProgramElement> result = pkb_getter->getRightSide(PkbRelationshipType::MODIFIES, ProgramElement::createStatement(ElementType::STATEMENT, 1), ElementType::VARIABLE);
                 std::set<ProgramElement> expected = {ProgramElement::createVariable("x")};
 
@@ -215,7 +215,7 @@ TEST_CASE("PKB Basic") {
                 };
                 REQUIRE(result == expected);
             }
-            SECTION("Variables given Procedure") {
+            SECTION("Variables given PROCEDURE") {
                 std::set<ProgramElement> result = pkb_getter->getRightSide(PkbRelationshipType::MODIFIES, ProgramElement::createProcedure("f"), ElementType::VARIABLE);
                 std::set<ProgramElement> expected = {
                         tcData.vars.at("x"),
@@ -229,20 +229,20 @@ TEST_CASE("PKB Basic") {
     SECTION("Uses") {
         PkbRelationshipType relationshipType = PkbRelationshipType::USES;
         SECTION("isRelationship") {
-            SECTION("Assignment Variable") {
+            SECTION("ASSIGNMENT VARIABLE") {
                 REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::ASSIGNMENT, 2), ProgramElement::createVariable("x")));
 
                 REQUIRE(!pkb_getter->isRelationship(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::ASSIGNMENT, 2), ProgramElement::createVariable("y")));
             }
-            SECTION("If Variable") {
+            SECTION("IF VARIABLE") {
                 REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::IF, 6), ProgramElement::createVariable("z")));
             }
-            SECTION("While Variable") {
+            SECTION("WHILE VARIABLE") {
                 REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::WHILE, 4), ProgramElement::createVariable("x")));
 
                 REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::WHILE, 4), ProgramElement::createVariable("z")));
             }
-            SECTION("Statement Variable") {
+            SECTION("STATEMENT VARIABLE") {
                 REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::STATEMENT, 2), ProgramElement::createVariable("x")));
 
                 REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::STATEMENT, 4), ProgramElement::createVariable("x")));
@@ -251,12 +251,12 @@ TEST_CASE("PKB Basic") {
 
                 REQUIRE(!pkb_getter->isRelationship(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::STATEMENT, 4), ProgramElement::createVariable("y")));
             }
-            SECTION("Procedure Variable") {
+            SECTION("PROCEDURE VARIABLE") {
                 REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::USES, ProgramElement::createProcedure("f"), ProgramElement::createVariable("x")));
             }
         }
         SECTION("getLeftSide") {
-            SECTION("Assignment given Variable") {
+            SECTION("ASSIGNMENT given VARIABLE") {
                 std::set<ProgramElement> result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createVariable("x"), ElementType::ASSIGNMENT);
 
                 std::set<ProgramElement> expected = {
@@ -265,7 +265,7 @@ TEST_CASE("PKB Basic") {
 
                 REQUIRE(result == expected);
             }
-            SECTION("Print given Variable") {
+            SECTION("PRINT given VARIABLE") {
                 std::set<ProgramElement> result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createVariable("x"), ElementType::PRINT);
 
                 std::set<ProgramElement> expected = {
@@ -274,7 +274,7 @@ TEST_CASE("PKB Basic") {
 
                 REQUIRE(result == expected);
             }
-            SECTION("If given Variable") {
+            SECTION("IF given VARIABLE") {
                 std::set<ProgramElement> result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createVariable("z"), ElementType::IF);
 
                 std::set<ProgramElement> expected = {
@@ -283,7 +283,7 @@ TEST_CASE("PKB Basic") {
 
                 REQUIRE(result == expected);
             }
-            SECTION("While given Variable") {
+            SECTION("WHILE given VARIABLE") {
                 std::set<ProgramElement> result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createVariable("z"), ElementType::WHILE);
 
                 std::set<ProgramElement> expected = {
@@ -292,7 +292,7 @@ TEST_CASE("PKB Basic") {
 
                 REQUIRE(result == expected);
             }
-            SECTION("Statements given Variable") {
+            SECTION("Statements given VARIABLE") {
                 std::set<ProgramElement> result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createVariable("z"), ElementType::STATEMENT);
 
                 std::set<ProgramElement> expected = {
@@ -314,7 +314,7 @@ TEST_CASE("PKB Basic") {
             }
         }
         SECTION("getRightSide") {
-            SECTION("Variables given Assignment") {
+            SECTION("Variables given ASSIGNMENT") {
                 std::set<ProgramElement> result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::ASSIGNMENT, 2), ElementType::VARIABLE);
                 std::set<ProgramElement> expected = {
                         tcData.vars.at("x"),
@@ -322,7 +322,7 @@ TEST_CASE("PKB Basic") {
 
                 REQUIRE(result == expected);
             }
-            SECTION("Variables given If") {
+            SECTION("Variables given IF") {
                 std::set<ProgramElement> result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::IF, 6), ElementType::VARIABLE);
                 std::set<ProgramElement> expected = {
                         tcData.vars.at("z")
@@ -330,7 +330,7 @@ TEST_CASE("PKB Basic") {
 
                 REQUIRE(result == expected);
             }
-            SECTION("Variables given While") {
+            SECTION("Variables given WHILE") {
                 std::set<ProgramElement> result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::WHILE, 4), ElementType::VARIABLE);
                 std::set<ProgramElement> expected = {
                         tcData.vars.at("z"),
@@ -339,7 +339,7 @@ TEST_CASE("PKB Basic") {
 
                 REQUIRE(result == expected);
             }
-            SECTION("Variables given Statement") {
+            SECTION("Variables given STATEMENT") {
                 std::set<ProgramElement> result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::STATEMENT, 2), ElementType::VARIABLE);
                 std::set<ProgramElement> expected = {
                         tcData.vars.at("x")
@@ -369,7 +369,7 @@ TEST_CASE("PKB Basic") {
 
                 REQUIRE(result == expected);
             }
-            SECTION("Variables given Procedure") {
+            SECTION("Variables given PROCEDURE") {
                 std::set<ProgramElement> result = pkb_getter->getRightSide(relationshipType, ProgramElement::createProcedure("f"), ElementType::VARIABLE);
                 std::set<ProgramElement> expected = {
                         tcData.vars.at("z"),
@@ -423,7 +423,7 @@ TEST_CASE("PKB Basic") {
             REQUIRE(result == expected);
         }
     }
-    SECTION("FollowsT") {
+    SECTION("FOLLOWS_T") {
         SECTION("isRelationship") {
             REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::FOLLOWS_T, ProgramElement::createStatement(ElementType::ASSIGNMENT, 7), ProgramElement::createStatement(ElementType::ASSIGNMENT, 8)));
             REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::FOLLOWS_T, ProgramElement::createStatement(ElementType::WHILE, 4), ProgramElement::createStatement(ElementType::PRINT, 11)));
@@ -523,7 +523,7 @@ TEST_CASE("PKB Basic") {
             REQUIRE(result == expected);
         }
     }
-    SECTION("ParentT") {
+    SECTION("PARENT_T") {
         PkbRelationshipType relationshipType = PkbRelationshipType::PARENT_T;
         std::set<ProgramElement> result;
         std::set<ProgramElement> expected;
@@ -591,7 +591,7 @@ TEST_CASE("PKB Basic") {
             REQUIRE(result == expected);
         }
     }
-    SECTION("Pattern") {
+    SECTION("PATTERN") {
         std::set<ProgramElement> result;
         std::set<ProgramElement> expected;
         SECTION("LHS wildcard") {
@@ -1206,7 +1206,7 @@ TEST_CASE("PKB Next") {
     }
 }
 
-TEST_CASE("PKB NextT") {
+TEST_CASE("PKB NEXT_T") {
     PKB pkb;
     PkbSetter* pkbSetter = pkb.getSetter();
     PkbGetter* pkbGetter = pkb.getGetter();
@@ -1419,7 +1419,7 @@ TEST_CASE("PKB Validation") {
     SECTION("Cyclic call") {
         REQUIRE_THROWS(pkbSetter->insertStmts(tcData.CYCLIC_CALL_STMT_LIST, true));
     }
-    SECTION("Duplicate Procedure") {
+    SECTION("Duplicate PROCEDURE") {
         REQUIRE_THROWS(pkbSetter->insertStmts(tcData.DUPLICATE_PROCEDURE_STMT_LIST, true));
     }
     SECTION("Undefined call") {
@@ -1446,7 +1446,7 @@ TEST_CASE("PATTERN RECOGNITION") {
     PKB_PATTERN_TEST_CASE tcData;
     pkb_setter->insertStmts(tcData.stmtLists);
 
-    SECTION("Pattern") {
+    SECTION("PATTERN") {
         std::set<std::pair<ProgramElement, ProgramElement>> pairResult;
         std::set<std::pair<ProgramElement, ProgramElement>> pairExpected;
         std::set<ProgramElement> result;

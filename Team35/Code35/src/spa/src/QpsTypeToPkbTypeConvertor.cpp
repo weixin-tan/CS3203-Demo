@@ -4,31 +4,31 @@
 #include "QueryRegex.h"
 
 const std::unordered_map<RelationshipType, PkbRelationshipType> QpsTypeToPkbTypeConvertor::qpsRelToPkbRelMap = {
-    {RelationshipType::Modifies, PkbRelationshipType::MODIFIES},
-    {RelationshipType::Uses, PkbRelationshipType::USES},
-    {RelationshipType::Follows, PkbRelationshipType::FOLLOWS},
-    {RelationshipType::FollowsT, PkbRelationshipType::FOLLOWS_T},
-    {RelationshipType::Parent, PkbRelationshipType::PARENT},
-    {RelationshipType::ParentT, PkbRelationshipType::PARENT_T},
-    {RelationshipType::Calls, PkbRelationshipType::CALLS},
-    {RelationshipType::CallsT, PkbRelationshipType::CALLS_T},
-    {RelationshipType::Next, PkbRelationshipType::NEXT},
-    {RelationshipType::NextT, PkbRelationshipType::NEXT_T},
-    {RelationshipType::Affects, PkbRelationshipType::AFFECTS},
-    {RelationshipType::AffectsT, PkbRelationshipType::AFFECTS_T}
+    {RelationshipType::MODIFIES, PkbRelationshipType::MODIFIES},
+    {RelationshipType::USES, PkbRelationshipType::USES},
+    {RelationshipType::FOLLOWS, PkbRelationshipType::FOLLOWS},
+    {RelationshipType::FOLLOWS_T, PkbRelationshipType::FOLLOWS_T},
+    {RelationshipType::PARENT, PkbRelationshipType::PARENT},
+    {RelationshipType::PARENT_T, PkbRelationshipType::PARENT_T},
+    {RelationshipType::CALLS, PkbRelationshipType::CALLS},
+    {RelationshipType::CALLS_T, PkbRelationshipType::CALLS_T},
+    {RelationshipType::NEXT, PkbRelationshipType::NEXT},
+    {RelationshipType::NEXT_T, PkbRelationshipType::NEXT_T},
+    {RelationshipType::AFFECTS, PkbRelationshipType::AFFECTS},
+    {RelationshipType::AFFECTS_T, PkbRelationshipType::AFFECTS_T}
 };
 
 const std::unordered_map<EntityType, ElementType> QpsTypeToPkbTypeConvertor::entityToElementMap = {
-    {EntityType::Statement, ElementType::STATEMENT},
-    {EntityType::Assignment, ElementType::ASSIGNMENT},
-    {EntityType::Variable, ElementType::VARIABLE},
-    {EntityType::Constant, ElementType::CONSTANT},
-    {EntityType::If, ElementType::IF},
-    {EntityType::While, ElementType::WHILE},
-    {EntityType::Procedure, ElementType::PROCEDURE},
-    {EntityType::Read, ElementType::READ},
-    {EntityType::Print, ElementType::PRINT},
-    {EntityType::Call, ElementType::CALL}
+    {EntityType::STATEMENT, ElementType::STATEMENT},
+    {EntityType::ASSIGNMENT, ElementType::ASSIGNMENT},
+    {EntityType::VARIABLE, ElementType::VARIABLE},
+    {EntityType::CONSTANT, ElementType::CONSTANT},
+    {EntityType::IF, ElementType::IF},
+    {EntityType::WHILE, ElementType::WHILE},
+    {EntityType::PROCEDURE, ElementType::PROCEDURE},
+    {EntityType::READ, ElementType::READ},
+    {EntityType::PRINT, ElementType::PRINT},
+    {EntityType::CALL, ElementType::CALL}
 };
 
 QpsTypeToPkbTypeConvertor::QpsTypeToPkbTypeConvertor() = default;

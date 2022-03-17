@@ -46,14 +46,14 @@ std::string ProgramElement::toString(EntityAttributeType entityAttributeType) co
     if (elementType == ElementType::CONSTANT)
         return value;
     switch (entityAttributeType) {
-        case EntityAttributeType::Stmt:
+        case EntityAttributeType::STMT:
             return std::to_string(stmtNo);
-        case EntityAttributeType::VarName: {
+        case EntityAttributeType::VARNAME: {
             if (elementType != ElementType::PRINT && elementType != ElementType::READ)
                 throw std::invalid_argument("Accessing variable for statements not guaranteed to have variable");
             return varName;
         }
-        case EntityAttributeType::ProcName: {
+        case EntityAttributeType::PROCNAME: {
             if (elementType != ElementType::CALL)
                 throw std::invalid_argument("Accessing procName for statements not guaranteed to have procedure");
             return procName;

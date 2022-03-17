@@ -13,7 +13,7 @@ Table::Table() {
 
 int Table::getIndexEntity(std::vector<ProgramElement> v, ProgramElement K){
     auto it = find(v.begin(), v.end(), K);
-    // If element was found
+    // IF element was found
     if (it != v.end()){
         int index = it - v.begin();
         return index;
