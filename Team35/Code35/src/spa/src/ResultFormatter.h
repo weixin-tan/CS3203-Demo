@@ -4,7 +4,6 @@
 #include <string>
 #include <list>
 
-#include "EntityToElementConverter.h"
 #include "Result.h"
 
 class ResultFormatter {

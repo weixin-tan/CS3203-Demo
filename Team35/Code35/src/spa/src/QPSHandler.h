@@ -2,7 +2,6 @@
 #define SPA_QPSHANDLER_H
 
 #include "Clause.h"
-#include "EntityToElementConverter.h"
 #include "PatternHandler.h"
 #include "PkbGetter.h"
 #include "Result.h"
