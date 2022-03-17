@@ -907,8 +907,8 @@ bool checkVariableToSelect(const Entity& e){
   || e.eType == EntityType::NULL_ENTITY ){
     return false;
   }else{
-      if (e.eType == EntityType::Boolean){
-          return e.aType == EntityAttributeType::Null;
+      if (e.eType == EntityType::BOOLEAN){
+          return e.aType == EntityAttributeType::NULL_ATTRIBUTE;
       }
       return isIdent(e.name);
   }
