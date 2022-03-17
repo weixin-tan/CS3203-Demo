@@ -89,20 +89,20 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 
     //Check the statement types and extract required values
     switch (stmt.statementType) {
-    case StatementType::kassign_stmt: 
+    case StatementType::ASSIGNMENT_STMT: 
         current_statement.varModified = stmt.varName;
         current_statement.varUsed = stmt.expr;
         current_statement.constant = stmt.constant;
         current_statement.pattern = stmt.expression;
         break;
         //Pattern recogniser here
-    case StatementType::kread_stmt:
+    case StatementType::READ_STMT:
         current_statement.varModified = stmt.varName;
         break;
-    case StatementType::kprint_stmt:
+    case StatementType::PRINT_STMT:
         current_statement.varUsed = stmt.varName;
         break;
-    case StatementType::kif_stmt:
+    case StatementType::IF_STMT:
         current_statement.varUsed = stmt.condExpr;
         current_statement.constant = stmt.constant;
         current_statement.pattern = stmt.expression;
@@ -112,7 +112,7 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
         this->statementListReader(*stmt.ifelseStmtList.get(), stmt.stmtNo);
         break;
     
-    case StatementType::kwhile_stmt:
+    case StatementType::WHILE_STMT:
         current_statement.varUsed = stmt.condExpr;
         current_statement.constant = stmt.constant;
         current_statement.pattern = stmt.expression;
@@ -120,16 +120,16 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
         this->statementListReader(*stmt.whileStmtList.get(), stmt.stmtNo);
         break;
 
-    case StatementType::kcall_stmt:
+    case StatementType::CALL_STMT:
         current_statement.procedureCalled = stmt.procName;
         break;
     
         //Recursively read the inner statement stack. 	
-    case StatementType::kprocedure_stmt:
+    case StatementType::PROCEDURE_STMT:
         throw std::invalid_argument("procedure stmt type");
         break;
 
-    case StatementType::knone:
+    case StatementType::NONE_STMT:
         throw std::invalid_argument("none stmt type");
         break;
     default:

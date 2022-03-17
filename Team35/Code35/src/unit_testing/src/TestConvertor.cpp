@@ -19,7 +19,7 @@ TEST_CASE("Case 1") {
     //Creating the statement b = a
     Statement statement1;
     statement1.stmtNo = 1;
-    statement1.statementType = StatementType::kassign_stmt;
+    statement1.statementType = StatementType::ASSIGNMENT_STMT;
     statement1.expr = std::vector<std::string>{ "a" };
     statement1.procName = "procedure 1";
     statement1.varName = std::vector<std::string>{ "b" };
@@ -27,7 +27,7 @@ TEST_CASE("Case 1") {
     // Creating the statement a = a + 1
     Statement statement2;
     statement2.stmtNo = 2;
-    statement2.statementType = StatementType::kassign_stmt;
+    statement2.statementType = StatementType::ASSIGNMENT_STMT;
     statement2.expr = std::vector<std::string>{ "a" };
     statement2.procName = "procedure 1";
     statement2.varName = std::vector<std::string>{ "a" };
@@ -84,8 +84,8 @@ TEST_CASE("Case 1") {
     
 
     //"Checking if the statementType is correct") 
-    REQUIRE(parsedStatement1.statementType == StatementType::kassign_stmt);
-    REQUIRE(parsedStatement2.statementType == StatementType::kassign_stmt);
+    REQUIRE(parsedStatement1.statementType == StatementType::ASSIGNMENT_STMT);
+    REQUIRE(parsedStatement2.statementType == StatementType::ASSIGNMENT_STMT);
 } 
 
 //
@@ -116,33 +116,33 @@ TEST_CASE("Case 2") {
     StmtLst ifThenStmtLst1;
     ifThenStmtLst1.SetContainerType(ContainerType::kifthen);
 
-    ifThenStmtLst1.setNextStmt(Statement(7, StatementType::kassign_stmt, { "x" }, {}, {}, "f", { "100" }, nullptr, nullptr, nullptr));
-    ifThenStmtLst1.setNextStmt(Statement(8, StatementType::kassign_stmt, { "z" }, {}, {}, "f", { "5" }, nullptr, nullptr, nullptr));
+    ifThenStmtLst1.setNextStmt(Statement(7, StatementType::ASSIGNMENT_STMT, { "x" }, {}, {}, "f", { "100" }, nullptr, nullptr, nullptr));
+    ifThenStmtLst1.setNextStmt(Statement(8, StatementType::ASSIGNMENT_STMT, { "z" }, {}, {}, "f", { "5" }, nullptr, nullptr, nullptr));
 
     //ifelsestmt list
     StmtLst ifElseStmtLst1;
     ifElseStmtLst1.SetContainerType(ContainerType::kifelse);
 
-    ifElseStmtLst1.setNextStmt(Statement(9, StatementType::kassign_stmt, { "y" }, {}, {}, "f", { "100" }, nullptr, nullptr, nullptr));
-    ifElseStmtLst1.setNextStmt(Statement(10, StatementType::kassign_stmt, { "z" }, {}, {}, "f", { "0" }, nullptr, nullptr, nullptr));
+    ifElseStmtLst1.setNextStmt(Statement(9, StatementType::ASSIGNMENT_STMT, { "y" }, {}, {}, "f", { "100" }, nullptr, nullptr, nullptr));
+    ifElseStmtLst1.setNextStmt(Statement(10, StatementType::ASSIGNMENT_STMT, { "z" }, {}, {}, "f", { "0" }, nullptr, nullptr, nullptr));
 
     //while statement list
     StmtLst whileStmtLst1;
     whileStmtLst1.SetContainerType(ContainerType::kwhile);
 
-    whileStmtLst1.setNextStmt(Statement(5, StatementType::kread_stmt, { "z" }, {}, {}, "f", {}, nullptr, nullptr, nullptr));
+    whileStmtLst1.setNextStmt(Statement(5, StatementType::READ_STMT, { "z" }, {}, {}, "f", {}, nullptr, nullptr, nullptr));
     std::shared_ptr<StmtLst> SP_ifThenStmtLst1 = std::make_shared<StmtLst>(ifThenStmtLst1);
     std::shared_ptr<StmtLst> SP_ifElseStmtLst1 = std::make_shared<StmtLst>(ifElseStmtLst1);
     
-    whileStmtLst1.setNextStmt(Statement(6, StatementType::kif_stmt, {}, {}, { "z" }, "f", { "10" }, SP_ifThenStmtLst1, SP_ifElseStmtLst1, nullptr));
+    whileStmtLst1.setNextStmt(Statement(6, StatementType::IF_STMT, {}, {}, { "z" }, "f", { "10" }, SP_ifThenStmtLst1, SP_ifElseStmtLst1, nullptr));
 
     std::shared_ptr<StmtLst> SP_whileStmtLst1 = std::make_shared<StmtLst>(whileStmtLst1);
 
 
-    stmtCont.setNextStmt(Statement(1, StatementType::kassign_stmt, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
-    stmtCont.setNextStmt(Statement(2, StatementType::kassign_stmt, { "y" }, { "x" }, {}, "f", {}, nullptr, nullptr, nullptr));
-    stmtCont.setNextStmt(Statement(3, StatementType::kassign_stmt, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
-    stmtCont.setNextStmt(Statement(4, StatementType::kwhile_stmt, {}, {}, { "x" }, "f", { "4" }, nullptr, nullptr, SP_whileStmtLst1));
+    stmtCont.setNextStmt(Statement(1, StatementType::ASSIGNMENT_STMT, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
+    stmtCont.setNextStmt(Statement(2, StatementType::ASSIGNMENT_STMT, { "y" }, { "x" }, {}, "f", {}, nullptr, nullptr, nullptr));
+    stmtCont.setNextStmt(Statement(3, StatementType::ASSIGNMENT_STMT, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
+    stmtCont.setNextStmt(Statement(4, StatementType::WHILE_STMT, {}, {}, { "x" }, "f", { "4" }, nullptr, nullptr, SP_whileStmtLst1));
 
     //Creating the procedure
     Procedure procedure2;
@@ -207,16 +207,16 @@ TEST_CASE("Case 2") {
 
 
     //"Checking if statement type is correct"
-    REQUIRE(parsedStatement1.statementType == StatementType::kassign_stmt);
-    REQUIRE(parsedStatement2.statementType == StatementType::kassign_stmt);
-    REQUIRE(parsedStatement3.statementType == StatementType::kassign_stmt);
-    REQUIRE(parsedStatement4.statementType == StatementType::kwhile_stmt);
-    REQUIRE(parsedStatement5.statementType == StatementType::kread_stmt);
-    REQUIRE(parsedStatement6.statementType == StatementType::kif_stmt);
-    REQUIRE(parsedStatement7.statementType == StatementType::kassign_stmt);
-    REQUIRE(parsedStatement8.statementType == StatementType::kassign_stmt);
-    REQUIRE(parsedStatement9.statementType == StatementType::kassign_stmt);
-    REQUIRE(parsedStatement10.statementType == StatementType::kassign_stmt);
+    REQUIRE(parsedStatement1.statementType == StatementType::ASSIGNMENT_STMT);
+    REQUIRE(parsedStatement2.statementType == StatementType::ASSIGNMENT_STMT);
+    REQUIRE(parsedStatement3.statementType == StatementType::ASSIGNMENT_STMT);
+    REQUIRE(parsedStatement4.statementType == StatementType::WHILE_STMT);
+    REQUIRE(parsedStatement5.statementType == StatementType::READ_STMT);
+    REQUIRE(parsedStatement6.statementType == StatementType::IF_STMT);
+    REQUIRE(parsedStatement7.statementType == StatementType::ASSIGNMENT_STMT);
+    REQUIRE(parsedStatement8.statementType == StatementType::ASSIGNMENT_STMT);
+    REQUIRE(parsedStatement9.statementType == StatementType::ASSIGNMENT_STMT);
+    REQUIRE(parsedStatement10.statementType == StatementType::ASSIGNMENT_STMT);
     
 
     //"Checking if the used is correct"
@@ -278,9 +278,9 @@ TEST_CASE("Incorrect convertor statement type 1") {
     StmtLst stmtCont;
     stmtCont.SetContainerType(ContainerType::kprocedure);
 
-    stmtCont.setNextStmt(Statement(1, StatementType::kassign_stmt, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
-    stmtCont.setNextStmt(Statement(2, StatementType::kassign_stmt, { "y" }, { "x" }, {}, "f", {}, nullptr, nullptr, nullptr));
-    stmtCont.setNextStmt(Statement(3, StatementType::kprocedure_stmt, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
+    stmtCont.setNextStmt(Statement(1, StatementType::ASSIGNMENT_STMT, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
+    stmtCont.setNextStmt(Statement(2, StatementType::ASSIGNMENT_STMT, { "y" }, { "x" }, {}, "f", {}, nullptr, nullptr, nullptr));
+    stmtCont.setNextStmt(Statement(3, StatementType::PROCEDURE_STMT, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
 
     //Creating the procedure
     Procedure procedure3;
@@ -307,9 +307,9 @@ TEST_CASE("Incorrect convertor statement type 2") {
     StmtLst stmtCont;
     stmtCont.SetContainerType(ContainerType::kprocedure);
 
-    stmtCont.setNextStmt(Statement(1, StatementType::kassign_stmt, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
-    stmtCont.setNextStmt(Statement(2, StatementType::kassign_stmt, { "y" }, { "x" }, {}, "f", {}, nullptr, nullptr, nullptr));
-    stmtCont.setNextStmt(Statement(3, StatementType::knone, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
+    stmtCont.setNextStmt(Statement(1, StatementType::ASSIGNMENT_STMT, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
+    stmtCont.setNextStmt(Statement(2, StatementType::ASSIGNMENT_STMT, { "y" }, { "x" }, {}, "f", {}, nullptr, nullptr, nullptr));
+    stmtCont.setNextStmt(Statement(3, StatementType::NONE_STMT, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
 
     //Creating the procedure
     Procedure procedure3;
@@ -339,13 +339,13 @@ TEST_CASE("Incorrect convertor statement type 3 - in nested container") {
     //while statement list
     StmtLst whileStmtLst1;
     whileStmtLst1.SetContainerType(ContainerType::kwhile);
-    whileStmtLst1.setNextStmt(Statement(4, StatementType::knone, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
+    whileStmtLst1.setNextStmt(Statement(4, StatementType::NONE_STMT, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
 
     std::shared_ptr<StmtLst> SP_whileStmtLst2 = std::make_shared<StmtLst>(whileStmtLst1);
 
-    stmtCont.setNextStmt(Statement(1, StatementType::kassign_stmt, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
-    stmtCont.setNextStmt(Statement(2, StatementType::kassign_stmt, { "y" }, { "x" }, {}, "f", {}, nullptr, nullptr, nullptr));
-    stmtCont.setNextStmt(Statement(3, StatementType::kwhile_stmt, {}, {}, { "x" }, "f", { "4" }, nullptr, nullptr, SP_whileStmtLst2));
+    stmtCont.setNextStmt(Statement(1, StatementType::ASSIGNMENT_STMT, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
+    stmtCont.setNextStmt(Statement(2, StatementType::ASSIGNMENT_STMT, { "y" }, { "x" }, {}, "f", {}, nullptr, nullptr, nullptr));
+    stmtCont.setNextStmt(Statement(3, StatementType::WHILE_STMT, {}, {}, { "x" }, "f", { "4" }, nullptr, nullptr, SP_whileStmtLst2));
 
 
     //Creating the procedure

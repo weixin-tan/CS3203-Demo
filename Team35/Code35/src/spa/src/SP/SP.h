@@ -4,7 +4,7 @@
 #include "Tokeniser.h"
 #include "ConcreteSyntaxWithValidation.h"
 #include "Convertor.h"
-#include <PKB/PkbSetter.h>
+#include <../PKB/PkbSetter.h>
 #include <iostream>
 #include <fstream>
 #include <stdexcept>

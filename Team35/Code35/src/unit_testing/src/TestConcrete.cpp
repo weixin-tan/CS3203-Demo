@@ -18,9 +18,9 @@ TEST_CASE("Basic check 1") {
     Statement correct_statement_one = Statement();
     Statement correct_statement_two = Statement();
 
-    correct_statement_one.statementType = StatementType::kassign_stmt;
+    correct_statement_one.statementType = StatementType::ASSIGNMENT_STMT;
     correct_statement_one.stmtNo = 1;
-    correct_statement_two.statementType = StatementType::kprint_stmt;
+    correct_statement_two.statementType = StatementType::PRINT_STMT;
     correct_statement_two.stmtNo = 2;
 
     correct_stmtLst.SetContainerType(ContainerType::kprocedure);
@@ -48,9 +48,9 @@ TEST_CASE("Basic check 1") {
 
     Statement statement_one = stmtLst.getStmtAtIndex(0);
     REQUIRE(statement_one.stmtNo == 1);
-    REQUIRE(statement_one.statementType == StatementType::kassign_stmt);
+    REQUIRE(statement_one.statementType == StatementType::ASSIGNMENT_STMT);
 
     Statement statement_two = stmtLst.getStmtAtIndex(1);
     REQUIRE(statement_two.stmtNo == 2);
-    REQUIRE(statement_two.statementType == StatementType::kprint_stmt);
+    REQUIRE(statement_two.statementType == StatementType::PRINT_STMT);
 }

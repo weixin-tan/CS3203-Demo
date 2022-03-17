@@ -12,7 +12,7 @@
 #include "ParsedStatement.h"
 #include "Procedure.h"
 #include "ProcedureLst.h"
-#include <PKB/PkbSetter.h>
+#include <../PKB/PkbSetter.h>
 
 class Convertor {
 

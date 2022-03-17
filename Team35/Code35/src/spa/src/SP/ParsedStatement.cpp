@@ -10,7 +10,7 @@ ParsedStatement::ParsedStatement() {
     this->stmtNo = DEFAULT_NULL_STMT_NO; // statement number 
     this->ifStmtNo = DEFAULT_NULL_STMT_NO; //if statement number refers to the statement number of if
     this->whileStmtNo = DEFAULT_NULL_STMT_NO; // while statement number refers to the statement number of while
-    this->statementType = StatementType::knone; // what kind of statement it is.
+    this->statementType = StatementType::NONE_STMT; // what kind of statement it is.
     this->pattern = defaultPattern; 
     this->procedureName = DEFAULT_PROCEDURE_NAME;
     this->varUsed;
