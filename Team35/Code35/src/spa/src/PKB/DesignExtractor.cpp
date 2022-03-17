@@ -119,7 +119,7 @@ void DesignExtractor::extractParentT(std::map<int, std::set<int>>& parentTTable)
 
 void DesignExtractor::extractCalls(std::map<std::string, std::set<std::string>>& callsTable) {
     for (const auto&[stmtNo, parsedStatement] : db->stmtTable) {
-        if (parsedStatement.statementType == StatementType::kcall_stmt)
+        if (parsedStatement.statementType == StatementType::CALL_STMT)
             callsTable[parsedStatement.procedureName].insert(parsedStatement.procedureCalled);
     }
 }
@@ -148,7 +148,7 @@ void DesignExtractor::extractModifiesS(std::map<int, std::set<std::string>>& mod
     for (const auto&[_, parsedStatement] : db->stmtTable) {
         modifiesSTable[parsedStatement.stmtNo].insert(parsedStatement.varModified.begin(),
                                                        parsedStatement.varModified.end());
-        if (parsedStatement.statementType == StatementType::kcall_stmt) {
+        if (parsedStatement.statementType == StatementType::CALL_STMT) {
             auto modifiedVars = db->modifiesPTable.find(parsedStatement.procedureCalled);
             if (modifiedVars == db->modifiesPTable.end()) continue;
             modifiesSTable[parsedStatement.stmtNo].insert(modifiedVars->second.begin(), modifiedVars->second.end());
@@ -183,7 +183,7 @@ void DesignExtractor::extractUsesS(std::map<int, std::set<std::string>>& usesSTa
     for (const auto&[_, parsedStatement] : db->stmtTable) {
         usesSTable[parsedStatement.stmtNo].insert(parsedStatement.varUsed.begin(),
                                                        parsedStatement.varUsed.end());
-        if (parsedStatement.statementType == StatementType::kcall_stmt) {
+        if (parsedStatement.statementType == StatementType::CALL_STMT) {
             auto usedVars = db->usesPTable.find(parsedStatement.procedureCalled);
             if (usedVars == db->usesPTable.end()) continue;
             usesSTable[parsedStatement.stmtNo].insert(usedVars->second.begin(), usedVars->second.end());

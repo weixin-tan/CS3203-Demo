@@ -263,7 +263,7 @@ std::set<ProgramElement> PkbGetter::getAssignmentGivenExpression(const Expr expr
     for (it = db->exprTable.begin(); it != db->exprTable.end(); it++) {
         // if expression does not exist. 
         if (it->second.isNullExpr()) { continue; }
-        if (db->stmtTable[it->first].statementType != StatementType::kassign_stmt) { continue; }
+        if (db->stmtTable[it->first].statementType != StatementType::ASSIGNMENT_STMT) { continue; }
         if (expressionProcessor.fullfillsMatching(expr1, it->second, indicator)) {
             // get the assignment
             ProgramElement res = db->elementStmtTable.at(it->first);
@@ -335,7 +335,7 @@ std::set<ProgramElement> PkbGetter::getIfGivenVariable(const ProgramElement& var
         // contains the variable
         std::vector<std::string> varUsed = it->second.varUsed;
         bool isVarPresent = std::find(varUsed.begin(), varUsed.end(), variable.varName) != varUsed.end();
-        if (it->second.statementType == StatementType::kif_stmt &&
+        if (it->second.statementType == StatementType::IF_STMT &&
              isVarPresent){
             result.insert(db->elementStmtTable.at(it->first));
         }
@@ -352,7 +352,7 @@ std::set<ProgramElement> PkbGetter::getWhileGivenVariable(const ProgramElement& 
         // contains the variable
         std::vector<std::string> varUsed = it->second.varUsed;
         bool isVarPresent = std::find(varUsed.begin(), varUsed.end(), variable.varName) != varUsed.end();
-        if (it->second.statementType == StatementType::kwhile_stmt &&
+        if (it->second.statementType == StatementType::WHILE_STMT &&
             isVarPresent) {
             result.insert(db->elementStmtTable.at(it->first));
         }

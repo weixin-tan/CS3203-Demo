@@ -2,8 +2,8 @@
 #define SPA_PKBSETTER_H
 
 #include "DB.h"
-#include "../ParsedStatement.h"
-#include "../StatementType.h"
+#include "../SP/ParsedStatement.h"
+#include "../SP/StatementType.h"
 #include "ElementType.h"
 #include "DesignExtractor.h"
 #include "PkbValidator.h"

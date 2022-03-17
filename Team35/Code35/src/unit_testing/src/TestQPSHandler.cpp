@@ -32,17 +32,17 @@ ResultProcessor rp = ResultProcessor();
 //}
 
 std::vector<ParsedStatement> pStatements = {
-  ParsedStatement(1, ParsedStatement::DEFAULT_NULL_STMT_NO, ParsedStatement::DEFAULT_NULL_STMT_NO, StatementType::kassign_stmt, ParsedStatement::defaultPattern, "f", {}, {"x"}, {"5"},  ParsedStatement::DEFAULT_PROCEDURE_NAME, ParsedStatement::DEFAULT_NULL_STMT_NO),
-  ParsedStatement(2, ParsedStatement::DEFAULT_NULL_STMT_NO, ParsedStatement::DEFAULT_NULL_STMT_NO, StatementType::kassign_stmt, ParsedStatement::defaultPattern, "f", {"x"}, {"y"}, {}, ParsedStatement::DEFAULT_PROCEDURE_NAME, 1),
-  ParsedStatement(3, ParsedStatement::DEFAULT_NULL_STMT_NO, ParsedStatement::DEFAULT_NULL_STMT_NO, StatementType::kassign_stmt, ParsedStatement::defaultPattern, "f", {}, {"x"}, {"5"}, ParsedStatement::DEFAULT_PROCEDURE_NAME, 2),
-  ParsedStatement(4, ParsedStatement::DEFAULT_NULL_STMT_NO, ParsedStatement::DEFAULT_NULL_STMT_NO, StatementType::kwhile_stmt, ParsedStatement::defaultPattern, "f", {"x"}, {}, {"4"}, ParsedStatement::DEFAULT_PROCEDURE_NAME, 3),
-  ParsedStatement(5, ParsedStatement::DEFAULT_NULL_STMT_NO, 4, StatementType::kread_stmt, ParsedStatement::defaultPattern, "f", {}, {"z"}, {},ParsedStatement::DEFAULT_PROCEDURE_NAME, ParsedStatement::DEFAULT_NULL_STMT_NO),
-  ParsedStatement(6, ParsedStatement::DEFAULT_NULL_STMT_NO, 4, StatementType::kif_stmt, ParsedStatement::defaultPattern, "f", {"z"}, {}, {"10"}, ParsedStatement::DEFAULT_PROCEDURE_NAME, 5),
-  ParsedStatement(7, 6, ParsedStatement::DEFAULT_NULL_STMT_NO, StatementType::kassign_stmt, ParsedStatement::defaultPattern, "f", {}, {"x"}, {"100"}, ParsedStatement::DEFAULT_PROCEDURE_NAME, ParsedStatement::DEFAULT_NULL_STMT_NO),
-  ParsedStatement(8, 6, ParsedStatement::DEFAULT_NULL_STMT_NO, StatementType::kassign_stmt, ParsedStatement::defaultPattern, "f", {}, {"z"}, {"5"}, ParsedStatement::DEFAULT_PROCEDURE_NAME, 7),
-  ParsedStatement(9, 6, ParsedStatement::DEFAULT_NULL_STMT_NO, StatementType::kassign_stmt, ParsedStatement::defaultPattern, "f", {}, {"y"}, {"100"}, ParsedStatement::DEFAULT_PROCEDURE_NAME, ParsedStatement::DEFAULT_NULL_STMT_NO),
-  ParsedStatement(10, 6, ParsedStatement::DEFAULT_NULL_STMT_NO, StatementType::kassign_stmt, ParsedStatement::defaultPattern, "f", {}, {"z"}, {"0"}, ParsedStatement::DEFAULT_PROCEDURE_NAME, 9),
-  ParsedStatement(11, ParsedStatement::DEFAULT_NULL_STMT_NO, ParsedStatement::DEFAULT_NULL_STMT_NO, StatementType::kprint_stmt, ParsedStatement::defaultPattern, "f", {"x"}, {}, {}, ParsedStatement::DEFAULT_PROCEDURE_NAME, 4),
+  ParsedStatement(1, ParsedStatement::DEFAULT_NULL_STMT_NO, ParsedStatement::DEFAULT_NULL_STMT_NO, StatementType::ASSIGNMENT_STMT, ParsedStatement::defaultPattern, "f", {}, {"x"}, {"5"},  ParsedStatement::DEFAULT_PROCEDURE_NAME, ParsedStatement::DEFAULT_NULL_STMT_NO),
+  ParsedStatement(2, ParsedStatement::DEFAULT_NULL_STMT_NO, ParsedStatement::DEFAULT_NULL_STMT_NO, StatementType::ASSIGNMENT_STMT, ParsedStatement::defaultPattern, "f", {"x"}, {"y"}, {}, ParsedStatement::DEFAULT_PROCEDURE_NAME, 1),
+  ParsedStatement(3, ParsedStatement::DEFAULT_NULL_STMT_NO, ParsedStatement::DEFAULT_NULL_STMT_NO, StatementType::ASSIGNMENT_STMT, ParsedStatement::defaultPattern, "f", {}, {"x"}, {"5"}, ParsedStatement::DEFAULT_PROCEDURE_NAME, 2),
+  ParsedStatement(4, ParsedStatement::DEFAULT_NULL_STMT_NO, ParsedStatement::DEFAULT_NULL_STMT_NO, StatementType::WHILE_STMT, ParsedStatement::defaultPattern, "f", {"x"}, {}, {"4"}, ParsedStatement::DEFAULT_PROCEDURE_NAME, 3),
+  ParsedStatement(5, ParsedStatement::DEFAULT_NULL_STMT_NO, 4, StatementType::READ_STMT, ParsedStatement::defaultPattern, "f", {}, {"z"}, {},ParsedStatement::DEFAULT_PROCEDURE_NAME, ParsedStatement::DEFAULT_NULL_STMT_NO),
+  ParsedStatement(6, ParsedStatement::DEFAULT_NULL_STMT_NO, 4, StatementType::IF_STMT, ParsedStatement::defaultPattern, "f", {"z"}, {}, {"10"}, ParsedStatement::DEFAULT_PROCEDURE_NAME, 5),
+  ParsedStatement(7, 6, ParsedStatement::DEFAULT_NULL_STMT_NO, StatementType::ASSIGNMENT_STMT, ParsedStatement::defaultPattern, "f", {}, {"x"}, {"100"}, ParsedStatement::DEFAULT_PROCEDURE_NAME, ParsedStatement::DEFAULT_NULL_STMT_NO),
+  ParsedStatement(8, 6, ParsedStatement::DEFAULT_NULL_STMT_NO, StatementType::ASSIGNMENT_STMT, ParsedStatement::defaultPattern, "f", {}, {"z"}, {"5"}, ParsedStatement::DEFAULT_PROCEDURE_NAME, 7),
+  ParsedStatement(9, 6, ParsedStatement::DEFAULT_NULL_STMT_NO, StatementType::ASSIGNMENT_STMT, ParsedStatement::defaultPattern, "f", {}, {"y"}, {"100"}, ParsedStatement::DEFAULT_PROCEDURE_NAME, ParsedStatement::DEFAULT_NULL_STMT_NO),
+  ParsedStatement(10, 6, ParsedStatement::DEFAULT_NULL_STMT_NO, StatementType::ASSIGNMENT_STMT, ParsedStatement::defaultPattern, "f", {}, {"z"}, {"0"}, ParsedStatement::DEFAULT_PROCEDURE_NAME, 9),
+  ParsedStatement(11, ParsedStatement::DEFAULT_NULL_STMT_NO, ParsedStatement::DEFAULT_NULL_STMT_NO, StatementType::PRINT_STMT, ParsedStatement::defaultPattern, "f", {"x"}, {}, {}, ParsedStatement::DEFAULT_PROCEDURE_NAME, 4),
 };
 
 

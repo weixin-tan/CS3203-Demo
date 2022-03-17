@@ -1,15 +1,15 @@
 #include "PkbSetter.h"
-#include "../ParsedStatement.h"
-#include "../StatementType.h"
+#include "../SP/ParsedStatement.h"
+#include "../SP/StatementType.h"
 #include "ElementType.h"
 
 const std::map<StatementType, ElementType> PkbSetter::spTypeToElementTypeTable = {
-        {StatementType::kassign_stmt, ElementType::kAssignment},
-        {StatementType::kprint_stmt,  ElementType::kPrint},
-        {StatementType::kcall_stmt,   ElementType::kCall},
-        {StatementType::kif_stmt,     ElementType::kIf},
-        {StatementType::kwhile_stmt,  ElementType::kWhile},
-        {StatementType::kread_stmt,   ElementType::kRead}
+        {StatementType::ASSIGNMENT_STMT, ElementType::kAssignment},
+        {StatementType::PRINT_STMT,  ElementType::kPrint},
+        {StatementType::CALL_STMT,   ElementType::kCall},
+        {StatementType::IF_STMT,     ElementType::kIf},
+        {StatementType::WHILE_STMT,  ElementType::kWhile},
+        {StatementType::READ_STMT,   ElementType::kRead}
 };
 
 PkbSetter::PkbSetter(DB* db) : db(db), designExtractor(db), pkbValidator(db) {}

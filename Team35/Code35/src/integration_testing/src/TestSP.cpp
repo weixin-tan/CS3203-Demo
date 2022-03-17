@@ -55,9 +55,9 @@ TEST_CASE("SP round 0 iteration test") {
     REQUIRE(parsedStatement3.preceding == 2);
 
     //"Checking if the statementType is correct"
-    REQUIRE(parsedStatement1.statementType == StatementType::kassign_stmt);
-    REQUIRE(parsedStatement2.statementType == StatementType::kassign_stmt);
-    REQUIRE(parsedStatement3.statementType == StatementType::kassign_stmt);
+    REQUIRE(parsedStatement1.statementType == StatementType::ASSIGNMENT_STMT);
+    REQUIRE(parsedStatement2.statementType == StatementType::ASSIGNMENT_STMT);
+    REQUIRE(parsedStatement3.statementType == StatementType::ASSIGNMENT_STMT);
 
 
     //"Checking if the procedure is correct") 
@@ -139,17 +139,17 @@ TEST_CASE("SP round 1 basic iteration test") {
 
 
     //"Checking if statement type is correct"
-    REQUIRE(parsedStatement1.statementType == StatementType::kassign_stmt);
-    REQUIRE(parsedStatement2.statementType == StatementType::kassign_stmt);
-    REQUIRE(parsedStatement3.statementType == StatementType::kassign_stmt);
-    REQUIRE(parsedStatement4.statementType == StatementType::kwhile_stmt);
-    REQUIRE(parsedStatement5.statementType == StatementType::kread_stmt);
-    REQUIRE(parsedStatement6.statementType == StatementType::kif_stmt);
-    REQUIRE(parsedStatement7.statementType == StatementType::kassign_stmt);
-    REQUIRE(parsedStatement8.statementType == StatementType::kassign_stmt);
-    REQUIRE(parsedStatement9.statementType == StatementType::kassign_stmt);
-    REQUIRE(parsedStatement10.statementType == StatementType::kassign_stmt);
-    REQUIRE(parsedStatement11.statementType == StatementType::kprint_stmt);
+    REQUIRE(parsedStatement1.statementType == StatementType::ASSIGNMENT_STMT);
+    REQUIRE(parsedStatement2.statementType == StatementType::ASSIGNMENT_STMT);
+    REQUIRE(parsedStatement3.statementType == StatementType::ASSIGNMENT_STMT);
+    REQUIRE(parsedStatement4.statementType == StatementType::WHILE_STMT);
+    REQUIRE(parsedStatement5.statementType == StatementType::READ_STMT);
+    REQUIRE(parsedStatement6.statementType == StatementType::IF_STMT);
+    REQUIRE(parsedStatement7.statementType == StatementType::ASSIGNMENT_STMT);
+    REQUIRE(parsedStatement8.statementType == StatementType::ASSIGNMENT_STMT);
+    REQUIRE(parsedStatement9.statementType == StatementType::ASSIGNMENT_STMT);
+    REQUIRE(parsedStatement10.statementType == StatementType::ASSIGNMENT_STMT);
+    REQUIRE(parsedStatement11.statementType == StatementType::PRINT_STMT);
 
 
     //"Checking if the used is correct"

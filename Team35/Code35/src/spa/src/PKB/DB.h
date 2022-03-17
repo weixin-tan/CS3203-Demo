@@ -4,7 +4,7 @@
 #include <map>
 #include <set>
 #include <string>
-#include "../ParsedStatement.h"
+#include "../SP/ParsedStatement.h"
 #include "ElementType.h"
 #include "ProgramElement.h"
 
