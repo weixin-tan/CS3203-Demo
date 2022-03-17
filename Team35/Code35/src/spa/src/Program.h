@@ -1,7 +1,7 @@
-#include "ProcedureLst.h"
-
 #ifndef PROGRAM_H
 #define PROGRAM_H
+
+#include "ProcedureLst.h"
 
 class Program {
 private:

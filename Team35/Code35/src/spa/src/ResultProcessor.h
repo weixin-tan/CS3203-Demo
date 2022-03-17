@@ -5,6 +5,8 @@
 #include "Result.h"
 #include "Group.h"
 #include <vector>
+#include <iostream>
+#include "Result.h"
 
 class ResultProcessor {
  public:

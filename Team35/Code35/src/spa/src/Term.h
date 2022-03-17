@@ -1,9 +1,10 @@
+#ifndef TERM_H
+#define TERM_H
+
 #include <memory>
 #include "Factor.h"
 #include "TokenType.h"
 
-#ifndef TERM_H
-#define TERM_H
 
 class Term {
 private:

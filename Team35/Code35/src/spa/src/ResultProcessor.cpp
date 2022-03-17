@@ -1,4 +1,3 @@
-#include <iostream>
 #include "ResultProcessor.h"
 #include "Table.h"
 #include <set>

@@ -1,4 +1,3 @@
-#include <list>
 #include "ResultFormatter.h"
 
 ResultFormatter::ResultFormatter() = default;

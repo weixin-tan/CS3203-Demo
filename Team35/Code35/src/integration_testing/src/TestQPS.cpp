@@ -57,17 +57,17 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
     pkb.getSetter()->insertStmts(stmtlsts);
     std::set<ProgramElement> statements;
 
-    ProgramElement s1 = ProgramElement::createStatement(ElementType::kStatement, 1);
-    ProgramElement s2 = ProgramElement::createStatement(ElementType::kStatement, 2);
-    ProgramElement s3 = ProgramElement::createStatement(ElementType::kStatement, 3);
-    ProgramElement s4 = ProgramElement::createStatement(ElementType::kStatement, 4);
-    ProgramElement s5 = ProgramElement::createStatement(ElementType::kStatement, 5);
-    ProgramElement s6 = ProgramElement::createStatement(ElementType::kStatement, 6);
-    ProgramElement s7 = ProgramElement::createStatement(ElementType::kStatement, 7);
-    ProgramElement s8 = ProgramElement::createStatement(ElementType::kStatement, 8);
-    ProgramElement s9 = ProgramElement::createStatement(ElementType::kStatement, 9);
-    ProgramElement s10 = ProgramElement::createStatement(ElementType::kStatement, 10);
-    ProgramElement s11 = ProgramElement::createStatement(ElementType::kStatement, 11);
+    ProgramElement s1 = ProgramElement::createStatement(ElementType::STATEMENT, 1);
+    ProgramElement s2 = ProgramElement::createStatement(ElementType::STATEMENT, 2);
+    ProgramElement s3 = ProgramElement::createStatement(ElementType::STATEMENT, 3);
+    ProgramElement s4 = ProgramElement::createStatement(ElementType::STATEMENT, 4);
+    ProgramElement s5 = ProgramElement::createStatement(ElementType::STATEMENT, 5);
+    ProgramElement s6 = ProgramElement::createStatement(ElementType::STATEMENT, 6);
+    ProgramElement s7 = ProgramElement::createStatement(ElementType::STATEMENT, 7);
+    ProgramElement s8 = ProgramElement::createStatement(ElementType::STATEMENT, 8);
+    ProgramElement s9 = ProgramElement::createStatement(ElementType::STATEMENT, 9);
+    ProgramElement s10 = ProgramElement::createStatement(ElementType::STATEMENT, 10);
+    ProgramElement s11 = ProgramElement::createStatement(ElementType::STATEMENT, 11);
     statements.insert(s1);
     statements.insert(s2);
     statements.insert(s3);
@@ -102,13 +102,13 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
 
 
     std::set<ProgramElement> assignments;
-    ProgramElement a1 = ProgramElement::createStatement(ElementType::kAssignment, 1);
-    ProgramElement a2 = ProgramElement::createStatement(ElementType::kAssignment, 2);
-    ProgramElement a3 = ProgramElement::createStatement(ElementType::kAssignment, 3);
-    ProgramElement a7 = ProgramElement::createStatement(ElementType::kAssignment, 7);
-    ProgramElement a8 = ProgramElement::createStatement(ElementType::kAssignment, 8);
-    ProgramElement a9 = ProgramElement::createStatement(ElementType::kAssignment, 9);
-    ProgramElement a10 = ProgramElement::createStatement(ElementType::kAssignment, 10);
+    ProgramElement a1 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 1);
+    ProgramElement a2 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 2);
+    ProgramElement a3 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 3);
+    ProgramElement a7 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 7);
+    ProgramElement a8 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 8);
+    ProgramElement a9 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 9);
+    ProgramElement a10 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 10);
     assignments.insert(a1);
     assignments.insert(a2);
     assignments.insert(a3);
@@ -119,15 +119,15 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
 
 
     std::set<ProgramElement> prints;
-    ProgramElement print1 = ProgramElement::createStatement(ElementType::kPrint, 11);
+    ProgramElement print1 = ProgramElement::createStatement(ElementType::PRINT, 11);
     prints.insert(print1);
 
     std::set<ProgramElement> reads;
-    ProgramElement r1 = ProgramElement::createStatement(ElementType::kRead, 5);
+    ProgramElement r1 = ProgramElement::createStatement(ElementType::READ, 5);
     reads.insert(r1);
 
     std::set<ProgramElement> whiles;
-    ProgramElement w1 = ProgramElement::createStatement(ElementType::kWhile, 4);
+    ProgramElement w1 = ProgramElement::createStatement(ElementType::WHILE, 4);
     whiles.insert(w1);
 
     SECTION("NO CLAUSES") {
@@ -223,7 +223,7 @@ TEST_CASE("QPS Handler and Result Formatter") { //Work in progress
         expectedResult3.insert(a3);
         expectedResult3.insert(a7);
         std::set<ProgramElement> expectedResult8;
-        expectedResult8.insert(ProgramElement::createStatement(ElementType::kIf, 6));
+        expectedResult8.insert(ProgramElement::createStatement(ElementType::IF, 6));
         std::set<ProgramElement> expectedResult9;
         expectedResult9.insert(vx);
         expectedResult9.insert(vz);

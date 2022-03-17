@@ -24,7 +24,7 @@ TEST_CASE("PKB Basic") {
     SECTION("General") {
         SECTION("getEntity") {
             SECTION("Statements") {
-                std::set<ProgramElement> result = pkb_getter->getEntity(ElementType::kStatement);
+                std::set<ProgramElement> result = pkb_getter->getEntity(ElementType::STATEMENT);
                 std::set<ProgramElement> expected = {
                         tcData.stmt.at(1),
                         tcData.stmt.at(2),
@@ -41,7 +41,7 @@ TEST_CASE("PKB Basic") {
                 REQUIRE(result == expected);
             }
             SECTION("Variables") {
-                std::set<ProgramElement> result = pkb_getter->getEntity(ElementType::kVariable);
+                std::set<ProgramElement> result = pkb_getter->getEntity(ElementType::VARIABLE);
                 std::set<ProgramElement> expected = {
                         tcData.vars.at("x"),
                         tcData.vars.at("y"),
@@ -51,7 +51,7 @@ TEST_CASE("PKB Basic") {
                 REQUIRE(result == expected);
             }
             SECTION("Assignments") {
-                std::set<ProgramElement> result = pkb_getter->getEntity(ElementType::kAssignment);
+                std::set<ProgramElement> result = pkb_getter->getEntity(ElementType::ASSIGNMENT);
                 std::set<ProgramElement> expected = {
                         tcData.stmt.at(1),
                         tcData.stmt.at(2),
@@ -65,7 +65,7 @@ TEST_CASE("PKB Basic") {
                 REQUIRE(result == expected);
             }
             SECTION("Ifs") {
-                std::set<ProgramElement> result = pkb_getter->getEntity(ElementType::kIf);
+                std::set<ProgramElement> result = pkb_getter->getEntity(ElementType::IF);
                 std::set<ProgramElement> expected = {
                         tcData.stmt.at(6),
                 };
@@ -73,7 +73,7 @@ TEST_CASE("PKB Basic") {
                 REQUIRE(result == expected);
             }
             SECTION("Whiles") {
-                std::set<ProgramElement> result = pkb_getter->getEntity(ElementType::kWhile);
+                std::set<ProgramElement> result = pkb_getter->getEntity(ElementType::WHILE);
                 std::set<ProgramElement> expected = {
                         tcData.stmt.at(4),
                 };
@@ -81,7 +81,7 @@ TEST_CASE("PKB Basic") {
                 REQUIRE(result == expected);
             }
             SECTION("Read") {
-                std::set<ProgramElement> result = pkb_getter->getEntity(ElementType::kRead);
+                std::set<ProgramElement> result = pkb_getter->getEntity(ElementType::READ);
                 std::set<ProgramElement> expected = {
                         tcData.stmt.at(5)
                 };
@@ -89,7 +89,7 @@ TEST_CASE("PKB Basic") {
                 REQUIRE(result == expected);
             }
             SECTION("Print") {
-                std::set<ProgramElement> result = pkb_getter->getEntity(ElementType::kPrint);
+                std::set<ProgramElement> result = pkb_getter->getEntity(ElementType::PRINT);
                 std::set<ProgramElement> expected = {
                         tcData.stmt.at(11)
                 };
@@ -101,32 +101,32 @@ TEST_CASE("PKB Basic") {
     SECTION("Modifies") {
         SECTION("isRelationship") {
             SECTION("Statement and Variable") {
-                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kModifies,
-                                                   ProgramElement::createStatement(ElementType::kAssignment, 1),
+                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::MODIFIES,
+                                                   ProgramElement::createStatement(ElementType::ASSIGNMENT, 1),
                                                    ProgramElement::createVariable("x"))
                                 == true);
-                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kModifies,
-                                                   ProgramElement::createStatement(ElementType::kAssignment, 2),
+                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::MODIFIES,
+                                                   ProgramElement::createStatement(ElementType::ASSIGNMENT, 2),
                                                    ProgramElement::createVariable("y"))
                                 == true);
-                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kModifies,
-                                                   ProgramElement::createStatement(ElementType::kWhile, 4),
+                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::MODIFIES,
+                                                   ProgramElement::createStatement(ElementType::WHILE, 4),
                                                    ProgramElement::createVariable("y"))
                                 == true);
-                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kModifies,
-                                                   ProgramElement::createStatement(ElementType::kIf, 6),
+                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::MODIFIES,
+                                                   ProgramElement::createStatement(ElementType::IF, 6),
                                                    ProgramElement::createVariable("y"))
                                 == true);
             }
             SECTION("Procedure and Variable") {
-                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kModifies,
+                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::MODIFIES,
                                                    ProgramElement::createProcedure("f"),
                                                    ProgramElement::createVariable("z")));
             }
         }
         SECTION("getLeftSide") {
             SECTION("Assignment given Variable") {
-                std::set<ProgramElement> result = pkb_getter->getLeftSide(PkbRelationshipType::kModifies, ProgramElement::createVariable("x"), ElementType::kAssignment);
+                std::set<ProgramElement> result = pkb_getter->getLeftSide(PkbRelationshipType::MODIFIES, ProgramElement::createVariable("x"), ElementType::ASSIGNMENT);
 
                 std::set<ProgramElement> expected = {
                         tcData.stmt.at(1),
@@ -138,7 +138,7 @@ TEST_CASE("PKB Basic") {
             }
             SECTION("If given Variable") {
                 std::set<ProgramElement> result =
-                        pkb_getter->getLeftSide(PkbRelationshipType::kModifies, ProgramElement::createVariable("x"), ElementType::kIf);
+                        pkb_getter->getLeftSide(PkbRelationshipType::MODIFIES, ProgramElement::createVariable("x"), ElementType::IF);
 
                 std::set<ProgramElement> expected = {
                         tcData.stmt.at(6),
@@ -147,7 +147,7 @@ TEST_CASE("PKB Basic") {
             }
             SECTION("While given Variable") {
                 std::set<ProgramElement> result =
-                        pkb_getter->getLeftSide(PkbRelationshipType::kModifies, ProgramElement::createVariable("x"), ElementType::kWhile);
+                        pkb_getter->getLeftSide(PkbRelationshipType::MODIFIES, ProgramElement::createVariable("x"), ElementType::WHILE);
 
                 std::set<ProgramElement> expected = {
                         tcData.stmt.at(4)
@@ -156,7 +156,7 @@ TEST_CASE("PKB Basic") {
             }
             SECTION("Statement given Variable") {
                 std::set<ProgramElement> result =
-                        pkb_getter->getLeftSide(PkbRelationshipType::kModifies, ProgramElement::createVariable("z"), ElementType::kStatement);
+                        pkb_getter->getLeftSide(PkbRelationshipType::MODIFIES, ProgramElement::createVariable("z"), ElementType::STATEMENT);
                 std::set<ProgramElement> expected = {
                         tcData.stmt.at(4),
                         tcData.stmt.at(5),
@@ -169,21 +169,21 @@ TEST_CASE("PKB Basic") {
         }
         SECTION("getRightSide") {
             SECTION("Variables given Assignment") {
-                std::set<ProgramElement> result = pkb_getter->getRightSide(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kAssignment, 1), ElementType::kVariable);
+                std::set<ProgramElement> result = pkb_getter->getRightSide(PkbRelationshipType::MODIFIES, ProgramElement::createStatement(ElementType::ASSIGNMENT, 1), ElementType::VARIABLE);
                 std::set<ProgramElement> expected = {
                         tcData.vars.at("x")
                 };
 
                 REQUIRE(result == expected);
 
-                result = pkb_getter->getRightSide(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kAssignment, 2), ElementType::kVariable);
+                result = pkb_getter->getRightSide(PkbRelationshipType::MODIFIES, ProgramElement::createStatement(ElementType::ASSIGNMENT, 2), ElementType::VARIABLE);
                 expected = {
                         tcData.vars.at("y")
                 };
                 REQUIRE(result == expected);
             }
             SECTION("Variables given If") {
-                std::set<ProgramElement> result = pkb_getter->getRightSide(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kIf, 6), ElementType::kVariable);
+                std::set<ProgramElement> result = pkb_getter->getRightSide(PkbRelationshipType::MODIFIES, ProgramElement::createStatement(ElementType::IF, 6), ElementType::VARIABLE);
                 std::set<ProgramElement> expected = {
                         tcData.vars.at("x"),
                         tcData.vars.at("z"),
@@ -192,7 +192,7 @@ TEST_CASE("PKB Basic") {
                 REQUIRE(result == expected);
             }
             SECTION("Variables given While") {
-                std::set<ProgramElement> result = pkb_getter->getRightSide(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kWhile, 4), ElementType::kVariable);
+                std::set<ProgramElement> result = pkb_getter->getRightSide(PkbRelationshipType::MODIFIES, ProgramElement::createStatement(ElementType::WHILE, 4), ElementType::VARIABLE);
                 std::set<ProgramElement> expected = {
                         tcData.vars.at("x"),
                         tcData.vars.at("z"),
@@ -201,13 +201,13 @@ TEST_CASE("PKB Basic") {
                 REQUIRE(result == expected);
             }
             SECTION("Variables given Statement") {
-                std::set<ProgramElement> result = pkb_getter->getRightSide(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kStatement, 1), ElementType::kVariable);
+                std::set<ProgramElement> result = pkb_getter->getRightSide(PkbRelationshipType::MODIFIES, ProgramElement::createStatement(ElementType::STATEMENT, 1), ElementType::VARIABLE);
                 std::set<ProgramElement> expected = {ProgramElement::createVariable("x")};
 
                 REQUIRE(result == expected);
 
                 // check that it traces to children without being told
-                result = pkb_getter->getRightSide(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kStatement, 4), ElementType::kVariable);
+                result = pkb_getter->getRightSide(PkbRelationshipType::MODIFIES, ProgramElement::createStatement(ElementType::STATEMENT, 4), ElementType::VARIABLE);
                 expected = {
                         tcData.vars.at("x"),
                         tcData.vars.at("z"),
@@ -216,7 +216,7 @@ TEST_CASE("PKB Basic") {
                 REQUIRE(result == expected);
             }
             SECTION("Variables given Procedure") {
-                std::set<ProgramElement> result = pkb_getter->getRightSide(PkbRelationshipType::kModifies, ProgramElement::createProcedure("f"), ElementType::kVariable);
+                std::set<ProgramElement> result = pkb_getter->getRightSide(PkbRelationshipType::MODIFIES, ProgramElement::createProcedure("f"), ElementType::VARIABLE);
                 std::set<ProgramElement> expected = {
                         tcData.vars.at("x"),
                         tcData.vars.at("y"),
@@ -227,37 +227,37 @@ TEST_CASE("PKB Basic") {
         }
     }
     SECTION("Uses") {
-        PkbRelationshipType relationshipType = PkbRelationshipType::kUses;
+        PkbRelationshipType relationshipType = PkbRelationshipType::USES;
         SECTION("isRelationship") {
             SECTION("Assignment Variable") {
-                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kUses, ProgramElement::createStatement(ElementType::kAssignment, 2), ProgramElement::createVariable("x")));
+                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::ASSIGNMENT, 2), ProgramElement::createVariable("x")));
 
-                REQUIRE(!pkb_getter->isRelationship(PkbRelationshipType::kUses, ProgramElement::createStatement(ElementType::kAssignment, 2), ProgramElement::createVariable("y")));
+                REQUIRE(!pkb_getter->isRelationship(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::ASSIGNMENT, 2), ProgramElement::createVariable("y")));
             }
             SECTION("If Variable") {
-                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kUses, ProgramElement::createStatement(ElementType::kIf, 6), ProgramElement::createVariable("z")));
+                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::IF, 6), ProgramElement::createVariable("z")));
             }
             SECTION("While Variable") {
-                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kUses, ProgramElement::createStatement(ElementType::kWhile, 4), ProgramElement::createVariable("x")));
+                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::WHILE, 4), ProgramElement::createVariable("x")));
 
-                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kUses, ProgramElement::createStatement(ElementType::kWhile, 4), ProgramElement::createVariable("z")));
+                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::WHILE, 4), ProgramElement::createVariable("z")));
             }
             SECTION("Statement Variable") {
-                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kUses, ProgramElement::createStatement(ElementType::kStatement, 2), ProgramElement::createVariable("x")));
+                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::STATEMENT, 2), ProgramElement::createVariable("x")));
 
-                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kUses, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createVariable("x")));
+                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::STATEMENT, 4), ProgramElement::createVariable("x")));
 
-                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kUses, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createVariable("z")));
+                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::STATEMENT, 4), ProgramElement::createVariable("z")));
 
-                REQUIRE(!pkb_getter->isRelationship(PkbRelationshipType::kUses, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createVariable("y")));
+                REQUIRE(!pkb_getter->isRelationship(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::STATEMENT, 4), ProgramElement::createVariable("y")));
             }
             SECTION("Procedure Variable") {
-                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kUses, ProgramElement::createProcedure("f"), ProgramElement::createVariable("x")));
+                REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::USES, ProgramElement::createProcedure("f"), ProgramElement::createVariable("x")));
             }
         }
         SECTION("getLeftSide") {
             SECTION("Assignment given Variable") {
-                std::set<ProgramElement> result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createVariable("x"), ElementType::kAssignment);
+                std::set<ProgramElement> result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createVariable("x"), ElementType::ASSIGNMENT);
 
                 std::set<ProgramElement> expected = {
                         tcData.stmt.at(2),
@@ -266,7 +266,7 @@ TEST_CASE("PKB Basic") {
                 REQUIRE(result == expected);
             }
             SECTION("Print given Variable") {
-                std::set<ProgramElement> result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createVariable("x"), ElementType::kPrint);
+                std::set<ProgramElement> result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createVariable("x"), ElementType::PRINT);
 
                 std::set<ProgramElement> expected = {
                         tcData.stmt.at(11),
@@ -275,7 +275,7 @@ TEST_CASE("PKB Basic") {
                 REQUIRE(result == expected);
             }
             SECTION("If given Variable") {
-                std::set<ProgramElement> result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createVariable("z"), ElementType::kIf);
+                std::set<ProgramElement> result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createVariable("z"), ElementType::IF);
 
                 std::set<ProgramElement> expected = {
                         tcData.stmt.at(6),
@@ -284,7 +284,7 @@ TEST_CASE("PKB Basic") {
                 REQUIRE(result == expected);
             }
             SECTION("While given Variable") {
-                std::set<ProgramElement> result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createVariable("z"), ElementType::kWhile);
+                std::set<ProgramElement> result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createVariable("z"), ElementType::WHILE);
 
                 std::set<ProgramElement> expected = {
                         tcData.stmt.at(4),
@@ -293,7 +293,7 @@ TEST_CASE("PKB Basic") {
                 REQUIRE(result == expected);
             }
             SECTION("Statements given Variable") {
-                std::set<ProgramElement> result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createVariable("z"), ElementType::kStatement);
+                std::set<ProgramElement> result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createVariable("z"), ElementType::STATEMENT);
 
                 std::set<ProgramElement> expected = {
                         tcData.stmt.at(4),
@@ -302,7 +302,7 @@ TEST_CASE("PKB Basic") {
 
                 REQUIRE(result == expected);
 
-                result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createVariable("x"), ElementType::kStatement);
+                result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createVariable("x"), ElementType::STATEMENT);
 
                 expected = {
                         tcData.stmt.at(2),
@@ -315,7 +315,7 @@ TEST_CASE("PKB Basic") {
         }
         SECTION("getRightSide") {
             SECTION("Variables given Assignment") {
-                std::set<ProgramElement> result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::kAssignment, 2), ElementType::kVariable);
+                std::set<ProgramElement> result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::ASSIGNMENT, 2), ElementType::VARIABLE);
                 std::set<ProgramElement> expected = {
                         tcData.vars.at("x"),
                 };
@@ -323,7 +323,7 @@ TEST_CASE("PKB Basic") {
                 REQUIRE(result == expected);
             }
             SECTION("Variables given If") {
-                std::set<ProgramElement> result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::kIf, 6), ElementType::kVariable);
+                std::set<ProgramElement> result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::IF, 6), ElementType::VARIABLE);
                 std::set<ProgramElement> expected = {
                         tcData.vars.at("z")
                 };
@@ -331,7 +331,7 @@ TEST_CASE("PKB Basic") {
                 REQUIRE(result == expected);
             }
             SECTION("Variables given While") {
-                std::set<ProgramElement> result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::kWhile, 4), ElementType::kVariable);
+                std::set<ProgramElement> result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::WHILE, 4), ElementType::VARIABLE);
                 std::set<ProgramElement> expected = {
                         tcData.vars.at("z"),
                         tcData.vars.at("x")
@@ -340,14 +340,14 @@ TEST_CASE("PKB Basic") {
                 REQUIRE(result == expected);
             }
             SECTION("Variables given Statement") {
-                std::set<ProgramElement> result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::kStatement, 2), ElementType::kVariable);
+                std::set<ProgramElement> result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::STATEMENT, 2), ElementType::VARIABLE);
                 std::set<ProgramElement> expected = {
                         tcData.vars.at("x")
                 };
 
                 REQUIRE(result == expected);
 
-                result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::kStatement, 4), ElementType::kVariable);
+                result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::STATEMENT, 4), ElementType::VARIABLE);
                 expected = {
                         tcData.vars.at("z"),
                         tcData.vars.at("x")
@@ -355,14 +355,14 @@ TEST_CASE("PKB Basic") {
 
                 REQUIRE(result == expected);
 
-                result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::kStatement, 6), ElementType::kVariable);
+                result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::STATEMENT, 6), ElementType::VARIABLE);
                 expected = {
                         tcData.vars.at("z")
                 };
 
                 REQUIRE(result == expected);
 
-                result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::kStatement, 11), ElementType::kVariable);
+                result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::STATEMENT, 11), ElementType::VARIABLE);
                 expected = {
                         tcData.vars.at("x")
                 };
@@ -370,7 +370,7 @@ TEST_CASE("PKB Basic") {
                 REQUIRE(result == expected);
             }
             SECTION("Variables given Procedure") {
-                std::set<ProgramElement> result = pkb_getter->getRightSide(relationshipType, ProgramElement::createProcedure("f"), ElementType::kVariable);
+                std::set<ProgramElement> result = pkb_getter->getRightSide(relationshipType, ProgramElement::createProcedure("f"), ElementType::VARIABLE);
                 std::set<ProgramElement> expected = {
                         tcData.vars.at("z"),
                         tcData.vars.at("x")
@@ -382,41 +382,41 @@ TEST_CASE("PKB Basic") {
     }
     SECTION("Follows") {
         SECTION("isRelationship") {
-            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kFollows, ProgramElement::createStatement(ElementType::kAssignment, 7), ProgramElement::createStatement(ElementType::kAssignment, 8)));
-            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kFollows, ProgramElement::createStatement(ElementType::kWhile, 4), ProgramElement::createStatement(ElementType::kPrint, 11)));
-            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kFollows, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createStatement(ElementType::kStatement, 11)));
-            REQUIRE(!pkb_getter->isRelationship(PkbRelationshipType::kFollows, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createStatement(ElementType::kStatement, 5)));
+            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::FOLLOWS, ProgramElement::createStatement(ElementType::ASSIGNMENT, 7), ProgramElement::createStatement(ElementType::ASSIGNMENT, 8)));
+            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::FOLLOWS, ProgramElement::createStatement(ElementType::WHILE, 4), ProgramElement::createStatement(ElementType::PRINT, 11)));
+            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::FOLLOWS, ProgramElement::createStatement(ElementType::STATEMENT, 4), ProgramElement::createStatement(ElementType::STATEMENT, 11)));
+            REQUIRE(!pkb_getter->isRelationship(PkbRelationshipType::FOLLOWS, ProgramElement::createStatement(ElementType::STATEMENT, 4), ProgramElement::createStatement(ElementType::STATEMENT, 5)));
         }
         SECTION("getLeftSide") {
-            std::set<ProgramElement> result = pkb_getter->getLeftSide(PkbRelationshipType::kFollows, ProgramElement::createStatement(ElementType::kStatement, 11), ElementType::kStatement);
+            std::set<ProgramElement> result = pkb_getter->getLeftSide(PkbRelationshipType::FOLLOWS, ProgramElement::createStatement(ElementType::STATEMENT, 11), ElementType::STATEMENT);
             std::set<ProgramElement> expected = {
                     tcData.stmt.at(4),
             };
             REQUIRE(result == expected);
 
-            result = pkb_getter->getLeftSide(PkbRelationshipType::kFollows, ProgramElement::createStatement(ElementType::kStatement, 11), ElementType::kWhile);
+            result = pkb_getter->getLeftSide(PkbRelationshipType::FOLLOWS, ProgramElement::createStatement(ElementType::STATEMENT, 11), ElementType::WHILE);
             expected = {
                     tcData.stmt.at(4),
             };
             REQUIRE(result == expected);
 
-            result = pkb_getter->getLeftSide(PkbRelationshipType::kFollows, ProgramElement::createStatement(ElementType::kStatement, 1), ElementType::kStatement);
+            result = pkb_getter->getLeftSide(PkbRelationshipType::FOLLOWS, ProgramElement::createStatement(ElementType::STATEMENT, 1), ElementType::STATEMENT);
             REQUIRE(result.empty());
         }
         SECTION("getRightSide") {
-            std::set<ProgramElement> result = pkb_getter->getRightSide(PkbRelationshipType::kFollows, ProgramElement::createStatement(ElementType::kStatement, 4), ElementType::kStatement);
+            std::set<ProgramElement> result = pkb_getter->getRightSide(PkbRelationshipType::FOLLOWS, ProgramElement::createStatement(ElementType::STATEMENT, 4), ElementType::STATEMENT);
             std::set<ProgramElement> expected = {
                     tcData.stmt.at(11)
             };
             REQUIRE(result == expected);
 
-            result = pkb_getter->getRightSide(PkbRelationshipType::kFollows, ProgramElement::createStatement(ElementType::kStatement, 4), ElementType::kPrint);
+            result = pkb_getter->getRightSide(PkbRelationshipType::FOLLOWS, ProgramElement::createStatement(ElementType::STATEMENT, 4), ElementType::PRINT);
             expected = {
                     tcData.stmt.at(11)
             };
             REQUIRE(result == expected);
 
-            result = pkb_getter->getRightSide(PkbRelationshipType::kFollows, ProgramElement::createStatement(ElementType::kStatement, 1), ElementType::kStatement);
+            result = pkb_getter->getRightSide(PkbRelationshipType::FOLLOWS, ProgramElement::createStatement(ElementType::STATEMENT, 1), ElementType::STATEMENT);
             expected = {
                     tcData.stmt.at(2)
             };
@@ -425,16 +425,16 @@ TEST_CASE("PKB Basic") {
     }
     SECTION("FollowsT") {
         SECTION("isRelationship") {
-            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kFollowsT, ProgramElement::createStatement(ElementType::kAssignment, 7), ProgramElement::createStatement(ElementType::kAssignment, 8)));
-            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kFollowsT, ProgramElement::createStatement(ElementType::kWhile, 4), ProgramElement::createStatement(ElementType::kPrint, 11)));
-            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kFollowsT, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createStatement(ElementType::kStatement, 11)));
-            REQUIRE(!pkb_getter->isRelationship(PkbRelationshipType::kFollowsT, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createStatement(ElementType::kStatement, 5)));
-            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kFollowsT, ProgramElement::createStatement(ElementType::kStatement, 1), ProgramElement::createStatement(ElementType::kStatement, 11)));
-            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kFollowsT, ProgramElement::createStatement(ElementType::kAssignment, 1), ProgramElement::createStatement(ElementType::kStatement, 11)));
-            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kFollowsT, ProgramElement::createStatement(ElementType::kStatement, 5), ProgramElement::createStatement(ElementType::kIf, 6)));
+            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::FOLLOWS_T, ProgramElement::createStatement(ElementType::ASSIGNMENT, 7), ProgramElement::createStatement(ElementType::ASSIGNMENT, 8)));
+            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::FOLLOWS_T, ProgramElement::createStatement(ElementType::WHILE, 4), ProgramElement::createStatement(ElementType::PRINT, 11)));
+            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::FOLLOWS_T, ProgramElement::createStatement(ElementType::STATEMENT, 4), ProgramElement::createStatement(ElementType::STATEMENT, 11)));
+            REQUIRE(!pkb_getter->isRelationship(PkbRelationshipType::FOLLOWS_T, ProgramElement::createStatement(ElementType::STATEMENT, 4), ProgramElement::createStatement(ElementType::STATEMENT, 5)));
+            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::FOLLOWS_T, ProgramElement::createStatement(ElementType::STATEMENT, 1), ProgramElement::createStatement(ElementType::STATEMENT, 11)));
+            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::FOLLOWS_T, ProgramElement::createStatement(ElementType::ASSIGNMENT, 1), ProgramElement::createStatement(ElementType::STATEMENT, 11)));
+            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::FOLLOWS_T, ProgramElement::createStatement(ElementType::STATEMENT, 5), ProgramElement::createStatement(ElementType::IF, 6)));
         }
         SECTION("getLeftSide") {
-            std::set<ProgramElement> result = pkb_getter->getLeftSide(PkbRelationshipType::kFollowsT, ProgramElement::createStatement(ElementType::kStatement, 11), ElementType::kAssignment);
+            std::set<ProgramElement> result = pkb_getter->getLeftSide(PkbRelationshipType::FOLLOWS_T, ProgramElement::createStatement(ElementType::STATEMENT, 11), ElementType::ASSIGNMENT);
             std::set<ProgramElement> expected = {
                     tcData.stmt.at(1),
                     tcData.stmt.at(2),
@@ -442,7 +442,7 @@ TEST_CASE("PKB Basic") {
             };
             REQUIRE(result == expected);
 
-            result = pkb_getter->getLeftSide(PkbRelationshipType::kFollowsT, ProgramElement::createStatement(ElementType::kStatement, 11), ElementType::kStatement);
+            result = pkb_getter->getLeftSide(PkbRelationshipType::FOLLOWS_T, ProgramElement::createStatement(ElementType::STATEMENT, 11), ElementType::STATEMENT);
             expected = {
                     tcData.stmt.at(1),
                     tcData.stmt.at(2),
@@ -452,14 +452,14 @@ TEST_CASE("PKB Basic") {
             REQUIRE(result == expected);
         }
         SECTION("getRightSide") {
-            std::set<ProgramElement> result = pkb_getter->getRightSide(PkbRelationshipType::kFollowsT, ProgramElement::createStatement(ElementType::kStatement, 1), ElementType::kAssignment);
+            std::set<ProgramElement> result = pkb_getter->getRightSide(PkbRelationshipType::FOLLOWS_T, ProgramElement::createStatement(ElementType::STATEMENT, 1), ElementType::ASSIGNMENT);
             std::set<ProgramElement> expected = {
                     tcData.stmt.at(2),
                     tcData.stmt.at(3),
             };
             REQUIRE(result == expected);
 
-            result = pkb_getter->getRightSide(PkbRelationshipType::kFollowsT, ProgramElement::createStatement(ElementType::kStatement, 1), ElementType::kStatement);
+            result = pkb_getter->getRightSide(PkbRelationshipType::FOLLOWS_T, ProgramElement::createStatement(ElementType::STATEMENT, 1), ElementType::STATEMENT);
             expected = {
                     tcData.stmt.at(2),
                     tcData.stmt.at(3),
@@ -470,44 +470,44 @@ TEST_CASE("PKB Basic") {
         }
     }
     SECTION("Parent") {
-        PkbRelationshipType relationshipType = PkbRelationshipType::kParent;
+        PkbRelationshipType relationshipType = PkbRelationshipType::PARENT;
         std::set<ProgramElement> result;
         std::set<ProgramElement> expected;
         SECTION("isRelationship") {
-            REQUIRE(pkb_getter->isRelationship(relationshipType, ProgramElement::createStatement(ElementType::kWhile, 4), ProgramElement::createStatement(ElementType::kIf, 6)));
-            REQUIRE(pkb_getter->isRelationship(relationshipType, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createStatement(ElementType::kStatement, 6)));
-            REQUIRE(pkb_getter->isRelationship(relationshipType, ProgramElement::createStatement(ElementType::kWhile, 4), ProgramElement::createStatement(ElementType::kRead, 5)));
-            REQUIRE(pkb_getter->isRelationship(relationshipType, ProgramElement::createStatement(ElementType::kIf, 6), ProgramElement::createStatement(ElementType::kAssignment, 9)));
-            REQUIRE(!pkb_getter->isRelationship(relationshipType, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createStatement(ElementType::kStatement, 7)));
+            REQUIRE(pkb_getter->isRelationship(relationshipType, ProgramElement::createStatement(ElementType::WHILE, 4), ProgramElement::createStatement(ElementType::IF, 6)));
+            REQUIRE(pkb_getter->isRelationship(relationshipType, ProgramElement::createStatement(ElementType::STATEMENT, 4), ProgramElement::createStatement(ElementType::STATEMENT, 6)));
+            REQUIRE(pkb_getter->isRelationship(relationshipType, ProgramElement::createStatement(ElementType::WHILE, 4), ProgramElement::createStatement(ElementType::READ, 5)));
+            REQUIRE(pkb_getter->isRelationship(relationshipType, ProgramElement::createStatement(ElementType::IF, 6), ProgramElement::createStatement(ElementType::ASSIGNMENT, 9)));
+            REQUIRE(!pkb_getter->isRelationship(relationshipType, ProgramElement::createStatement(ElementType::STATEMENT, 4), ProgramElement::createStatement(ElementType::STATEMENT, 7)));
         }
         SECTION("getLeftSide") {
-            result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createStatement(ElementType::kStatement, 9), ElementType::kStatement);
+            result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createStatement(ElementType::STATEMENT, 9), ElementType::STATEMENT);
             expected = {
                     tcData.stmt.at(6)
             };
             REQUIRE(result == expected);
 
-            result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createStatement(ElementType::kAssignment, 7), ElementType::kIf);
+            result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createStatement(ElementType::ASSIGNMENT, 7), ElementType::IF);
             expected = {
                     tcData.stmt.at(6)
             };
             REQUIRE(result == expected);
 
-            result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createStatement(ElementType::kIf, 6), ElementType::kWhile);
+            result = pkb_getter->getLeftSide(relationshipType, ProgramElement::createStatement(ElementType::IF, 6), ElementType::WHILE);
             expected = {
                     tcData.stmt.at(4)
             };
             REQUIRE(result == expected);
         }
         SECTION("getRightSide") {
-            result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::kStatement, 4), ElementType::kStatement);
+            result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::STATEMENT, 4), ElementType::STATEMENT);
             expected = {
                     tcData.stmt.at(6),
                     tcData.stmt.at(5),
             };
             REQUIRE(result == expected);
 
-            result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::kStatement, 6), ElementType::kAssignment);
+            result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::STATEMENT, 6), ElementType::ASSIGNMENT);
             expected = {
                     tcData.stmt.at(7),
                     tcData.stmt.at(8),
@@ -516,7 +516,7 @@ TEST_CASE("PKB Basic") {
             };
             REQUIRE(result == expected);
 
-            result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::kWhile, 4), ElementType::kIf);
+            result = pkb_getter->getRightSide(relationshipType, ProgramElement::createStatement(ElementType::WHILE, 4), ElementType::IF);
             expected = {
                     tcData.stmt.at(6),
             };
@@ -524,38 +524,38 @@ TEST_CASE("PKB Basic") {
         }
     }
     SECTION("ParentT") {
-        PkbRelationshipType relationshipType = PkbRelationshipType::kParentT;
+        PkbRelationshipType relationshipType = PkbRelationshipType::PARENT_T;
         std::set<ProgramElement> result;
         std::set<ProgramElement> expected;
 
         SECTION("isRelationship") {
-            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kParentT, ProgramElement::createStatement(ElementType::kWhile, 4), ProgramElement::createStatement(ElementType::kAssignment, 7)));
-            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kParentT, ProgramElement::createStatement(ElementType::kWhile, 4), ProgramElement::createStatement(ElementType::kStatement, 8)));
-            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kParentT, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createStatement(ElementType::kAssignment, 9)));
-            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::kParentT, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createStatement(ElementType::kStatement, 10)));
+            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::PARENT_T, ProgramElement::createStatement(ElementType::WHILE, 4), ProgramElement::createStatement(ElementType::ASSIGNMENT, 7)));
+            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::PARENT_T, ProgramElement::createStatement(ElementType::WHILE, 4), ProgramElement::createStatement(ElementType::STATEMENT, 8)));
+            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::PARENT_T, ProgramElement::createStatement(ElementType::STATEMENT, 4), ProgramElement::createStatement(ElementType::ASSIGNMENT, 9)));
+            REQUIRE(pkb_getter->isRelationship(PkbRelationshipType::PARENT_T, ProgramElement::createStatement(ElementType::STATEMENT, 4), ProgramElement::createStatement(ElementType::STATEMENT, 10)));
         }
         SECTION("getLeftSide") {
-            result = pkb_getter->getLeftSide(PkbRelationshipType::kParentT, ProgramElement::createStatement(ElementType::kAssignment, 9), ElementType::kStatement);
+            result = pkb_getter->getLeftSide(PkbRelationshipType::PARENT_T, ProgramElement::createStatement(ElementType::ASSIGNMENT, 9), ElementType::STATEMENT);
             expected = {
                     tcData.stmt.at(4),
                     tcData.stmt.at(6),
             };
             REQUIRE(result == expected);
 
-            result = pkb_getter->getLeftSide(PkbRelationshipType::kParentT, ProgramElement::createStatement(ElementType::kStatement, 8), ElementType::kWhile);
+            result = pkb_getter->getLeftSide(PkbRelationshipType::PARENT_T, ProgramElement::createStatement(ElementType::STATEMENT, 8), ElementType::WHILE);
             expected = {
                     tcData.stmt.at(4),
             };
             REQUIRE(result == expected);
 
-            result = pkb_getter->getLeftSide(PkbRelationshipType::kParentT, ProgramElement::createStatement(ElementType::kAssignment, 7), ElementType::kIf);
+            result = pkb_getter->getLeftSide(PkbRelationshipType::PARENT_T, ProgramElement::createStatement(ElementType::ASSIGNMENT, 7), ElementType::IF);
             expected = {
                     tcData.stmt.at(6),
             };
             REQUIRE(result == expected);
         }
         SECTION("getRightSide") {
-            result = pkb_getter->getRightSide(PkbRelationshipType::kParentT, ProgramElement::createStatement(ElementType::kWhile, 4), ElementType::kStatement);
+            result = pkb_getter->getRightSide(PkbRelationshipType::PARENT_T, ProgramElement::createStatement(ElementType::WHILE, 4), ElementType::STATEMENT);
             expected = {
                     tcData.stmt.at(5),
                     tcData.stmt.at(6),
@@ -566,7 +566,7 @@ TEST_CASE("PKB Basic") {
             };
             REQUIRE(result == expected);
 
-            result = pkb_getter->getRightSide(PkbRelationshipType::kParentT, ProgramElement::createStatement(ElementType::kStatement, 4), ElementType::kAssignment);
+            result = pkb_getter->getRightSide(PkbRelationshipType::PARENT_T, ProgramElement::createStatement(ElementType::STATEMENT, 4), ElementType::ASSIGNMENT);
             expected = {
                     tcData.stmt.at(7),
                     tcData.stmt.at(8),
@@ -575,13 +575,13 @@ TEST_CASE("PKB Basic") {
             };
             REQUIRE(result == expected);
 
-            result = pkb_getter->getRightSide(PkbRelationshipType::kParentT, ProgramElement::createStatement(ElementType::kStatement, 4), ElementType::kIf);
+            result = pkb_getter->getRightSide(PkbRelationshipType::PARENT_T, ProgramElement::createStatement(ElementType::STATEMENT, 4), ElementType::IF);
             expected = {
                     tcData.stmt.at(6),
             };
             REQUIRE(result == expected);
 
-            result = pkb_getter->getRightSide(PkbRelationshipType::kParentT, ProgramElement::createStatement(ElementType::kStatement, 6), ElementType::kAssignment);
+            result = pkb_getter->getRightSide(PkbRelationshipType::PARENT_T, ProgramElement::createStatement(ElementType::STATEMENT, 6), ElementType::ASSIGNMENT);
             expected = {
                     tcData.stmt.at(7),
                     tcData.stmt.at(8),
@@ -633,50 +633,50 @@ TEST_CASE("PKB Calls") {
     PKB_CALLS_TEST_CASE tcData;
     pkbSetter->insertStmts(tcData.stmtLists);
     SECTION("isRelationship") {
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kCalls, ProgramElement::createProcedure("proc1"), ProgramElement::createProcedure("proc2")));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kCalls, ProgramElement::createProcedure("proc2"), ProgramElement::createProcedure("proc3")));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kCalls, ProgramElement::createProcedure("proc2"), ProgramElement::createProcedure("proc4")));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kCalls, ProgramElement::createProcedure("proc3"), ProgramElement::createProcedure("proc4")));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kCalls, ProgramElement::createProcedure("proc4"), ProgramElement::createProcedure("proc5")));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kCalls, ProgramElement::createProcedure("proc4"), ProgramElement::createProcedure("proc6")));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kCallsT, ProgramElement::createProcedure("proc1"), ProgramElement::createProcedure("proc2")));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kCallsT, ProgramElement::createProcedure("proc1"), ProgramElement::createProcedure("proc3")));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kCallsT, ProgramElement::createProcedure("proc2"), ProgramElement::createProcedure("proc5")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::CALLS, ProgramElement::createProcedure("proc1"), ProgramElement::createProcedure("proc2")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::CALLS, ProgramElement::createProcedure("proc2"), ProgramElement::createProcedure("proc3")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::CALLS, ProgramElement::createProcedure("proc2"), ProgramElement::createProcedure("proc4")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::CALLS, ProgramElement::createProcedure("proc3"), ProgramElement::createProcedure("proc4")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::CALLS, ProgramElement::createProcedure("proc4"), ProgramElement::createProcedure("proc5")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::CALLS, ProgramElement::createProcedure("proc4"), ProgramElement::createProcedure("proc6")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::CALLS_T, ProgramElement::createProcedure("proc1"), ProgramElement::createProcedure("proc2")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::CALLS_T, ProgramElement::createProcedure("proc1"), ProgramElement::createProcedure("proc3")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::CALLS_T, ProgramElement::createProcedure("proc2"), ProgramElement::createProcedure("proc5")));
     }
     SECTION("getLeftSide") {
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kCalls, ProgramElement::createProcedure("proc2"), ElementType::kProcedure);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::CALLS, ProgramElement::createProcedure("proc2"), ElementType::PROCEDURE);
         expectedElementSet = {
                 tcData.procs.at("proc1"),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kCalls, ProgramElement::createProcedure("proc3"), ElementType::kProcedure);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::CALLS, ProgramElement::createProcedure("proc3"), ElementType::PROCEDURE);
         expectedElementSet = {
                 tcData.procs.at("proc2"),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kCalls, ProgramElement::createProcedure("proc4"), ElementType::kProcedure);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::CALLS, ProgramElement::createProcedure("proc4"), ElementType::PROCEDURE);
         expectedElementSet = {
                 tcData.procs.at("proc2"),
                 tcData.procs.at("proc3"),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kCallsT, ProgramElement::createProcedure("proc2"), ElementType::kProcedure);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::CALLS_T, ProgramElement::createProcedure("proc2"), ElementType::PROCEDURE);
         expectedElementSet = {
                 tcData.procs.at("proc1"),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kCallsT, ProgramElement::createProcedure("proc3"), ElementType::kProcedure);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::CALLS_T, ProgramElement::createProcedure("proc3"), ElementType::PROCEDURE);
         expectedElementSet = {
                 tcData.procs.at("proc2"),
                 tcData.procs.at("proc1"),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kCallsT, ProgramElement::createProcedure("proc5"), ElementType::kProcedure);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::CALLS_T, ProgramElement::createProcedure("proc5"), ElementType::PROCEDURE);
         expectedElementSet = {
                 tcData.procs.at("proc1"),
                 tcData.procs.at("proc2"),
@@ -686,33 +686,33 @@ TEST_CASE("PKB Calls") {
         REQUIRE(resultElementSet == expectedElementSet);
     }
     SECTION("getRightSide") {
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kCalls, ProgramElement::createProcedure("proc1"), ElementType::kProcedure);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::CALLS, ProgramElement::createProcedure("proc1"), ElementType::PROCEDURE);
         expectedElementSet = {
                 tcData.procs.at("proc2")
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kCalls, ProgramElement::createProcedure("proc3"), ElementType::kProcedure);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::CALLS, ProgramElement::createProcedure("proc3"), ElementType::PROCEDURE);
         expectedElementSet = {
                 tcData.procs.at("proc4")
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kCalls, ProgramElement::createProcedure("proc4"), ElementType::kProcedure);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::CALLS, ProgramElement::createProcedure("proc4"), ElementType::PROCEDURE);
         expectedElementSet = {
                 tcData.procs.at("proc5"),
                 tcData.procs.at("proc6")
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kCallsT, ProgramElement::createProcedure("proc4"), ElementType::kProcedure);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::CALLS_T, ProgramElement::createProcedure("proc4"), ElementType::PROCEDURE);
         expectedElementSet = {
                 tcData.procs.at("proc5"),
                 tcData.procs.at("proc6"),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kCallsT, ProgramElement::createProcedure("proc3"), ElementType::kProcedure);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::CALLS_T, ProgramElement::createProcedure("proc3"), ElementType::PROCEDURE);
         expectedElementSet = {
                 tcData.procs.at("proc4"),
                 tcData.procs.at("proc5"),
@@ -720,7 +720,7 @@ TEST_CASE("PKB Calls") {
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kCallsT, ProgramElement::createProcedure("proc1"), ElementType::kProcedure);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::CALLS_T, ProgramElement::createProcedure("proc1"), ElementType::PROCEDURE);
         expectedElementSet = {
                 tcData.procs.at("proc2"),
                 tcData.procs.at("proc3"),
@@ -741,27 +741,27 @@ TEST_CASE("PKB ModifiesP") {
     PKB_MODIFIES_P_TEST_CASE tcData;
     pkbSetter->insertStmts(tcData.stmtLists);
     SECTION("isRelationship") {
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kModifies, ProgramElement::createProcedure("proc4"), ProgramElement::createVariable("proc4Var")));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kModifies, ProgramElement::createProcedure("proc5"), ProgramElement::createVariable("proc5Var")));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kModifies, ProgramElement::createProcedure("proc2"), ProgramElement::createVariable("proc5Var")));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kModifies, ProgramElement::createProcedure("proc1"), ProgramElement::createVariable("proc5Var")));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kModifies, ProgramElement::createProcedure("proc1"), ProgramElement::createVariable("proc4Var")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::MODIFIES, ProgramElement::createProcedure("proc4"), ProgramElement::createVariable("proc4Var")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::MODIFIES, ProgramElement::createProcedure("proc5"), ProgramElement::createVariable("proc5Var")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::MODIFIES, ProgramElement::createProcedure("proc2"), ProgramElement::createVariable("proc5Var")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::MODIFIES, ProgramElement::createProcedure("proc1"), ProgramElement::createVariable("proc5Var")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::MODIFIES, ProgramElement::createProcedure("proc1"), ProgramElement::createVariable("proc4Var")));
     }
     SECTION("getLeftSide") {
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kModifies, ProgramElement::createVariable("proc1Var"), ElementType::kProcedure);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::MODIFIES, ProgramElement::createVariable("proc1Var"), ElementType::PROCEDURE);
         expectedElementSet = {
                 tcData.procs.at("proc1"),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kModifies, ProgramElement::createVariable("proc2Var"), ElementType::kProcedure);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::MODIFIES, ProgramElement::createVariable("proc2Var"), ElementType::PROCEDURE);
         expectedElementSet = {
                 tcData.procs.at("proc1"),
                 tcData.procs.at("proc2"),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kModifies, ProgramElement::createVariable("proc5Var"), ElementType::kProcedure);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::MODIFIES, ProgramElement::createVariable("proc5Var"), ElementType::PROCEDURE);
         expectedElementSet = {
                 tcData.procs.at("proc1"),
                 tcData.procs.at("proc2"),
@@ -771,20 +771,20 @@ TEST_CASE("PKB ModifiesP") {
         REQUIRE(resultElementSet == expectedElementSet);
     }
     SECTION("getRightSide") {
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kModifies, ProgramElement::createProcedure("proc5"), ElementType::kVariable);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::MODIFIES, ProgramElement::createProcedure("proc5"), ElementType::VARIABLE);
         expectedElementSet = {
                 tcData.vars.at("proc5Var"),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kModifies, ProgramElement::createProcedure("proc3"), ElementType::kVariable);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::MODIFIES, ProgramElement::createProcedure("proc3"), ElementType::VARIABLE);
         expectedElementSet = {
                 tcData.vars.at("proc3Var"),
                 tcData.vars.at("proc5Var"),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kModifies, ProgramElement::createProcedure("proc2"), ElementType::kVariable);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::MODIFIES, ProgramElement::createProcedure("proc2"), ElementType::VARIABLE);
         expectedElementSet = {
                 tcData.vars.at("proc2Var"),
                 tcData.vars.at("proc4Var"),
@@ -792,7 +792,7 @@ TEST_CASE("PKB ModifiesP") {
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kModifies, ProgramElement::createProcedure("proc1"), ElementType::kVariable);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::MODIFIES, ProgramElement::createProcedure("proc1"), ElementType::VARIABLE);
         expectedElementSet = {
                 tcData.vars.at("proc1Var"),
                 tcData.vars.at("proc2Var"),
@@ -814,27 +814,27 @@ TEST_CASE("PKB ModifiesS") {
 
     pkbSetter->insertStmts(tcData.stmtLists);
     SECTION("isRelationship") {
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createVariable("proc2Var")));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kRead, 6), ProgramElement::createVariable("proc3Var")));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kCall, 5), ProgramElement::createVariable("proc3Var")));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kStatement, 3), ProgramElement::createVariable("proc2Var")));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kWhile, 1), ProgramElement::createVariable("proc3Var")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::MODIFIES, ProgramElement::createStatement(ElementType::STATEMENT, 4), ProgramElement::createVariable("proc2Var")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::MODIFIES, ProgramElement::createStatement(ElementType::READ, 6), ProgramElement::createVariable("proc3Var")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::MODIFIES, ProgramElement::createStatement(ElementType::CALL, 5), ProgramElement::createVariable("proc3Var")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::MODIFIES, ProgramElement::createStatement(ElementType::STATEMENT, 3), ProgramElement::createVariable("proc2Var")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::MODIFIES, ProgramElement::createStatement(ElementType::WHILE, 1), ProgramElement::createVariable("proc3Var")));
     }
     SECTION("getLeftSide") {
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kModifies, ProgramElement::createVariable("proc1Var2"), ElementType::kStatement);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::MODIFIES, ProgramElement::createVariable("proc1Var2"), ElementType::STATEMENT);
         expectedElementSet = {
                 tcData.stmt.at(1),
                 tcData.stmt.at(2),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kModifies, ProgramElement::createVariable("proc1Var2"), ElementType::kWhile);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::MODIFIES, ProgramElement::createVariable("proc1Var2"), ElementType::WHILE);
         expectedElementSet = {
                 tcData.stmt.at(1),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kModifies, ProgramElement::createVariable("proc2Var"), ElementType::kStatement);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::MODIFIES, ProgramElement::createVariable("proc2Var"), ElementType::STATEMENT);
         expectedElementSet = {
                 tcData.stmt.at(1),
                 tcData.stmt.at(3),
@@ -842,25 +842,25 @@ TEST_CASE("PKB ModifiesS") {
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kModifies, ProgramElement::createVariable("proc2Var"), ElementType::kCall);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::MODIFIES, ProgramElement::createVariable("proc2Var"), ElementType::CALL);
         expectedElementSet = {
                 tcData.stmt.at(3),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kModifies, ProgramElement::createVariable("proc3Var"), ElementType::kRead);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::MODIFIES, ProgramElement::createVariable("proc3Var"), ElementType::READ);
         expectedElementSet = {
                 tcData.stmt.at(6),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kModifies, ProgramElement::createVariable("proc3Var"), ElementType::kWhile);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::MODIFIES, ProgramElement::createVariable("proc3Var"), ElementType::WHILE);
         expectedElementSet = {
                 tcData.stmt.at(1),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kModifies, ProgramElement::createVariable("proc3Var"), ElementType::kStatement);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::MODIFIES, ProgramElement::createVariable("proc3Var"), ElementType::STATEMENT);
         expectedElementSet = {
                 tcData.stmt.at(1),
                 tcData.stmt.at(3),
@@ -870,32 +870,32 @@ TEST_CASE("PKB ModifiesS") {
         REQUIRE(resultElementSet == expectedElementSet);
     }
     SECTION("getRightSide") {
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kRead, 6), ElementType::kVariable);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::MODIFIES, ProgramElement::createStatement(ElementType::READ, 6), ElementType::VARIABLE);
         expectedElementSet = {
                 tcData.vars.at("proc3Var"),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kStatement, 5), ElementType::kVariable);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::MODIFIES, ProgramElement::createStatement(ElementType::STATEMENT, 5), ElementType::VARIABLE);
         expectedElementSet = {
                 tcData.vars.at("proc3Var"),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kStatement, 4), ElementType::kVariable);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::MODIFIES, ProgramElement::createStatement(ElementType::STATEMENT, 4), ElementType::VARIABLE);
         expectedElementSet = {
                 tcData.vars.at("proc2Var"),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kCall, 3), ElementType::kVariable);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::MODIFIES, ProgramElement::createStatement(ElementType::CALL, 3), ElementType::VARIABLE);
         expectedElementSet = {
                 tcData.vars.at("proc2Var"),
                 tcData.vars.at("proc3Var"),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kStatement, 1), ElementType::kVariable);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::MODIFIES, ProgramElement::createStatement(ElementType::STATEMENT, 1), ElementType::VARIABLE);
         expectedElementSet = {
                 tcData.vars.at("proc1Var2"),
                 tcData.vars.at("proc2Var"),
@@ -903,7 +903,7 @@ TEST_CASE("PKB ModifiesS") {
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kModifies, ProgramElement::createStatement(ElementType::kRead, 2), ElementType::kVariable);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::MODIFIES, ProgramElement::createStatement(ElementType::READ, 2), ElementType::VARIABLE);
         expectedElementSet = {
                 tcData.vars.at("proc1Var2"),
         };
@@ -920,27 +920,27 @@ TEST_CASE("PKB UsesP") {
     PKB_USES_P_TEST_CASE tcData;
     pkbSetter->insertStmts(tcData.stmtLists);
     SECTION("isRelationship") {
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kUses, ProgramElement::createProcedure("proc4"), ProgramElement::createVariable("proc4Var")));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kUses, ProgramElement::createProcedure("proc5"), ProgramElement::createVariable("proc5Var")));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kUses, ProgramElement::createProcedure("proc2"), ProgramElement::createVariable("proc5Var")));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kUses, ProgramElement::createProcedure("proc1"), ProgramElement::createVariable("proc5Var")));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kUses, ProgramElement::createProcedure("proc1"), ProgramElement::createVariable("proc4Var")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::USES, ProgramElement::createProcedure("proc4"), ProgramElement::createVariable("proc4Var")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::USES, ProgramElement::createProcedure("proc5"), ProgramElement::createVariable("proc5Var")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::USES, ProgramElement::createProcedure("proc2"), ProgramElement::createVariable("proc5Var")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::USES, ProgramElement::createProcedure("proc1"), ProgramElement::createVariable("proc5Var")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::USES, ProgramElement::createProcedure("proc1"), ProgramElement::createVariable("proc4Var")));
     }
     SECTION("getLeftSide") {
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kUses, ProgramElement::createVariable("x"), ElementType::kProcedure);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::USES, ProgramElement::createVariable("x"), ElementType::PROCEDURE);
         expectedElementSet = {
                 tcData.procs.at("proc1"),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kUses, ProgramElement::createVariable("proc2Var"), ElementType::kProcedure);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::USES, ProgramElement::createVariable("proc2Var"), ElementType::PROCEDURE);
         expectedElementSet = {
                 tcData.procs.at("proc1"),
                 tcData.procs.at("proc2"),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kUses, ProgramElement::createVariable("proc5Var"), ElementType::kProcedure);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::USES, ProgramElement::createVariable("proc5Var"), ElementType::PROCEDURE);
         expectedElementSet = {
                 tcData.procs.at("proc1"),
                 tcData.procs.at("proc2"),
@@ -950,20 +950,20 @@ TEST_CASE("PKB UsesP") {
         REQUIRE(resultElementSet == expectedElementSet);
     }
     SECTION("getRightSide") {
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kUses, ProgramElement::createProcedure("proc5"), ElementType::kVariable);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::USES, ProgramElement::createProcedure("proc5"), ElementType::VARIABLE);
         expectedElementSet = {
                 tcData.vars.at("proc5Var"),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kUses, ProgramElement::createProcedure("proc3"), ElementType::kVariable);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::USES, ProgramElement::createProcedure("proc3"), ElementType::VARIABLE);
         expectedElementSet = {
                 tcData.vars.at("proc3Var"),
                 tcData.vars.at("proc5Var"),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kUses, ProgramElement::createProcedure("proc2"), ElementType::kVariable);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::USES, ProgramElement::createProcedure("proc2"), ElementType::VARIABLE);
         expectedElementSet = {
                 tcData.vars.at("proc2Var"),
                 tcData.vars.at("proc4Var"),
@@ -971,7 +971,7 @@ TEST_CASE("PKB UsesP") {
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kUses, ProgramElement::createProcedure("proc1"), ElementType::kVariable);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::USES, ProgramElement::createProcedure("proc1"), ElementType::VARIABLE);
         expectedElementSet = {
                 tcData.vars.at("x"),
                 tcData.vars.at("proc2Var"),
@@ -992,27 +992,27 @@ TEST_CASE("PKB UsesS") {
     PKB_USES_S_TEST_CASE tcData;
     pkbSetter->insertStmts(tcData.stmtLists);
     SECTION("isRelationship") {
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kUses, ProgramElement::createStatement(ElementType::kStatement, 4), ProgramElement::createVariable("proc2Var")));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kUses, ProgramElement::createStatement(ElementType::kPrint, 6), ProgramElement::createVariable("proc3Var")));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kUses, ProgramElement::createStatement(ElementType::kCall, 5), ProgramElement::createVariable("proc3Var")));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kUses, ProgramElement::createStatement(ElementType::kStatement, 3), ProgramElement::createVariable("proc2Var")));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kUses, ProgramElement::createStatement(ElementType::kWhile, 1), ProgramElement::createVariable("proc3Var")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::STATEMENT, 4), ProgramElement::createVariable("proc2Var")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::PRINT, 6), ProgramElement::createVariable("proc3Var")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::CALL, 5), ProgramElement::createVariable("proc3Var")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::STATEMENT, 3), ProgramElement::createVariable("proc2Var")));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::WHILE, 1), ProgramElement::createVariable("proc3Var")));
     }
     SECTION("getLeftSide") {
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kUses, ProgramElement::createVariable("proc1Var2"), ElementType::kStatement);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::USES, ProgramElement::createVariable("proc1Var2"), ElementType::STATEMENT);
         expectedElementSet = {
                 tcData.stmt.at(1),
                 tcData.stmt.at(2),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kUses, ProgramElement::createVariable("proc1Var2"), ElementType::kWhile);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::USES, ProgramElement::createVariable("proc1Var2"), ElementType::WHILE);
         expectedElementSet = {
                 tcData.stmt.at(1),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kUses, ProgramElement::createVariable("proc2Var"), ElementType::kStatement);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::USES, ProgramElement::createVariable("proc2Var"), ElementType::STATEMENT);
         expectedElementSet = {
                 tcData.stmt.at(1),
                 tcData.stmt.at(3),
@@ -1020,25 +1020,25 @@ TEST_CASE("PKB UsesS") {
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kUses, ProgramElement::createVariable("proc2Var"), ElementType::kCall);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::USES, ProgramElement::createVariable("proc2Var"), ElementType::CALL);
         expectedElementSet = {
                 tcData.stmt.at(3),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kUses, ProgramElement::createVariable("proc3Var"), ElementType::kPrint);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::USES, ProgramElement::createVariable("proc3Var"), ElementType::PRINT);
         expectedElementSet = {
                 tcData.stmt.at(6),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kUses, ProgramElement::createVariable("proc3Var"), ElementType::kWhile);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::USES, ProgramElement::createVariable("proc3Var"), ElementType::WHILE);
         expectedElementSet = {
                 tcData.stmt.at(1),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kUses, ProgramElement::createVariable("proc3Var"), ElementType::kStatement);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::USES, ProgramElement::createVariable("proc3Var"), ElementType::STATEMENT);
         expectedElementSet = {
                 tcData.stmt.at(1),
                 tcData.stmt.at(3),
@@ -1048,32 +1048,32 @@ TEST_CASE("PKB UsesS") {
         REQUIRE(resultElementSet == expectedElementSet);
     }
     SECTION("getRightSide") {
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kUses, ProgramElement::createStatement(ElementType::kPrint, 6), ElementType::kVariable);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::PRINT, 6), ElementType::VARIABLE);
         expectedElementSet = {
                 tcData.vars.at("proc3Var"),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kUses, ProgramElement::createStatement(ElementType::kStatement, 5), ElementType::kVariable);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::STATEMENT, 5), ElementType::VARIABLE);
         expectedElementSet = {
                 tcData.vars.at("proc3Var"),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kUses, ProgramElement::createStatement(ElementType::kStatement, 4), ElementType::kVariable);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::STATEMENT, 4), ElementType::VARIABLE);
         expectedElementSet = {
                 tcData.vars.at("proc2Var"),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kUses, ProgramElement::createStatement(ElementType::kCall, 3), ElementType::kVariable);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::CALL, 3), ElementType::VARIABLE);
         expectedElementSet = {
                 tcData.vars.at("proc2Var"),
                 tcData.vars.at("proc3Var"),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kUses, ProgramElement::createStatement(ElementType::kStatement, 1), ElementType::kVariable);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::STATEMENT, 1), ElementType::VARIABLE);
         expectedElementSet = {
                 tcData.vars.at("proc1Var1"),
                 tcData.vars.at("proc1Var2"),
@@ -1082,7 +1082,7 @@ TEST_CASE("PKB UsesS") {
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kUses, ProgramElement::createStatement(ElementType::kPrint, 2), ElementType::kVariable);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::USES, ProgramElement::createStatement(ElementType::PRINT, 2), ElementType::VARIABLE);
         expectedElementSet = {
                 tcData.vars.at("proc1Var2"),
         };
@@ -1099,40 +1099,40 @@ TEST_CASE("PKB Next") {
     PKB_NEXT_TEST_CASE tcData;
     pkbSetter->insertStmts(tcData.stmtLists);
     SECTION("isRelationship") {
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kStatement, 2), ProgramElement::createStatement(ElementType::kStatement, 3)));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kWhile, 3), ProgramElement::createStatement(ElementType::kAssignment, 4)));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kWhile, 3), ProgramElement::createStatement(ElementType::kStatement, 7)));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kCall, 5), ProgramElement::createStatement(ElementType::kStatement, 6)));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kStatement, 7), ProgramElement::createStatement(ElementType::kAssignment, 9)));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kStatement, 8), ProgramElement::createStatement(ElementType::kAssignment, 10)));
-        REQUIRE(!pkbGetter->isRelationship(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kStatement, 7), ProgramElement::createStatement(ElementType::kAssignment, 10)));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kAssignment, 16), ProgramElement::createStatement(ElementType::kWhile, 13)));
-        REQUIRE(!pkbGetter->isRelationship(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kAssignment, 16), ProgramElement::createStatement(ElementType::kIf, 17)));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kStatement, 19), ProgramElement::createStatement(ElementType::kStatement, 22)));
-        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kStatement, 21), ProgramElement::createStatement(ElementType::kAssignment, 22)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::STATEMENT, 2), ProgramElement::createStatement(ElementType::STATEMENT, 3)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::WHILE, 3), ProgramElement::createStatement(ElementType::ASSIGNMENT, 4)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::WHILE, 3), ProgramElement::createStatement(ElementType::STATEMENT, 7)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::CALL, 5), ProgramElement::createStatement(ElementType::STATEMENT, 6)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::STATEMENT, 7), ProgramElement::createStatement(ElementType::ASSIGNMENT, 9)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::STATEMENT, 8), ProgramElement::createStatement(ElementType::ASSIGNMENT, 10)));
+        REQUIRE(!pkbGetter->isRelationship(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::STATEMENT, 7), ProgramElement::createStatement(ElementType::ASSIGNMENT, 10)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::ASSIGNMENT, 16), ProgramElement::createStatement(ElementType::WHILE, 13)));
+        REQUIRE(!pkbGetter->isRelationship(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::ASSIGNMENT, 16), ProgramElement::createStatement(ElementType::IF, 17)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::STATEMENT, 19), ProgramElement::createStatement(ElementType::STATEMENT, 22)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::STATEMENT, 21), ProgramElement::createStatement(ElementType::ASSIGNMENT, 22)));
     }
     SECTION("getLeftSide") {
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kStatement, 3), ElementType::kAssignment);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::STATEMENT, 3), ElementType::ASSIGNMENT);
         expectedElementSet = {
                 tcData.stmt.at(2),
                 tcData.stmt.at(6),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kStatement, 10), ElementType::kAssignment);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::STATEMENT, 10), ElementType::ASSIGNMENT);
         expectedElementSet = {
                 tcData.stmt.at(8),
                 tcData.stmt.at(9),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kIf, 7), ElementType::kStatement);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::IF, 7), ElementType::STATEMENT);
         expectedElementSet = {
                 tcData.stmt.at(3),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kAssignment, 22), ElementType::kStatement);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::ASSIGNMENT, 22), ElementType::STATEMENT);
         expectedElementSet = {
                 tcData.stmt.at(19),
                 tcData.stmt.at(20),
@@ -1140,67 +1140,268 @@ TEST_CASE("PKB Next") {
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kWhile, 13), ElementType::kStatement);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::WHILE, 13), ElementType::STATEMENT);
         expectedElementSet = {
                 tcData.stmt.at(15),
                 tcData.stmt.at(16),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kAssignment, 1), ElementType::kStatement);
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::ASSIGNMENT, 1), ElementType::STATEMENT);
         expectedElementSet = {
         };
         REQUIRE(resultElementSet == expectedElementSet);
     }
     SECTION("getRightSide") {
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kStatement, 22), ElementType::kStatement);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::STATEMENT, 22), ElementType::STATEMENT);
         expectedElementSet = {
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kIf, 17), ElementType::kStatement);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::IF, 17), ElementType::STATEMENT);
         expectedElementSet = {
                 tcData.stmt.at(18),
                 tcData.stmt.at(21),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kIf, 17), ElementType::kIf);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::IF, 17), ElementType::IF);
         expectedElementSet = {
                 tcData.stmt.at(18),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kStatement, 13), ElementType::kStatement);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::STATEMENT, 13), ElementType::STATEMENT);
         expectedElementSet = {
                 tcData.stmt.at(14),
                 tcData.stmt.at(17),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kStatement, 20), ElementType::kStatement);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::STATEMENT, 20), ElementType::STATEMENT);
         expectedElementSet = {
                 tcData.stmt.at(22),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kWhile, 3), ElementType::kStatement);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::WHILE, 3), ElementType::STATEMENT);
         expectedElementSet = {
                 tcData.stmt.at(4),
                 tcData.stmt.at(7),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kStatement, 9), ElementType::kStatement);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::STATEMENT, 9), ElementType::STATEMENT);
         expectedElementSet = {
                 tcData.stmt.at(10),
         };
         REQUIRE(resultElementSet == expectedElementSet);
 
-        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::kNext, ProgramElement::createStatement(ElementType::kStatement, 7), ElementType::kAssignment);
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::NEXT, ProgramElement::createStatement(ElementType::STATEMENT, 7), ElementType::ASSIGNMENT);
         expectedElementSet = {
                 tcData.stmt.at(8),
                 tcData.stmt.at(9),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+    }
+}
+
+TEST_CASE("PKB NextT") {
+    PKB pkb;
+    PkbSetter* pkbSetter = pkb.getSetter();
+    PkbGetter* pkbGetter = pkb.getGetter();
+    std::set<ProgramElement> resultElementSet, expectedElementSet;
+
+    PKB_NEXT_TEST_CASE tcData;
+    pkbSetter->insertStmts(tcData.stmtLists);
+    SECTION("isRelationship") {
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::STATEMENT, 1), ProgramElement::createStatement(ElementType::STATEMENT, 2)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::STATEMENT, 1), ProgramElement::createStatement(ElementType::WHILE, 3)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::ASSIGNMENT, 2), ProgramElement::createStatement(ElementType::CALL, 5)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::ASSIGNMENT, 4), ProgramElement::createStatement(ElementType::WHILE, 3)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::CALL, 5), ProgramElement::createStatement(ElementType::STATEMENT, 5)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::CALL, 5), ProgramElement::createStatement(ElementType::ASSIGNMENT, 12)));
+        REQUIRE(!pkbGetter->isRelationship(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::STATEMENT, 8), ProgramElement::createStatement(ElementType::STATEMENT, 9)));
+        REQUIRE(!pkbGetter->isRelationship(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::STATEMENT, 5), ProgramElement::createStatement(ElementType::STATEMENT, 2)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::STATEMENT, 16), ProgramElement::createStatement(ElementType::STATEMENT, 15)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::STATEMENT, 15), ProgramElement::createStatement(ElementType::STATEMENT, 19)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::STATEMENT, 19), ProgramElement::createStatement(ElementType::STATEMENT, 22)));
+        REQUIRE(!pkbGetter->isRelationship(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::STATEMENT, 19), ProgramElement::createStatement(ElementType::STATEMENT, 13)));
+    }
+    SECTION("getLeftSide") {
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::STATEMENT, 1), ElementType::STATEMENT);
+        expectedElementSet = {
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::ASSIGNMENT, 2), ElementType::STATEMENT);
+        expectedElementSet = {
+                tcData.stmt.at(1),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::STATEMENT, 3), ElementType::ASSIGNMENT);
+        expectedElementSet = {
+                tcData.stmt.at(1),
+                tcData.stmt.at(2),
+                tcData.stmt.at(4),
+                tcData.stmt.at(6),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::STATEMENT, 3), ElementType::STATEMENT);
+        expectedElementSet = {
+                tcData.stmt.at(1),
+                tcData.stmt.at(2),
+                tcData.stmt.at(3),
+                tcData.stmt.at(4),
+                tcData.stmt.at(5),
+                tcData.stmt.at(6),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::IF, 7), ElementType::STATEMENT);
+        expectedElementSet = {
+                tcData.stmt.at(1),
+                tcData.stmt.at(2),
+                tcData.stmt.at(3),
+                tcData.stmt.at(4),
+                tcData.stmt.at(5),
+                tcData.stmt.at(6),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::STATEMENT, 12), ElementType::CALL);
+        expectedElementSet = {
+                tcData.stmt.at(5),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::STATEMENT, 12), ElementType::WHILE);
+        expectedElementSet = {
+                tcData.stmt.at(3),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::STATEMENT, 12), ElementType::ASSIGNMENT);
+        expectedElementSet = {
+                tcData.stmt.at(1),
+                tcData.stmt.at(2),
+                tcData.stmt.at(4),
+                tcData.stmt.at(6),
+                tcData.stmt.at(8),
+                tcData.stmt.at(9),
+                tcData.stmt.at(10),
+                tcData.stmt.at(11),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::STATEMENT, 12), ElementType::STATEMENT);
+        expectedElementSet = {
+                tcData.stmt.at(1),
+                tcData.stmt.at(2),
+                tcData.stmt.at(3),
+                tcData.stmt.at(4),
+                tcData.stmt.at(5),
+                tcData.stmt.at(6),
+                tcData.stmt.at(7),
+                tcData.stmt.at(8),
+                tcData.stmt.at(9),
+                tcData.stmt.at(10),
+                tcData.stmt.at(11),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::STATEMENT, 22), ElementType::STATEMENT);
+        expectedElementSet = {
+                tcData.stmt.at(13),
+                tcData.stmt.at(14),
+                tcData.stmt.at(15),
+                tcData.stmt.at(16),
+                tcData.stmt.at(17),
+                tcData.stmt.at(18),
+                tcData.stmt.at(19),
+                tcData.stmt.at(20),
+                tcData.stmt.at(21),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+    }
+    SECTION("getRightSide") {
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::STATEMENT, 10), ElementType::STATEMENT);
+        expectedElementSet = {
+                tcData.stmt.at(11),
+                tcData.stmt.at(12),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::IF, 7), ElementType::STATEMENT);
+        expectedElementSet = {
+                tcData.stmt.at(8),
+                tcData.stmt.at(9),
+                tcData.stmt.at(10),
+                tcData.stmt.at(11),
+                tcData.stmt.at(12),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::CALL, 5), ElementType::WHILE);
+        expectedElementSet = {
+                tcData.stmt.at(3),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::CALL, 5), ElementType::STATEMENT);
+        expectedElementSet = {
+                tcData.stmt.at(3),
+                tcData.stmt.at(4),
+                tcData.stmt.at(5),
+                tcData.stmt.at(6),
+                tcData.stmt.at(7),
+                tcData.stmt.at(8),
+                tcData.stmt.at(9),
+                tcData.stmt.at(10),
+                tcData.stmt.at(11),
+                tcData.stmt.at(12),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::ASSIGNMENT, 19), ElementType::STATEMENT);
+        expectedElementSet = {
+                tcData.stmt.at(22),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::IF, 14), ElementType::IF);
+        expectedElementSet = {
+                tcData.stmt.at(14),
+                tcData.stmt.at(17),
+                tcData.stmt.at(18),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::ASSIGNMENT, 15), ElementType::ASSIGNMENT);
+        expectedElementSet = {
+                tcData.stmt.at(15),
+                tcData.stmt.at(16),
+                tcData.stmt.at(19),
+                tcData.stmt.at(20),
+                tcData.stmt.at(21),
+                tcData.stmt.at(22),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::NEXT_T, ProgramElement::createStatement(ElementType::STATEMENT, 16), ElementType::STATEMENT);
+        expectedElementSet = {
+                tcData.stmt.at(13),
+                tcData.stmt.at(14),
+                tcData.stmt.at(15),
+                tcData.stmt.at(16),
+                tcData.stmt.at(17),
+                tcData.stmt.at(18),
+                tcData.stmt.at(19),
+                tcData.stmt.at(20),
+                tcData.stmt.at(21),
+                tcData.stmt.at(22),
         };
         REQUIRE(resultElementSet == expectedElementSet);
     }
@@ -1225,7 +1426,6 @@ TEST_CASE("PKB Validation") {
         REQUIRE_THROWS(pkbSetter->insertStmts(tcData.UNDEFINITED_CALL_STMT_LIST, true));
     }
 }
-
 
 TEST_CASE("Compute Reverse") {
     std::map<int, std::set<std::string>> normalMap {

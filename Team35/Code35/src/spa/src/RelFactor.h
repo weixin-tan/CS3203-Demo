@@ -1,8 +1,8 @@
-#include "Expr.h"
-#include "FactorType.h"
-
 #ifndef RELFACTOR_H
 #define RELFACTOR_H
+
+#include "Expr.h"
+#include "FactorType.h"
 
 class RelFactor {
 private:

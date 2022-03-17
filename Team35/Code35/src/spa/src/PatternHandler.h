@@ -1,7 +1,6 @@
 #ifndef SPA_PATTERNHANDLER_H
 #define SPA_PATTERNHANDLER_H
 
-
 #include "PkbGetter.h"
 #include "Result.h"
 #include "RelationshipRef.h"

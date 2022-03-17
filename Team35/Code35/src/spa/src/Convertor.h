@@ -1,16 +1,18 @@
-#pragma once
-
+#ifndef SPA_CONVERTOR_H
+#define SPA_CONVERTOR_H
 #include <iostream>
+#include <stack>
+#include <stdexcept>
+#include <stdio.h>
 #include <string>
 #include <vector>
-#include "ParsedStatement.h"
 #include "Statement.h"
-#include <stack>
+#include "StatementType.h"
 #include "StmtLst.h"
+#include "ParsedStatement.h"
 #include "Procedure.h"
 #include "ProcedureLst.h"
 #include <PKB/PkbSetter.h>
-#include <stdexcept>
 
 class Convertor {
 
@@ -31,3 +33,4 @@ public:
 		std::stack<int>& nestedStack, int containerNumber);
 
 };
+#endif
