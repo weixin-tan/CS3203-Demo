@@ -139,7 +139,7 @@ Entity QueryProcessor::createExpressionEntity(const std::string &s) {
   std::string s2;
   if(isWildCard(s)){
     return Entity(EntityType::WILDCARD, "_");
-  }else if(isQuotationIdent(s)){
+  }else if(isStringWithinQuotations(s)){
     s2 = extractStringFromQuotation(s);
     return Entity(EntityType::FIXED_STRING, s2);
   }else if(isStringWithinWildCard(s)){
@@ -269,7 +269,7 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
     }
 
     for (const auto& s: PatternClauses){
-      std::vector<std::string> patternList = extractPatternBrackets(s);
+        std::vector<std::string> patternList = extractPatternBrackets(s);
       isValid = isValid && checkPatternList(patternList, &entityMap);
       if (isValid){
         RelationshipRef newRef = createPatternObject(patternList, &entityMap);

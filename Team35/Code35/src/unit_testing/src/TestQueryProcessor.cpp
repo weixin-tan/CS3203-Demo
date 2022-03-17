@@ -699,8 +699,12 @@ TEST_CASE("advanced trippy queries"){
 
 TEST_CASE("debugging"){
   QueryProcessor qp = QueryProcessor();
-  string s= "assign a; Select a with a.stmt# = 3";
-  vector<Clause> c = qp.parsePQL(s);
+    string s1 = "assign a, b; variable v; "
+                "Select <a.stmt#, b.stmt#, v.varName> "
+                "such that Next(a, b) and Next(b, a) "
+                "pattern a (v, \"x+1\") and b (v, \"(x+y)\") "
+                "with b.stmt# = a.stmt# and v.varName = a.stmt#";
+  vector<Clause> c = qp.parsePQL(s1);
 
   if (c.empty()){
     cout << "invalid!" << "\n";
