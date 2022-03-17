@@ -34,7 +34,7 @@ std::vector<std::vector<ParsedStatement>> Convertor::procedureReader(ProcedureLs
 // For Procedures, since there are no line numbers, line number will be -1. 
 // Creates a stack for the line numbers of the statement container..
 std::vector<ParsedStatement> Convertor::statementListReader(StmtLst statementList, int containerNumber) {
-    // Gets the container type. If it is a procedure, then the current procedure(static) will
+    // Gets the container type. IF it is a procedure, then the current procedure(static) will
     // be that procedure. 
     ContainerType containerType = statementList.getContainerType();
 
@@ -95,7 +95,7 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
         current_statement.constant = stmt.constant;
         current_statement.pattern = stmt.expression;
         break;
-        //Pattern recogniser here
+        //PATTERN recogniser here
     case StatementType::kread_stmt:
         current_statement.varModified = stmt.varName;
         break;

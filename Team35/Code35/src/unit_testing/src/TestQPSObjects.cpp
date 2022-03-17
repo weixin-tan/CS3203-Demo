@@ -8,18 +8,18 @@
 using namespace std;
 
 TEST_CASE("testing objects equality"){
-  Entity e1 = Entity(EntityType::Assignment, "a");
-  Entity e1_clone = Entity(EntityType::Assignment, "a");
-  Entity e2 = Entity(EntityType::Variable, "v");
-  Entity e3 = Entity(EntityType::Wildcard, "_");
-  Entity e4 = Entity(EntityType::Statement, "s");
+  Entity e1 = Entity(EntityType::ASSIGNMENT, "a");
+  Entity e1_clone = Entity(EntityType::ASSIGNMENT, "a");
+  Entity e2 = Entity(EntityType::VARIABLE, "v");
+  Entity e3 = Entity(EntityType::WILDCARD, "_");
+  Entity e4 = Entity(EntityType::STATEMENT, "s");
 
-  RelationshipRef r1 = RelationshipRef(RelationshipType::ParentT, e1, e2);
-  RelationshipRef r1_clone = RelationshipRef(RelationshipType::ParentT, e1, e2);
-  RelationshipRef r2 = RelationshipRef(RelationshipType::Pattern, e3, e2, e1);
-  RelationshipRef r2_clone = RelationshipRef(RelationshipType::Pattern, e3, e2, e1);
-  RelationshipRef r3 = RelationshipRef(RelationshipType::Modifies, e3, e4);
-  RelationshipRef r4 = RelationshipRef(RelationshipType::Pattern, e3, e4, e1);
+  RelationshipRef r1 = RelationshipRef(RelationshipType::PARENT_T, e1, e2);
+  RelationshipRef r1_clone = RelationshipRef(RelationshipType::PARENT_T, e1, e2);
+  RelationshipRef r2 = RelationshipRef(RelationshipType::PATTERN, e3, e2, e1);
+  RelationshipRef r2_clone = RelationshipRef(RelationshipType::PATTERN, e3, e2, e1);
+  RelationshipRef r3 = RelationshipRef(RelationshipType::MODIFIES, e3, e4);
+  RelationshipRef r4 = RelationshipRef(RelationshipType::PATTERN, e3, e4, e1);
 
   Clause c1 = Clause();
   c1.appendEntityToFind(e1);

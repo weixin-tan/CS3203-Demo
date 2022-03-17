@@ -21,31 +21,31 @@
 //  a = b + c; // 8
 //}
 /*
-Entity varSyn = Entity(EntityType::Variable, "v");
-Entity assignSyn = Entity(EntityType::Assignment, "a");
-Entity whileSyn = Entity(EntityType::While, "w");
-Entity ifSyn = Entity(EntityType::If, "ifs");
+Entity varSyn = Entity(EntityType::VARIABLE, "v");
+Entity assignSyn = Entity(EntityType::ASSIGNMENT, "a");
+Entity whileSyn = Entity(EntityType::WHILE, "w");
+Entity ifSyn = Entity(EntityType::IF, "ifs");
 
-Entity fixedStrVarX = Entity(EntityType::FixedString, "x");
-Entity fixedStrVarY = Entity(EntityType::FixedString, "y");
-Entity fixedStrVarZ = Entity(EntityType::FixedString, "z");
-Entity fixedStrABC = Entity(EntityType::FixedString, "a + b + c");
-Entity fixedStrBC = Entity(EntityType::FixedString, "b + c");
-Entity fixedStrWWX = Entity(EntityType::FixedStringWithinWildcard, "x");
-Entity fixedStrWWBC = Entity(EntityType::FixedStringWithinWildcard, "b + c");
+Entity fixedStrVarX = Entity(EntityType::FIXED_STRING, "x");
+Entity fixedStrVarY = Entity(EntityType::FIXED_STRING, "y");
+Entity fixedStrVarZ = Entity(EntityType::FIXED_STRING, "z");
+Entity fixedStrABC = Entity(EntityType::FIXED_STRING, "a + b + c");
+Entity fixedStrBC = Entity(EntityType::FIXED_STRING, "b + c");
+Entity fixedStrWWX = Entity(EntityType::FIXED_STRING_WITHIN_WILDCARD, "x");
+Entity fixedStrWWBC = Entity(EntityType::FIXED_STRING_WITHIN_WILDCARD, "b + c");
 
-Entity wc = Entity(EntityType::Wildcard, "_");
+Entity wc = Entity(EntityType::WILDCARD, "_");
 
 
-TEST_CASE("Testing Right Side Wildcard Pattern Relationships") {
+TEST_CASE("Testing Right Side WILDCARD PATTERN Relationships") {
 
     PKB pkb;
     PatternHandler* p(pkb.getGetter());
 
     SECTION("Assignments") {
-        RelationshipRef assignPatternRef_varSyn_wc = RelationshipRef(RelationshipType::Pattern, varSyn, wc, assignSyn); // a (v, _)
-        RelationshipRef assignPatternRef_wc_wc = RelationshipRef(RelationshipType::Pattern, wc, wc, assignSyn); // a (_, _)
-        RelationshipRef assignPatternRef_fixedStr_wc = RelationshipRef(RelationshipType::Pattern, varSyn, fixedStrVarZ, assignSyn); // a ("z", _)
+        RelationshipRef assignPatternRef_varSyn_wc = RelationshipRef(RelationshipType::PATTERN, varSyn, wc, assignSyn); // a (v, _)
+        RelationshipRef assignPatternRef_wc_wc = RelationshipRef(RelationshipType::PATTERN, wc, wc, assignSyn); // a (_, _)
+        RelationshipRef assignPatternRef_fixedStr_wc = RelationshipRef(RelationshipType::PATTERN, varSyn, fixedStrVarZ, assignSyn); // a ("z", _)
 
         Result result1 = p->handlePattern(assignPatternRef_varSyn_wc);
         Result result2 = p->handlePattern(assignPatternRef_wc_wc);
@@ -90,9 +90,9 @@ TEST_CASE("Testing Right Side Wildcard Pattern Relationships") {
     }
 
     SECTION("Whiles") {
-        RelationshipRef whilePatternRef_varSyn_wc = RelationshipRef(RelationshipType::Pattern, varSyn, wc, whileSyn); // w (v, _)
-        RelationshipRef whilePatternRef_wc_wc = RelationshipRef(RelationshipType::Pattern, wc, wc, whileSyn); // w (_, _)
-        RelationshipRef whilePatternRef_fixedStr_wc = RelationshipRef(RelationshipType::Pattern, varSyn, fixedStrVarX, whileSyn); // w ("x", _)
+        RelationshipRef whilePatternRef_varSyn_wc = RelationshipRef(RelationshipType::PATTERN, varSyn, wc, whileSyn); // w (v, _)
+        RelationshipRef whilePatternRef_wc_wc = RelationshipRef(RelationshipType::PATTERN, wc, wc, whileSyn); // w (_, _)
+        RelationshipRef whilePatternRef_fixedStr_wc = RelationshipRef(RelationshipType::PATTERN, varSyn, fixedStrVarX, whileSyn); // w ("x", _)
 
         Result result1 = p->handlePattern(whilePatternRef_varSyn_wc);
         Result result2 = p->handlePattern(whilePatternRef_wc_wc);
@@ -119,9 +119,9 @@ TEST_CASE("Testing Right Side Wildcard Pattern Relationships") {
     }
 
     SECTION("Ifs") {
-        RelationshipRef ifPatternRef_varSyn_wc = RelationshipRef(RelationshipType::Pattern, varSyn, wc, ifSyn); // ifs (v, _, _)
-        RelationshipRef ifPatternRef_wc_wc = RelationshipRef(RelationshipType::Pattern, wc, wc, ifSyn); // ifs (_, _, _)
-        RelationshipRef ifPatternRef_fixedStr_wc = RelationshipRef(RelationshipType::Pattern, varSyn, fixedStrVarY, ifSyn); // ifs ("y", _, _)
+        RelationshipRef ifPatternRef_varSyn_wc = RelationshipRef(RelationshipType::PATTERN, varSyn, wc, ifSyn); // ifs (v, _, _)
+        RelationshipRef ifPatternRef_wc_wc = RelationshipRef(RelationshipType::PATTERN, wc, wc, ifSyn); // ifs (_, _, _)
+        RelationshipRef ifPatternRef_fixedStr_wc = RelationshipRef(RelationshipType::PATTERN, varSyn, fixedStrVarY, ifSyn); // ifs ("y", _, _)
 
         Result result1 = p->handlePattern(ifPatternRef_varSyn_wc);
         Result result2 = p->handlePattern(ifPatternRef_wc_wc);
@@ -147,14 +147,14 @@ TEST_CASE("Testing Right Side Wildcard Pattern Relationships") {
     }
 }
 
-TEST_CASE("Testing Partial Match Pattern Relationships") {
+TEST_CASE("Testing Partial Match PATTERN Relationships") {
 
     PKB pkb;
     PatternHandler* p(pkb.getGetter());
 
-    RelationshipRef assignPatternRef_varSyn_fixedStrWW = RelationshipRef(RelationshipType::Pattern, varSyn, fixedStrWWBC, assignSyn); // a (v, _"b + c"_)
-    RelationshipRef assignPatternRef_wc_fixedStrWW = RelationshipRef(RelationshipType::Pattern, wc, fixedStrWWX, assignSyn); // a (_, _"x"_)
-    RelationshipRef assignPatternRef_fixedStr_fixedStrWW = RelationshipRef(RelationshipType::Pattern, fixedStrVarX, fixedStrWWBC, assignSyn); // a ("x", _"b + c"_)
+    RelationshipRef assignPatternRef_varSyn_fixedStrWW = RelationshipRef(RelationshipType::PATTERN, varSyn, fixedStrWWBC, assignSyn); // a (v, _"b + c"_)
+    RelationshipRef assignPatternRef_wc_fixedStrWW = RelationshipRef(RelationshipType::PATTERN, wc, fixedStrWWX, assignSyn); // a (_, _"x"_)
+    RelationshipRef assignPatternRef_fixedStr_fixedStrWW = RelationshipRef(RelationshipType::PATTERN, fixedStrVarX, fixedStrWWBC, assignSyn); // a ("x", _"b + c"_)
 
     Result result1 = p->handlePattern(assignPatternRef_varSyn_fixedStrWW);
     Result result2 = p->handlePattern(assignPatternRef_wc_fixedStrWW);
@@ -190,14 +190,14 @@ TEST_CASE("Testing Partial Match Pattern Relationships") {
     REQUIRE(result3 == expectedResult3);
 }
 
-TEST_CASE("Testing Full Match Pattern Relationships") {
+TEST_CASE("Testing Full Match PATTERN Relationships") {
 
     PKB pkb;
     PatternHandler* p(pkb.getGetter());
 
-    RelationshipRef assignPatternRef_varSyn_fixedStr = RelationshipRef(RelationshipType::Pattern, varSyn, fixedStrBC, assignSyn); // a (v, "b + c")
-    RelationshipRef assignPatternRef_wc_fixedStr = RelationshipRef(RelationshipType::Pattern, wc, fixedStrABC, assignSyn); // a (_, "a + b + c")
-    RelationshipRef assignPatternRef_fixedStr_fixedStr = RelationshipRef(RelationshipType::Pattern, fixedStrVarZ, fixedStrVarX, assignSyn); // a ("z", "x")
+    RelationshipRef assignPatternRef_varSyn_fixedStr = RelationshipRef(RelationshipType::PATTERN, varSyn, fixedStrBC, assignSyn); // a (v, "b + c")
+    RelationshipRef assignPatternRef_wc_fixedStr = RelationshipRef(RelationshipType::PATTERN, wc, fixedStrABC, assignSyn); // a (_, "a + b + c")
+    RelationshipRef assignPatternRef_fixedStr_fixedStr = RelationshipRef(RelationshipType::PATTERN, fixedStrVarZ, fixedStrVarX, assignSyn); // a ("z", "x")
 
     Result result1 = p->handlePattern(assignPatternRef_varSyn_fixedStr);
     Result result2 = p->handlePattern(assignPatternRef_wc_fixedStr);

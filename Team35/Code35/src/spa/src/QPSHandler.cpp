@@ -19,9 +19,9 @@ std::vector<Result> QPSHandler::processClause(const std::vector<Clause> &clauses
 
     for (const auto& r : c.refList) {
         Result result;
-        if (r.rType == RelationshipType::Pattern) {
+        if (r.rType == RelationshipType::PATTERN) {
             result = patternHandler->handlePattern(r);
-        } else if (r.rType == RelationshipType::With) {
+        } else if (r.rType == RelationshipType::WITH) {
             result = withHandler->handleWith(r);
         } else {
             result = suchThatHandler->handleSuchThat(r);

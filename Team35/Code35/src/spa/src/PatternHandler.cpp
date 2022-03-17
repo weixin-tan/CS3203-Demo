@@ -16,11 +16,11 @@ Result PatternHandler::handlePattern(const RelationshipRef& relRef) {
 
     result.setResultType(ResultType::PATTERN_CLAUSE);
 
-    if (left.eType == EntityType::Wildcard) {
+    if (left.eType == EntityType::WILDCARD) {
         oneSynSet = handleLeftWildcard(right, patternType);
         result.setOneSynEntity(patternType);
         result.setOneSynSet(oneSynSet);
-    } else if (left.eType == EntityType::FixedString) {
+    } else if (left.eType == EntityType::FIXED_STRING) {
         oneSynSet = handleLeftFixed(left, right, patternType);
         result.setOneSynEntity(patternType);
         result.setOneSynSet(oneSynSet);
@@ -43,12 +43,12 @@ Result PatternHandler::handlePattern(const RelationshipRef& relRef) {
 std::set<ProgramElement> PatternHandler::handleLeftWildcard(Entity right, Entity patternType) {
     ElementType patternElem = QpsTypeToPkbTypeConvertor::convertToPkbElement(patternType.eType);
     if (patternElem == ElementType::IF || patternElem == ElementType::WHILE ||
-       (patternElem == ElementType::ASSIGNMENT && right.eType == EntityType::Wildcard)) {
+       (patternElem == ElementType::ASSIGNMENT && right.eType == EntityType::WILDCARD)) {
         return pg->getEntity(patternElem);
-    } else if (right.eType == EntityType::FixedString) {
+    } else if (right.eType == EntityType::FIXED_STRING) {
         Expr rhsPattern = ExpressionProcessor::stringToExpr(right.name);
         return pg->getAssignmentGivenExpression(rhsPattern, ExpressionIndicator::FULL_MATCH);
-    } else if (right.eType == EntityType::FixedStringWithinWildcard) {
+    } else if (right.eType == EntityType::FIXED_STRING_WITHIN_WILDCARD) {
         Expr rhsPattern = ExpressionProcessor::stringToExpr(right.name);
         return pg->getAssignmentGivenExpression(rhsPattern, ExpressionIndicator::PARTIAL_MATCH);
     } else {
@@ -59,7 +59,7 @@ std::set<ProgramElement> PatternHandler::handleLeftWildcard(Entity right, Entity
 // Handles cases where there is a fixed string on the left-hand side
 std::set<ProgramElement> PatternHandler::handleLeftFixed(Entity left, Entity right, Entity patternType) {
     ElementType patternElem = QpsTypeToPkbTypeConvertor::convertToPkbElement(patternType.eType);
-    if (right.eType == EntityType::Wildcard) {
+    if (right.eType == EntityType::WILDCARD) {
         if (patternElem == ElementType::IF) {
             return pg->getIfGivenVariable(ProgramElement::createVariable(left.name));
         } else if (patternElem == ElementType::WHILE) {
@@ -71,12 +71,12 @@ std::set<ProgramElement> PatternHandler::handleLeftFixed(Entity left, Entity rig
         } else {
             return std::set<ProgramElement>{};
         }
-    } else if (right.eType == EntityType::FixedString) {
+    } else if (right.eType == EntityType::FIXED_STRING) {
         Expr rhsPattern = ExpressionProcessor::stringToExpr(right.name);
         return pg->getAssignmentGivenVariableAndExpression(ProgramElement::createVariable(left.name),
                                                            rhsPattern,
                                                            ExpressionIndicator::FULL_MATCH);
-    } else if (right.eType == EntityType::FixedStringWithinWildcard) {
+    } else if (right.eType == EntityType::FIXED_STRING_WITHIN_WILDCARD) {
         Expr rhsPattern = ExpressionProcessor::stringToExpr(right.name);
         return pg->getAssignmentGivenVariableAndExpression(ProgramElement::createVariable(left.name),
                                                            rhsPattern,
@@ -90,7 +90,7 @@ std::set<ProgramElement> PatternHandler::handleLeftFixed(Entity left, Entity rig
 std::set<std::pair<ProgramElement, ProgramElement>>
 PatternHandler::handleLeftVariable(Entity left, Entity right, Entity patternType) {
     ElementType patternElem = QpsTypeToPkbTypeConvertor::convertToPkbElement(patternType.eType);
-    if (right.eType == EntityType::Wildcard) {
+    if (right.eType == EntityType::WILDCARD) {
         if (patternElem == ElementType::IF) {
             return pg->getIfWithVariable();
         } else if (patternElem == ElementType::WHILE) {
@@ -102,10 +102,10 @@ PatternHandler::handleLeftVariable(Entity left, Entity right, Entity patternType
         } else {
             return std::set<std::pair<ProgramElement, ProgramElement>>{};
         }
-    } else if (right.eType == EntityType::FixedString) {
+    } else if (right.eType == EntityType::FIXED_STRING) {
         Expr rhsPattern = ExpressionProcessor::stringToExpr(right.name);
         return pg->getAssignmentWithVariableGivenExpression(rhsPattern, ExpressionIndicator::FULL_MATCH);
-    } else if (right.eType == EntityType::FixedStringWithinWildcard) {
+    } else if (right.eType == EntityType::FIXED_STRING_WITHIN_WILDCARD) {
         Expr rhsPattern = ExpressionProcessor::stringToExpr(right.name);
         return pg->getAssignmentWithVariableGivenExpression(rhsPattern, ExpressionIndicator::PARTIAL_MATCH);
     } else {

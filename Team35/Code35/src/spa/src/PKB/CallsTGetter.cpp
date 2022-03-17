@@ -12,7 +12,7 @@ bool CallsTGetter::isRelationship(const ProgramElement& leftSide, const ProgramE
 std::set<ProgramElement> CallsTGetter::getLeftSide(const ProgramElement& rightSide, const ElementType& typeToGet) {
     std::set<ProgramElement> result;
     if (!(typeToGet == ElementType::PROCEDURE && rightSide.elementType == ElementType::PROCEDURE))
-        throw std::invalid_argument("Wrong element type for getLeftSide on CallsT");
+        throw std::invalid_argument("Wrong element type for getLeftSide on CALLS_T");
     auto callerT = db->callsTTableR.find(rightSide.procName);
     if (callerT == db->callsTTableR.end()) return {};
     for (const std::string& callerTProc : callerT->second)
@@ -23,7 +23,7 @@ std::set<ProgramElement> CallsTGetter::getLeftSide(const ProgramElement& rightSi
 std::set<ProgramElement> CallsTGetter::getRightSide(const ProgramElement& leftSide, const ElementType& typeToGet) {
     std::set<ProgramElement> result;
     if (!(leftSide.elementType == ElementType::PROCEDURE && typeToGet == ElementType::PROCEDURE))
-        throw std::invalid_argument("Wrong element type for getRightSide on CallsT");
+        throw std::invalid_argument("Wrong element type for getRightSide on CALLS_T");
     auto callsT = db->callsTTable.find(leftSide.procName);
     if (callsT == db->callsTTable.end()) return {};
     for (const std::string& calledProc : callsT->second)

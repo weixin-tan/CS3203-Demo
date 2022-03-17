@@ -4,27 +4,27 @@ EntityToElementConverter::EntityToElementConverter() = default;
 
 ElementType EntityToElementConverter::extractElementType(const Entity& e) {
   switch (e.eType) {
-    case EntityType::Statement:
+    case EntityType::STATEMENT:
       return ElementType::STATEMENT;
-    case EntityType::Assignment:
+    case EntityType::ASSIGNMENT:
       return ElementType::ASSIGNMENT;
-    case EntityType::Variable:
+    case EntityType::VARIABLE:
       return ElementType::VARIABLE;
-    case EntityType::If:
+    case EntityType::IF:
       return ElementType::IF;
-    case EntityType::While:
+    case EntityType::WHILE:
       return ElementType::WHILE;
-    case EntityType::Procedure:
+    case EntityType::PROCEDURE:
       return ElementType::PROCEDURE;
-    case EntityType::Read:
+    case EntityType::READ:
       return ElementType::READ;
-    case EntityType::Print:
+    case EntityType::PRINT:
       return ElementType::PRINT;
-    case EntityType::Call:
+    case EntityType::CALL:
       return ElementType::CALL;
-    case EntityType::Constant:
+    case EntityType::CONSTANT:
       return ElementType::CONSTANT;
-    case EntityType::Boolean:
+    case EntityType::BOOLEAN:
       assert(false); //Not in Basic SPA
     default:
       assert(false);
@@ -33,11 +33,11 @@ ElementType EntityToElementConverter::extractElementType(const Entity& e) {
 
 ProgramElement EntityToElementConverter::fixedEntityConverter(const Entity &e) {
   switch (e.eType) {
-    case EntityType::FixedString:
+    case EntityType::FIXED_STRING:
       return ProgramElement::createVariable(e.name);
-    case EntityType::FixedInteger:
+    case EntityType::FIXED_INTEGER:
       return ProgramElement::createStatement(ElementType::STATEMENT, std::stoi(e.name));
-    case EntityType::FixedStringWithinWildcard:
+    case EntityType::FIXED_STRING_WITHIN_WILDCARD:
       if (isInteger(e.name)) {
         return ProgramElement::createConstant(e.name);
       } else {
