@@ -139,7 +139,7 @@ Entity QueryProcessor::createExpressionEntity(const std::string &s) {
   std::string s2;
   if(isWildCard(s)){
     return Entity(EntityType::Wildcard, "_");
-  }else if(isQuotationIdent(s)){
+  }else if(isStringWithinQuotations(s)){
     s2 = extractStringFromQuotation(s);
     return Entity(EntityType::FixedString, s2);
   }else if(isStringWithinWildCard(s)){
@@ -245,7 +245,6 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
     if (!isValid){
       break;
     }
-
     for (const auto& s: variablesToSelect){
       Entity toAdd = findRelationshipEntityWithAttribute(s, &entityMap);
       newClause.appendEntityToFind(toAdd);
@@ -265,7 +264,6 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
         newClause.appendRef(newRef);
       }
     }
-
     if (!isValid){
       break;
     }
@@ -293,20 +291,15 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
         newClause.appendRef(newRef);
       }
     }
-
     if (!isValid){
       break;
     }
-
-    //std::cout << "\n" << newClause.toString() << "\n";
     clauseList.push_back(newClause);
   }
 
   if (isValid){
-    //std::cout << "is valid!";
     return clauseList;
   }else{
-    //std::cout << "is invalid!";
     std::vector<Clause> emptyClause;
     return emptyClause;
   }

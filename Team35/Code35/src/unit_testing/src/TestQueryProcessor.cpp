@@ -140,7 +140,7 @@ TEST_CASE("invalid querys"){
   std::string missingComma1 = "variable x Select x"; // missing semicolon
   std::string missingComma2 = "variable x, v a; Select x "; // missing comma
   std::string missingComma3 = "variable v x; Select x"; // missing comma
-  std::string missingComma4 = "variable x; assign a; Select a such that pattern a (_ _)"; // no comma
+  std::string missingComma4 = "variable x; assign a; Select a pattern a (_ _)"; // no comma
   std::string missingComma5 = "while w; Select w pattern w (\"x\" _)"; // no comma
   std::string missingComma6 = "if ifs; Select ifs pattern ifs (\"x\",_ _)";
   std::string missingComma7 = "if ifs; Select ifs pattern ifs (\"x\" _ , _)";
@@ -156,6 +156,15 @@ TEST_CASE("invalid querys"){
   std::string missingKeyWords8 = "variable x; Select x.varName with x.varName = "; //missing right side
   std::string missingKeyWords9 = "variable x; Select x.varName with = x.varName"; //missing left side
   std::string missingKeyWords10 = "variable x; Select x.varName \"hello\" = x.varName"; //missing with
+  std::string missingKeyWords11 = "variable v; Select v such that Uses(v, 3) pattern "; //no pattern clause
+  std::string missingKeyWords12 = "variable v; Select v such that Uses(v, 3) with "; //no with clause
+  std::string missingKeyWords13 = "variable v; Select v such that Uses(v, 3) and "; //no such that clause
+  std::string missingKeyWords14 = "assign a; Select a pattern a (_,_) and";//no pattern clause
+  std::string missingKeyWords15 = "assign a; Select a pattern a (_,_) with ";//no with clause
+  std::string missingKeyWords16 = "assign a; Select a pattern a (_,_) such that";//no such that clause
+  std::string missingKeyWords17 = "assign a; Select a with a.stmt# = 3 pattern"; //no pattern clause
+  std::string missingKeyWords18 = "assign a; Select a with a.stmt# = 3 and"; //no with clause
+  std::string missingKeyWords19 = "assign a; Select a with a.stmt# = 3 such that"; //no such that
 
   std::string wronglyCapitalize1 = "Assign a; while w; Select a such that Parent* (w, a) pattern a (\"count\", _)";
   std::string wronglyCapitalize2 = "assign a; While w; Select a such that Parent* (w, a) pattern a (\"count\", _)";
@@ -181,6 +190,13 @@ TEST_CASE("invalid querys"){
   std::string patternIf4 = "if ifs; while w; Select ifs pattern ifs(\"a\",ifs,_)";
   std::string patternIf5 = "if ifs; while w; Select ifs pattern ifs(\"a\",_,1)";
   std::string patternIf6 = "if ifs; while w; Select ifs pattern ifs(\"a\",_,ifs)";
+
+  std::string boolean1 = "Select BOOLEAN.stmt#";
+  std::string boolean2 = "Select BOOLEAN.varName";
+  std::string boolean3 = "Select Boolean";
+  std::string boolean4 = "Select BOOLEAN with \"true\"=BOOLEAN";
+  std::string boolean5 = "Select BOOLEAN such that Uses(BOOLEAN, \"v\")";
+  std::string boolean6 = "Select BOOLEAN with pattern BOOLEAN (_,_)";
 
   vector<Clause> invalidWordOutput1 = qp.parsePQL(invalidWord1);
   vector<Clause> invalidWordOutput2 = qp.parsePQL(invalidWord2);
@@ -219,6 +235,13 @@ TEST_CASE("invalid querys"){
   vector<Clause> missingKeyWordsOutput8 = qp.parsePQL(missingKeyWords8);
   vector<Clause> missingKeyWordsOutput9 = qp.parsePQL(missingKeyWords9);
   vector<Clause> missingKeyWordsOutput10 = qp.parsePQL(missingKeyWords10);
+  vector<Clause> missingKeyWordsOutput11 = qp.parsePQL(missingKeyWords11);
+  vector<Clause> missingKeyWordsOutput12 = qp.parsePQL(missingKeyWords12);
+  vector<Clause> missingKeyWordsOutput13 = qp.parsePQL(missingKeyWords13);
+  vector<Clause> missingKeyWordsOutput14 = qp.parsePQL(missingKeyWords14);
+  vector<Clause> missingKeyWordsOutput15 = qp.parsePQL(missingKeyWords15);
+  vector<Clause> missingKeyWordsOutput16 = qp.parsePQL(missingKeyWords16);
+  vector<Clause> missingKeyWordsOutput17 = qp.parsePQL(missingKeyWords17);
 
   vector<Clause> wronglyCapitalizeOutput1 = qp.parsePQL(wronglyCapitalize1);
   vector<Clause> wronglyCapitalizeOutput2 = qp.parsePQL(wronglyCapitalize2);
@@ -244,6 +267,13 @@ TEST_CASE("invalid querys"){
   vector<Clause> patternIfOutput4 = qp.parsePQL(patternIf4);
   vector<Clause> patternIfOutput5 = qp.parsePQL(patternIf5);
   vector<Clause> patternIfOutput6 = qp.parsePQL(patternIf6);
+
+  vector<Clause> booleanOutput1 = qp.parsePQL(boolean1);
+  vector<Clause> booleanOutput2 = qp.parsePQL(boolean2);
+  vector<Clause> booleanOutput3 = qp.parsePQL(boolean3);
+  vector<Clause> booleanOutput4 = qp.parsePQL(boolean1);
+  vector<Clause> booleanOutput5 = qp.parsePQL(boolean2);
+  vector<Clause> booleanOutput6 = qp.parsePQL(boolean3);
 
   SECTION("Invalid Word"){
     REQUIRE(invalidWordOutput1.empty());
@@ -286,6 +316,13 @@ TEST_CASE("invalid querys"){
     REQUIRE(missingKeyWordsOutput8.empty());
     REQUIRE(missingKeyWordsOutput9.empty());
     REQUIRE(missingKeyWordsOutput10.empty());
+    REQUIRE(missingKeyWordsOutput11.empty());
+    REQUIRE(missingKeyWordsOutput12.empty());
+    REQUIRE(missingKeyWordsOutput13.empty());
+    REQUIRE(missingKeyWordsOutput14.empty());
+    REQUIRE(missingKeyWordsOutput15.empty());
+    REQUIRE(missingKeyWordsOutput16.empty());
+    REQUIRE(missingKeyWordsOutput17.empty());
   }
   SECTION("wrongly capitalize"){
     REQUIRE(wronglyCapitalizeOutput1.empty());
@@ -315,6 +352,15 @@ TEST_CASE("invalid querys"){
     REQUIRE(patternIfOutput5.empty());
     REQUIRE(patternIfOutput6.empty());
   }
+
+  SECTION("invalid boolean queries"){
+        REQUIRE(booleanOutput1.empty());
+        REQUIRE(booleanOutput2.empty());
+        REQUIRE(booleanOutput3.empty());
+        REQUIRE(booleanOutput4.empty());
+        REQUIRE(booleanOutput5.empty());
+        REQUIRE(booleanOutput6.empty());
+    }
 }
 
 TEST_CASE("trippy queries"){
@@ -430,10 +476,10 @@ TEST_CASE("test advanced queries"){
   Entity pProcname = Entity(EntityType::Procedure, "p", EntityAttributeType::ProcName);
 
   string s1 = "\nSelect       BOOLEAN\t\t\t\tsuch\n\n\n\nthat     Next* (\t1\t,\t2\t)\n\n";
-  string s2 = "assign a1, a2;Select <a1, a2.stmt#, BOOLEAN> such that Affects (a1, a2)";
-  string s3 = "procedure p; call c; Select c.procName with c.procName = p.procName";
+  string s2 = "assign a1, a2;Select <a1, a2\n.\nstmt#, BOOLEAN> such that Affects (a1, a2)";
+  string s3 = "procedure p; call c; Select c.procName with c\t.\tprocName = p    .    procName";
   string s4 = "while w; if ifs; Select w pattern w (\"x\", _) and ifs (\"x\", _, _)";
-  string s5 = "stmt s;Select s such that Next* (1, s) such that Next* (s, 3) such that Follows*(1,3)";
+  string s5 = "stmt s;Select s such that Next*\n(\n1\n,\ns\n) such that Next*\t(\ts\t,\t3\t)\tsuch that Follows*(1,3)";
   string s6 = "stmt s;Select s such that Next* (1, s) and Next* (s, 3) such that Follows*(1,3)";
   string s7 = "stmt s;Select s such that Next* (1, s) and Next* (s, 3) and Follows*(1,3)";
   string s8 = "assign a; while w; if ifs; Select a pattern a (\"pattern\", _) pattern w (\"pattern\", _) pattern ifs (\"pattern\", _, _)";
@@ -563,11 +609,98 @@ TEST_CASE("test advanced queries"){
   }
 }
 
-TEST_CASE("debugging"){
-  //pattern w ("x", _)
-  string s15 = "stmt s; assign a, a1; while w; Select s with a1.stmt# = 3 such that Next* (1, s) and Next* (s, 3) pattern w (\"x\", _)";
+TEST_CASE("advanced trippy queries"){
   QueryProcessor qp = QueryProcessor();
-  vector<Clause> c = qp.parsePQL(s15);
+  //default query
+  string s1 = "assign a, b; variable v; "
+              "Select <a.stmt#, b.stmt#, v.varName> "
+              "such that Next(a, b) and Next(b, a) "
+              "pattern a (v, \"x+1\") and b (v, \"(x+y)\") "
+              "with b.stmt# = a.stmt# and v.varName = a.stmt#";
+
+  //with -> such that -> pattern
+  string s2 = "assign pattern, with; variable and; "
+              "Select <pattern.stmt#, pattern.stmt#, with.stmt#, with.stmt#, and.varName>"
+              "with with.stmt# = pattern.stmt# and and.varName = pattern.stmt# "
+              "such that Next(pattern, with) and Next(with, pattern) "
+              "pattern pattern (and, \"(x)*(y)*(z)\") and with (and, \"(1*(1+2)%3)\")";
+
+  //with -> pattern -> such that
+  string s3 = "assign pattern, with; variable and;"
+              "Select <pattern.stmt#, with.stmt#, and.varName> "
+              "with with.stmt# = pattern.stmt# and and.varName = pattern.stmt# "
+              "pattern pattern (and, \"such + that\") and with (and, _\"suchthat\"_) "
+              "such that Next(pattern, with) and Next(with, pattern)";
+
+  //such that -> with -> pattern
+  string s4 = "assign pattern, with; variable and; "
+              "Select <pattern.stmt#, with.stmt#, and.varName> "
+              "such that Next(pattern, with) and Next(with, pattern) "
+              "with with.stmt# = pattern.stmt# and and.varName = pattern.stmt# "
+              "pattern pattern (and, \"pattern\") and with (and, _\"and\"_)";
+
+  //interleave
+  string s5 = "assign pattern, with; variable and;\n"
+              "Select <pattern.stmt#, with.stmt#, and.varName, BOOLEAN>\n"
+              "with pattern.stmt# = with.stmt# pattern pattern (and, \"Modifies\") such that Next(pattern, with)\n"
+              "such that Next(with, pattern) with and.varName = pattern.stmt# pattern with (and, \"Follows\")";
+
+  //such that -> pattern -> with
+  string s6 = "assign with, and; variable pattern;\n"
+              "Select with\n"
+              "such that Next(with, and) and Next(and, with)\n"
+              "pattern with (pattern, \"(idea) * ()\") and and (pattern, \"(((testing)))\")\n"
+              "with and.stmt# = and.stmt# and pattern.varName = and.stmt#";
+
+  //with -> such that -> pattern
+  string s7 = "assign with, and; variable pattern;\n"
+              "Select with\n"
+              "with and.stmt# = and.stmt# and pattern.varName = and.stmt#\n"
+              "such that Next(with, and) and Next(and, with)\n"
+              "pattern with (pattern, \"_(((x+1)+(y+1)))_\") and and (pattern, _\"(((x*y)))\"_)";
+
+  //with -> pattern -> such that
+  string s8 = "assign with, and; variable pattern;\n"
+              "Select with\n"
+              "with and.stmt# = and.stmt# and pattern.varName = and.stmt#\n"
+              "pattern with (pattern, _\"1+2\"_) and and (pattern, _\"3*4\"_)\n"
+              "such that Next(with, and) and Next(and, with)";
+
+  //pattern -> with -> such that
+  string s9 = "assign with, and; variable pattern;\n"
+              "Select with\n"
+              "pattern with (pattern, \"(1%2-10)\") and and (pattern, _\"(3*4-5)\"_)\n"
+              "with and.stmt# = and.stmt# and pattern.varName = and.stmt#\n"
+              "such that Next(with, and) and Next(and, with)";
+
+  //interleave
+  string s10 = "assign with, and; variable pattern;\n"
+               "Select with\n"
+               "with and.stmt# = and.stmt# "
+               "pattern and (pattern, _\"(((((x)))))*((((y)))))\"_)\n"
+               "such that Next(and, with)"
+               "pattern with (pattern, \"((pattern)+(with)+(and)*(such)(that)(wow)(hello))\") "
+               "with pattern.varName = and.stmt#\n"
+               "such that Next(with, and) ";
+
+  SECTION("test not empty aka valid"){
+    REQUIRE(!qp.parsePQL(  s1).empty());
+    REQUIRE(!qp.parsePQL(  s2).empty());
+    REQUIRE(!qp.parsePQL(  s3).empty());
+    REQUIRE(!qp.parsePQL(  s4).empty());
+    REQUIRE(!qp.parsePQL(  s5).empty());
+    REQUIRE(!qp.parsePQL(  s6).empty());
+    REQUIRE(!qp.parsePQL(  s7).empty());
+    REQUIRE(!qp.parsePQL(  s8).empty());
+    REQUIRE(!qp.parsePQL(  s9).empty());
+    REQUIRE(!qp.parsePQL(  s10).empty());
+  }
+}
+
+TEST_CASE("debugging"){
+  QueryProcessor qp = QueryProcessor();
+  string s= "assign a; Select a with a.stmt# = 3";
+  vector<Clause> c = qp.parsePQL(s);
 
   if (c.empty()){
     cout << "invalid!" << "\n";
@@ -575,10 +708,3 @@ TEST_CASE("debugging"){
     cout << c[0].toString() << "\n";
   }
 }
-/*
-METHODS TO TEST
-static void createDeclarationObjects(std::vector<std::string> designEntityArr, std::unordered_map<std::string, Entity>* entityMap);
-static RelationshipRef createRelationshipObject(std::vector<std::string> relRefList, std::unordered_map<std::string, Entity>* entityMap);
-static Entity findRelationshipEntity(const std::string& s, std::unordered_map<std::string, Entity>* entityMap);
-static RelationshipRef createPatternObject(std::vector<std::string> patternList, std::unordered_map<std::string, Entity>* entityMap);
-*/
