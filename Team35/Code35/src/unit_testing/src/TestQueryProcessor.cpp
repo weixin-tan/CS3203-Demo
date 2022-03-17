@@ -140,7 +140,7 @@ TEST_CASE("invalid querys"){
   std::string missingComma1 = "variable x Select x"; // missing semicolon
   std::string missingComma2 = "variable x, v a; Select x "; // missing comma
   std::string missingComma3 = "variable v x; Select x"; // missing comma
-  std::string missingComma4 = "variable x; assign a; Select a such that pattern a (_ _)"; // no comma
+  std::string missingComma4 = "variable x; assign a; Select a pattern a (_ _)"; // no comma
   std::string missingComma5 = "while w; Select w pattern w (\"x\" _)"; // no comma
   std::string missingComma6 = "if ifs; Select ifs pattern ifs (\"x\",_ _)";
   std::string missingComma7 = "if ifs; Select ifs pattern ifs (\"x\" _ , _)";
@@ -156,6 +156,15 @@ TEST_CASE("invalid querys"){
   std::string missingKeyWords8 = "variable x; Select x.varName with x.varName = "; //missing right side
   std::string missingKeyWords9 = "variable x; Select x.varName with = x.varName"; //missing left side
   std::string missingKeyWords10 = "variable x; Select x.varName \"hello\" = x.varName"; //missing with
+  std::string missingKeyWords11 = "variable v; Select v such that Uses(v, 3) pattern "; //no pattern clause
+  std::string missingKeyWords12 = "variable v; Select v such that Uses(v, 3) with "; //no with clause
+  std::string missingKeyWords13 = "variable v; Select v such that Uses(v, 3) and "; //no such that clause
+  std::string missingKeyWords14 = "assign a; Select a pattern a (_,_) and";//no pattern clause
+  std::string missingKeyWords15 = "assign a; Select a pattern a (_,_) with ";//no with clause
+  std::string missingKeyWords16 = "assign a; Select a pattern a (_,_) such that";//no such that clause
+  std::string missingKeyWords17 = "assign a; Select a with a.stmt# = 3 pattern"; //no pattern clause
+  std::string missingKeyWords18 = "assign a; Select a with a.stmt# = 3 and"; //no with clause
+  std::string missingKeyWords19 = "assign a; Select a with a.stmt# = 3 such that"; //no such that
 
   std::string wronglyCapitalize1 = "Assign a; while w; Select a such that Parent* (w, a) pattern a (\"count\", _)";
   std::string wronglyCapitalize2 = "assign a; While w; Select a such that Parent* (w, a) pattern a (\"count\", _)";
@@ -185,9 +194,11 @@ TEST_CASE("invalid querys"){
   std::string boolean1 = "Select BOOLEAN.stmt#";
   std::string boolean2 = "Select BOOLEAN.varName";
   std::string boolean3 = "Select Boolean";
+  std::string boolean4 = "Select BOOLEAN with \"true\"=BOOLEAN";
+  std::string boolean5 = "Select BOOLEAN such that Uses(BOOLEAN, \"v\")";
+  std::string boolean6 = "Select BOOLEAN with pattern BOOLEAN (_,_)";
 
-
-    vector<Clause> invalidWordOutput1 = qp.parsePQL(invalidWord1);
+  vector<Clause> invalidWordOutput1 = qp.parsePQL(invalidWord1);
   vector<Clause> invalidWordOutput2 = qp.parsePQL(invalidWord2);
   vector<Clause> invalidWordOutput3 = qp.parsePQL(invalidWord3);
   vector<Clause> invalidWordOutput4 = qp.parsePQL(invalidWord4);
@@ -224,6 +235,13 @@ TEST_CASE("invalid querys"){
   vector<Clause> missingKeyWordsOutput8 = qp.parsePQL(missingKeyWords8);
   vector<Clause> missingKeyWordsOutput9 = qp.parsePQL(missingKeyWords9);
   vector<Clause> missingKeyWordsOutput10 = qp.parsePQL(missingKeyWords10);
+  vector<Clause> missingKeyWordsOutput11 = qp.parsePQL(missingKeyWords11);
+  vector<Clause> missingKeyWordsOutput12 = qp.parsePQL(missingKeyWords12);
+  vector<Clause> missingKeyWordsOutput13 = qp.parsePQL(missingKeyWords13);
+  vector<Clause> missingKeyWordsOutput14 = qp.parsePQL(missingKeyWords14);
+  vector<Clause> missingKeyWordsOutput15 = qp.parsePQL(missingKeyWords15);
+  vector<Clause> missingKeyWordsOutput16 = qp.parsePQL(missingKeyWords16);
+  vector<Clause> missingKeyWordsOutput17 = qp.parsePQL(missingKeyWords17);
 
   vector<Clause> wronglyCapitalizeOutput1 = qp.parsePQL(wronglyCapitalize1);
   vector<Clause> wronglyCapitalizeOutput2 = qp.parsePQL(wronglyCapitalize2);
@@ -253,9 +271,11 @@ TEST_CASE("invalid querys"){
   vector<Clause> booleanOutput1 = qp.parsePQL(boolean1);
   vector<Clause> booleanOutput2 = qp.parsePQL(boolean2);
   vector<Clause> booleanOutput3 = qp.parsePQL(boolean3);
+  vector<Clause> booleanOutput4 = qp.parsePQL(boolean1);
+  vector<Clause> booleanOutput5 = qp.parsePQL(boolean2);
+  vector<Clause> booleanOutput6 = qp.parsePQL(boolean3);
 
-
-    SECTION("Invalid Word"){
+  SECTION("Invalid Word"){
     REQUIRE(invalidWordOutput1.empty());
     REQUIRE(invalidWordOutput2.empty());
     REQUIRE(invalidWordOutput3.empty());
@@ -296,6 +316,13 @@ TEST_CASE("invalid querys"){
     REQUIRE(missingKeyWordsOutput8.empty());
     REQUIRE(missingKeyWordsOutput9.empty());
     REQUIRE(missingKeyWordsOutput10.empty());
+    REQUIRE(missingKeyWordsOutput11.empty());
+    REQUIRE(missingKeyWordsOutput12.empty());
+    REQUIRE(missingKeyWordsOutput13.empty());
+    REQUIRE(missingKeyWordsOutput14.empty());
+    REQUIRE(missingKeyWordsOutput15.empty());
+    REQUIRE(missingKeyWordsOutput16.empty());
+    REQUIRE(missingKeyWordsOutput17.empty());
   }
   SECTION("wrongly capitalize"){
     REQUIRE(wronglyCapitalizeOutput1.empty());
@@ -330,6 +357,9 @@ TEST_CASE("invalid querys"){
         REQUIRE(booleanOutput1.empty());
         REQUIRE(booleanOutput2.empty());
         REQUIRE(booleanOutput3.empty());
+        REQUIRE(booleanOutput4.empty());
+        REQUIRE(booleanOutput5.empty());
+        REQUIRE(booleanOutput6.empty());
     }
 }
 
@@ -669,7 +699,7 @@ TEST_CASE("advanced trippy queries"){
 
 TEST_CASE("debugging"){
   QueryProcessor qp = QueryProcessor();
-  string s= "Select BOOLEAN";
+  string s= "assign a; Select a with a.stmt# = 3";
   vector<Clause> c = qp.parsePQL(s);
 
   if (c.empty()){
