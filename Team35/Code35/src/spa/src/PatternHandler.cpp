@@ -1,98 +1,114 @@
 #include "PatternHandler.h"
 
 PatternHandler::PatternHandler(PkbGetter* pg) {
-  PatternHandler::pg = pg;
+    PatternHandler::pg = pg;
 }
 
-Result PatternHandler::handlePattern(const Entity& entityToGet, const RelationshipRef& relRef) {
-  assert(("This must be a pattern relationship!\n", relRef.rType == RelationshipType::Pattern));
+// Handles pattern relationships
+Result PatternHandler::handlePattern(const RelationshipRef& relRef) {
+    Result result;
+    std::set<ProgramElement> oneSynSet;
+    std::set<std::pair<ProgramElement, ProgramElement>> twoSynSet;
 
-  Entity left = relRef.leftEntity;
-  Entity right = relRef.rightEntity;
-  Entity assign = relRef.AssignmentEntity;
-  ElementType pkbElement = EntityToElementConverter::extractElementType(entityToGet);
-  Result result;
+    Entity left = relRef.leftEntity;
+    Entity right = relRef.rightEntity;
+    Entity patternType = relRef.AssignmentEntity;
 
-  if (left.eType == EntityType::Wildcard && right.eType == EntityType::Wildcard) {
-    result = handleDoubleWildcard();
-  } else if (left.eType == EntityType::Wildcard) {
-    result = handleLeftWildcard(right);
-  } else if (right.eType == EntityType::Wildcard) {
-    result = handleRightWildcard(left);
-  } else {
-    result = handleNoWildcard(right, left);
-  }
+    result.setResultType(ResultType::PATTERN_CLAUSE);
 
-  result.setNoClauseElements(pg->getEntity(pkbElement));
-  result.setAssignEntity(assign);
-  result.setResultEntity(entityToGet);
-  return result;
-}
-
-Result PatternHandler::handleDoubleWildcard() {
-  Result result;
-  std::set<ProgramElement> resultElements = pg->getEntity(ElementType::ASSIGNMENT);
-  result.setPatternElements(resultElements);
-  return result;
-}
-
-Result PatternHandler::handleLeftWildcard(const Entity& rightEntity) {
-  assert(rightEntity.eType == EntityType::FixedStringWithinWildcard); //Iteration 1
-  Result result;
-  ProgramElement rightElement = EntityToElementConverter::fixedEntityConverter(rightEntity);
-  std::set<ProgramElement> resultElements = pg->getLeftSide(PkbRelationshipType::USES, rightElement, ElementType::ASSIGNMENT);
-  result.setPatternElements(resultElements);
-  return result;
-}
-
-Result PatternHandler::handleRightWildcard(const Entity& leftEntity) {
-  Result result;
-  std::set<ProgramElement> resultElements;
-  std::set<std::pair<ProgramElement,ProgramElement>> entRefResultElements;
-  if (leftEntity.eType == EntityType::FixedString) {
-    ProgramElement leftElement = EntityToElementConverter::fixedEntityConverter(leftEntity);
-    resultElements = pg->getLeftSide(PkbRelationshipType::MODIFIES, leftElement, ElementType::ASSIGNMENT);
-  } else if (leftEntity.eType == EntityType::Variable) {
-    result.setAssignEntRef(leftEntity);
-    std::set<ProgramElement> entRefElements = pg->getEntity(ElementType::VARIABLE);
-    for (const auto& e : entRefElements) {
-      std::set<ProgramElement> assign = pg->getLeftSide(PkbRelationshipType::MODIFIES, e, ElementType::ASSIGNMENT);
-      for (const auto& a : assign) {
-        std::pair <ProgramElement, ProgramElement> combination (a, e);
-        entRefResultElements.insert(combination);
-      }
+    if (left.eType == EntityType::WILDCARD) {
+        oneSynSet = handleLeftWildcard(right, patternType);
+        result.setOneSynEntity(patternType);
+        result.setOneSynSet(oneSynSet);
+    } else if (left.eType == EntityType::FIXED_STRING) {
+        oneSynSet = handleLeftFixed(left, right, patternType);
+        result.setOneSynEntity(patternType);
+        result.setOneSynSet(oneSynSet);
+    } else {
+        twoSynSet = handleLeftVariable(left, right, patternType);
+        result.setTwoSynEntities(std::pair<Entity, Entity> (patternType, left));
+        result.setTwoSynSet(twoSynSet);
     }
-  } else {
-    assert(false);
-  }
-  result.setPatternElements(resultElements);
-  result.setEntRefElements(entRefResultElements);
-  return result;
+
+    if (oneSynSet.empty() && twoSynSet.empty()) {
+        result.setValid(false);
+    } else {
+        result.setValid(true);
+    }
+
+    return result;
 }
 
-Result PatternHandler::handleNoWildcard(const Entity& rightEntity, const Entity& leftEntity) {
-  Result result;
-  Result leftResult = handleRightWildcard(leftEntity);
-  Result rightResult = handleLeftWildcard(rightEntity);
-  std::set<ProgramElement> resultElements;
-  if (leftResult.getAssignEntRef().eType == EntityType::Null) {
-    for (const auto& e : leftResult.getPatternElements()) {
-      if (rightResult.getPatternElements().count(e)) {
-        resultElements.insert(e);
-      }
+// Handles cases where there is a wildcard on the left-hand side
+std::set<ProgramElement> PatternHandler::handleLeftWildcard(Entity right, Entity patternType) {
+    ElementType patternElem = QpsTypeToPkbTypeConvertor::convertToPkbElement(patternType.eType);
+    if (patternElem == ElementType::IF || patternElem == ElementType::WHILE ||
+       (patternElem == ElementType::ASSIGNMENT && right.eType == EntityType::WILDCARD)) {
+        return pg->getEntity(patternElem);
+    } else if (right.eType == EntityType::FIXED_STRING) {
+        Expr rhsPattern = ExpressionProcessor::stringToExpr(right.name);
+        return pg->getAssignmentGivenExpression(rhsPattern, ExpressionIndicator::FULL_MATCH);
+    } else if (right.eType == EntityType::FIXED_STRING_WITHIN_WILDCARD) {
+        Expr rhsPattern = ExpressionProcessor::stringToExpr(right.name);
+        return pg->getAssignmentGivenExpression(rhsPattern, ExpressionIndicator::PARTIAL_MATCH);
+    } else {
+        return std::set<ProgramElement>{};
     }
-    result.setPatternElements(resultElements);
-  } else {
-    result.setAssignEntRef(leftResult.getAssignEntRef());
-    std::set<std::pair<ProgramElement, ProgramElement>> pairResult;
-    for (const auto& p: leftResult.getEntRefElements()) {
-      for (const auto& e: rightResult.getPatternElements()) {
-        if (p.first == e) {
-          pairResult.insert(p);
+}
+
+// Handles cases where there is a fixed string on the left-hand side
+std::set<ProgramElement> PatternHandler::handleLeftFixed(Entity left, Entity right, Entity patternType) {
+    ElementType patternElem = QpsTypeToPkbTypeConvertor::convertToPkbElement(patternType.eType);
+    if (right.eType == EntityType::WILDCARD) {
+        if (patternElem == ElementType::IF) {
+            return pg->getIfGivenVariable(ProgramElement::createVariable(left.name));
+        } else if (patternElem == ElementType::WHILE) {
+            return pg->getWhileGivenVariable(ProgramElement::createVariable(left.name));
+        } else if (patternElem == ElementType::ASSIGNMENT){
+            return pg->getLeftSide(PkbRelationshipType::MODIFIES,
+                                   ProgramElement::createVariable(left.name),
+                                   ElementType::ASSIGNMENT);
+        } else {
+            return std::set<ProgramElement>{};
         }
-      }
+    } else if (right.eType == EntityType::FIXED_STRING) {
+        Expr rhsPattern = ExpressionProcessor::stringToExpr(right.name);
+        return pg->getAssignmentGivenVariableAndExpression(ProgramElement::createVariable(left.name),
+                                                           rhsPattern,
+                                                           ExpressionIndicator::FULL_MATCH);
+    } else if (right.eType == EntityType::FIXED_STRING_WITHIN_WILDCARD) {
+        Expr rhsPattern = ExpressionProcessor::stringToExpr(right.name);
+        return pg->getAssignmentGivenVariableAndExpression(ProgramElement::createVariable(left.name),
+                                                           rhsPattern,
+                                                           ExpressionIndicator::PARTIAL_MATCH);
+    } else {
+        return std::set<ProgramElement>{};
     }
-    result.setEntRefElements(pairResult);
-  }
-  return result;
+}
+
+// Handles cases where there is a variable synonym on the left-hand side
+std::set<std::pair<ProgramElement, ProgramElement>>
+PatternHandler::handleLeftVariable(Entity left, Entity right, Entity patternType) {
+    ElementType patternElem = QpsTypeToPkbTypeConvertor::convertToPkbElement(patternType.eType);
+    if (right.eType == EntityType::WILDCARD) {
+        if (patternElem == ElementType::IF) {
+            return pg->getIfWithVariable();
+        } else if (patternElem == ElementType::WHILE) {
+            return pg->getWhileWithVariable();
+        } else if (patternElem == ElementType::ASSIGNMENT) {
+            return pg->getRelationshipPairs(PkbRelationshipType::MODIFIES,
+                                            ElementType::ASSIGNMENT,
+                                            ElementType::VARIABLE);
+        } else {
+            return std::set<std::pair<ProgramElement, ProgramElement>>{};
+        }
+    } else if (right.eType == EntityType::FIXED_STRING) {
+        Expr rhsPattern = ExpressionProcessor::stringToExpr(right.name);
+        return pg->getAssignmentWithVariableGivenExpression(rhsPattern, ExpressionIndicator::FULL_MATCH);
+    } else if (right.eType == EntityType::FIXED_STRING_WITHIN_WILDCARD) {
+        Expr rhsPattern = ExpressionProcessor::stringToExpr(right.name);
+        return pg->getAssignmentWithVariableGivenExpression(rhsPattern, ExpressionIndicator::PARTIAL_MATCH);
+    } else {
+        return std::set<std::pair<ProgramElement, ProgramElement>>{};
+    }
 }

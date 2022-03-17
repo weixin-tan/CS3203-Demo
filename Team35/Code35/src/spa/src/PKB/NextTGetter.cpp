@@ -44,7 +44,7 @@ bool NextTGetter::isRelationship(const ProgramElement& leftSide, const ProgramEl
 std::set<ProgramElement> NextTGetter::getLeftSide(const ProgramElement& rightSide, const ElementType& typeToGet) {
     std::set<ProgramElement> result;
     if(!(isStatementType(rightSide.elementType) && isStatementType(typeToGet)))
-        throw std::invalid_argument("Wrong element type for getLeftSide on NextT");
+        throw std::invalid_argument("Wrong element type for getLeftSide on NEXT_T");
     computeAndCacheNextTR(rightSide.stmtNo);
     auto previous = db->nextTTableR.find(rightSide.stmtNo);
     if (previous == db->nextTTableR.end()) return {};
@@ -56,7 +56,7 @@ std::set<ProgramElement> NextTGetter::getLeftSide(const ProgramElement& rightSid
 std::set<ProgramElement> NextTGetter::getRightSide(const ProgramElement& leftSide, const ElementType& typeToGet) {
     std::set<ProgramElement> result;
     if(!(isStatementType(leftSide.elementType) && isStatementType(typeToGet)))
-        throw std::invalid_argument("Wrong element type for getLeftSide on NextT");
+        throw std::invalid_argument("Wrong element type for getLeftSide on NEXT_T");
     computeAndCacheNextT(leftSide.stmtNo);
     auto previous = db->nextTTable.find(leftSide.stmtNo);
     if (previous == db->nextTTable.end()) return {};

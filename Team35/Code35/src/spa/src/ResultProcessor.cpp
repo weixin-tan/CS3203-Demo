@@ -1,226 +1,166 @@
 #include "ResultProcessor.h"
+#include "Table.h"
+#include <set>
 
 ResultProcessor::ResultProcessor() = default;
 
-std::set<ProgramElement> ResultProcessor::processResults(std::vector<Result> results) {
-  std::set<ProgramElement> emptyResultElements = {};
 
-  if (results.size() == 1) {
-    Result onlyResult = results[0];
-
-    // Handle no such that and no pattern clause
-    if (onlyResult.getPatternElements().empty() && onlyResult.getSuchThatElements().empty()
-    && onlyResult.allSuchThatAndPatternEntitiesNull()) {
-      return onlyResult.getNoClauseElements();
+//helper functions
+int ResultProcessor::getIndexEntity(std::vector<Entity> v, Entity K){
+    auto it = find(v.begin(), v.end(), K);
+    // IF element was found
+    if (it != v.end()){
+        int index = it - v.begin();
+        return index;
     }
-
-    // Handle pattern clause
-    if (onlyResult.getAssignEntRef().eType == EntityType::Null && onlyResult.getAssignEntity().eType != EntityType::Null) {
-      if (onlyResult.getAssignEntity() == onlyResult.getResultEntity()) {
-        return onlyResult.getPatternElements();
-      } else {
-        if (onlyResult.getPatternElements().empty()) {
-          return emptyResultElements;
-        } else {
-          return onlyResult.getNoClauseElements();
-        }
-      }
+    else {
+        return -1;
     }
-    if (onlyResult.getAssignEntRef().eType != EntityType::Null && onlyResult.getAssignEntity().eType != EntityType::Null){
-      std::set<ProgramElement> assigns;
-      std::set<ProgramElement> vars;
-      for (const auto &r : onlyResult.getEntRefElements()) {
-        assigns.insert(r.first);
-        vars.insert(r.second);
-      }
-      if (onlyResult.getAssignEntity() == onlyResult.getResultEntity()) {
-        return assigns;
-      } else if (onlyResult.getResultEntity() == onlyResult.getAssignEntRef()) {
-        return vars;
-      } else {
-        if (onlyResult.getEntRefElements().empty()) {
-          return emptyResultElements;
-        } else {
-          return onlyResult.getNoClauseElements();
-        }
-      }
-    }
-
-    // Handle such that clause
-    if (onlyResult.getLeftSuchThatEntity().eType != EntityType::Null && onlyResult.getRightSuchThatEntity().eType != EntityType::Null) {
-      std::set<std::pair<ProgramElement, ProgramElement>> resultPairs = onlyResult.getSuchThatElements();
-      std::set<ProgramElement> resultElements;
-      if (onlyResult.getResultEntity() == onlyResult.getLeftSuchThatEntity() && onlyResult.getResultEntity() == onlyResult.getRightSuchThatEntity()) {
-        return emptyResultElements;
-      } else if (onlyResult.getResultEntity() == onlyResult.getLeftSuchThatEntity()) {
-        for (const auto& r : resultPairs) {
-          resultElements.insert(r.first);
-        }
-        return resultElements;
-      } else if (onlyResult.getResultEntity() == onlyResult.getRightSuchThatEntity()) {
-        for (const auto& r : resultPairs) {
-          resultElements.insert(r.second);
-        }
-        return resultElements;
-      } else {
-        return onlyResult.getNoClauseElements();
-      }
-    }
-    return emptyResultElements; // In case something goes wrong.
-  } else if (results.size() == 2) {
-    Result patternResult;
-    Result suchThatResult;
-
-
-    if (results[0].getAssignEntity().eType == EntityType::Null && results[0].getRightSuchThatEntity().eType != EntityType::Null
-    && results[0].getLeftSuchThatEntity().eType != EntityType::Null) {
-      suchThatResult = results[0];
-      patternResult = results[1];
-    } else {
-      suchThatResult = results[1];
-      patternResult = results[0];
-    }
-
-    Entity resultEntity = suchThatResult.getResultEntity(); // Both results have the same result entity.
-
-    if (suchThatResult.getSuchThatElements().empty() || (patternResult.getPatternElements().empty() && patternResult.getEntRefElements().empty())) {
-      return emptyResultElements;
-    }
-
-    std::set<std::pair<ProgramElement, ProgramElement>> suchThatPairs = suchThatResult.getSuchThatElements();
-    std::set<std::pair<ProgramElement, ProgramElement>> patternEntRefPairs = patternResult.getEntRefElements();
-    std::set<ProgramElement> patternPairs = patternResult.getPatternElements();
-    std::set<std::pair<ProgramElement, ProgramElement>> resultWithTwoEntities;
-    std::set<std::tuple<ProgramElement, ProgramElement, ProgramElement>> resultWithThreeEntities;
-    std::set<ProgramElement> resultForProcessor;
-    bool common = false;
-
-    if (suchThatResult.getLeftSuchThatEntity() == patternResult.getAssignEntity() && suchThatResult.getRightSuchThatEntity() == patternResult.getAssignEntRef()) {
-      common = true;
-      for (const auto& r : suchThatPairs) {
-        for (const auto& a : patternEntRefPairs) {
-          if (r.first == a.first && r.second == a.second) {
-            resultWithTwoEntities.insert(r);
-          }
-        }
-      }
-    } else if (suchThatResult.getLeftSuchThatEntity() == patternResult.getAssignEntity() && patternResult.getAssignEntRef().eType == EntityType::Null) {
-      common = true;
-      for (const auto& r : suchThatPairs) {
-        for (const auto& a : patternPairs) {
-          if (r.first == a) {
-            resultWithTwoEntities.insert(r);
-          }
-        }
-      }
-    } else if (suchThatResult.getRightSuchThatEntity() == patternResult.getAssignEntity() && patternResult.getAssignEntRef().eType == EntityType::Null) {
-      common = true;
-      for (const auto& r : suchThatPairs) {
-        for (const auto& a : patternPairs) {
-          if (r.second == a) {
-            resultWithTwoEntities.insert(r);
-          }
-        }
-      }
-    } else if (suchThatResult.getLeftSuchThatEntity() == patternResult.getAssignEntity()) {
-      common = true;
-      for (const auto& r : suchThatPairs) {
-        for (const auto& a : patternEntRefPairs) {
-          if (r.first == a.first) {
-            std::tuple<ProgramElement, ProgramElement, ProgramElement> tup (r.first, r.second, a.second);
-            resultWithThreeEntities.insert(tup);
-          }
-        }
-      }
-    } else if (suchThatResult.getRightSuchThatEntity() == patternResult.getAssignEntity()) {
-      common = true;
-      for (const auto& r : suchThatPairs) {
-        for (const auto& a : patternEntRefPairs) {
-          if (r.second == a.first) {
-            std::tuple<ProgramElement, ProgramElement, ProgramElement> tup (r.first, r.second, a.second);
-            resultWithThreeEntities.insert(tup);
-          }
-        }
-      }
-    } else if (suchThatResult.getRightSuchThatEntity() == patternResult.getAssignEntRef()) {
-      common = true;
-      for (const auto& r : suchThatPairs) {
-        for (const auto& a : patternEntRefPairs) {
-          if (r.second == a.second) {
-            std::tuple<ProgramElement, ProgramElement, ProgramElement> tup (r.first, r.second, a.first);
-            resultWithThreeEntities.insert(tup);
-          }
-        }
-      }
-    } else {
-      common = false;
-    }
-
-    if (common) {
-      if (resultWithTwoEntities.empty() && resultWithThreeEntities.empty()) {
-        return emptyResultElements;
-      }
-      if (resultEntity == suchThatResult.getLeftSuchThatEntity() && patternResult.getAssignEntRef().eType == EntityType::Null) {
-        for (const auto& r :resultWithTwoEntities) {
-          resultForProcessor.insert(r.first);
-        }
-      } else if (resultEntity == suchThatResult.getRightSuchThatEntity() && patternResult.getAssignEntRef().eType == EntityType::Null) {
-        for (const auto& r :resultWithTwoEntities) {
-          resultForProcessor.insert(r.second);
-        }
-      } else if (resultEntity == suchThatResult.getLeftSuchThatEntity()) {
-        for (const auto& r :resultWithThreeEntities) {
-          resultForProcessor.insert(std::get<0>(r));
-        }
-      } else if (resultEntity == suchThatResult.getRightSuchThatEntity()) {
-        for (const auto& r :resultWithThreeEntities) {
-          resultForProcessor.insert(std::get<1>(r));
-        }
-      } else if (resultEntity == patternResult.getAssignEntity() || resultEntity == patternResult.getAssignEntRef()) {
-        for (const auto& r :resultWithThreeEntities) {
-          resultForProcessor.insert(std::get<2>(r));
-        }
-      } else {
-
-      }
-
-      if (resultForProcessor.empty()) {
-        return suchThatResult.getNoClauseElements();
-      } else {
-        return resultForProcessor;
-      }
-    } else {
-      std::set<ProgramElement> firstElem;
-      std::set<ProgramElement> secondElem;
-      std::set<ProgramElement> assignElem;
-      std::set<ProgramElement> assignEntRef;
-
-      for (const auto& s: suchThatResult.getSuchThatElements()) {
-        firstElem.insert(s.first);
-        secondElem.insert(s.second);
-      }
-      for (const auto& s: patternResult.getEntRefElements()) {
-        assignElem.insert(s.first);
-        assignEntRef.insert(s.second);
-      }
-
-      if (resultEntity == suchThatResult.getLeftSuchThatEntity()) {
-          return firstElem;
-      } else if (resultEntity == suchThatResult.getRightSuchThatEntity()) {
-          return secondElem;
-      } else if (resultEntity == patternResult.getAssignEntity()) {
-        if (patternResult.getAssignEntity().eType == EntityType::Null) {
-          return patternResult.getPatternElements();
-        } else {
-          return assignElem;
-        }
-      } else if (resultEntity == patternResult.getAssignEntRef()) {
-        return assignEntRef;
-      } else {
-        return suchThatResult.getNoClauseElements();
-      }
-    }
-  } else {
-      return emptyResultElements;
-  }
 }
+
+std::vector<ProgramElement> ResultProcessor::processResults(std::vector<Group> groups){
+    std::vector<Result> results;
+
+    Group group1 = groups[0];
+    results.push_back(group1.getGroup()[0]);
+    if (groups.size() != 1) {
+        Group group2 = groups[1];
+        for (Result r : groups[1].getGroup()) {
+            results.push_back(r);
+        }
+    }
+
+    //get front of list
+    Result firstResult = results[0];
+    results.erase(results.begin());
+    //check if valid
+    if(firstResult.getValid()){
+        //pass
+    } else{
+        std::vector<ProgramElement> empty = {};
+        return empty;
+    }
+    Table table;
+    std::vector<Entity> header = table.header;
+    std::vector<std::vector<ProgramElement>> body = table.body;
+    //2 until last
+    for (Result result : results) {  //for each result in the results list
+        if(result.getResultType()==ResultType::SUCH_THAT_CLAUSE || result.getResultType() == ResultType::WITH_CLAUSE ||
+                result.getResultType()==ResultType::PATTERN_CLAUSE){
+            //case where invalid
+            if(!result.getValid()){
+                std::vector<ProgramElement> empty = {};
+                return empty;
+                //case where oneSyn and twoSyn are empty
+            }else if(result.getOneSynSet().empty() && result.getTwoSynSet().empty()) {
+                continue;
+            } else if(!table.isTableEmpty()){
+                //handle oneSyn set
+                if(!result.getOneSynSet().empty()){
+                    std::set<ProgramElement> programElementsSet = result.getOneSynSet();
+                    std::vector<ProgramElement> programElementVector(programElementsSet.begin(), programElementsSet.end());
+
+                    int pos = getIndexEntity(header, result.getOneSynEntity());
+
+                    if(std::find(header.begin(), header.end(), result.getOneSynEntity())
+                       != header.end()){
+                        //header contains entity requiring elimination
+                        table.eliminate1syn(programElementVector, pos);
+                    } else {
+                        //header does not contain entity requiring cross product
+                        table.crossProduct1syn(programElementVector);
+                    }
+                //handle 2syn set
+                }else if(!result.getTwoSynSet().empty()){
+                    std::pair<Entity, Entity> programEntityPair = result.getTwoSynEntities();
+                    std::set<std::pair<ProgramElement,ProgramElement>> programElementPair = result.getTwoSynSet();
+                    std::vector<Entity> programEntityVector;
+                    programEntityVector.push_back(programEntityPair.first);
+                    programEntityVector.push_back(programEntityPair.second);
+                    std::vector<ProgramElement> left;
+                    std::vector<ProgramElement> right;
+                    for (std::pair<ProgramElement, ProgramElement> p : programElementPair) {
+                        left.push_back(p.first);
+                        right.push_back(p.second);
+                    }
+
+                    int pos1 = getIndexEntity(header, programEntityPair.first);
+                    int pos2 = getIndexEntity(header, programEntityPair.second);
+
+                    //both are in
+                    if(std::find(header.begin(), header.end(), programEntityPair.first) != header.end() &&
+                       std::find(header.begin(), header.end(), programEntityPair.second) != header.end()){
+                        table.eliminate2synBoth(left, right, pos1, pos2);
+                    }
+                        //first one is in
+                    else if(std::find(header.begin(), header.end(), programEntityPair.first) == header.end() &&
+                            std::find(header.begin(), header.end(), programEntityPair.second) != header.end()){
+                        //eliminate 1st cross product 2nd
+                        table.eliminate2synOne(left, right, pos1, pos2);
+                    }
+                        //2nd one is in
+                    else if(std::find(header.begin(), header.end(), programEntityPair.first) != header.end() &&
+                            std::find(header.begin(), header.end(), programEntityPair.second) == header.end()){
+                        //eliminate 2nd cross product first
+                        table.eliminate2synOne(right, left, pos1, pos2);
+                    }
+                    else {
+                        //cross product
+                        table.crossProduct2syn(left, right);
+                    }
+                }
+
+            } else {
+                //table is empty so can add straight to it
+                if(!result.getOneSynSet().empty()){
+                    //append 1syn
+                    table.inputElement(result.getOneSynEntity());
+                    //convert the set into vector
+                    std::vector<ProgramElement> bodyVector;
+                    for (ProgramElement e : result.getOneSynSet()) {
+                        bodyVector.push_back(e);
+                    }
+                    table.inputProgramElements(bodyVector);
+                }else{
+                    //append 2syn
+                    //push entity head one at a time
+                    table.inputElement(result.getTwoSynEntities().first);
+                    table.inputElement(result.getTwoSynEntities().second);
+                    //push into body
+                    std::set<std::pair<ProgramElement,ProgramElement>> programElementPair = result.getTwoSynSet();
+                    std::vector<ProgramElement> left;
+                    std::vector<ProgramElement> right;
+                    for (std::pair<ProgramElement, ProgramElement> p : programElementPair) {
+                        left.push_back(p.first);
+                        right.push_back(p.second);
+                    }
+                    table.inputProgramElements(left);
+                    table.inputProgramElements(right);
+                }
+            }
+        }
+    }
+
+    Entity entityToReturn = firstResult.getOneSynEntity();
+
+    for (int i = 0 ; i < table.getHeader().size(); i++){
+        if(entityToReturn == table.getHeader()[i]){
+            std::vector<ProgramElement> peToReturn = table.getBody()[i];
+            return peToReturn;
+        }
+    }
+
+    if (table.getHeader().empty()) {
+        return std::vector<ProgramElement>{};
+    } else {
+        std::vector<ProgramElement> result;
+        for (ProgramElement e : firstResult.getOneSynSet()) {
+            result.push_back(e);
+        }
+        return result;
+    }
+}
+
+
+
+

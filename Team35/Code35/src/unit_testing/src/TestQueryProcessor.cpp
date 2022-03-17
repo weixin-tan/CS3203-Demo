@@ -24,29 +24,29 @@ TEST_CASE("testing valid queries on parseQuery"){
   Clause c10 = Clause();
   Clause c11 = Clause();
 
-  Entity a = Entity(EntityType::Assignment, "a");
-  Entity s = Entity(EntityType::Statement, "s");
-  Entity v = Entity(EntityType::Variable, "v");
-  Entity w = Entity(EntityType::While, "w");
-  Entity countEntity = Entity(EntityType::FixedString, "count");
-  Entity fixedInt = Entity(EntityType::FixedInteger, "6");
-  Entity wildcardEntity = Entity(EntityType::Wildcard, "_");
-  Entity xEntity = Entity(EntityType::FixedString, "x");
-  Entity countplus1Entity = Entity(EntityType::FixedStringWithinWildcard, "count + 1");
+  Entity a = Entity(EntityType::ASSIGNMENT, "a");
+  Entity s = Entity(EntityType::STATEMENT, "s");
+  Entity v = Entity(EntityType::VARIABLE, "v");
+  Entity w = Entity(EntityType::WHILE, "w");
+  Entity countEntity = Entity(EntityType::FIXED_STRING, "count");
+  Entity fixedInt = Entity(EntityType::FIXED_INTEGER, "6");
+  Entity wildcardEntity = Entity(EntityType::WILDCARD, "_");
+  Entity xEntity = Entity(EntityType::FIXED_STRING, "x");
+  Entity countplus1Entity = Entity(EntityType::FIXED_STRING_WITHIN_WILDCARD, "count + 1");
 
-  RelationshipRef r3 = RelationshipRef(RelationshipType::FollowsT, fixedInt, s);
-  RelationshipRef r4 = RelationshipRef(RelationshipType::Modifies, fixedInt, v);
-  RelationshipRef r5 = RelationshipRef(RelationshipType::ParentT, w, a);
-  RelationshipRef r6 = RelationshipRef(RelationshipType::Pattern, wildcardEntity, countplus1Entity, a);
-  RelationshipRef r7 = RelationshipRef(RelationshipType::Pattern, xEntity, countplus1Entity, a);
-  RelationshipRef r8_a = RelationshipRef(RelationshipType::Uses, a, v);
-  RelationshipRef r8_b = RelationshipRef(RelationshipType::Pattern, v, wildcardEntity, a);
-  RelationshipRef r9_a = RelationshipRef(RelationshipType::ParentT, w, a);
-  RelationshipRef r9_b = RelationshipRef(RelationshipType::Pattern, countEntity, wildcardEntity, a);
-  RelationshipRef r10_a = RelationshipRef(RelationshipType::Pattern, xEntity, wildcardEntity, a);
-  RelationshipRef r10_b = RelationshipRef(RelationshipType::Uses, a, xEntity);
-  RelationshipRef r11_a = RelationshipRef(RelationshipType::ParentT, w, a);
-  RelationshipRef r11_b = RelationshipRef(RelationshipType::Pattern, countEntity, wildcardEntity, a);
+  RelationshipRef r3 = RelationshipRef(RelationshipType::FOLLOWS_T, fixedInt, s);
+  RelationshipRef r4 = RelationshipRef(RelationshipType::MODIFIES, fixedInt, v);
+  RelationshipRef r5 = RelationshipRef(RelationshipType::PARENT_T, w, a);
+  RelationshipRef r6 = RelationshipRef(RelationshipType::PATTERN, wildcardEntity, countplus1Entity, a);
+  RelationshipRef r7 = RelationshipRef(RelationshipType::PATTERN, xEntity, countplus1Entity, a);
+  RelationshipRef r8_a = RelationshipRef(RelationshipType::USES, a, v);
+  RelationshipRef r8_b = RelationshipRef(RelationshipType::PATTERN, v, wildcardEntity, a);
+  RelationshipRef r9_a = RelationshipRef(RelationshipType::PARENT_T, w, a);
+  RelationshipRef r9_b = RelationshipRef(RelationshipType::PATTERN, countEntity, wildcardEntity, a);
+  RelationshipRef r10_a = RelationshipRef(RelationshipType::PATTERN, xEntity, wildcardEntity, a);
+  RelationshipRef r10_b = RelationshipRef(RelationshipType::USES, a, xEntity);
+  RelationshipRef r11_a = RelationshipRef(RelationshipType::PARENT_T, w, a);
+  RelationshipRef r11_b = RelationshipRef(RelationshipType::PATTERN, countEntity, wildcardEntity, a);
 
   std::string s1 = "while w;Select w";
   std::string s2 = "variable      v     ; Select     v      ";
@@ -167,22 +167,22 @@ TEST_CASE("invalid querys"){
   std::string missingKeyWords19 = "assign a; Select a with a.stmt# = 3 such that"; //no such that
 
   std::string wronglyCapitalize1 = "Assign a; while w; Select a such that Parent* (w, a) pattern a (\"count\", _)";
-  std::string wronglyCapitalize2 = "assign a; While w; Select a such that Parent* (w, a) pattern a (\"count\", _)";
+  std::string wronglyCapitalize2 = "assign a; WHILE w; Select a such that Parent* (w, a) pattern a (\"count\", _)";
   std::string wronglyCapitalize3 = "assign a; while w; select a such that Parent* (w, a) pattern a (\"count\", _)";
   std::string wronglyCapitalize4 = "assign a; while w; Select A such that Parent* (w, a) pattern a (\"count\", _)";
   std::string wronglyCapitalize5 = "assign a; while w; Select a Such that Parent* (w, a) pattern a (\"count\", _)";
   std::string wronglyCapitalize6 = "assign a; while w; Select a such That Parent* (w, a) pattern a (\"count\", _)";
   std::string wronglyCapitalize7 = "assign a; while w; Select a such that parent* (w, a) pattern a (\"count\", _)";
-  std::string wronglyCapitalize8 = "assign a; while w; Select a such that Parent* (w, a) Pattern a (\"count\", _)";
-  std::string wronglyCapitalize9 = "Procedure p; variable v; Select p with p.procName = v.varName";
-  std::string wronglyCapitalize10 = "procedure p; Variable v; Select p with p.procName = v.varName";
+  std::string wronglyCapitalize8 = "assign a; while w; Select a such that Parent* (w, a) PATTERN a (\"count\", _)";
+  std::string wronglyCapitalize9 = "PROCEDURE p; variable v; Select p with p.procName = v.varName";
+  std::string wronglyCapitalize10 = "procedure p; VARIABLE v; Select p with p.procName = v.varName";
   std::string wronglyCapitalize11 = "procedure p; variable v; select p with p.procName = v.varName";
   std::string wronglyCapitalize12 = "procedure p; variable v; Select P with p.procName = v.varName";
-  std::string wronglyCapitalize13 = "procedure p; variable v; Select p With p.procName = v.varName";
+  std::string wronglyCapitalize13 = "procedure p; variable v; Select p WITH p.procName = v.varName";
   std::string wronglyCapitalize14 = "procedure p; variable v; Select p with P.procName = v.varName";
-  std::string wronglyCapitalize15 = "procedure p; variable v; Select p with p.ProcName = v.varName";
+  std::string wronglyCapitalize15 = "procedure p; variable v; Select p with p.PROCNAME = v.varName";
   std::string wronglyCapitalize16 = "procedure p; variable v; Select p with p.procName = V.varName";
-  std::string wronglyCapitalize17 = "procedure p; variable v; Select p with P.procName = v.VarName";
+  std::string wronglyCapitalize17 = "procedure p; variable v; Select p with P.procName = v.VARNAME";
 
   std::string patternIf1 = "if ifs; while w; Select ifs pattern ifs(\"a\",_)";
   std::string patternIf2 = "if ifs; while w; Select ifs pattern ifs(\"a\",_,)";
@@ -456,24 +456,24 @@ TEST_CASE("trippy queries"){
 TEST_CASE("test advanced queries"){
   QueryProcessor qp = QueryProcessor();
 
-  Entity a = Entity(EntityType::Assignment, "a");
-  Entity astmt = Entity(EntityType::Assignment, "a", EntityAttributeType::Stmt);
-  Entity a1 = Entity(EntityType::Assignment, "a1");
-  Entity a1stmt = Entity(EntityType::Assignment, "a1", EntityAttributeType::Stmt);
-  Entity a2 = Entity(EntityType::Assignment, "a2");
-  Entity a2stmt = Entity(EntityType::Assignment, "a2", EntityAttributeType::Stmt);
-  Entity ifEntity = Entity(EntityType::If, "ifs");
-  Entity s = Entity(EntityType::Statement, "s");
-  Entity whileEntity = Entity(EntityType::While, "w");
-  Entity wildcard = Entity(EntityType::Wildcard, "_");
-  Entity boolean = Entity(EntityType::Boolean, "BOOLEAN");
-  Entity int1 = Entity(EntityType::FixedInteger, "1");
-  Entity int2 = Entity(EntityType::FixedInteger, "2");
-  Entity int3 = Entity(EntityType::FixedInteger, "3");
-  Entity x = Entity(EntityType::FixedString, "x");
-  Entity patternString = Entity(EntityType::FixedString, "pattern");
-  Entity cProcname = Entity(EntityType::Call, "c", EntityAttributeType::ProcName);
-  Entity pProcname = Entity(EntityType::Procedure, "p", EntityAttributeType::ProcName);
+  Entity a = Entity(EntityType::ASSIGNMENT, "a");
+  Entity astmt = Entity(EntityType::ASSIGNMENT, "a", EntityAttributeType::STMT);
+  Entity a1 = Entity(EntityType::ASSIGNMENT, "a1");
+  Entity a1stmt = Entity(EntityType::ASSIGNMENT, "a1", EntityAttributeType::STMT);
+  Entity a2 = Entity(EntityType::ASSIGNMENT, "a2");
+  Entity a2stmt = Entity(EntityType::ASSIGNMENT, "a2", EntityAttributeType::STMT);
+  Entity ifEntity = Entity(EntityType::IF, "ifs");
+  Entity s = Entity(EntityType::STATEMENT, "s");
+  Entity whileEntity = Entity(EntityType::WHILE, "w");
+  Entity wildcard = Entity(EntityType::WILDCARD, "_");
+  Entity boolean = Entity(EntityType::BOOLEAN, "BOOLEAN");
+  Entity int1 = Entity(EntityType::FIXED_INTEGER, "1");
+  Entity int2 = Entity(EntityType::FIXED_INTEGER, "2");
+  Entity int3 = Entity(EntityType::FIXED_INTEGER, "3");
+  Entity x = Entity(EntityType::FIXED_STRING, "x");
+  Entity patternString = Entity(EntityType::FIXED_STRING, "pattern");
+  Entity cProcname = Entity(EntityType::CALL, "c", EntityAttributeType::PROCNAME);
+  Entity pProcname = Entity(EntityType::PROCEDURE, "p", EntityAttributeType::PROCNAME);
 
   string s1 = "\nSelect       BOOLEAN\t\t\t\tsuch\n\n\n\nthat     Next* (\t1\t,\t2\t)\n\n";
   string s2 = "assign a1, a2;Select <a1, a2\n.\nstmt#, BOOLEAN> such that Affects (a1, a2)";
@@ -520,20 +520,20 @@ TEST_CASE("test advanced queries"){
   Clause s15_output = qp.parsePQL(s15)[0];
   Clause s16_output = qp.parsePQL(s16)[0];
 
-  RelationshipRef r1 = RelationshipRef(RelationshipType::NextT, int1, int2);
-  RelationshipRef r2 = RelationshipRef(RelationshipType::Affects, a1, a2);
-  RelationshipRef r3 = RelationshipRef(RelationshipType::With, cProcname, pProcname);
-  RelationshipRef r4a = RelationshipRef(RelationshipType::Pattern, x, wildcard, whileEntity);
-  RelationshipRef r4b = RelationshipRef(RelationshipType::Pattern, x, wildcard, ifEntity);
-  RelationshipRef r5_a = RelationshipRef(RelationshipType::NextT, int1, s);
-  RelationshipRef r5_b = RelationshipRef(RelationshipType::NextT, s, int3);
-  RelationshipRef r5_c = RelationshipRef(RelationshipType::FollowsT, int1, int3);
-  RelationshipRef r8_a = RelationshipRef(RelationshipType::Pattern, patternString, wildcard, a);
-  RelationshipRef r8_b = RelationshipRef(RelationshipType::Pattern, patternString, wildcard, whileEntity);
-  RelationshipRef r8_c = RelationshipRef(RelationshipType::Pattern, patternString, wildcard, ifEntity);
-  RelationshipRef r11_a = RelationshipRef(RelationshipType::With, astmt, int1);
-  RelationshipRef r11_b = RelationshipRef(RelationshipType::With, a1stmt, int3);
-  RelationshipRef r11_c = RelationshipRef(RelationshipType::With, int1, int3);
+  RelationshipRef r1 = RelationshipRef(RelationshipType::NEXT_T, int1, int2);
+  RelationshipRef r2 = RelationshipRef(RelationshipType::AFFECTS, a1, a2);
+  RelationshipRef r3 = RelationshipRef(RelationshipType::WITH, cProcname, pProcname);
+  RelationshipRef r4a = RelationshipRef(RelationshipType::PATTERN, x, wildcard, whileEntity);
+  RelationshipRef r4b = RelationshipRef(RelationshipType::PATTERN, x, wildcard, ifEntity);
+  RelationshipRef r5_a = RelationshipRef(RelationshipType::NEXT_T, int1, s);
+  RelationshipRef r5_b = RelationshipRef(RelationshipType::NEXT_T, s, int3);
+  RelationshipRef r5_c = RelationshipRef(RelationshipType::FOLLOWS_T, int1, int3);
+  RelationshipRef r8_a = RelationshipRef(RelationshipType::PATTERN, patternString, wildcard, a);
+  RelationshipRef r8_b = RelationshipRef(RelationshipType::PATTERN, patternString, wildcard, whileEntity);
+  RelationshipRef r8_c = RelationshipRef(RelationshipType::PATTERN, patternString, wildcard, ifEntity);
+  RelationshipRef r11_a = RelationshipRef(RelationshipType::WITH, astmt, int1);
+  RelationshipRef r11_b = RelationshipRef(RelationshipType::WITH, a1stmt, int3);
+  RelationshipRef r11_c = RelationshipRef(RelationshipType::WITH, int1, int3);
 
   SECTION("no mixed clauses query"){
     c1.appendEntityToFind(boolean);
@@ -699,8 +699,12 @@ TEST_CASE("advanced trippy queries"){
 
 TEST_CASE("debugging"){
   QueryProcessor qp = QueryProcessor();
-  string s= "assign a; Select a with a.stmt# = 3";
-  vector<Clause> c = qp.parsePQL(s);
+    string s1 = "assign a, b; variable v; "
+                "Select <a.stmt#, b.stmt#, v.varName> "
+                "such that Next(a, b) and Next(b, a) "
+                "pattern a (v, \"x+1\") and b (v, \"(x+y)\") "
+                "with b.stmt# = a.stmt# and v.varName = a.stmt#";
+  vector<Clause> c = qp.parsePQL(s1);
 
   if (c.empty()){
     cout << "invalid!" << "\n";

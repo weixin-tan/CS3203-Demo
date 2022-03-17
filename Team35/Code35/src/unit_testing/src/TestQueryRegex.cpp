@@ -105,7 +105,7 @@ TEST_CASE("test basic boolean methods"){
   SECTION("checking isPattern"){
     REQUIRE(isPattern("pattern some string"));
     REQUIRE(!isPattern("ipattern wrong string"));
-    REQUIRE(!isPattern("Pattern wrong string"));
+    REQUIRE(!isPattern("PATTERN wrong string"));
     REQUIRE(!isPattern("no such word"));
   }
 

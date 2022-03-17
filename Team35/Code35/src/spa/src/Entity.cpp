@@ -1,14 +1,14 @@
 #include "Entity.h"
 
 Entity::Entity() {
-    Entity::eType = EntityType::Null;
-    Entity::aType = EntityAttributeType::Null;
+    Entity::eType = EntityType::NULL_ENTITY;
+    Entity::aType = EntityAttributeType::NULL_ATTRIBUTE;
 }
 
 Entity::Entity(EntityType eType, std::string name) {
     Entity::eType = eType;
     Entity::name = std::move(name);
-    Entity::aType = EntityAttributeType::Null;
+    Entity::aType = EntityAttributeType::NULL_ATTRIBUTE;
 }
 
 Entity::Entity(EntityType eType, std::string name, EntityAttributeType aType) {
@@ -21,7 +21,7 @@ std::string Entity::toString() {
     std::ostringstream buffer;
     buffer << "Type: " << Type::entityTypeToString(eType) << ", Name: " << name;
 
-    if (aType != EntityAttributeType::Null){
+    if (aType != EntityAttributeType::NULL_ATTRIBUTE){
       buffer << ", Attribute: " << Type::attributeTypeToString(aType);
     }
   buffer << "\n";

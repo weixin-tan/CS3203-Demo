@@ -38,7 +38,7 @@ public:
     // for call statements
     std::string procName;
 
-    //for Constant variables
+    //for CONSTANT variables
     std::vector<std::string> constant; 
 
     // for then, else, while statements. 

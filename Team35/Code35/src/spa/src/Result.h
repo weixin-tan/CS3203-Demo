@@ -3,43 +3,36 @@
 
 #include <set>
 #include <utility>
+
 #include "ProgramElement.h"
 #include "RelationshipRef.h"
 
 class Result {
- public:
-  std::set<ProgramElement> noClauseElements = {};
-  std::set<std::pair<ProgramElement, ProgramElement>> suchThatElements = {};
-  std::set<ProgramElement> patternElements = {};
-  std::set<std::pair<ProgramElement, ProgramElement>> entRefElements = {};
-  Entity resultEntity;
-  Entity leftSuchThatEntity;
-  Entity rightSuchThatEntity;
-  Entity assignEntity;
-  Entity assignEntRef;
+private:
+    ResultType type;
+    bool valid;
+    Entity oneSynEntity;
+    std::set<ProgramElement> oneSynSet;
+    std::pair<Entity, Entity> twoSynEntities;
+    std::set<std::pair<ProgramElement, ProgramElement>> twoSynSet;
 
-  Result();
+public:
+    Result();
 
-  void setNoClauseElements(std::set<ProgramElement> elements);
-  void setSuchThatElements(std::set<std::pair<ProgramElement, ProgramElement>> elements);
-  void setPatternElements(std::set<ProgramElement> elements);
-  void setEntRefElements(std::set<std::pair<ProgramElement, ProgramElement>> elements);
-  void setResultEntity(Entity entityToGet);
-  void setLeftSuchThatEntity(Entity left);
-  void setRightSuchThatEntity(Entity right);
-  void setAssignEntity(Entity assign);
-  void setAssignEntRef(Entity entRef);
-  std::set<ProgramElement> getNoClauseElements();
-  std::set<std::pair<ProgramElement, ProgramElement>> getSuchThatElements();
-  std::set<ProgramElement> getPatternElements();
-  std::set<std::pair<ProgramElement, ProgramElement>> getEntRefElements();
-  Entity getResultEntity();
-  Entity getLeftSuchThatEntity();
-  Entity getRightSuchThatEntity();
-  Entity getAssignEntity();
-  Entity getAssignEntRef();
-  bool allSuchThatAndPatternEntitiesNull();
+    void setResultType(ResultType r);
+    void setValid(bool b);
+    void setOneSynEntity(Entity e);
+    void setOneSynSet(std::set<ProgramElement> s);
+    void setTwoSynEntities(std::pair<Entity, Entity> p);
+    void setTwoSynSet(std::set<std::pair<ProgramElement, ProgramElement>> t);
+
+    ResultType getResultType();
+    bool getValid();
+    Entity getOneSynEntity();
+    std::set<ProgramElement> getOneSynSet();
+    std::pair<Entity, Entity> getTwoSynEntities();
+    std::set<std::pair<ProgramElement, ProgramElement>> getTwoSynSet();
+    bool operator==(const Result& r1) const;
 };
-
 
 #endif //SPA_RESULT_H

@@ -1,7 +1,7 @@
 #include "RelationshipRef.h"
 
 RelationshipRef::RelationshipRef() {
-  RelationshipRef::rType = RelationshipType::Null;
+  RelationshipRef::rType = RelationshipType::NULL_RELATIONSHIP;
 }
 
 RelationshipRef::RelationshipRef(RelationshipType rType, Entity leftEntity, Entity rightEntity) {
@@ -11,10 +11,10 @@ RelationshipRef::RelationshipRef(RelationshipType rType, Entity leftEntity, Enti
 }
 
 RelationshipRef::RelationshipRef(RelationshipType rType, Entity leftEntity, Entity rightEntity, Entity AssignmentEntity){
-  if (rType == RelationshipType::Pattern){
+  if (rType == RelationshipType::PATTERN){
     RelationshipRef::rType = rType;
   }else{
-    RelationshipRef::rType = RelationshipType::Null;
+    RelationshipRef::rType = RelationshipType::NULL_RELATIONSHIP;
   }
   RelationshipRef::leftEntity = std::move(leftEntity);
   RelationshipRef::rightEntity = std::move(rightEntity);
@@ -25,7 +25,7 @@ std::string RelationshipRef::toString() {
   std::ostringstream buffer;
   buffer << "Relationship Type: " << Type::relationshipTypeToString(rType) << " leftEntity: "
          << leftEntity.toString() << " rightEntity " << rightEntity.toString();
-  if (rType == RelationshipType::Pattern){
+  if (rType == RelationshipType::PATTERN){
     buffer << " assignEntity: " << AssignmentEntity.toString();
   }
   buffer << std::endl;

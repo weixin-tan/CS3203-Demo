@@ -134,7 +134,7 @@ bool existSuchThat(const std::string &s) {
 /**
  * check if Entity Declaration Statements are valid
  * @param sArr List where the first element is a designEntity, and the rest are synonyms
- * @return returns true if the Entity Declaration Statement is valid. else, return false
+ * @return returns true if the Entity Declaration STATEMENT is valid. else, return false
  */
 bool checkDesignEntitySynonymsList(std::vector<std::string> sArr) {
   std::vector<std::string> designEntity {"stmt", "read", "print", "call", "while", "if", "assign", "variable", "constant", "procedure"};
@@ -186,10 +186,10 @@ bool checkRelRefList(std::vector<std::string> sArr){
 bool checkPatternList(std::vector<std::string> patternList, std::unordered_map<std::string, Entity>* entityMap){
   if (patternList.size() == 3 && isEntRef(patternList[1]) && entityMapContains(patternList[0], entityMap)){
     Entity e = (*entityMap)[patternList[0]];
-    return e.eType == EntityType::Assignment || (e.eType == EntityType::While && isWildCard(patternList[2]));
+    return e.eType == EntityType::ASSIGNMENT || (e.eType == EntityType::WHILE && isWildCard(patternList[2]));
   }else if (patternList.size() == 4 && isEntRef(patternList[1]) && entityMapContains(patternList[0], entityMap)){
     Entity e = (*entityMap)[patternList[0]];
-    return e.eType == EntityType::If && isWildCard(patternList[2]) && isWildCard(patternList[3]);
+    return e.eType == EntityType::IF && isWildCard(patternList[2]) && isWildCard(patternList[3]);
   }
   return false;
 }
@@ -762,24 +762,23 @@ std::vector<std::string> extractPatternBrackets(const std::string& s ){
 }
 
 bool checkRelationshipRef(const RelationshipRef& r){
-  if (r.rType == RelationshipType::Null){
+  if (r.rType == RelationshipType::NULL_RELATIONSHIP){
     return false;
   }else{
     bool returnBool;
-    if (r.rType == RelationshipType::Follows || r.rType == RelationshipType::FollowsT ||
-        r.rType == RelationshipType::Parent || r.rType == RelationshipType::ParentT ||
-        r.rType == RelationshipType::Next || r.rType == RelationshipType::NextT ||
-        r.rType == RelationshipType::Affects){
+    if (r.rType == RelationshipType::FOLLOWS || r.rType == RelationshipType::FOLLOWS_T ||
+    r.rType == RelationshipType::PARENT || r.rType == RelationshipType::PARENT_T ||
+    r.rType == RelationshipType::NEXT || r.rType == RelationshipType::NEXT_T || r.rType == RelationshipType::AFFECTS){
       returnBool = checkFollowsOrParentsOrNextOrAffects(r);
-    } else if (r.rType == RelationshipType::Uses){
+    } else if (r.rType == RelationshipType::USES){
       returnBool = checkUses(r);
-    } else if (r.rType == RelationshipType::Modifies){
+    } else if (r.rType == RelationshipType::MODIFIES){
       returnBool = checkModifies(r);
-    } else if (r.rType == RelationshipType::Calls || r.rType == RelationshipType::CallsT){
+    } else if (r.rType == RelationshipType::CALLS || r.rType == RelationshipType::CALLS_T){
       returnBool = checkCalls(r);
-    } else if (r.rType == RelationshipType::Pattern){
+    } else if (r.rType == RelationshipType::PATTERN){
       returnBool = checkPattern(r);
-    }else if (r.rType == RelationshipType::With){
+    }else if (r.rType == RelationshipType::WITH){
       returnBool = checkWith(r);
     }else {
       returnBool = false;
@@ -789,15 +788,15 @@ bool checkRelationshipRef(const RelationshipRef& r){
 }
 
 bool checkEntityIsStmtRef(const Entity& e){
-  return e.eType == EntityType::FixedInteger
-      || e.eType == EntityType::Statement
-      || e.eType == EntityType::Assignment
-      || e.eType == EntityType::While
-      || e.eType == EntityType::If
-      || e.eType == EntityType::Call
-      || e.eType == EntityType::Print
-      || e.eType == EntityType::Read
-      || e.eType == EntityType::Wildcard;
+  return e.eType == EntityType::FIXED_INTEGER
+      || e.eType == EntityType::STATEMENT
+      || e.eType == EntityType::ASSIGNMENT
+      || e.eType == EntityType::WHILE
+      || e.eType == EntityType::IF
+      || e.eType == EntityType::CALL
+      || e.eType == EntityType::PRINT
+      || e.eType == EntityType::READ
+      || e.eType == EntityType::WILDCARD;
 }
 
 bool checkFollowsOrParentsOrNextOrAffects(const RelationshipRef& r){
@@ -807,51 +806,51 @@ bool checkFollowsOrParentsOrNextOrAffects(const RelationshipRef& r){
 }
 
 bool checkUsesLeftSide(const Entity& e){
-  return e.eType == EntityType::FixedInteger
-      || e.eType == EntityType::FixedString
-      || e.eType == EntityType::Statement
-      || e.eType == EntityType::Assignment
-      || e.eType == EntityType::Print
-      || e.eType == EntityType::While
-      || e.eType == EntityType::If
-      || e.eType == EntityType::Procedure
-      || e.eType == EntityType::Call
-      || e.eType == EntityType::Wildcard;
+  return e.eType == EntityType::FIXED_INTEGER
+      || e.eType == EntityType::FIXED_STRING
+      || e.eType == EntityType::STATEMENT
+      || e.eType == EntityType::ASSIGNMENT
+      || e.eType == EntityType::PRINT
+      || e.eType == EntityType::WHILE
+      || e.eType == EntityType::IF
+      || e.eType == EntityType::PROCEDURE
+      || e.eType == EntityType::CALL
+      || e.eType == EntityType::WILDCARD;
 }
 
 bool checkUses(const RelationshipRef& r){
   bool leftSideBool = checkUsesLeftSide(r.leftEntity);
-  bool rightSideBool = r.rightEntity.eType == EntityType::FixedString
-      || r.rightEntity.eType == EntityType::Variable
-      || r.rightEntity.eType == EntityType::Wildcard;
+  bool rightSideBool = r.rightEntity.eType == EntityType::FIXED_STRING
+      || r.rightEntity.eType == EntityType::VARIABLE
+      || r.rightEntity.eType == EntityType::WILDCARD;
   return leftSideBool && rightSideBool;
 }
 
 bool checkModifiesLeftSide(const Entity& e){
-  return e.eType == EntityType::FixedInteger
-      || e.eType == EntityType::FixedString
-      || e.eType == EntityType::Statement
-      || e.eType == EntityType::Assignment
-      || e.eType == EntityType::Read
-      || e.eType == EntityType::While
-      || e.eType == EntityType::If
-      || e.eType == EntityType::Procedure
-      || e.eType == EntityType::Call
-      || e.eType == EntityType::Wildcard;
+  return e.eType == EntityType::FIXED_INTEGER
+      || e.eType == EntityType::FIXED_STRING
+      || e.eType == EntityType::STATEMENT
+      || e.eType == EntityType::ASSIGNMENT
+      || e.eType == EntityType::READ
+      || e.eType == EntityType::WHILE
+      || e.eType == EntityType::IF
+      || e.eType == EntityType::PROCEDURE
+      || e.eType == EntityType::CALL
+      || e.eType == EntityType::WILDCARD;
 }
 
 bool checkModifies(const RelationshipRef& r){
   bool leftSideBool = checkModifiesLeftSide(r.leftEntity);
-  bool rightSideBool = r.rightEntity.eType == EntityType::FixedString
-      || r.rightEntity.eType == EntityType::Variable
-      || r.rightEntity.eType == EntityType::Wildcard;
+  bool rightSideBool = r.rightEntity.eType == EntityType::FIXED_STRING
+      || r.rightEntity.eType == EntityType::VARIABLE
+      || r.rightEntity.eType == EntityType::WILDCARD;
   return leftSideBool && rightSideBool;
 }
 
 bool checkCallsEntity(const Entity& e){
-  return e.eType == EntityType::FixedString
-      || e.eType == EntityType::Procedure
-      || e.eType == EntityType::Wildcard;
+  return e.eType == EntityType::FIXED_STRING
+      || e.eType == EntityType::PROCEDURE
+      || e.eType == EntityType::WILDCARD;
 }
 
 bool checkCalls(const RelationshipRef& r){
@@ -861,19 +860,19 @@ bool checkCalls(const RelationshipRef& r){
 }
 
 bool checkPattern(const RelationshipRef& r){
-  if(r.AssignmentEntity.eType == EntityType::Assignment){
-    bool leftSideBool = r.leftEntity.eType == EntityType::FixedString
-        || r.leftEntity.eType == EntityType::Variable
-        || r.leftEntity.eType == EntityType::Wildcard;
-    bool rightSideBool = r.rightEntity.eType == EntityType::Wildcard ||
-        r.rightEntity.eType == EntityType::FixedStringWithinWildcard ||
-        r.rightEntity.eType == EntityType::FixedString;
+  if(r.AssignmentEntity.eType == EntityType::ASSIGNMENT){
+    bool leftSideBool = r.leftEntity.eType == EntityType::FIXED_STRING
+        || r.leftEntity.eType == EntityType::VARIABLE
+        || r.leftEntity.eType == EntityType::WILDCARD;
+    bool rightSideBool = r.rightEntity.eType == EntityType::WILDCARD ||
+        r.rightEntity.eType == EntityType::FIXED_STRING_WITHIN_WILDCARD ||
+        r.rightEntity.eType == EntityType::FIXED_STRING;
     return leftSideBool && rightSideBool;
-  }else if (r.AssignmentEntity.eType == EntityType::While || r.AssignmentEntity.eType == EntityType::If){
-    bool leftSideBool = r.leftEntity.eType == EntityType::FixedString
-        || r.leftEntity.eType == EntityType::Wildcard
-        || r.leftEntity.eType == EntityType::Variable;
-    bool rightSideBool = r.rightEntity.eType == EntityType::Wildcard;
+  }else if (r.AssignmentEntity.eType == EntityType::WHILE || r.AssignmentEntity.eType == EntityType::IF){
+    bool leftSideBool = r.leftEntity.eType == EntityType::FIXED_STRING
+        || r.leftEntity.eType == EntityType::WILDCARD
+        || r.leftEntity.eType == EntityType::VARIABLE;
+    bool rightSideBool = r.rightEntity.eType == EntityType::WILDCARD;
     return leftSideBool && rightSideBool;
   }else{
     return false;
@@ -885,35 +884,31 @@ bool checkWith(const RelationshipRef& r){
 }
 
 bool checkWithEntity(const Entity& e){
-    if (e.aType == EntityAttributeType::ProcName){
-        return e.eType == EntityType::Procedure || e.eType == EntityType::Call;
-    }else if(e.aType == EntityAttributeType::VarName){
-        return e.eType == EntityType::Variable || e.eType == EntityType::Read || e.eType == EntityType::Print;
-    } else if (e.aType == EntityAttributeType::Value){
-        return e.eType == EntityType::Constant;
-    }else if (e.aType == EntityAttributeType::Stmt){
-        return e.eType == EntityType::Statement ||
-            e.eType == EntityType::Read ||
-            e.eType == EntityType::Print ||
-            e.eType == EntityType::Call ||
-            e.eType == EntityType::While ||
-            e.eType == EntityType::If ||
-            e.eType == EntityType::Assignment;
-    }else{
-        return  e.eType == EntityType::FixedString ||  e.eType == EntityType::FixedInteger;
-    }
+  if (e.eType == EntityType::PROCEDURE || e.eType == EntityType::CALL){
+    return e.aType == EntityAttributeType::PROCNAME;
+  }else if (e.eType == EntityType::VARIABLE || e.eType == EntityType::READ || e.eType == EntityType::PRINT){
+    return e.aType == EntityAttributeType::VARNAME;
+  }else if (e.eType == EntityType::CONSTANT){
+    return e.aType == EntityAttributeType::VALUE;
+  }else if (e.eType == EntityType::STATEMENT || e.eType == EntityType::READ || e.eType == EntityType::PRINT ||
+      e.eType == EntityType::CALL || e.eType == EntityType::WHILE || e.eType == EntityType::IF ||
+      e.eType == EntityType::ASSIGNMENT){
+    return e.aType == EntityAttributeType::STMT;
+  }else{
+    return e.eType == EntityType::FIXED_STRING ||  e.eType == EntityType::FIXED_INTEGER ;
+  }
 }
 
 bool checkVariableToSelect(const Entity& e){
-  if (e.eType == EntityType::Wildcard
-  || e.eType == EntityType::FixedInteger
-  || e.eType == EntityType::FixedString
-  || e.eType == EntityType::FixedStringWithinWildcard
-  || e.eType == EntityType::Null ){
+  if (e.eType == EntityType::WILDCARD
+  || e.eType == EntityType::FIXED_INTEGER
+  || e.eType == EntityType::FIXED_STRING
+  || e.eType == EntityType::FIXED_STRING_WITHIN_WILDCARD
+  || e.eType == EntityType::NULL_ENTITY ){
     return false;
   }else{
-      if (e.eType == EntityType::Boolean){
-          return e.aType == EntityAttributeType::Null;
+      if (e.eType == EntityType::BOOLEAN){
+          return e.aType == EntityAttributeType::NULL_ATTRIBUTE;
       }
       return isIdent(e.name);
   }
