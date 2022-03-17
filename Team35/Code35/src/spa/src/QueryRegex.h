@@ -8,12 +8,15 @@
 #include "RelationshipRef.h"
 
 bool firstWordChecker(const std::string& s, const std::string& targetWord);
+bool isSpaces(const std::string& s);
+bool doesStringExist(const std::string& s, const std::string& substring);
 bool entityMapContains(const std::string& s, std::unordered_map<std::string, Entity>* entityMap);
 
 bool isIdent(const std::string& s);
 bool isInteger(const std::string& s);
 bool isWildCard(const std::string& s);
 bool isQuotationIdent(const std::string& s);
+bool isStringWithinQuotations(const std::string& s);
 bool isStringWithinWildCard(const std::string& s);
 bool isStmtRef(const std::string& s);
 bool isEntRef(const std::string& s);
@@ -39,7 +42,7 @@ std::string removeSuchThat(const std::string &s);
 std::string removePattern(const std::string& s);
 std::string removeWith(const std::string& s);
 
-long findClauseStartPosition(const std::string& s, const std::string& commandWord);
+long findClauseStartPosition(const std::string& s, const std::string& commandWord, const std::string& original);
 long findPatternClause(const std::string& s);
 long findWithClause(const std::string& s);
 long findPatternClauseInSubstring(const std::string& s, std::string original);
@@ -51,7 +54,6 @@ std::vector<std::string> splitStringBySpaces(const std::string& s);
 
 bool existVBrackets(const std::string& s);
 std::string removeVBrackets(const std::string& s);
-
 bool checkAndCommandWord(const std::vector<std::string>& clausesList, bool (*existCommandWordFunction)(const std::string &s));
 void removeAndCommandWord(std::vector<std::string>* clausesList, std::string (*removeCommandWordFunction)(const std::string &s));
 bool checkAndSuchThat(const std::vector<std::string>& clausesList);
@@ -66,7 +68,8 @@ std::vector<std::vector<std::string>> extractSelectAndDeclarationStatements(cons
 std::vector<std::string> extractDesignEntityAndSynonyms(const std::string& s);
 
 std::vector<std::string> splitVariablesAndClauses(const std::string& s);
-std::vector<std::string> splitPatternAndSuchThatClauses(const std::string& s);
+std::vector<std::string> extractWithClauses(const std::string& s);
+std::vector<std::string> splitSuchThatPatternWithClauses(const std::string& s);
 std::vector<std::string> extractVariablesToSelect(const std::string& s);
 std::vector<std::vector<std::string>> extractClauses(const std::string& s);
 

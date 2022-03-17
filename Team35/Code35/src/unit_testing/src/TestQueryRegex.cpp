@@ -131,35 +131,3 @@ TEST_CASE("test advanced boolean methods"){
     REQUIRE(!checkRelRefList({"Uses", "a", "_1"}));
   }
 }
-/*
-METHODS TO TEST
-bool checkPatternList(std::vector<std::string> patternList, std::unordered_map<std::string, Entity>* entityMap);
-  bool entityMapContains(const std::string& s, std::unordered_map<std::string, Entity>* entityMap);
-bool checkDesignEntitySynonymsList(std::vector<std::string> sArr);
-bool checkRelRefList(std::vector<std::string> s);
-bool checkPatternList(std::vector<std::string> patternList, std::unordered_map<std::string, Entity>* entityMap);
-bool entityMapContains(const std::string& s, std::unordered_map<std::string, Entity>* entityMap);
-
-std::string extractStringFromQuotation(const std::string& s);
-std::string extractStringFromWildCard(const std::string& s);
-std::string stripString(std::string s);
-std::string removePattern(const std::string& s);
-std::vector<std::string> splitString(const std::string& s, const std::string& delimiter);
-long findPatternClause(const std::string& s);
-std::vector<long> findSuchThatClause(const std::string& s);
-
-std::vector<std::string> splitDeclarationAndSelect(const std::string& s);
-std::vector<std::string> extractSelectStatements(const std::string& s);
-std::vector<std::string> extractDeclarationStatements(const std::string& s);
-
-std::vector<std::string> splitStringBySpaces(const std::string& s);
-std::vector<std::string> extractDesignEntityAndSynonyms(const std::string& s);
-
-std::vector<std::string> splitVariablesAndClauses(const std::string& s);
-std::vector<std::string> splitPatternAndSuchThatClauses(std::string s);
-std::vector<std::string> extractVariablesToSelect(const std::string& s);
-std::vector<std::string> extractSuchThatClauses(const std::string& s);
-std::vector<std::string> extractPatternClauses(const std::string& s);
-
-std::vector<std::string> extractItemsInBrackets(const std::string& s);
- */

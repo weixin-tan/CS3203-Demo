@@ -158,7 +158,7 @@ Statement ConcreteSyntaxWithValidation::parseAssign(std::queue<Token>& tokensQue
     Statement assignStmt;
     assignStmt.stmtNo = stmt_count;
     stmt_count++;
-    assignStmt.statementType = StatementType::kassign_stmt;
+    assignStmt.statementType = StatementType::ASSIGNMENT_STMT;
 
     // varName
     std::vector<std::string> result;
@@ -246,7 +246,7 @@ Statement ConcreteSyntaxWithValidation::parseWhile(std::queue<Token>& tokensQueu
     Statement whileStmt;
     whileStmt.stmtNo = stmt_count;
     stmt_count++;
-    whileStmt.statementType = StatementType::kwhile_stmt;
+    whileStmt.statementType = StatementType::WHILE_STMT;
 
     // parse condExpr
     // remove while_keyword
@@ -502,7 +502,7 @@ Statement ConcreteSyntaxWithValidation::parseIf(std::queue<Token>& tokensQueue) 
     Statement ifStmt;
     ifStmt.stmtNo = stmt_count;
     stmt_count++;
-    ifStmt.statementType = StatementType::kif_stmt;
+    ifStmt.statementType = StatementType::IF_STMT;
 
     // parse condExpr
     // remove if_keyword
@@ -589,7 +589,7 @@ Statement ConcreteSyntaxWithValidation::parseRead(std::queue<Token>& tokensQueue
     Statement readStmt;
     readStmt.stmtNo = stmt_count;
     stmt_count++;
-    readStmt.statementType = StatementType::kread_stmt;
+    readStmt.statementType = StatementType::READ_STMT;
     // remove read_keyword
     if (tokensQueue.front().getToken() != TokenType::READ_KEYWORD) {
         throw std::invalid_argument("Missing read keyword.");
@@ -621,7 +621,7 @@ Statement ConcreteSyntaxWithValidation::parsePrint(std::queue<Token>& tokensQueu
     Statement printStmt;
     printStmt.stmtNo = stmt_count;
     stmt_count++;
-    printStmt.statementType = StatementType::kprint_stmt;
+    printStmt.statementType = StatementType::PRINT_STMT;
     // remove print_keyword
     if (tokensQueue.front().getToken() != TokenType::PRINT_KEYWORD) {
         throw std::invalid_argument("Missing print keyword.");
@@ -655,7 +655,7 @@ Statement ConcreteSyntaxWithValidation::parseCall(std::queue<Token>& tokensQueue
     Statement callStmt;
     callStmt.stmtNo = stmt_count;
     stmt_count++;
-    callStmt.statementType = StatementType::kcall_stmt;
+    callStmt.statementType = StatementType::CALL_STMT;
     // remove call_keyword
     tokensQueue.pop();
     callStmt.procName = tokensQueue.front().getId();
