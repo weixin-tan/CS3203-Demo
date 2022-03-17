@@ -63,12 +63,12 @@ bool SuchThatHandler::handleNoSynonyms(PkbRelationshipType r, Entity left, Entit
     }
 
     // If both sides are fixed entities, then check pkb if the relationship exists
-    if (left.eType == EntityType::FixedString && right.eType == EntityType::FixedString &&
+    if (left.eType == EntityType::FIXED_STRING && right.eType == EntityType::FIXED_STRING &&
         (r == PkbRelationshipType::CALLS || r == PkbRelationshipType::CALLS_T)) {
         return pg->isRelationship(r,
                                   ProgramElement::createProcedure(left.name),
                                   ProgramElement::createProcedure(right.name));
-    } else if (left.eType == EntityType::FixedInteger && right.eType == EntityType::FixedInteger) {
+    } else if (left.eType == EntityType::FIXED_INTEGER && right.eType == EntityType::FIXED_INTEGER) {
         return pg->isRelationship(r,
                                   ProgramElement::createStatement(ElementType::STATEMENT,
                                                                          std::stoi(left.name)),
@@ -122,7 +122,7 @@ bool SuchThatHandler::handleNoSynProcWildcard(PkbRelationshipType r, Entity left
 bool SuchThatHandler::handleNoSynStmtWildcard(PkbRelationshipType r, Entity left, Entity right) {
     bool valid = false;
 
-    if (left.eType == EntityType::Wildcard && right.eType == EntityType::Wildcard) {
+    if (left.eType == EntityType::WILDCARD && right.eType == EntityType::WILDCARD) {
         std::set<std::pair<ProgramElement, ProgramElement>> check;
         if (r == PkbRelationshipType::AFFECTS || r == PkbRelationshipType::AFFECTS_T) {
             check = pg->getRelationshipPairs(r,ElementType::ASSIGNMENT,ElementType::ASSIGNMENT);
@@ -134,7 +134,7 @@ bool SuchThatHandler::handleNoSynStmtWildcard(PkbRelationshipType r, Entity left
             valid = true;
         }
 
-    } else if (left.eType == EntityType::Wildcard) {
+    } else if (left.eType == EntityType::WILDCARD) {
         std::set<ProgramElement> check;
         if (r == PkbRelationshipType::AFFECTS || r == PkbRelationshipType::AFFECTS_T) {
             check = pg->getLeftSide(r,

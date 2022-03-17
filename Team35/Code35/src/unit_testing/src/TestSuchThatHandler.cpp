@@ -30,35 +30,35 @@
 // Calls, Calls* are similar in implementation
 
 
-Entity procSyn1 = Entity(EntityType::Procedure, "p1");
-Entity procSyn2 = Entity(EntityType::Procedure, "p2");
+Entity procSyn1 = Entity(EntityType::PROCEDURE, "p1");
+Entity procSyn2 = Entity(EntityType::PROCEDURE, "p2");
 
-Entity varSyn = Entity(EntityType::Variable, "v");
-Entity constSyn = Entity(EntityType::Constant, "c");
+Entity varSyn = Entity(EntityType::VARIABLE, "v");
+Entity constSyn = Entity(EntityType::CONSTANT, "c");
 
-Entity stmtSyn = Entity(EntityType::Statement, "s");
-Entity printSyn = Entity(EntityType::Print, "p");
-Entity readSyn = Entity(EntityType::Read, "r");
-Entity assignSyn = Entity(EntityType::Assignment, "a");
-Entity callSyn = Entity(EntityType::Call, "call");
-Entity whileSyn = Entity(EntityType::While, "w");
-Entity ifSyn = Entity(EntityType::If, "ifs");
+Entity stmtSyn = Entity(EntityType::STATEMENT, "s");
+Entity printSyn = Entity(EntityType::PRINT, "p");
+Entity readSyn = Entity(EntityType::READ, "r");
+Entity assignSyn = Entity(EntityType::ASSIGNMENT, "a");
+Entity callSyn = Entity(EntityType::CALL, "call");
+Entity whileSyn = Entity(EntityType::WHILE, "w");
+Entity ifSyn = Entity(EntityType::IF, "ifs");
 
-Entity fixedStrVarX = Entity(EntityType::FixedString, "x");
-Entity fixedStrVarY = Entity(EntityType::FixedString, "y");
-Entity fixedStrVarZ = Entity(EntityType::FixedString, "z");
-Entity fixedStrProcF = Entity(EntityType::FixedString, "f");
-Entity fixedStrProcG = Entity(EntityType::FixedString, "g");
+Entity fixedStrVarX = Entity(EntityType::FIXED_STRING, "x");
+Entity fixedStrVarY = Entity(EntityType::FIXED_STRING, "y");
+Entity fixedStrVarZ = Entity(EntityType::FIXED_STRING, "z");
+Entity fixedStrProcF = Entity(EntityType::FIXED_STRING, "f");
+Entity fixedStrProcG = Entity(EntityType::FIXED_STRING, "g");
 
-Entity fixedIntStmt = Entity(EntityType::FixedInteger, "1");
-Entity fixedIntPrint = Entity(EntityType::FixedInteger, "11");
-Entity fixedIntRead = Entity(EntityType::FixedInteger, "5");
-Entity fixedIntAssign = Entity(EntityType::FixedInteger, "2");
-Entity fixedIntWhile = Entity(EntityType::FixedInteger, "4");
-Entity fixedIntCall = Entity(EntityType::FixedInteger, "12");
-Entity fixedIntIf = Entity(EntityType::FixedInteger, "6");
+Entity fixedIntStmt = Entity(EntityType::FIXED_INTEGER, "1");
+Entity fixedIntPrint = Entity(EntityType::FIXED_INTEGER, "11");
+Entity fixedIntRead = Entity(EntityType::FIXED_INTEGER, "5");
+Entity fixedIntAssign = Entity(EntityType::FIXED_INTEGER, "2");
+Entity fixedIntWhile = Entity(EntityType::FIXED_INTEGER, "4");
+Entity fixedIntCall = Entity(EntityType::FIXED_INTEGER, "12");
+Entity fixedIntIf = Entity(EntityType::FIXED_INTEGER, "6");
 
-Entity wc = Entity(EntityType::Wildcard, "_");
+Entity wc = Entity(EntityType::WILDCARD, "_");
 
 
 
@@ -68,18 +68,18 @@ TEST_CASE("Testing Modifies/Uses Relationships"){
     PkbGetter* pg = new PkbGetterStubForTestSuchThatHandler(&db);
     SuchThatHandler* st = new SuchThatHandler(pg);
 
-    RelationshipRef modifiesRef_procSyn_varSyn = RelationshipRef(RelationshipType::Modifies, procSyn1, varSyn); // Modifies(p1, v)
-    RelationshipRef usesRef_fixedStr_varSyn = RelationshipRef(RelationshipType::Uses, fixedStrProcF, varSyn); // Uses("f", v)
-    RelationshipRef modifiesRef_stmtSyn_varSyn = RelationshipRef(RelationshipType::Modifies, readSyn, varSyn); // Modifies(r, v)
-    RelationshipRef usesRef_fixedInt_varSyn = RelationshipRef(RelationshipType::Uses, fixedIntAssign, varSyn); // Uses("2", v)
-    RelationshipRef usesRef_procSyn_fixedStr = RelationshipRef(RelationshipType::Uses, procSyn1, fixedStrVarX); // Uses(p1, "x")
-    RelationshipRef modifiesRef_fixedStr_fixedStr = RelationshipRef(RelationshipType::Modifies, fixedStrProcF, fixedStrVarY); // Modifies("f", "y")
-    RelationshipRef usesRef_stmtSyn_fixedStr = RelationshipRef(RelationshipType::Uses, ifSyn, fixedStrVarZ); // Uses(ifs, "z")
-    RelationshipRef modifiesRef_fixedInt_fixedStr = RelationshipRef(RelationshipType::Modifies, fixedIntRead, fixedStrVarZ); // Modifies("5", "z")
-    RelationshipRef modifiesRef_procSyn_wc = RelationshipRef(RelationshipType::Modifies, procSyn1, wc); // Modifies(p1, _)
-    RelationshipRef usesRef_fixedStr_wc = RelationshipRef(RelationshipType::Uses, fixedStrProcF, wc); // Uses("f", _)
-    RelationshipRef modifiesRef_stmtSyn_wc = RelationshipRef(RelationshipType::Modifies, stmtSyn, wc); // Modifies(s, _)
-    RelationshipRef usesRef_fixedInt_wc = RelationshipRef(RelationshipType::Uses, fixedIntIf, wc); // Uses("6", _)
+    RelationshipRef modifiesRef_procSyn_varSyn = RelationshipRef(RelationshipType::MODIFIES, procSyn1, varSyn); // Modifies(p1, v)
+    RelationshipRef usesRef_fixedStr_varSyn = RelationshipRef(RelationshipType::USES, fixedStrProcF, varSyn); // Uses("f", v)
+    RelationshipRef modifiesRef_stmtSyn_varSyn = RelationshipRef(RelationshipType::MODIFIES, readSyn, varSyn); // Modifies(r, v)
+    RelationshipRef usesRef_fixedInt_varSyn = RelationshipRef(RelationshipType::USES, fixedIntAssign, varSyn); // Uses("2", v)
+    RelationshipRef usesRef_procSyn_fixedStr = RelationshipRef(RelationshipType::USES, procSyn1, fixedStrVarX); // Uses(p1, "x")
+    RelationshipRef modifiesRef_fixedStr_fixedStr = RelationshipRef(RelationshipType::MODIFIES, fixedStrProcF, fixedStrVarY); // Modifies("f", "y")
+    RelationshipRef usesRef_stmtSyn_fixedStr = RelationshipRef(RelationshipType::USES, ifSyn, fixedStrVarZ); // Uses(ifs, "z")
+    RelationshipRef modifiesRef_fixedInt_fixedStr = RelationshipRef(RelationshipType::MODIFIES, fixedIntRead, fixedStrVarZ); // Modifies("5", "z")
+    RelationshipRef modifiesRef_procSyn_wc = RelationshipRef(RelationshipType::MODIFIES, procSyn1, wc); // Modifies(p1, _)
+    RelationshipRef usesRef_fixedStr_wc = RelationshipRef(RelationshipType::USES, fixedStrProcF, wc); // Uses("f", _)
+    RelationshipRef modifiesRef_stmtSyn_wc = RelationshipRef(RelationshipType::MODIFIES, stmtSyn, wc); // Modifies(s, _)
+    RelationshipRef usesRef_fixedInt_wc = RelationshipRef(RelationshipType::USES, fixedIntIf, wc); // Uses("6", _)
 
 
     Result result1 = st->handleSuchThat(modifiesRef_procSyn_varSyn);// Modifies(p1, v)
@@ -192,15 +192,15 @@ TEST_CASE("Testing Calls(*) Relationships"){
     PkbGetter* pg = new PkbGetterStubForTestSuchThatHandler(&db);
     SuchThatHandler* st = new SuchThatHandler(pg);
 
-    RelationshipRef callsRef_procSyn_procSyn = RelationshipRef(RelationshipType::Calls, procSyn1, procSyn2); // Calls(p1, p2)
-    RelationshipRef callsRef_procSyn_fixedStr = RelationshipRef(RelationshipType::Calls, procSyn1, fixedStrProcG); // Calls(p1, "g")
-    RelationshipRef callsRef_procSyn_wc = RelationshipRef(RelationshipType::Calls, procSyn1, wc); // Calls(p1, _)
-    RelationshipRef callsRef_fixedStr_procSyn = RelationshipRef(RelationshipType::Calls, fixedStrProcF, procSyn1); // Calls("f", p1)
-    RelationshipRef callsRef_fixedStr_fixedStr = RelationshipRef(RelationshipType::Calls, fixedStrProcF, fixedStrProcG); // Calls("f", "g")
-    RelationshipRef callsRef_fixedStr_wc = RelationshipRef(RelationshipType::Calls, fixedStrProcF, wc); // Calls("f", _)
-    RelationshipRef callsRef_wc_procSyn = RelationshipRef(RelationshipType::Calls, wc, procSyn1); // Calls(_, p1)
-    RelationshipRef callsRef_wc_fixedStr = RelationshipRef(RelationshipType::Calls, wc, fixedStrProcG); // Calls(_, "g")
-    RelationshipRef callsRef_wc_wc = RelationshipRef(RelationshipType::Calls, wc, wc); // Calls (_, _)
+    RelationshipRef callsRef_procSyn_procSyn = RelationshipRef(RelationshipType::CALLS, procSyn1, procSyn2); // Calls(p1, p2)
+    RelationshipRef callsRef_procSyn_fixedStr = RelationshipRef(RelationshipType::CALLS, procSyn1, fixedStrProcG); // Calls(p1, "g")
+    RelationshipRef callsRef_procSyn_wc = RelationshipRef(RelationshipType::CALLS, procSyn1, wc); // Calls(p1, _)
+    RelationshipRef callsRef_fixedStr_procSyn = RelationshipRef(RelationshipType::CALLS, fixedStrProcF, procSyn1); // Calls("f", p1)
+    RelationshipRef callsRef_fixedStr_fixedStr = RelationshipRef(RelationshipType::CALLS, fixedStrProcF, fixedStrProcG); // Calls("f", "g")
+    RelationshipRef callsRef_fixedStr_wc = RelationshipRef(RelationshipType::CALLS, fixedStrProcF, wc); // Calls("f", _)
+    RelationshipRef callsRef_wc_procSyn = RelationshipRef(RelationshipType::CALLS, wc, procSyn1); // Calls(_, p1)
+    RelationshipRef callsRef_wc_fixedStr = RelationshipRef(RelationshipType::CALLS, wc, fixedStrProcG); // Calls(_, "g")
+    RelationshipRef callsRef_wc_wc = RelationshipRef(RelationshipType::CALLS, wc, wc); // Calls (_, _)
 
     Result result1 = st->handleSuchThat(callsRef_procSyn_procSyn);
     Result result2 = st->handleSuchThat(callsRef_procSyn_fixedStr);
@@ -256,15 +256,15 @@ TEST_CASE("Testing Follows(*)/Parent(*)/Next(*) Relationships"){
     PkbGetter* pg = new PkbGetterStubForTestSuchThatHandler(&db);
     SuchThatHandler* st = new SuchThatHandler(pg);
 
-    RelationshipRef followsRef_stmtSyn_stmtSyn = RelationshipRef(RelationshipType::Follows, printSyn, callSyn); // Follows(p, call)
+    RelationshipRef followsRef_stmtSyn_stmtSyn = RelationshipRef(RelationshipType::FOLLOWS, printSyn, callSyn); // Follows(p, call)
     RelationshipRef followsTRef_stmtSyn_fixedInt = RelationshipRef(RelationshipType::FOLLOWS_T, assignSyn, fixedIntCall); // Follows*(a, "12")
-    RelationshipRef parentRef_stmtSyn_wc = RelationshipRef(RelationshipType::Parent, whileSyn, wc); //Parent(w, _)
+    RelationshipRef parentRef_stmtSyn_wc = RelationshipRef(RelationshipType::PARENT, whileSyn, wc); //Parent(w, _)
     RelationshipRef parentTRef_fixedInt_stmtSyn = RelationshipRef(RelationshipType::PARENT_T, fixedIntWhile,  assignSyn);//Parent*("4", a)
-    RelationshipRef nextRef_fixedInt_fixedInt = RelationshipRef(RelationshipType::Next, fixedIntPrint, fixedIntCall); //Next("11", "12")
-    RelationshipRef nextTRef_fixedInt_wc = RelationshipRef(RelationshipType::NextT, fixedIntStmt, wc); //Next*("1", _);
-    RelationshipRef affectsRef_wc_stmtSyn = RelationshipRef(RelationshipType::Next, wc, callSyn); // Next(_, c)
-    RelationshipRef affectsTRef_wc_fixedInt = RelationshipRef(RelationshipType::Next, wc, fixedIntAssign); // Next(_, "2")
-    RelationshipRef followsRef_wc_wc = RelationshipRef(RelationshipType::Follows, wc, wc); // Follows(_, _)
+    RelationshipRef nextRef_fixedInt_fixedInt = RelationshipRef(RelationshipType::NEXT, fixedIntPrint, fixedIntCall); //Next("11", "12")
+    RelationshipRef nextTRef_fixedInt_wc = RelationshipRef(RelationshipType::NEXT_T, fixedIntStmt, wc); //Next*("1", _);
+    RelationshipRef affectsRef_wc_stmtSyn = RelationshipRef(RelationshipType::NEXT, wc, callSyn); // Next(_, c)
+    RelationshipRef affectsTRef_wc_fixedInt = RelationshipRef(RelationshipType::NEXT, wc, fixedIntAssign); // Next(_, "2")
+    RelationshipRef followsRef_wc_wc = RelationshipRef(RelationshipType::FOLLOWS, wc, wc); // Follows(_, _)
 
     Result result1 = st->handleSuchThat(followsRef_stmtSyn_stmtSyn);
     Result result2 = st->handleSuchThat(followsTRef_stmtSyn_fixedInt);
