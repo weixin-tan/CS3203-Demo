@@ -91,30 +91,14 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
     nestedStack.push(stmt.stmtNo);
 
     //Check the statement types and extract required values
-    switch (stmt.statementType) {
-    case StatementType::ASSIGNMENT_STMT: 
-    case StatementType::READ_STMT:
-    case StatementType::PRINT_STMT:
-    case StatementType::IF_STMT:
-    case StatementType::WHILE_STMT:
-    case StatementType::CALL_STMT:	
-        current_statement = (this->*statementFunctionMap[stmt.statementType])(stmt, &current_statement);
-        break;
-    case StatementType::PROCEDURE_STMT:
-        throw std::invalid_argument("procedure stmt type");
-        break;
-
-    case StatementType::NONE_STMT:
-        throw std::invalid_argument("none stmt type");
-        break;
-    default:
+    try {
+        current_statement = (this->*statementFunctionMap.at(stmt.statementType))(stmt, &current_statement);
+    } catch(std::out_of_range& const e){
         throw std::invalid_argument("no such statement type");
-        break;
     }
 
     return current_statement; 
 }
-
 
 
 ParsedStatement Convertor::extractAssignmentStatement(Statement stmt, ParsedStatement *current_statement) {
