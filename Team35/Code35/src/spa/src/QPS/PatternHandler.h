@@ -1,7 +1,7 @@
 #ifndef SPA_PATTERNHANDLER_H
 #define SPA_PATTERNHANDLER_H
 
-#include "../ExpressionProcessor.h"
+#include "../EP/ExpressionProcessor.h"
 #include "../PKB/PkbGetter.h"
 #include "../QpsTypeToPkbTypeConvertor.h"
 #include "RelationshipRef.h"

@@ -296,7 +296,7 @@ TEST_CASE("Incorrect convertor statement type 1") {
     Convertor convertor(pkb.getSetter());
 
     //Checking if the procedure error is thrown. 
-    REQUIRE_THROWS_WITH(convertor.procedureReader(procedureLst2), "procedure stmt type");
+    REQUIRE_THROWS_WITH(convertor.procedureReader(procedureLst2), "no such statement type");
     
 }
 
@@ -325,7 +325,7 @@ TEST_CASE("Incorrect convertor statement type 2") {
     Convertor convertor(pkb.getSetter());
 
     //Checking if the procedure error is thrown. 
-    REQUIRE_THROWS_WITH(convertor.procedureReader(procedureLst2), "none stmt type");
+    REQUIRE_THROWS_WITH(convertor.procedureReader(procedureLst2), "no such statement type");
 
 }
 
@@ -362,7 +362,7 @@ TEST_CASE("Incorrect convertor statement type 3 - in nested container") {
     Convertor convertor(pkb.getSetter());
 
     //Checking if the procedure error is thrown. 
-    REQUIRE_THROWS_WITH(convertor.procedureReader(procedureLst2), "none stmt type");
+    REQUIRE_THROWS_WITH(convertor.procedureReader(procedureLst2), "no such statement type");
 
 }
 

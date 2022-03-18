@@ -2,8 +2,11 @@
 
 std::string Convertor::currProcedureName = "no_procedure";
 std::vector<ParsedStatement> Convertor::finalResults;
+
+
 Convertor::Convertor(PkbSetter* pkb_setter) {
     this->pkb_setter = pkb_setter;
+    this->statementFunctionMap = Convertor::initialiseMap();
 }
 
 // Reads the procedurelist and calls a statemnet list reader for each procedure in the list.
@@ -88,56 +91,72 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
     nestedStack.push(stmt.stmtNo);
 
     //Check the statement types and extract required values
-    switch (stmt.statementType) {
-    case StatementType::ASSIGNMENT_STMT: 
-        current_statement.varModified = stmt.varName;
-        current_statement.varUsed = stmt.expr;
-        current_statement.constant = stmt.constant;
-        current_statement.pattern = stmt.expression;
-        break;
-        //Pattern recogniser here
-    case StatementType::READ_STMT:
-        current_statement.varModified = stmt.varName;
-        break;
-    case StatementType::PRINT_STMT:
-        current_statement.varUsed = stmt.varName;
-        break;
-    case StatementType::IF_STMT:
-        current_statement.varUsed = stmt.condExpr;
-        current_statement.constant = stmt.constant;
-        current_statement.pattern = stmt.expression;
-
-        // In this case, if statement will have 2 statement lists (if and then) 
-        this->statementListReader(*stmt.ifthenStmtList.get(), stmt.stmtNo);
-        this->statementListReader(*stmt.ifelseStmtList.get(), stmt.stmtNo);
-        break;
-    
-    case StatementType::WHILE_STMT:
-        current_statement.varUsed = stmt.condExpr;
-        current_statement.constant = stmt.constant;
-        current_statement.pattern = stmt.expression;
-        //In this case, this statement will a while statement list. 
-        this->statementListReader(*stmt.whileStmtList.get(), stmt.stmtNo);
-        break;
-
-    case StatementType::CALL_STMT:
-        current_statement.procedureCalled = stmt.procName;
-        break;
-    
-        //Recursively read the inner statement stack. 	
-    case StatementType::PROCEDURE_STMT:
-        throw std::invalid_argument("procedure stmt type");
-        break;
-
-    case StatementType::NONE_STMT:
-        throw std::invalid_argument("none stmt type");
-        break;
-    default:
+    try {
+        current_statement = (this->*statementFunctionMap.at(stmt.statementType))(stmt, &current_statement);
+    } catch(std::out_of_range& e){
         throw std::invalid_argument("no such statement type");
-        break;
     }
 
     return current_statement; 
+}
+
+
+ParsedStatement Convertor::extractAssignmentStatement(Statement stmt, ParsedStatement *current_statement) {
+    current_statement->varModified = stmt.varName;
+    current_statement->varUsed = stmt.expr;
+    current_statement->constant = stmt.constant;
+    current_statement->pattern = stmt.expression;
+    return *current_statement; 
+}
+
+ParsedStatement Convertor::extractIfStatement(Statement stmt, ParsedStatement *current_statement) {
+    
+    current_statement->varUsed = stmt.condExpr;
+    current_statement->constant = stmt.constant;
+    current_statement->pattern = stmt.expression;
+
+    // In this case, if statement will have 2 statement lists (if and then) 
+    this->statementListReader(*stmt.ifthenStmtList.get(), stmt.stmtNo);
+    this->statementListReader(*stmt.ifelseStmtList.get(), stmt.stmtNo);
+    return *current_statement;
+}
+
+ParsedStatement Convertor::extractCallStatement(Statement stmt, ParsedStatement *current_statement) {
+    current_statement->procedureCalled = stmt.procName;
+    return *current_statement;
+}
+
+ParsedStatement Convertor::extractWhileStatement(Statement stmt, ParsedStatement* current_statement) {
+    current_statement->varUsed = stmt.condExpr;
+    current_statement->constant = stmt.constant;
+    current_statement->pattern = stmt.expression;
+    //In this case, this statement will a while statement list. 
+    this->statementListReader(*stmt.whileStmtList.get(), stmt.stmtNo);
+    return *current_statement;
+}
+
+ParsedStatement Convertor::extractPrintStatement(Statement stmt, ParsedStatement* current_statement) {
+    current_statement->varUsed = stmt.varName;
+    return *current_statement;
+}
+
+ParsedStatement Convertor::extractReadStatement(Statement stmt, ParsedStatement* current_statement) {
+    current_statement->varModified = stmt.varName;
+    return *current_statement;
+}
+
+std::map<StatementType, ParsedStatement(Convertor::*)(Statement, ParsedStatement*)> Convertor::initialiseMap() {
+    std::map<StatementType, ParsedStatement(Convertor::*)(Statement, ParsedStatement*)> statementFunctionMap;
+
+    statementFunctionMap[StatementType::ASSIGNMENT_STMT] = &Convertor::extractAssignmentStatement;
+    statementFunctionMap[StatementType::IF_STMT] = &Convertor::extractIfStatement;
+    statementFunctionMap[StatementType::WHILE_STMT] = &Convertor::extractWhileStatement;
+    statementFunctionMap[StatementType::PRINT_STMT] = &Convertor::extractPrintStatement;
+    statementFunctionMap[StatementType::READ_STMT] = &Convertor::extractReadStatement;
+    statementFunctionMap[StatementType::CALL_STMT] = &Convertor::extractCallStatement;
+
+    return statementFunctionMap;
+
 }
 
 
