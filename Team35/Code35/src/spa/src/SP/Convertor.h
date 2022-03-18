@@ -38,7 +38,7 @@ public:
 
 	std::map<StatementType, ParsedStatement(Convertor::*)(Statement, ParsedStatement*)> initialiseMap();
 
-	ParsedStatement Convertor::extractAssignmentStatement(Statement stmt, ParsedStatement *current_statement);
+	ParsedStatement extractAssignmentStatement(Statement stmt, ParsedStatement *current_statement);
 	ParsedStatement extractCallStatement(Statement current_statement, ParsedStatement *stmt);
 	ParsedStatement extractWhileStatement(Statement current_statement, ParsedStatement *stmt);
 	ParsedStatement extractIfStatement(Statement current_statement, ParsedStatement *stmt);
