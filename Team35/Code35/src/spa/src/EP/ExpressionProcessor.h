@@ -2,9 +2,9 @@
 #define SPA_EXPRESSIONPROCESSOR_H
 
 
-#include "SP/Token.h"
-#include "SP/Tokeniser.h"
-#include "SP/Expr.h"
+#include "../SP/Token.h"
+#include "../SP/Tokeniser.h"
+#include "../SP/Expr.h"
 #include "ExpressionIndicator.h"
 #include <queue>
 #include <stack>

@@ -16,8 +16,8 @@
 #include "NextGetter.h"
 
 //TODO: FILE NAME CHANGE 
-#include "../ExpressionProcessor.h"
-#include "../ExpressionIndicator.h"
+#include "../EP/ExpressionProcessor.h"
+#include "../EP/ExpressionIndicator.h"
 #include "NextTGetter.h"
 
 class PkbGetter {
