@@ -52,7 +52,7 @@ std::string WithHandler::getStringToMatch(const ProgramElement& element, EntityA
     } else if (elementType == EntityAttributeType::VARNAME) {
         return element.varName;
     } else if (elementType == EntityAttributeType::VALUE) {
-        return element.varName;
+        return element.value;
     } else {
         return std::to_string(element.stmtNo);
     }
