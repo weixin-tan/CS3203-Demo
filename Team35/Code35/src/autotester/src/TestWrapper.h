@@ -10,7 +10,7 @@
 
 // include your other headers here
 #include "AbstractWrapper.h"
-#include "QPSMainLogic.h"
+#include "QPS/QPSMainLogic.h"
 
 class TestWrapper : public AbstractWrapper {
 private:

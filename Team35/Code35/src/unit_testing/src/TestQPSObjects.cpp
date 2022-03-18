@@ -1,7 +1,7 @@
-#include "Clause.h"
-#include "Entity.h"
-#include "RelationshipRef.h"
-#include "Type.h"
+#include "QPS/Clause.h"
+#include "QPS/Entity.h"
+#include "QPS/RelationshipRef.h"
+#include "QPS/Type.h"
 #include "catch.hpp"
 #include <iostream>
 
