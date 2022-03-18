@@ -93,7 +93,7 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
     //Check the statement types and extract required values
     try {
         current_statement = (this->*statementFunctionMap.at(stmt.statementType))(stmt, &current_statement);
-    } catch(std::out_of_range& const e){
+    } catch(std::out_of_range& e){
         throw std::invalid_argument("no such statement type");
     }
 
