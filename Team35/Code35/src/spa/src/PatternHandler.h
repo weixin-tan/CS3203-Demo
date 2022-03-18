@@ -1,22 +1,24 @@
 #ifndef SPA_PATTERNHANDLER_H
 #define SPA_PATTERNHANDLER_H
 
+#include "ExpressionProcessor.h"
 #include "PkbGetter.h"
-#include "Result.h"
+#include "QpsTypeToPkbTypeConvertor.h"
 #include "RelationshipRef.h"
-#include "EntityToElementConverter.h"
+#include "Result.h"
 
 class PatternHandler {
 private:
-  PkbGetter* pg;
+    PkbGetter* pg;
 
-  Result handleDoubleWildcard();
-  Result handleLeftWildcard(const Entity& rightEntity);
-  Result handleRightWildcard(const Entity& leftEntity);
-  Result handleNoWildcard(const Entity& rightEntity, const Entity& leftEntity);
+    std::set<ProgramElement> handleLeftWildcard(Entity right, Entity patternType);
+    std::set<ProgramElement> handleLeftFixed(Entity left, Entity right, Entity patternType);
+    std::set<std::pair<ProgramElement, ProgramElement>> handleLeftVariable(Entity left, Entity right,
+                                                                           Entity patternType);
+
 public:
-  explicit PatternHandler(PkbGetter* pg);
-  Result handlePattern(const Entity& entityToGet, const RelationshipRef& relRef);
+    explicit PatternHandler(PkbGetter* pg);
+    Result handlePattern(const RelationshipRef& relRef);
 
 };
 

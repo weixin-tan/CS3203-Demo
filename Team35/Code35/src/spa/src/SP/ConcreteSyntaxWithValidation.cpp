@@ -1,6 +1,6 @@
 #include "ConcreteSyntaxWithValidation.h"
 
-// Statement count
+// STATEMENT count
 int stmt_count = 1;
 
 // Default constructor
@@ -28,7 +28,7 @@ Program ConcreteSyntaxWithValidation::parseProgram(std::queue<Token> tokensQueue
     return program;
 }
 
-// Returns a Procedure object that can be further processed by Convertor.
+// Returns a PROCEDURE object that can be further processed by Convertor.
 // tokensQueue is a queue of Token objects received from Tokeniser.
 Procedure ConcreteSyntaxWithValidation::parseProcedure(std::queue<Token>& tokensQueue) {
     Procedure procedure;
@@ -92,7 +92,7 @@ StmtLst ConcreteSyntaxWithValidation::parseStmtLst(std::queue<Token>& tokensQueu
     return stmtLst;
 }
 
-// Returns a Statement object.
+// Returns a STATEMENT object.
 // tokensQueue is a queue of Token objects.
 Statement ConcreteSyntaxWithValidation::parseStmt(std::queue<Token>& tokensQueue) {
 
@@ -152,7 +152,7 @@ Statement ConcreteSyntaxWithValidation::parseStmt(std::queue<Token>& tokensQueue
 
 // start for parsing assign
 
-// Returns a Statement object.
+// Returns a STATEMENT object.
 // tokensQueue is a queue of Token objects.
 Statement ConcreteSyntaxWithValidation::parseAssign(std::queue<Token>& tokensQueue) {
     Statement assignStmt;
@@ -238,9 +238,9 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseExprStr
 // end of chaining methods for parsing Assign
 
 
-// start for parsing While
+// start for parsing WHILE
 
-// Returns a Statement object.
+// Returns a STATEMENT object.
 // tokensQueue is a queue of Token objects.
 Statement ConcreteSyntaxWithValidation::parseWhile(std::queue<Token>& tokensQueue) {
     Statement whileStmt;
@@ -491,12 +491,12 @@ RelFactor ConcreteSyntaxWithValidation::parseRelFactor(std::queue<Token>& relFac
     return relFactor;
 }
 
-// end for parsing While
+// end for parsing WHILE
 
 
-// start for parsing If/Else
+// start for parsing IF/Else
 
-// Returns a Statement object.
+// Returns a STATEMENT object.
 // tokensQueue is a queue of Token objects.
 Statement ConcreteSyntaxWithValidation::parseIf(std::queue<Token>& tokensQueue) {
     Statement ifStmt;
@@ -578,12 +578,12 @@ Statement ConcreteSyntaxWithValidation::parseIf(std::queue<Token>& tokensQueue) 
 
     return ifStmt;
 }
-// end for parsing If/Else
+// end for parsing IF/Else
 // done
 
-// start for parsing Read
+// start for parsing READ
 
-// Returns a Statement object.
+// Returns a STATEMENT object.
 // tokensQueue is a queue of Token objects.
 Statement ConcreteSyntaxWithValidation::parseRead(std::queue<Token>& tokensQueue) {
     Statement readStmt;
@@ -611,11 +611,11 @@ Statement ConcreteSyntaxWithValidation::parseRead(std::queue<Token>& tokensQueue
     tokensQueue.pop();
     return readStmt;
 }
-// end for parsing Read
+// end for parsing READ
 
-// start for parsing Print
+// start for parsing PRINT
 
-// Returns a Statement object.
+// Returns a STATEMENT object.
 // tokensQueue is a queue of Token objects.
 Statement ConcreteSyntaxWithValidation::parsePrint(std::queue<Token>& tokensQueue) {
     Statement printStmt;
@@ -643,13 +643,13 @@ Statement ConcreteSyntaxWithValidation::parsePrint(std::queue<Token>& tokensQueu
     tokensQueue.pop();
     return printStmt;
 }
-// end for parsing Print
+// end for parsing PRINT
 
 
-// start for parsing Call
+// start for parsing CALL
 
 // not used for Iteration 1
-// Returns a Statement object.
+// Returns a STATEMENT object.
 // tokensQueue is a queue of Token objects.
 Statement ConcreteSyntaxWithValidation::parseCall(std::queue<Token>& tokensQueue) {
     Statement callStmt;
@@ -665,4 +665,4 @@ Statement ConcreteSyntaxWithValidation::parseCall(std::queue<Token>& tokensQueue
     tokensQueue.pop();
     return callStmt;
 }
-// end for parsing Call
+// end for parsing CALL

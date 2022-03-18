@@ -652,14 +652,14 @@ namespace Catch {
             return m_size;
         }
 
-        // Returns the current start pointer. If the StringRef is not
+        // Returns the current start pointer. IF the StringRef is not
         // null-terminated, throws std::domain_exception
         auto c_str() const -> char const*;
 
     public: // substrings and searches
         // Returns a substring of [start, start + length).
-        // If start + length > size(), then the substring is [start, size()).
-        // If start > size(), then the substring is empty.
+        // IF start + length > size(), then the substring is [start, size()).
+        // IF start > size(), then the substring is empty.
         auto substr( size_type start, size_type length ) const noexcept -> StringRef;
 
         // Returns the current start pointer. May not be null-terminated.
@@ -1610,7 +1610,7 @@ namespace Catch {
 
     } // namespace Detail
 
-    // If we decide for C++14, change these to enable_if_ts
+    // IF we decide for C++14, change these to enable_if_ts
     template <typename T, typename = void>
     struct StringMaker {
         template <typename Fake = T>
@@ -4138,7 +4138,7 @@ namespace Generators {
             }
 
             const auto success = m_generator.next();
-            // If the underlying generator does not contain enough values
+            // IF the underlying generator does not contain enough values
             // then we cut short as well
             if (!success) {
                 m_returned = m_target;
@@ -4228,7 +4228,7 @@ namespace Generators {
             // 2) We are reading our own cache
 
             // In the first case, we need to poke the underlying generator.
-            // If it happily moves, we are left in that state, otherwise it is time to start reading from our cache
+            // IF it happily moves, we are left in that state, otherwise it is time to start reading from our cache
             if (m_current_repeat == 0) {
                 const auto success = m_generator.next();
                 if (!success) {
@@ -7424,7 +7424,7 @@ namespace Catch {
                 }
 
             private:
-                // If this is a constructor benchmark, destruct the underlying object
+                // IF this is a constructor benchmark, destruct the underlying object
                 template <typename U>
                 void destruct_on_exit(typename std::enable_if<Destruct, U>::type* = 0) { destruct<true>(); }
                 // Otherwise, don't
@@ -7966,7 +7966,7 @@ namespace Catch {
     #endif
 
 #elif defined(CATCH_PLATFORM_LINUX)
-    // If we can use inline assembler, do it because this allows us to break
+    // IF we can use inline assembler, do it because this allows us to break
     // directly at the location of the failing check instead of breaking inside
     // raise() called from it, i.e. one stack frame below.
     #if defined(__GNUC__) && (defined(__i386) || defined(__x86_64))
@@ -8243,7 +8243,7 @@ namespace Catch {
         setCompleted();
         if( m_reaction.shouldDebugBreak ) {
 
-            // If you find your debugger stopping you here then go one level up on the
+            // IF you find your debugger stopping you here then go one level up on the
             // call-stack for the code that caused it (typically a failed assertion)
 
             // (To go back to the test and change execution, jump over the throw, next)
@@ -10435,11 +10435,11 @@ namespace Catch {
             mib[2] = KERN_PROC_PID;
             mib[3] = getpid();
 
-            // Call sysctl.
+            // CALL sysctl.
 
             size = sizeof(info);
             if( sysctl(mib, sizeof(mib) / sizeof(*mib), &info, &size, nullptr, 0) != 0 ) {
-                Catch::cerr() << "\n** Call to sysctl failed - unable to determine if debugger is active **\n" << std::endl;
+                Catch::cerr() << "\n** CALL to sysctl failed - unable to determine if debugger is active **\n" << std::endl;
                 return false;
             }
 
@@ -10760,7 +10760,7 @@ namespace Catch {
 
 namespace Catch {
 
-    // If neither SEH nor signal handling is required, the handler impls
+    // IF neither SEH nor signal handling is required, the handler impls
     // do not have to do anything, and can be empty.
     void FatalConditionHandler::engage_platform() {}
     void FatalConditionHandler::disengage_platform() {}
@@ -10813,7 +10813,7 @@ namespace Catch {
                 reportFatal(def.name);
             }
         }
-        // If its not an exception we care about, pass it along.
+        // IF its not an exception we care about, pass it along.
         // This stops us from eating debugger breaks etc.
         return EXCEPTION_CONTINUE_SEARCH;
     }
@@ -12598,7 +12598,7 @@ namespace Catch {
 
                 ITracker& currentTracker = ctx.currentTracker();
                 // Under specific circumstances, the generator we want
-                // to acquire is also the current tracker. If this is
+                // to acquire is also the current tracker. IF this is
                 // the case, we have to avoid looking through current
                 // tracker's children, and instead return the current
                 // tracker.
@@ -12636,7 +12636,7 @@ namespace Catch {
             }
             void close() override {
                 TrackerBase::close();
-                // If a generator has a child (it is followed by a section)
+                // IF a generator has a child (it is followed by a section)
                 // and none of its children have started, then we must wait
                 // until later to start consuming its values.
                 // This catches cases where `GENERATE` is placed between two
@@ -12648,7 +12648,7 @@ namespace Catch {
                     if ( m_children.empty() ) {
                         return false;
                     }
-                    // If at least one child started executing, don't wait
+                    // IF at least one child started executing, don't wait
                     if ( std::find_if(
                              m_children.begin(),
                              m_children.end(),
@@ -13028,7 +13028,7 @@ namespace Catch {
     }
 
     void RunContext::handleUnfinishedSections() {
-        // If sections ended prematurely due to an exception we stored their
+        // IF sections ended prematurely due to an exception we stored their
         // infos here so we can tear them down outside the unwind process.
         for (auto it = m_unfinishedSections.rbegin(),
              itEnd = m_unfinishedSections.rend();
@@ -13615,7 +13615,7 @@ void StartupExceptionRegistry::add( std::exception_ptr const& exception ) noexce
         CATCH_TRY {
             m_exceptions.push_back(exception);
         } CATCH_CATCH_ALL {
-            // If we run out of memory during start-up there's really not a lot more we can do about it
+            // IF we run out of memory during start-up there's really not a lot more we can do about it
             std::terminate();
         }
     }
@@ -13791,7 +13791,7 @@ namespace Catch {
 
     ///////////////////////////////////////////////////////////////////////////
 
-#ifndef CATCH_CONFIG_NOSTDOUT // If you #define this you must implement these functions
+#ifndef CATCH_CONFIG_NOSTDOUT // IF you #define this you must implement these functions
     std::ostream& cout() { return std::cout; }
     std::ostream& cerr() { return std::cerr; }
     std::ostream& clog() { return std::clog; }
@@ -14902,7 +14902,7 @@ namespace Catch {
         auto token = preprocessPattern();
 
         if (!token.empty()) {
-            // If the tag pattern is the "hide and tag" shorthand (e.g. [.foo])
+            // IF the tag pattern is the "hide and tag" shorthand (e.g. [.foo])
             // we have to create a separate hide tag and shorten the real one
             if (token.size() > 1 && token[0] == '.') {
                 token.erase(token.begin());
@@ -14961,7 +14961,7 @@ namespace Catch {
                 auto delta = ticks - baseTicks;
                 sum += delta;
 
-                // If we have been calibrating for over 3 seconds -- the clock
+                // IF we have been calibrating for over 3 seconds -- the clock
                 // is terrible and we should move on.
                 // TBD: How to signal that the measured resolution is probably wrong?
                 if (ticks > startTime + 3 * nanosecondsInSecond) {
@@ -15027,7 +15027,7 @@ namespace Detail {
 
             static Arch which() {
                 int one = 1;
-                // If the lowest byte we read is non-zero, we can assume
+                // IF the lowest byte we read is non-zero, we can assume
                 // that little endian format is used.
                 auto value = *reinterpret_cast<char*>(&one);
                 return value ? Little : Big;
@@ -15588,7 +15588,7 @@ namespace {
                     break;
                 }
 
-                // If we got here, this is in fact a valid(ish) utf-8 sequence
+                // IF we got here, this is in fact a valid(ish) utf-8 sequence
                 for (std::size_t n = 0; n < encBytes; ++n) {
                     os << m_str[idx + n];
                 }
@@ -16039,7 +16039,7 @@ private:
         }
 
         while (itMessage != itEnd) {
-            // If this assertion is a warning ignore any INFO messages
+            // IF this assertion is a warning ignore any INFO messages
             if (printInfoMessages || itMessage->type != ResultWas::Info) {
                 printMessage();
                 if (itMessage != itEnd) {
@@ -16248,7 +16248,7 @@ private:
         if (!messageLabel.empty())
             stream << messageLabel << ':' << '\n';
         for (auto const& msg : messages) {
-            // If this assertion is a warning ignore any INFO messages
+            // IF this assertion is a warning ignore any INFO messages
             if (printInfoMessages || msg.type != ResultWas::Info)
                 stream << Column(msg.message).indent(2) << '\n';
         }
@@ -17327,7 +17327,7 @@ namespace Catch {
         bool includeResults = m_config->includeSuccessfulResults() || !result.isOk();
 
         if( includeResults || result.getResultType() == ResultWas::Warning ) {
-            // Print any info messages in <Info> tags.
+            // PRINT any info messages in <Info> tags.
             for( auto const& msg : assertionStats.infoMessages ) {
                 if( msg.type == ResultWas::Info && includeResults ) {
                     m_xml.scopedElement( "Info" )
@@ -17343,7 +17343,7 @@ namespace Catch {
         if( !includeResults && result.getResultType() != ResultWas::Warning )
             return true;
 
-        // Print the expression if there is one.
+        // PRINT the expression if there is one.
         if( result.hasExpression() ) {
             m_xml.startElement( "Expression" )
                 .writeAttribute( "success", result.succeeded() )
@@ -17357,7 +17357,7 @@ namespace Catch {
                 .writeText( result.getExpandedExpression() );
         }
 
-        // And... Print a result applicable to each result type.
+        // And... PRINT a result applicable to each result type.
         switch( result.getResultType() ) {
             case ResultWas::ThrewException:
                 m_xml.startElement( "Exception" );
@@ -17564,7 +17564,7 @@ int main (int argc, char * const argv[]) {
 
 #if !defined(CATCH_CONFIG_DISABLE)
 //////
-// If this config identifier is defined then all CATCH macros are prefixed with CATCH_
+// IF this config identifier is defined then all CATCH macros are prefixed with CATCH_
 #ifdef CATCH_CONFIG_PREFIX_ALL
 
 #define CATCH_REQUIRE( ... ) INTERNAL_CATCH_TEST( "CATCH_REQUIRE", Catch::ResultDisposition::Normal, __VA_ARGS__ )
@@ -17660,7 +17660,7 @@ int main (int argc, char * const argv[]) {
     INTERNAL_CATCH_BENCHMARK_ADVANCED(INTERNAL_CATCH_UNIQUE_NAME(C_A_T_C_H_B_E_N_C_H_), name)
 #endif // CATCH_CONFIG_ENABLE_BENCHMARKING
 
-// If CATCH_CONFIG_PREFIX_ALL is not defined then the CATCH_ prefix is not required
+// IF CATCH_CONFIG_PREFIX_ALL is not defined then the CATCH_ prefix is not required
 #else
 
 #define REQUIRE( ... ) INTERNAL_CATCH_TEST( "REQUIRE", Catch::ResultDisposition::Normal, __VA_ARGS__  )
@@ -17769,7 +17769,7 @@ using Catch::Detail::Approx;
 #else // CATCH_CONFIG_DISABLE
 
 //////
-// If this config identifier is defined then all CATCH macros are prefixed with CATCH_
+// IF this config identifier is defined then all CATCH macros are prefixed with CATCH_
 #ifdef CATCH_CONFIG_PREFIX_ALL
 
 #define CATCH_REQUIRE( ... )        (void)(0)
@@ -17853,7 +17853,7 @@ using Catch::Detail::Approx;
 #define CATCH_STATIC_REQUIRE( ... )       (void)(0)
 #define CATCH_STATIC_REQUIRE_FALSE( ... ) (void)(0)
 
-// If CATCH_CONFIG_PREFIX_ALL is not defined then the CATCH_ prefix is not required
+// IF CATCH_CONFIG_PREFIX_ALL is not defined then the CATCH_ prefix is not required
 #else
 
 #define REQUIRE( ... )       (void)(0)

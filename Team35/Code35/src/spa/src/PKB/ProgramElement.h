@@ -30,7 +30,7 @@ public:
     static ProgramElement createVariable(const std::string& varName);
     static ProgramElement createConstant(const std::string& value);  // use string to avoid overflow
 
-    std::string toString(EntityAttributeType entityAttributeType = EntityAttributeType::Stmt) const;
+    std::string toString(EntityAttributeType entityAttributeType = EntityAttributeType::STMT) const;
 
     bool operator<(const ProgramElement& r) const;
     bool operator==(const ProgramElement& r) const;

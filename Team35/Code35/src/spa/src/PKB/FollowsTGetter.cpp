@@ -12,7 +12,7 @@ bool FollowsTGetter::isRelationship(const ProgramElement& leftSide, const Progra
 std::set<ProgramElement> FollowsTGetter::getLeftSide(const ProgramElement& rightSide, const ElementType& typeToGet) {
     std::set<ProgramElement> result;
     if(!(isStatementType(rightSide.elementType) && isStatementType(typeToGet)))
-        throw std::invalid_argument("Wrong element type for getLeftSide on FollowsT");
+        throw std::invalid_argument("Wrong element type for getLeftSide on FOLLOWS_T");
     auto precedingT = db->followsTTableR.find(rightSide.stmtNo);
     if (precedingT == db->followsTTableR.end()) return {};
     for (const int& precedingTStmtNo : precedingT->second)
@@ -23,7 +23,7 @@ std::set<ProgramElement> FollowsTGetter::getLeftSide(const ProgramElement& right
 std::set<ProgramElement> FollowsTGetter::getRightSide(const ProgramElement& leftSide, const ElementType& typeToGet)  {
     std::set<ProgramElement> result;
     if(!(isStatementType(leftSide.elementType) && isStatementType(typeToGet)))
-        throw std::invalid_argument("Wrong element type for getRightSide on FollowsT");
+        throw std::invalid_argument("Wrong element type for getRightSide on FOLLOWS_T");
     auto followsT = db->followsTTable.find(leftSide.stmtNo);
     if (followsT == db->followsTTable.end()) return {};
     for (const int& followsTStmtNo : followsT->second)
