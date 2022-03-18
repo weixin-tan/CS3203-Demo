@@ -4,7 +4,7 @@
 
 #include <unordered_map>
 
-#include "Entity.h"
+#include "QPS/Entity.h"
 #include "catch.hpp"
 #include "Tokeniser.h"
 

@@ -1,8 +1,8 @@
 #include <vector>
 
-#include "Clause.h"
+#include "QPS/Clause.h"
 #include "catch.hpp"
-#include "PatternHandler.h"
+#include "QPS/PatternHandler.h"
 #include "PKB.h"
 
 

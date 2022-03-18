@@ -2,8 +2,8 @@
 #define SPA_QPSTYPETOPKBTYPECONVERTOR_H
 
 #include "Entity.h"
-#include "PkbRelationshipType.h"
-#include "ProgramElement.h"
+#include "../PKB/PkbRelationshipType.h"
+#include "../PKB/ProgramElement.h"
 
 class QpsTypeToPkbTypeConvertor {
 private:

@@ -1,8 +1,8 @@
 #include <vector>
 
-#include "Clause.h"
+#include "QPS/Clause.h"
 #include "catch.hpp"
-#include "SuchThatHandler.h"
+#include "QPS/SuchThatHandler.h"
 #include "PkbGetterStubForTestSuchThatHandler.h"
 
 
