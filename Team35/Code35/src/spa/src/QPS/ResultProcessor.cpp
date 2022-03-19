@@ -54,7 +54,7 @@ std::vector<ProgramElement> ResultProcessor::processResults(std::vector<Group> g
                 table.eliminateOneSyn(programElementVector, pos);
             }
 
-        } else if (!result.getOneSynSet().empty()) {
+        } else if (!result.getTwoSynSet().empty()) {
             std::pair<Entity, Entity> twoSyn = result.getTwoSynEntities();
             Entity left = twoSyn.first;
             Entity right = twoSyn.second;

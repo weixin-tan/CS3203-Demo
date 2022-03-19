@@ -178,6 +178,14 @@ void Table::crossProductTwoSyn(std::pair<Entity, Entity> pair, std::vector<std::
     std::vector<ProgramElement> left = pairVectors[0];
     std::vector<ProgramElement> right = pairVectors[1];
 
+    if (isTableEmpty()) {
+        header.push_back(pair.first);
+        header.push_back(pair.second);
+        body.push_back(left);
+        body.push_back(right);
+        return ;
+    }
+
     int originalSize = body[0].size();
     int numberOfRepetition = left.size();
     for (std::vector<ProgramElement> p : body) {
