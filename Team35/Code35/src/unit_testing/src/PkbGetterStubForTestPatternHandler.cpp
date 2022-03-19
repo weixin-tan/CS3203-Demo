@@ -82,11 +82,12 @@ std::set<std::pair<ProgramElement, ProgramElement>>
 PkbGetterStubForTestPatternHandler::getAssignmentWithVariableGivenExpression(const Expr expr,
                                                                              const ExpressionIndicator indicator) const {
     std::set<std::pair<ProgramElement, ProgramElement>> results;
-    if (expr.getExpr() == ExpressionProcessor::stringToExpr("b + c").getExpr() && indicator == ExpressionIndicator::PARTIAL_MATCH) {
+    ExpressionProcessor ep;
+    if (ep.fullfillsMatching(expr, ExpressionProcessor::stringToExpr("b + c"), ExpressionIndicator::FULL_MATCH) && indicator == ExpressionIndicator::PARTIAL_MATCH) {
         results.insert(std::pair<ProgramElement, ProgramElement>(ProgramElement::createStatement(ElementType::ASSIGNMENT, 1), ProgramElement::createVariable("x")));
         results.insert(std::pair<ProgramElement, ProgramElement>(ProgramElement::createStatement(ElementType::ASSIGNMENT, 8), ProgramElement::createVariable("a")));
     }
-    if (expr.getExpr() == ExpressionProcessor::stringToExpr("b + c").getExpr() && indicator==ExpressionIndicator::FULL_MATCH) {
+    if (ep.fullfillsMatching(expr, ExpressionProcessor::stringToExpr("b + c"), ExpressionIndicator::FULL_MATCH) && indicator==ExpressionIndicator::FULL_MATCH) {
         results.insert(std::pair<ProgramElement, ProgramElement>(ProgramElement::createStatement(ElementType::ASSIGNMENT, 8), ProgramElement::createVariable("a")));
     }
     return results;
@@ -94,13 +95,14 @@ PkbGetterStubForTestPatternHandler::getAssignmentWithVariableGivenExpression(con
 
 std::set<ProgramElement> PkbGetterStubForTestPatternHandler::getAssignmentGivenExpression(const Expr expr, const ExpressionIndicator indicator) const {
     std::set<ProgramElement> results;
-    if (expr.getExpr() == ExpressionProcessor::stringToExpr("x").getExpr() && indicator == ExpressionIndicator::PARTIAL_MATCH) {
+    ExpressionProcessor ep;
+    if (ep.fullfillsMatching(expr, ExpressionProcessor::stringToExpr("x"), ExpressionIndicator::FULL_MATCH) && indicator == ExpressionIndicator::PARTIAL_MATCH) {
         results.insert(ProgramElement::createStatement(ElementType::ASSIGNMENT, 2));
         results.insert(ProgramElement::createStatement(ElementType::ASSIGNMENT, 4));
         results.insert(ProgramElement::createStatement(ElementType::ASSIGNMENT, 5));
         results.insert(ProgramElement::createStatement(ElementType::ASSIGNMENT, 7));
     }
-    if (expr.getExpr() == ExpressionProcessor::stringToExpr("a + b + c").getExpr() && indicator==ExpressionIndicator::FULL_MATCH) {
+    if (ep.fullfillsMatching(expr, ExpressionProcessor::stringToExpr("a + b + c"), ExpressionIndicator::FULL_MATCH) && indicator==ExpressionIndicator::FULL_MATCH) {
         results.insert(ProgramElement::createStatement(ElementType::ASSIGNMENT, 1));
     }
     return results;
@@ -111,10 +113,11 @@ PkbGetterStubForTestPatternHandler::getAssignmentGivenVariableAndExpression(cons
                                                                             const Expr expr,
                                                                             const ExpressionIndicator indicator) {
     std::set<ProgramElement> results;
-    if (variable == ProgramElement::createVariable("x") && expr.getExpr() == ExpressionProcessor::stringToExpr("b + c").getExpr()) {
+    ExpressionProcessor ep;
+    if (variable == ProgramElement::createVariable("x") && ep.fullfillsMatching(expr, ExpressionProcessor::stringToExpr("b + c"), ExpressionIndicator::FULL_MATCH)) {
         results.insert(ProgramElement::createStatement(ElementType::ASSIGNMENT, 1));
     }
-    if (variable == ProgramElement::createVariable("z") && expr.getExpr() == ExpressionProcessor::stringToExpr("x").getExpr() && indicator == ExpressionIndicator::FULL_MATCH) {
+    if (variable == ProgramElement::createVariable("z") && ep.fullfillsMatching(expr, ExpressionProcessor::stringToExpr("x"), ExpressionIndicator::FULL_MATCH) && indicator == ExpressionIndicator::FULL_MATCH) {
         results.insert(ProgramElement::createStatement(ElementType::ASSIGNMENT, 4));
         results.insert(ProgramElement::createStatement(ElementType::ASSIGNMENT, 5));
     }
