@@ -18,18 +18,24 @@ public:
     std::vector<Entity> header;
     std::vector<std::vector<ProgramElement>> body;
     std::vector<Entity> getHeader();
-    int getIndexEntity(std::vector<ProgramElement> v, ProgramElement K);
+    int getIndexElement(std::vector<ProgramElement> v, ProgramElement e);
     void inputElement(Entity input);
     std::vector<std::vector<ProgramElement>> getBody();
     void inputProgramElements(std::vector<ProgramElement> ProgramElements);
     bool isTableEmpty();
     bool doesElementExist(Entity entity);
-    void eliminate1syn(std::vector<ProgramElement> programElementVector, int pos);
-    void crossProduct1syn(std::vector<ProgramElement> programElementVector);
-    void eliminate2synBoth(std::vector<ProgramElement> left, std::vector<ProgramElement> right, int pos1, int pos2);
-    void eliminate2synOne(std::vector<ProgramElement> left, std::vector<ProgramElement> right, int pos1, int pos2);
-    void crossProduct2syn(std::vector<ProgramElement> left, std::vector<ProgramElement> right);
+    void eliminateOneSyn(std::vector<ProgramElement> programElementVector, int pos);
+    void crossProductOneSyn(Entity oneSyn, std::vector<ProgramElement> programElementVector);
+    void eliminateTwoSynBoth(std::vector<std::pair<ProgramElement, ProgramElement>> v, int pos1, int pos2);
+    void eliminateTwoSynOne(std::pair<Entity, Entity> pair, std::vector<std::pair<ProgramElement, ProgramElement>> v, int pos1, int pos2);
+    void crossProductTwoSyn(std::pair<Entity, Entity> pair, std::vector<std::pair<ProgramElement, ProgramElement>> v);
 
+    void makeTableEmpty();
+
+    std::vector<std::vector<ProgramElement>> extractPairs(std::vector<std::pair<ProgramElement, ProgramElement>> v);
+
+    int
+    getPairIndex(std::vector<std::pair<ProgramElement, ProgramElement>> v, std::pair<ProgramElement, ProgramElement> e);
 };
 
 #endif //SPA_TABLE_H

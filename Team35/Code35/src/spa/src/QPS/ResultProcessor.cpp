@@ -62,15 +62,15 @@ std::vector<ProgramElement> ResultProcessor::processResults(std::vector<Group> g
             std::vector<std::pair<ProgramElement, ProgramElement>> programElementPairVector = setPairToVectorPair(
                     programElementPairSet);
 
-            int pos_left = getIndexEntity(table.getHeader(), left);
-            int pos_right = getIndexEntity(table.getHeader(), right);
+            int leftPos = getIndexEntity(table.getHeader(), left);
+            int rightPos = getIndexEntity(table.getHeader(), right);
 
-            if (pos_left == -1 && pos_right == -1) {
-                table.crossProductTwoSyn(programElementPairVector);
-            } else if (pos_left == -1 || pos_right == -1) {
-                table.eliminateTwoSynOne(programElementPairVector, pos_left, pos_right);
+            if (leftPos == -1 && rightPos == -1) {
+                table.crossProductTwoSyn(twoSyn, programElementPairVector);
+            } else if (leftPos == -1 || rightPos == -1) {
+                table.eliminateTwoSynOne(twoSyn, programElementPairVector, leftPos, rightPos);
             } else {
-                table.eliminateTwoSynBoth(programElementPairVector, pos_left, pos_right);
+                table.eliminateTwoSynBoth(programElementPairVector, leftPos, rightPos);
             }
         }
 
