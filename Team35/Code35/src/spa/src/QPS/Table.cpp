@@ -69,10 +69,9 @@ void Table::eliminateOneSyn(std::vector<ProgramElement> programElementVector, in
         }
     }
 
-    for (std::vector<ProgramElement> vecP : Table::body) {
+    for (int i = 0; i < body.size(); i++) {
         for (int index : toBeDeleted) {
-            //delete
-            vecP.erase(vecP.begin() + index);
+            body[i].erase(body[i].begin() + index);
         }
     }
 
@@ -123,9 +122,9 @@ void Table::eliminateTwoSynBoth(std::vector<std::pair<ProgramElement, ProgramEle
         }
     }
 
-    for (std::vector<ProgramElement> v : body) {
+    for (int i = 0; i < body.size(); i++) {
         for (int index : toBeDeleted) {
-            v.erase(v.begin() + index);
+            body[i].erase(body[i].begin() + index);
         }
     }
 
@@ -157,16 +156,16 @@ void Table::eliminateTwoSynOne(std::pair<Entity, Entity> pair, std::vector<std::
         for (int j = 0; j < resultVector.size(); j++) {
             if (checkVector[i] == resultVector[j]) {
                 vectorToBeInserted.push_back(otherVector[j]);
-                for (std::vector<ProgramElement> v : body) {
-                    v.push_back(v[i]);
+                for (int k = 0; k < body.size(); k++) {
+                    body[k].push_back((body[k])[i]);
                 }
             }
         }
     }
 
-    for (std::vector<ProgramElement> p: body) {
-        for (int i = checkVector.size() - 1; i >= 0; i--) {
-            p.erase(p.begin() + i);
+    for (int i = 0; i < body.size(); i++) {
+        for (int j = checkVector.size() - 1; j >= 0; j--) {
+            body[i].erase(body[i].begin() + j);
         }
     }
 
