@@ -137,6 +137,7 @@ bool existSuchThat(const std::string& s) {
  * @return returns true if the Entity Declaration STATEMENT is valid. else, return false
  */
 bool checkDesignEntitySynonymsList(std::vector<std::string> sArr) {
+    bool returnBool = true;
     std::vector<std::string>
             designEntity{"stmt", "read", "print", "call", "while", "if", "assign", "variable", "constant", "procedure"};
     if (sArr.size() <= 1) {
@@ -145,7 +146,6 @@ bool checkDesignEntitySynonymsList(std::vector<std::string> sArr) {
         std::string designStr = sArr[0];
         if (std::find(std::begin(designEntity), std::end(designEntity), designStr) != std::end(designEntity)) {
             //designStr contains one of the design entity keywords
-            bool returnBool = true;
             for (int i = 1; i < sArr.size(); i++) {
                 returnBool = returnBool && isIdent(sArr[i]);
             }

@@ -4,39 +4,39 @@
 
 #include "PKBGetterStubForWithHandler.h"
 
-PKBGetterStubForWithHandler::PKBGetterStubForWithHandler(DB *db) : PkbGetter(db) {
+PKBGetterStubForWithHandler::PKBGetterStubForWithHandler(DB* db) : PkbGetter(db) {
 }
 
-std::set<ProgramElement> PKBGetterStubForWithHandler::getEntity(const ElementType& typeToGet) const{
+std::set<ProgramElement> PKBGetterStubForWithHandler::getEntity(const ElementType& typeToGet) const {
     std::set<ProgramElement> toReturn;
-    if (typeToGet == ElementType::PROCEDURE){
+    if (typeToGet == ElementType::PROCEDURE) {
         toReturn.insert(ProgramElement::createProcedure("f"));
         toReturn.insert(ProgramElement::createProcedure("g"));
     }
 
-    if (typeToGet == ElementType::CALL){
+    if (typeToGet == ElementType::CALL) {
         toReturn.insert(ProgramElement::createStatement(ElementType::CALL, 12, "g"));
     }
 
-    if (typeToGet == ElementType::VARIABLE){
+    if (typeToGet == ElementType::VARIABLE) {
         toReturn.insert(ProgramElement::createVariable("x"));
         toReturn.insert(ProgramElement::createVariable("y"));
         toReturn.insert(ProgramElement::createVariable("z"));
     }
 
-    if (typeToGet == ElementType::WHILE){
+    if (typeToGet == ElementType::WHILE) {
         toReturn.insert(ProgramElement::createStatement(ElementType::WHILE, 4));
     }
 
-    if (typeToGet == ElementType::READ){
+    if (typeToGet == ElementType::READ) {
         toReturn.insert(ProgramElement::createStatement(ElementType::READ, 5, "x"));
     }
 
-    if (typeToGet == ElementType::PRINT){
+    if (typeToGet == ElementType::PRINT) {
         toReturn.insert(ProgramElement::createStatement(ElementType::PRINT, 11, "x"));
     }
 
-    if (typeToGet == ElementType::CONSTANT){
+    if (typeToGet == ElementType::CONSTANT) {
         toReturn.insert(ProgramElement::createConstant("5"));
         toReturn.insert(ProgramElement::createConstant("4"));
         toReturn.insert(ProgramElement::createConstant("10"));
@@ -44,11 +44,11 @@ std::set<ProgramElement> PKBGetterStubForWithHandler::getEntity(const ElementTyp
         toReturn.insert(ProgramElement::createConstant("0"));
     }
 
-    if (typeToGet == ElementType::IF){
+    if (typeToGet == ElementType::IF) {
         toReturn.insert(ProgramElement::createStatement(ElementType::IF, 6));
     }
 
-    if (typeToGet == ElementType::STATEMENT){
+    if (typeToGet == ElementType::STATEMENT) {
         toReturn.insert(ProgramElement::createStatement(ElementType::ASSIGNMENT, 1));
         toReturn.insert(ProgramElement::createStatement(ElementType::ASSIGNMENT, 2));
         toReturn.insert(ProgramElement::createStatement(ElementType::ASSIGNMENT, 3));
@@ -62,7 +62,7 @@ std::set<ProgramElement> PKBGetterStubForWithHandler::getEntity(const ElementTyp
         toReturn.insert(ProgramElement::createStatement(ElementType::CALL, 12, "g"));
     }
 
-    if (typeToGet == ElementType::ASSIGNMENT){
+    if (typeToGet == ElementType::ASSIGNMENT) {
         toReturn.insert(ProgramElement::createStatement(ElementType::ASSIGNMENT, 1));
         toReturn.insert(ProgramElement::createStatement(ElementType::ASSIGNMENT, 2));
         toReturn.insert(ProgramElement::createStatement(ElementType::ASSIGNMENT, 3));

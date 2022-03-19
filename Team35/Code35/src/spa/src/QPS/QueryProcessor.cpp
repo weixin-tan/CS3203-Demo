@@ -239,9 +239,9 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
         std::vector<std::string> WithClauses = allList[2];
 
         if (existSuchThat(selectStmt)) {
-            isValid = isValid && (!SuchThatClauses.empty());
+            isValid = (!SuchThatClauses.empty());
         } else {
-            isValid = isValid && (SuchThatClauses.empty());
+            isValid = (SuchThatClauses.empty());
         }
         isValid = isValid && checkAndSuchThat(SuchThatClauses);
         removeAndSuchThat(&SuchThatClauses);

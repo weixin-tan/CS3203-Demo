@@ -46,17 +46,6 @@ std::set<ProgramElement> WithHandler::getProgramElements(const EntityType& eType
     return pg->getEntity(elementType);
 }
 
-std::string WithHandler::getStringToMatch(const ProgramElement& element, EntityAttributeType elementType) {
-    if (elementType == EntityAttributeType::PROCNAME) {
-        return element.procName;
-    } else if (elementType == EntityAttributeType::VARNAME) {
-        return element.varName;
-    } else if (elementType == EntityAttributeType::VALUE) {
-        return element.value;
-    } else {
-        return std::to_string(element.stmtNo);
-    }
-}
 
 std::set<ProgramElement> WithHandler::matchProgramElements(const std::set<ProgramElement>& setA,
                                                            const Entity& fixedEntity,
@@ -65,7 +54,7 @@ std::set<ProgramElement> WithHandler::matchProgramElements(const std::set<Progra
     std::string stringA;
     std::string stringB = fixedEntity.name;
     for (const auto& element : setA) {
-        stringA = getStringToMatch(element, aType);
+        stringA = element.toString(aType);
         if (stringA == stringB) {
             toReturn.insert(element);
         }
@@ -82,9 +71,9 @@ std::set<std::pair<ProgramElement,
     std::string stringA;
     std::string stringB;
     for (const auto& elementA : setA) {
-        stringA = getStringToMatch(elementA, aType);
+        stringA = elementA.toString(aType);
         for (const auto& elementB : setB) {
-            stringB = getStringToMatch(elementB, bType);
+            stringB = elementB.toString(bType);
             if (stringA == stringB) {
                 std::pair<ProgramElement, ProgramElement> tempPair(elementA, elementB);
                 toReturn.insert(tempPair);
