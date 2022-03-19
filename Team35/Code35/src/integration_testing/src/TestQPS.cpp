@@ -32,7 +32,6 @@ ResultProcessor rp = ResultProcessor();
 
 bool compareProgramElementLists(std::vector<ProgramElement> lista, std::vector<ProgramElement> listb) {
     bool toReturn = true;
-
     for (ProgramElement a : lista) {
         bool temp = false;
         for (ProgramElement b : listb) {
@@ -43,6 +42,46 @@ bool compareProgramElementLists(std::vector<ProgramElement> lista, std::vector<P
     return toReturn;
 }
 
+
+TEST_CASE("test comparision functions"){
+    ProgramElement a = ProgramElement::createStatement(ElementType::STATEMENT, 1);
+    ProgramElement b = ProgramElement::createStatement(ElementType::STATEMENT, 2);
+    ProgramElement c = ProgramElement::createStatement(ElementType::STATEMENT, 1);
+    ProgramElement d = ProgramElement::createStatement(ElementType::STATEMENT, 3);
+    SECTION("testing compareProgramElementLists function"){
+        std::vector<ProgramElement> x1;
+        x1.push_back(a);
+        std::vector<ProgramElement> y1;
+        y1.push_back(b);
+        std::vector<ProgramElement> x2;
+        x2.push_back(a);
+        std::vector<ProgramElement> y2;
+        y2.push_back(c);
+        std::vector<ProgramElement> x3;
+        x3.push_back(a);
+        x3.push_back(b);
+        std::vector<ProgramElement> y3;
+        y3.push_back(b);
+        y3.push_back(c);
+        std::vector<ProgramElement> x4;
+        x4.push_back(a);
+        x4.push_back(c);
+        std::vector<ProgramElement> y4;
+        y4.push_back(b);
+        y4.push_back(d);
+        std::vector<ProgramElement> x5;
+        x5.push_back(a);
+        x5.push_back(b);
+        std::vector<ProgramElement> y5;
+        y5.push_back(c);
+        y5.push_back(d);
+        REQUIRE(!compareProgramElementLists(x1,y1));
+        REQUIRE(compareProgramElementLists(x2,y2));
+        REQUIRE(compareProgramElementLists(x3,y3));
+        REQUIRE(!compareProgramElementLists(x4,y4));
+        REQUIRE(!compareProgramElementLists(x5,y5));
+    }
+}
 //#to-do viv check if this is right bc i have no idea lmao
 std::vector<ParsedStatement> pStatements = {
         ParsedStatement(1,
