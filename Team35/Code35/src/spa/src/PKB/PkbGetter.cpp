@@ -192,8 +192,8 @@ std::set<std::pair<ProgramElement, ProgramElement>> PkbGetter::getAssignmentWith
             // get the assignment
             auto elementIter = db->elementStmtTable.find(it->first);
 
-            ProgramElement first = ProgramElement::createVariable(db->stmtTable.at(it->first).varModified.at(0));
-            ProgramElement second = db->elementStmtTable.at(it->first);
+            ProgramElement second = ProgramElement::createVariable(db->stmtTable.at(it->first).varModified.at(0));
+            ProgramElement first = db->elementStmtTable.at(it->first);
             result.insert(std::make_pair(first, second));
         }
     }
@@ -244,7 +244,7 @@ std::set<std::pair<ProgramElement, ProgramElement>> PkbGetter::getIfWithVariable
             for (const auto& i : db->stmtTable[itset.stmtNo].varUsed) {
                 ProgramElement var = ProgramElement::createVariable(i);
                 ProgramElement ifStmt = itset;
-                result.insert(std::make_pair(var, ifStmt));
+                result.insert(std::make_pair(ifStmt, var));
             }
         }
     }
@@ -261,7 +261,7 @@ std::set<std::pair<ProgramElement, ProgramElement>>PkbGetter::getWhileWithVariab
             for (const auto& i : db->stmtTable[itset.stmtNo].varUsed) {
                 ProgramElement var = ProgramElement::createVariable(i);
                 ProgramElement ifStmt = itset;
-                result.insert(std::make_pair(var, ifStmt));
+                result.insert(std::make_pair(ifStmt, var));
             }
         }
     }

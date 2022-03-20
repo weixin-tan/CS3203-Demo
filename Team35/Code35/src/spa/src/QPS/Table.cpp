@@ -11,12 +11,11 @@ Table::Table() {
     Table::body = {};
 }
 
-int Table::getIndexEntity(std::vector<ProgramElement> v, ProgramElement K) {
-    auto it = find(v.begin(), v.end(), K);
-    // IF element was found
-    if (it != v.end()) {
-        int index = it - v.begin();
-        return index;
+int Table::getIndexElement(std::vector<ProgramElement> v, ProgramElement e) {
+    auto posIterator = find(v.begin(), v.end(), e);
+    if (posIterator != v.end()) {
+        int pos = posIterator - v.begin();
+        return pos;
     } else {
         return -1;
     }
@@ -43,6 +42,10 @@ bool Table::isTableEmpty() {
     return Table::header.empty();
 }
 
+void Table::makeTableEmpty() {
+    Table::header = std::vector<Entity>{};
+}
+
 bool Table::doesElementExist(Entity entity) {
     std::vector<Entity> header = Table::header;
     if (std::find(header.begin(), header.end(), entity) != header.end()) {
@@ -52,42 +55,42 @@ bool Table::doesElementExist(Entity entity) {
     }
 }
 
-void Table::eliminate1syn(std::vector<ProgramElement> programElementVector, int pos) {
+void Table::eliminateOneSyn(std::vector<ProgramElement> programElementVector, int pos) {
     //preprocessing
     std::vector<ProgramElement> toBeChecked = Table::body[pos];
     std::vector<int> toBeDeleted;
-    std::vector<ProgramElement> cache;
+
     //checking
-    for (ProgramElement p : toBeChecked) {
-        //if p is in cahce continue
-        if (std::find(cache.begin(), cache.end(), p) != cache.end()) {
-            continue;
-        } else {
-            for (ProgramElement q : programElementVector) {
-                if (p == q) {
-                    //put the position into tobeDeleted
-                    int positionToBeDeleted = getIndexEntity(programElementVector, p);
-                    toBeDeleted.push_back(positionToBeDeleted);
-                    //put pe into cahce
-                    cache.push_back(p);
-                }
-            }
+    for (int i = toBeChecked.size() - 1; i >= 0; i--) {
+        ProgramElement check = toBeChecked[i];
+        int checkPos = getIndexElement(programElementVector, check);
+        if (checkPos == -1) {
+            toBeDeleted.push_back(i);
         }
     }
-    //delete those elements from the back
-    std::reverse(toBeDeleted.begin(), toBeDeleted.end());
-    for (std::vector<ProgramElement> vecP : Table::body) {
+
+    for (int i = 0; i < body.size(); i++) {
         for (int index : toBeDeleted) {
-            //delete
-            vecP.erase(vecP.begin() + index);
+            body[i].erase(body[i].begin() + index);
         }
+    }
+
+    //Make table empty if there are no elements left
+    if (body[0].empty()) {
+        makeTableEmpty();
     }
 }
 
-void Table::crossProduct1syn(std::vector<ProgramElement> programElementVector) {
-    int originalSize = Table::body[0].size();
+void Table::crossProductOneSyn(Entity oneSyn, std::vector<ProgramElement> programElementVector) {
+    if (isTableEmpty()) {
+        header.push_back(oneSyn);
+        body.push_back(programElementVector);
+        return ;
+    }
+
+    int originalSize = body[0].size();
     int numberOfRepetition = programElementVector.size();
-    for (std::vector<ProgramElement> p : Table::body) {
+    for (std::vector<ProgramElement> p : body) {
         for (int i = 0; i < numberOfRepetition; i++) {
             for (int j = 0; j < originalSize; j++) {
                 p.push_back(p[j]);
@@ -101,69 +104,103 @@ void Table::crossProduct1syn(std::vector<ProgramElement> programElementVector) {
             temp.push_back(p);
         }
     }
-    Table::body.push_back(temp);
+
+    header.push_back(oneSyn);
+    body.push_back(temp);
 }
 
-void Table::eliminate2synBoth(std::vector<ProgramElement> left, std::vector<ProgramElement> right, int pos1, int pos2) {
-    std::vector<ProgramElement> temp1 = Table::body[pos1];
-    std::vector<ProgramElement> temp2 = Table::body[pos2];
-    //checking
-    for (int i = left.size() - 1; i <= 0; i--) {
-        if (temp1[i] == left[i] && temp2[i] == right[i]) {
-            continue;
-        } else {
-            for (std::vector<ProgramElement> p : Table::body) {
-                p.erase(p.begin() + i);
-            }
+void Table::eliminateTwoSynBoth(std::vector<std::pair<ProgramElement, ProgramElement>> v, int leftPos, int rightPos) {
+    std::vector<ProgramElement> temp1 = Table::body[leftPos];
+    std::vector<ProgramElement> temp2 = Table::body[rightPos];
+    std::vector<int> toBeDeleted;
+
+    for (int i = temp1.size() - 1; i >= 0; i--) {
+        std::pair<ProgramElement, ProgramElement> pairToCheck(temp1[i], temp2[i]);
+        int checkPos = getPairIndex(v, pairToCheck);
+        if (checkPos == -1) {
+            toBeDeleted.push_back(i);
         }
+    }
+
+    for (int i = 0; i < body.size(); i++) {
+        for (int index : toBeDeleted) {
+            body[i].erase(body[i].begin() + index);
+        }
+    }
+
+    if (body[0].empty()) {
+        makeTableEmpty();
     }
 }
 
-//left is the one to be eliminated
-void Table::eliminate2synOne(std::vector<ProgramElement> left, std::vector<ProgramElement> right, int pos1, int pos2) {
-    std::vector<ProgramElement> temp1 = Table::body[pos1];
-    std::vector<ProgramElement> temp2 = Table::body[pos2];
-    int originalSize = Table::body[0].size();
-    std::vector<ProgramElement> tempRight;
-    int originalSizeRight = right.size();
-    //place elements
-    for (int i = 0; i < originalSize; i++) {
-        for (int j = 0; j < left.size(); j++) {
-            if (temp2[i] == left[j]) {
-                tempRight.push_back(right[j]);
-                for (std::vector<ProgramElement> p : Table::body) {
-                    p.push_back(p[i]);
+void Table::eliminateTwoSynOne(std::pair<Entity, Entity> pair, std::vector<std::pair<ProgramElement, ProgramElement>> v, int leftPos, int rightPos) {
+    std::vector<std::vector<ProgramElement>> vectors = extractPairs(v);
+
+    std::vector<ProgramElement> checkVector;
+    std::vector<ProgramElement> resultVector;
+    std::vector<ProgramElement> otherVector;
+    if (leftPos == -1) {
+        checkVector = body[rightPos];
+        resultVector = vectors[1];
+        otherVector = vectors[0];
+        header.push_back(pair.first);
+    } else {
+        checkVector = body[leftPos];
+        resultVector = vectors[0];
+        otherVector = vectors[1];
+        header.push_back(pair.second);
+    }
+
+    std::vector<ProgramElement> vectorToBeInserted;
+    for (int i = 0; i < checkVector.size(); i++) {
+        for (int j = 0; j < resultVector.size(); j++) {
+            if (checkVector[i] == resultVector[j]) {
+                vectorToBeInserted.push_back(otherVector[j]);
+                for (int k = 0; k < body.size(); k++) {
+                    body[k].push_back((body[k])[i]);
                 }
             }
         }
     }
-    //trim table
-    for (int i = 0; i < originalSize; i++) {
-        for (std::vector<ProgramElement> p : Table::body) {
-            p.erase((p.begin() + i));
+
+    for (int i = 0; i < body.size(); i++) {
+        for (int j = checkVector.size() - 1; j >= 0; j--) {
+            body[i].erase(body[i].begin() + j);
         }
     }
-    //add right to table
-    Table::body.push_back(tempRight);
+
+    body.push_back(vectorToBeInserted);
 }
 
-void Table::crossProduct2syn(std::vector<ProgramElement> left, std::vector<ProgramElement> right) {
-    int originalSize = Table::body[0].size();
+void Table::crossProductTwoSyn(std::pair<Entity, Entity> pair, std::vector<std::pair<ProgramElement, ProgramElement>> v) {
+    std::vector<std::vector<ProgramElement>> pairVectors = extractPairs(v);
+    std::vector<ProgramElement> left = pairVectors[0];
+    std::vector<ProgramElement> right = pairVectors[1];
+
+    if (isTableEmpty()) {
+        header.push_back(pair.first);
+        header.push_back(pair.second);
+        body.push_back(left);
+        body.push_back(right);
+        return ;
+    }
+
+    int originalSize = body[0].size();
     int numberOfRepetition = left.size();
-    for (std::vector<ProgramElement> p : Table::body) {
+    for (std::vector<ProgramElement> p : body) {
         for (int i = 0; i < numberOfRepetition; i++) {
             for (int j = 0; j < originalSize; j++) {
                 p.push_back(p[j]);
             }
         }
     }
+
     std::vector<ProgramElement> tempLeft;
     for (ProgramElement p : left) {
         for (int i = 0; i < originalSize; i++) {
             tempLeft.push_back(p);
         }
     }
-    Table::body.push_back(tempLeft);
 
     std::vector<ProgramElement> tempRight;
     for (ProgramElement p : right) {
@@ -171,5 +208,33 @@ void Table::crossProduct2syn(std::vector<ProgramElement> left, std::vector<Progr
             tempRight.push_back(p);
         }
     }
-    Table::body.push_back(tempRight);
+
+    header.push_back(pair.first);
+    header.push_back(pair.second);
+    body.push_back(tempLeft);
+    body.push_back(tempRight);
+}
+
+std::vector<std::vector<ProgramElement>> Table::extractPairs(std::vector<std::pair<ProgramElement, ProgramElement>> v) {
+    std::vector<ProgramElement> left;
+    std::vector<ProgramElement> right;
+    for (std::pair<ProgramElement, ProgramElement> p : v) {
+        left.push_back(p.first);
+        right.push_back(p.second);
+    }
+
+    std::vector<std::vector<ProgramElement>> results;
+    results.push_back(left);
+    results.push_back(right);
+    return results;
+}
+
+int Table::getPairIndex(std::vector<std::pair<ProgramElement, ProgramElement>> v, std::pair<ProgramElement, ProgramElement> e) {
+    auto posIterator = find(v.begin(), v.end(), e);
+    if (posIterator != v.end()) {
+        int pos = posIterator - v.begin();
+        return pos;
+    } else {
+        return -1;
+    }
 }
