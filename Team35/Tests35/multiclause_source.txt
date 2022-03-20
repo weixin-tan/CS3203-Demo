@@ -1,0 +1,45 @@
+procedure main {
+	a = b + c;
+	d = b;
+	a = c;
+
+	e = f;
+	e = f;
+	read e;
+	e = f;
+	print e;
+
+	if (g == 9) then {
+		g = h;
+	} else {
+		g = h;
+	}
+
+	while (g == 0) {
+		g = h;
+	}
+	call mergesort;
+}
+
+procedure mergesort {
+	length = width + breadth - 15;
+	call merge;
+	while (radius == 0) {
+		eigenvalue = order;
+		rank = diameter;
+		print rank;
+	}
+}
+
+procedure merge {
+	area = volume + base;
+}
+
+procedure quicksort {
+	while (index == 22) {
+		index = mid;
+		while (pivot == 24) {
+			left = right + 1;
+		}
+	}
+}

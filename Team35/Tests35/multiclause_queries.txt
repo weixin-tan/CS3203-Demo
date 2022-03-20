@@ -1,0 +1,285 @@
+1 - Uses Uses
+stmt s; variable v;
+Select s such that Uses (s, "b") and Uses (s, "c")
+1
+5000
+1 - Uses Uses
+stmt s; variable v;
+Select s such that Uses (s, "c") and Uses (s, "b")
+1
+5000
+2 - Uses Modifies
+stmt s; variable v;
+Select s such that Uses (s, "b") and Modifies (s, "a")
+1
+5000
+3 - Uses Follows
+stmt s, s1; variable v, v1; read r;
+Select s such that Uses (s, "f") and Follows (s, r)
+5
+5000
+4 - Uses Follows*
+stmt s, s1; variable v, v1; assign a; read r;
+Select a such that Uses (a, "f") and Follows* (a, r)
+4, 5
+5000
+5 - Uses Parent
+stmt s, s1; variable v, v1; assign a; while w;
+Select a such that Uses (a, "h") and Parent (w, a)
+13
+5000
+6 - Uses Parent*
+stmt s, s1; variable v, v1; if ifs; assign a;
+Select a such that Uses (a, "h") and Parent* (ifs, a)
+10, 11
+5000
+7 - Uses Calls
+stmt s, s1; variable v, v1; procedure p; assign a;
+Select a such that Uses (a, "b") and Calls (p, "auxiliary")
+
+5000
+8 - Uses Calls*
+stmt s, s1; variable v, v1; procedure p; assign a;
+Select s such that Uses (s, "f") and Calls* (p, "helper")
+
+5000
+9 - Uses Next
+stmt s, s1; variable v, v1; print pn; assign a;
+Select a such that Uses (a, "f") and Next (a, pn)
+7
+5000
+10 - Uses Next* 
+stmt s, s1; variable v, v1; read r; assign a;
+Select a such that Uses (a, "f") and Next* (a, r)
+4, 5
+5000
+11 - Modifies Modifies
+stmt s, s1; variable v, v1; read r; assign a, a1; while w; if ifs; print pn;
+Select a such that Modifies (a, "a") and Modifies (a1, "d")
+1, 3
+5000
+12 - Modifies Follows
+stmt s, s1; variable v, v1; read r; assign a; while w; if ifs; print pn;
+Select a such that Modifies (a, "e") and Follows (a, r)
+5
+5000
+13 - Modifies Follows*
+stmt s, s1; variable v, v1; read r; assign a; while w; if ifs; print pn;
+Select a such that Modifies (a, "e") and Follows* (a, r)
+4, 5
+5000
+14 - Modifies Parent
+stmt s, s1; variable v, v1; read r; assign a; while w; if ifs; print pn;
+Select a such that Modifies (a, "g") and Parent (ifs, a)
+10, 11
+5000
+15 - Modifies Parent*
+stmt s, s1; variable v, v1; read r; assign a; while w; if ifs; print pn;
+Select a such that Modifies (a, "g") and Parent* (w, a)
+13
+5000
+16 - Modifies Calls
+stmt s, s1; variable v, v1; read r; assign a; while w; if ifs; print pn; procedure p;
+Select a such that Modifies (a, "d") and Calls (p, "mergesort")
+2
+5000
+17 - Modifies Calls*
+stmt s, s1; variable v, v1; read r; assign a; while w; if ifs; print pn; procedure p, p1;
+Select a such that Modifies (a, "g") and Calls* (p, p1)
+10, 11, 13
+5000
+18 - Modifies Next
+stmt s, s1; variable v, v1; read r; assign a; while w; if ifs; print pn;
+Select a such that Modifies (a, "g") and Next (a, w)
+10, 11, 13
+5000
+19 - Modifies Next*
+stmt s, s1; variable v, v1; read r; assign a; while w; if ifs; print pn; call c;
+Select s such that Modifies (s, "e") and Next* (a, c)
+4, 5, 6, 7
+5000
+20 - Follows Follows
+stmt s, s1; variable v, v1; read r; assign a, a1, a2; while w; if ifs; print pn; procedure p; call c;
+Select a such that Follows (a1, a) and Follows (a, a2)
+2, 3, 4
+5000
+21 - Follows Follows*
+stmt s, s1; variable v, v1; read r; assign a, a1; while w; if ifs; print pn; procedure p; call c;
+Select a such that Follows (a1, a) and Follows* (a, r)
+2, 3, 4, 5
+5000
+22 - Follows Parent
+stmt s, s1; variable v, v1; read r; assign a, a1; while w; if ifs; print pn; procedure p; call c;
+Select a such that Follows (a1, a) and Parent (w, a)
+19
+5000
+23 - Follows Parent*
+stmt s, s1; variable v, v1; read r; assign a; while w; if ifs; print pn; procedure p; call c;
+Select a such that Follows (w, a) and Parent* (s, a)
+
+5000
+24 - Follows Calls
+stmt s, s1; variable v, v1; read r; assign a; while w; if ifs; print pn; procedure p; call c;
+Select c such that Follows (w, c) and Calls (p, "mergesort")
+14
+5000
+25 - Follows Calls*
+stmt s, s1; variable v, v1; read r; assign a; while w; if ifs; print pn; procedure p; call c;
+Select a such that Follows (a, c) and Calls* (p, "merge")
+15
+5000
+26 - Follows Next
+stmt s, s1; variable v, v1; read r; assign a; while w; if ifs; print pn; procedure p; call c;
+Select w such that Follows (w, c) and Next (a, w)
+12
+5000
+27 - Follows Next*
+stmt s, s1; variable v, v1; read r; assign a, a1; while w; if ifs; print pn; procedure p; call c;
+Select a such that Follows (a, a1) and Next* (a, w)
+1, 2, 3, 4, 18
+5000
+28 - Follows* Follows*
+stmt s, s1; variable v, v1; read r; assign a; while w; if ifs; print pn; procedure p; call c;
+Select a such that Follows* (a, r) and Follows* (a, pn)
+1, 2, 3, 4, 5
+5000
+29 - Follows* Parent
+stmt s, s1; variable v, v1; read r; assign a; while w; if ifs; print pn; procedure p; call c;
+Select s such that Follows* (a, s) and Parent (s, pn)
+17
+5000
+30 - Follows* Parent*
+stmt s, s1; variable v, v1; read r; assign a; while w; if ifs; print pn; procedure p; call c;
+Select s such that Follows* (s, c) and Parent* (s, a)
+9, 12
+5000
+31 - Follows* Calls
+stmt s, s1; variable v, v1; read r; assign a; while w; if ifs; print pn; procedure p; call c;
+Select pn such that Follows* (r, pn) and Calls ("mergesort", "merge")
+8
+5000
+32 - Follows* Calls*
+stmt s, s1; variable v, v1; read r; assign a; while w; if ifs; print pn; procedure p; call c;
+Select a such that Follows* (a1, a) and Calls (p, "main")
+
+5000
+33 - Follows* Next
+stmt s, s1; variable v, v1; read r; assign a; while w; if ifs; print pn; procedure p; call c;
+Select s such that Follows* (a, s) and Next (s, w)
+16, 20, 24
+5000
+34 - Follows* Next*
+stmt s, s1; variable v, v1; read r; assign a, a1; while w; if ifs; print pn; procedure p; call c;
+Select a such that Follows* (a1, a) and Next* (a, a)
+19
+5000
+35 - Parent Parent
+stmt s, s1; variable v, v1; read r; assign a, a1; while w; if ifs; print pn; procedure p; call c;
+Select a such that Parent (w, s) and Parent (s, a)
+25
+5000
+36 - Parent Parent*
+stmt s, s1; variable v, v1; read r; assign a, a1; while w, w1; if ifs; print pn; procedure p; call c;
+Select a such that Parent (w, a) and Parent* (w1, a)
+13, 18, 19, 23, 25
+5000
+37 - Parent Calls
+stmt s, s1; variable v, v1; read r; assign a, a1; while w; if ifs; print pn; procedure p; call c;
+Select s such that Parent (ifs, s) and Calls ("merge", "mergesort")
+
+5000
+38 - Parent Calls*
+stmt s, s1; variable v, v1; read r; assign a, a1; while w; if ifs; print pn; procedure p; call c;
+Select s such that Parent (ifs, s) and Calls* ("main", "merge")
+10, 11
+5000
+39 - Parent Next
+stmt s, s1; variable v, v1; read r; assign a, a1; while w; if ifs; print pn; procedure p; call c;
+Select s such that Parent (w, s) and Next (s, w)
+13, 20, 24, 25
+5000
+40 - Parent Next*
+stmt s, s1; variable v, v1; read r; assign a, a1; while w, w1; if ifs; print pn; procedure p; call c;
+Select s such that Parent (w, s) and Next* (s, w1)
+13, 18, 19, 20, 23, 24, 25
+5000
+41 - Parent* Parent*
+stmt s, s1; variable v, v1; read r; assign a, a1; while w, w1; if ifs; print pn; procedure p; call c;
+Select s such that Parent* (w, w1) and Parent* (w1, s)
+25
+5000
+42 - Parent* Calls
+stmt s, s1; variable v, v1; read r; assign a, a1; while w, w1; if ifs; print pn; procedure p; call c;
+Select s such that Parent* (ifs, s) and Calls (p, "merge")
+10, 11
+5000
+43 - Parent* Calls*
+stmt s, s1; variable v, v1; read r; assign a, a1; while w, w1; if ifs; print pn; procedure p; call c;
+Select s such that Parent* (w, s) and Calls* (p, p)
+13,18,19,20,23,24,25
+5000
+44 - Parent* Next
+stmt s, s1; variable v, v1; read r; assign a, a1; while w, w1; if ifs; print pn; procedure p; call c;
+Select w1 such that Parent* (w, w1) and Next (w1, w)
+24
+5000
+45 - Parent* Next*
+stmt s, s1; variable v, v1; read r; assign a, a1; while w, w1; if ifs; print pn; procedure p; call c;
+Select s such that Parent* (w, s) and Next* (s, pn)
+18, 19, 20
+5000
+46 - Calls Calls
+stmt s, s1; variable v, v1; read r; assign a, a1; while w, w1; if ifs; print pn; procedure p, q, r; call c;
+Select p such that Calls (p, q) and Calls (q, r)
+main
+5000
+47 - Calls Calls*
+stmt s, s1; variable v, v1; read r; assign a, a1; while w, w1; if ifs; print pn; procedure p, q, r; call c;
+Select p such that Calls (p, q) and Calls* (p, r)
+main, mergesort
+5000
+48 - Calls Next
+stmt s, s1; variable v, v1; read r; assign a, a1; while w, w1; if ifs; print pn; procedure p, q; call c;
+Select p such that Calls (p, q) and Next (s, s1)
+main, mergesort
+5000
+49 - Calls Next*
+stmt s, s1; variable v, v1; read r; assign a, a1; while w, w1; if ifs; print pn; procedure p, q; call c;
+Select p such that Calls (p, q) and Next* (s, s1)
+main, mergesort
+5000
+50 - 
+stmt s, s1;
+Select s such that Next* (s, s1) with s.stmt# = s1.stmt#
+12,13,17,18,19,20,22,23,24,25
+5000
+51 - Calls* Calls*
+stmt s, s1; variable v, v1; read r; assign a, a1; while w, w1; if ifs; print pn; procedure p, q, r; call c;
+Select p such that Calls* (p, q) and Calls* (p, r)
+main, mergesort
+5000
+52 - Calls* Next
+stmt s, s1; variable v, v1; read r; assign a, a1; while w, w1; if ifs; print pn; procedure p, q; call c;
+Select p such that Calls* (p, q) and Next (s, s1)
+main, mergesort
+5000
+53 - Calls* Next*
+stmt s, s1; variable v, v1; read r; assign a, a1; while w, w1; if ifs; print pn; procedure p, q; call c;
+Select p such that Calls* (p, q) and Next* (s, s1)
+main, mergesort
+5000
+54 - Next Next
+stmt s, s1; variable v, v1; read r; assign a, a1; while w, w1; if ifs; print pn; procedure p; call c;
+Select s such that Next (s, s1) and Next (s1, s)
+12,13,24,25
+5000
+55 - Next Next*
+stmt s, s1; variable v, v1; read r; assign a, a1; while w, w1; if ifs; print pn; procedure p; call c;
+Select s such that Next (s, s1) and Next* (s1, s)
+12,13,17,18,19,20,22,23,24,25
+5000
+56 - Next* Next*
+stmt s, s1; variable v, v1; read r; assign a, a1; while w, w1; if ifs; print pn; procedure p; call c;
+Select s such that Next* (s, s1) and Next* (s1, s)
+12,13,17,18,19,20,22,23,24,25
+5000
