@@ -34,20 +34,20 @@ Procedure ConcreteSyntaxWithValidation::parseProcedure(std::queue<Token>& tokens
     Procedure procedure;
 
     // procedure_keyword
-    if (tokensQueue.front().getToken() != TokenType::PROCEDURE_KEYWORD) {
+    if (!isFrontQueueTokenType(tokensQueue, TokenType::PROCEDURE_KEYWORD)) {
         throw std::invalid_argument("Missing procedure keyword.");
     }
     tokensQueue.pop();
 
     // procedure name
-    if (tokensQueue.front().getToken() != TokenType::NAME) {
+    if (!isFrontQueueTokenType(tokensQueue, TokenType::NAME)) {
         throw std::invalid_argument("Missing procedure name.");
     }
     procedure.setProcName(tokensQueue.front().getId());
     tokensQueue.pop();
 
     // left_curly
-    if (tokensQueue.front().getToken() != TokenType::LEFT_CURLY) {
+    if (!isFrontQueueTokenType(tokensQueue, TokenType::LEFT_CURLY)) {
         throw std::invalid_argument("Missing left curly for procedure.");
     }
     tokensQueue.pop();
@@ -59,7 +59,7 @@ Procedure ConcreteSyntaxWithValidation::parseProcedure(std::queue<Token>& tokens
     catch (const std::invalid_argument& e){
         throw;
     }
-    stmtLst.SetContainerType(ContainerType::kprocedure);
+    stmtLst.SetContainerType(ContainerType::PROCEDURE_CONTAINER);
     procedure.setStmtLst(stmtLst);
     procedure.setSize(stmt_count);
 
@@ -76,7 +76,7 @@ StmtLst ConcreteSyntaxWithValidation::parseStmtLst(std::queue<Token>& tokensQueu
         throw std::invalid_argument("Missing right curly for procedure.");
     }
 
-    while (tokensQueue.front().getToken() != TokenType::RIGHT_CURLY) {
+    while (!isFrontQueueTokenType(tokensQueue, TokenType::RIGHT_CURLY)) {
         Statement temp_statement;
         try {
             temp_statement = ConcreteSyntaxWithValidation::parseStmt(tokensQueue);
@@ -97,7 +97,7 @@ StmtLst ConcreteSyntaxWithValidation::parseStmtLst(std::queue<Token>& tokensQueu
 Statement ConcreteSyntaxWithValidation::parseStmt(std::queue<Token>& tokensQueue) {
 
     // check statement type
-    if (tokensQueue.front().getToken() == TokenType::READ_KEYWORD) {
+    if (isFrontQueueTokenType(tokensQueue, TokenType::READ_KEYWORD)) {
         try {
             return ConcreteSyntaxWithValidation::parseRead(tokensQueue);
         }
@@ -105,7 +105,7 @@ Statement ConcreteSyntaxWithValidation::parseStmt(std::queue<Token>& tokensQueue
             throw;
         }
     }
-    else if (tokensQueue.front().getToken() == TokenType::PRINT_KEYWORD) {
+    else if (isFrontQueueTokenType(tokensQueue, TokenType::PRINT_KEYWORD)) {
         try {
             return ConcreteSyntaxWithValidation::parsePrint(tokensQueue);
         }
@@ -113,7 +113,7 @@ Statement ConcreteSyntaxWithValidation::parseStmt(std::queue<Token>& tokensQueue
             throw;
         }
     }
-    else if (tokensQueue.front().getToken() == TokenType::CALL_KEYWORD) {
+    else if (isFrontQueueTokenType(tokensQueue, TokenType::CALL_KEYWORD)) {
         try {
             return ConcreteSyntaxWithValidation::parseCall(tokensQueue);
         }
@@ -121,7 +121,7 @@ Statement ConcreteSyntaxWithValidation::parseStmt(std::queue<Token>& tokensQueue
             throw;
         }
     }
-    else if (tokensQueue.front().getToken() == TokenType::WHILE_KEYWORD) {
+    else if (isFrontQueueTokenType(tokensQueue, TokenType::WHILE_KEYWORD)) {
         try {
             return ConcreteSyntaxWithValidation::parseWhile(tokensQueue);
         }
@@ -129,7 +129,7 @@ Statement ConcreteSyntaxWithValidation::parseStmt(std::queue<Token>& tokensQueue
             throw;
         }
     }
-    else if (tokensQueue.front().getToken() == TokenType::IF_KEYWORD) {
+    else if (isFrontQueueTokenType(tokensQueue, TokenType::IF_KEYWORD)) {
         try {
             return ConcreteSyntaxWithValidation::parseIf(tokensQueue);
         }
@@ -137,7 +137,7 @@ Statement ConcreteSyntaxWithValidation::parseStmt(std::queue<Token>& tokensQueue
             throw;
         }
     }
-    else if (tokensQueue.front().getToken() == TokenType::NAME) {
+    else if (isFrontQueueTokenType(tokensQueue, TokenType::NAME)) {
         try {
             return ConcreteSyntaxWithValidation::parseAssign(tokensQueue);
         }
@@ -162,7 +162,7 @@ Statement ConcreteSyntaxWithValidation::parseAssign(std::queue<Token>& tokensQue
 
     // varName
     std::vector<std::string> result;
-    if (tokensQueue.front().getToken() != TokenType::NAME) {
+    if (!isFrontQueueTokenType(tokensQueue, TokenType::NAME)) {
         throw std::invalid_argument("Missing variable name.");
     }
     result.push_back(tokensQueue.front().getId());
@@ -170,7 +170,7 @@ Statement ConcreteSyntaxWithValidation::parseAssign(std::queue<Token>& tokensQue
     tokensQueue.pop();
 
     // single equal sign
-    if (tokensQueue.front().getToken() != TokenType::ASSIGN) {
+    if (!isFrontQueueTokenType(tokensQueue, TokenType::ASSIGN)) {
         throw std::invalid_argument("Missing equal sign.");
     }
     tokensQueue.pop();
@@ -191,7 +191,7 @@ Statement ConcreteSyntaxWithValidation::parseAssign(std::queue<Token>& tokensQue
     assignStmt.expression = ep.parseExpr(tokensQueue);
 
     // semicolon
-    if (tokensQueue.front().getToken() != TokenType::SEMICOLON) {
+    if (!isFrontQueueTokenType(tokensQueue, TokenType::SEMICOLON)) {
         throw std::invalid_argument("Missing semicolon.");
     }
     tokensQueue.pop();
@@ -210,21 +210,21 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseExprStr
     result.push_back(constVector);
 
     // stop when semicolon is reached
-    while (tokensQueue.front().getToken() != TokenType::SEMICOLON) {
-        if (tokensQueue.front().getToken() == TokenType::NAME) {
+    while (!isFrontQueueTokenType(tokensQueue, TokenType::SEMICOLON)) {
+        if (isFrontQueueTokenType(tokensQueue, TokenType::NAME)) {
             result[0].push_back(tokensQueue.front().getId());
         }
-        else if ((tokensQueue.front().getToken() == TokenType::INTEGER) || (tokensQueue.front().getToken() == TokenType::DIGIT)){
+        else if (isFrontQueueTokenType(tokensQueue, TokenType::INTEGER) || isFrontQueueTokenType(tokensQueue, TokenType::DIGIT)){
             result[1].push_back(tokensQueue.front().getId());
         }
         // other valid symbols in expr
-        else if ((tokensQueue.front().getToken() == TokenType::LEFT_BRACE) ||
-            (tokensQueue.front().getToken() == TokenType::RIGHT_BRACE) ||
-            (tokensQueue.front().getToken() == TokenType::ADD) ||
-            (tokensQueue.front().getToken() == TokenType::SUBTRACT) ||
-            (tokensQueue.front().getToken() == TokenType::MULTIPLY) ||
-            (tokensQueue.front().getToken() == TokenType::DIVIDE) ||
-            (tokensQueue.front().getToken() == TokenType::MODULO)) {
+        else if ((isFrontQueueTokenType(tokensQueue, TokenType::LEFT_BRACE)) ||
+            (isFrontQueueTokenType(tokensQueue, TokenType::RIGHT_BRACE)) ||
+            (isFrontQueueTokenType(tokensQueue, TokenType::ADD)) ||
+            (isFrontQueueTokenType(tokensQueue, TokenType::SUBTRACT)) ||
+            (isFrontQueueTokenType(tokensQueue, TokenType::MULTIPLY)) ||
+            (isFrontQueueTokenType(tokensQueue, TokenType::DIVIDE)) ||
+            (isFrontQueueTokenType(tokensQueue, TokenType::MODULO))) {
             ;
         }
         else {
@@ -250,13 +250,13 @@ Statement ConcreteSyntaxWithValidation::parseWhile(std::queue<Token>& tokensQueu
 
     // parse condExpr
     // remove while_keyword
-    if (tokensQueue.front().getToken() != TokenType::WHILE_KEYWORD) {
+    if (!isFrontQueueTokenType(tokensQueue, TokenType::WHILE_KEYWORD)) {
         throw std::invalid_argument("Missing while keyword.");
     }
     tokensQueue.pop();
 
     // remove left_brace
-    if (tokensQueue.front().getToken() != TokenType::LEFT_BRACE) {
+    if (!isFrontQueueTokenType(tokensQueue, TokenType::LEFT_BRACE)) {
         throw std::invalid_argument("Missing left brace.");
     }
     tokensQueue.pop();
@@ -275,7 +275,7 @@ Statement ConcreteSyntaxWithValidation::parseWhile(std::queue<Token>& tokensQueu
 
     // parse stmtLst
     // remove left_curly
-    if (tokensQueue.front().getToken() != TokenType::LEFT_CURLY) {
+    if (!isFrontQueueTokenType(tokensQueue, TokenType::LEFT_CURLY)) {
         throw std::invalid_argument("Missing left curly.");
     }
     tokensQueue.pop();
@@ -287,7 +287,7 @@ Statement ConcreteSyntaxWithValidation::parseWhile(std::queue<Token>& tokensQueu
     catch (const std::invalid_argument& e) {
         throw;
     }
-    stmtLst.SetContainerType(ContainerType::kwhile);
+    stmtLst.SetContainerType(ContainerType::WHILE_CONTAINER);
     std::shared_ptr<StmtLst> p = std::make_shared<StmtLst>(stmtLst);
     whileStmt.whileStmtList = p;
     return whileStmt;
@@ -306,10 +306,10 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseCondExp
 
     // stop when left_brace is reached
     while (closure != 0) {
-        if (tokensQueue.front().getToken() == TokenType::LEFT_BRACE) {
+        if (isFrontQueueTokenType(tokensQueue, TokenType::LEFT_BRACE)) {
             closure++;
         }
-        else if (tokensQueue.front().getToken() == TokenType::RIGHT_BRACE) {
+        else if (isFrontQueueTokenType(tokensQueue, TokenType::RIGHT_BRACE))  {
             if (closure == 1) {
                 closure--;
                 // remove right_brace
@@ -320,23 +320,23 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseCondExp
                 closure--;
             }
         }
-        else if (tokensQueue.front().getToken() == TokenType::NAME) {
+        else if (isFrontQueueTokenType(tokensQueue, TokenType::NAME)) {
             result[0].push_back(tokensQueue.front().getId());
         }
-        else if ((tokensQueue.front().getToken() == TokenType::INTEGER) || (tokensQueue.front().getToken() == TokenType::DIGIT)) {
+        else if (isFrontQueueTokenType(tokensQueue, TokenType::INTEGER) || isFrontQueueTokenType(tokensQueue, TokenType::DIGIT)) {
             result[1].push_back(tokensQueue.front().getId());
         }
         // invalid symbols in condExpr
-        else if ((tokensQueue.front().getToken() == TokenType::SPECIALCHAR) ||
-            (tokensQueue.front().getToken() == TokenType::SEMICOLON) ||
-            (tokensQueue.front().getToken() == TokenType::LEFT_CURLY) ||
-            (tokensQueue.front().getToken() == TokenType::RIGHT_CURLY) ||
-            (tokensQueue.front().getToken() == TokenType::READ_KEYWORD) ||
-            (tokensQueue.front().getToken() == TokenType::PRINT_KEYWORD) ||
-            (tokensQueue.front().getToken() == TokenType::CALL_KEYWORD) ||
-            (tokensQueue.front().getToken() == TokenType::WHILE_KEYWORD) ||
-            (tokensQueue.front().getToken() == TokenType::IF_KEYWORD) ||
-            (tokensQueue.front().getToken() == TokenType::PROCEDURE_KEYWORD)) {
+        else if ((isFrontQueueTokenType(tokensQueue, TokenType::SPECIALCHAR)) ||
+            (isFrontQueueTokenType(tokensQueue, TokenType::SEMICOLON)) ||
+            (isFrontQueueTokenType(tokensQueue, TokenType::LEFT_CURLY)) ||
+            (isFrontQueueTokenType(tokensQueue, TokenType::RIGHT_CURLY)) ||
+            (isFrontQueueTokenType(tokensQueue, TokenType::READ_KEYWORD)) ||
+            (isFrontQueueTokenType(tokensQueue, TokenType::PRINT_KEYWORD)) ||
+            (isFrontQueueTokenType(tokensQueue, TokenType::CALL_KEYWORD)) ||
+            (isFrontQueueTokenType(tokensQueue, TokenType::WHILE_KEYWORD)) ||
+            (isFrontQueueTokenType(tokensQueue, TokenType::IF_KEYWORD)) ||
+            (isFrontQueueTokenType(tokensQueue, TokenType::PROCEDURE_KEYWORD))) {
             throw std::invalid_argument("Invalid symbol.");
         }
 
@@ -353,10 +353,10 @@ CondExpr ConcreteSyntaxWithValidation::parseCondExpr(std::queue<Token>& tokensQu
     std::queue<Token> condExprQueue;
     int closure = 1;
     while (closure != 0) {
-        if (tokensQueue.front().getToken() == TokenType::LEFT_BRACE) {
+        if (isFrontQueueTokenType(tokensQueue, TokenType::LEFT_BRACE)) {
             closure++;
         }
-        if (tokensQueue.front().getToken() == TokenType::RIGHT_BRACE) {
+        if (isFrontQueueTokenType(tokensQueue, TokenType::RIGHT_BRACE)) {
             if (closure == 1) {
                 closure--;
                 // remove right_brace
@@ -382,20 +382,20 @@ CondExpr ConcreteSyntaxWithValidation::parseCondExprRecursion(std::queue<Token>&
     std::queue<Token> relExprQueue;
     int closure = 0;
     while (!condExprQueue.empty()) {
-        if (condExprQueue.front().getToken() == TokenType::LEFT_BRACE) {
+        if (isFrontQueueTokenType(condExprQueue, TokenType::LEFT_BRACE)) {
             closure++;
             condExprQueue.pop();
             continue;
         }
-        if (condExprQueue.front().getToken() == TokenType::RIGHT_BRACE) {
+        if (isFrontQueueTokenType(condExprQueue, TokenType::RIGHT_BRACE)) {
             closure--;
             condExprQueue.pop();
             continue;
         }
-        if (condExprQueue.front().getToken() == TokenType::NOT) {
+        if (isFrontQueueTokenType(condExprQueue, TokenType::NOT)) {
             continue;
         }
-        if ((closure == 0) && ((condExprQueue.front().getToken() == TokenType::AND) || (condExprQueue.front().getToken() == TokenType::OR))) {
+        if ((closure == 0) && (isFrontQueueTokenType(condExprQueue, TokenType::AND)) || (isFrontQueueTokenType(condExprQueue, TokenType::OR))) {
             break;
         }
         relExprQueue.push(condExprQueue.front());
@@ -423,15 +423,15 @@ RelExpr ConcreteSyntaxWithValidation::parseRelExpr(std::queue<Token>& relExprQue
 
     // set rel_factor one
     while (!relExprQueue.empty()) {
-        if (relExprQueue.front().getToken() == TokenType::LEFT_BRACE) {
+        if (isFrontQueueTokenType(relExprQueue, TokenType::LEFT_BRACE)) {
             closure++;
         }
-        if (relExprQueue.front().getToken() == TokenType::RIGHT_BRACE) {
+        if (isFrontQueueTokenType(relExprQueue, TokenType::RIGHT_BRACE)) {
             closure--;
         }
-        if ((closure == 0) && ((relExprQueue.front().getToken() == TokenType::GREATER) || (relExprQueue.front().getToken() == TokenType::GEQ)
-            || (relExprQueue.front().getToken() == TokenType::LESSER) || (relExprQueue.front().getToken() == TokenType::LEQ)
-            || (relExprQueue.front().getToken() == TokenType::EQUAL) || (relExprQueue.front().getToken() == TokenType::NOT_EQUAL))) {
+        if ((closure == 0) && (isFrontQueueTokenType(relExprQueue, TokenType::GREATER)) || (isFrontQueueTokenType(relExprQueue, TokenType::GEQ))
+            || (isFrontQueueTokenType(relExprQueue, TokenType::LESSER)) || (isFrontQueueTokenType(relExprQueue, TokenType::LEQ))
+            || (isFrontQueueTokenType(relExprQueue, TokenType::EQUAL)) || (isFrontQueueTokenType(relExprQueue, TokenType::NOT_EQUAL))) {
             break;
         }
         relFactorOneQueue.push(relExprQueue.front());
@@ -444,15 +444,15 @@ RelExpr ConcreteSyntaxWithValidation::parseRelExpr(std::queue<Token>& relExprQue
 
     // set rel_factor two
     while (!relExprQueue.empty()) {
-        if (relExprQueue.front().getToken() == TokenType::LEFT_BRACE) {
+        if (isFrontQueueTokenType(relExprQueue, TokenType::LEFT_BRACE)) {
             closure++;
         }
-        if (relExprQueue.front().getToken() == TokenType::RIGHT_BRACE) {
+        if (isFrontQueueTokenType(relExprQueue, TokenType::RIGHT_BRACE)) {
             closure--;
         }
-        if ((closure == 0) && ((relExprQueue.front().getToken() == TokenType::GREATER) || (relExprQueue.front().getToken() == TokenType::GEQ)
-            || (relExprQueue.front().getToken() == TokenType::LESSER) || (relExprQueue.front().getToken() == TokenType::LEQ)
-            || (relExprQueue.front().getToken() == TokenType::EQUAL) || (relExprQueue.front().getToken() == TokenType::NOT_EQUAL))) {
+        if ((closure == 0) && (isFrontQueueTokenType(relExprQueue, TokenType::GREATER)) || (isFrontQueueTokenType(relExprQueue, TokenType::GEQ))
+            || (isFrontQueueTokenType(relExprQueue, TokenType::LESSER)) || (isFrontQueueTokenType(relExprQueue, TokenType::LEQ))
+            || (isFrontQueueTokenType(relExprQueue, TokenType::EQUAL)) || (isFrontQueueTokenType(relExprQueue, TokenType::NOT_EQUAL))) {
             break;
         }
         relFactorTwoQueue.push(relExprQueue.front());
@@ -478,12 +478,12 @@ RelFactor ConcreteSyntaxWithValidation::parseRelFactor(std::queue<Token>& relFac
         relFactor.setExpr(ep.parseExprRecursion(exprStack));
         relFactor.setType(FactorType::EXPR);
     }
-    else if (relFactorQueue.front().getToken() == TokenType::NAME) {
+    else if (isFrontQueueTokenType(relFactorQueue, TokenType::NAME)) {
         relFactor.setVarName(relFactorQueue.front());
         relFactor.setType(FactorType::VAR);
         relFactorQueue.pop();
     }
-    else if (relFactorQueue.front().getToken() == TokenType::INTEGER) {
+    else if (isFrontQueueTokenType(relFactorQueue, TokenType::INTEGER)) {
         relFactor.setConstValue(relFactorQueue.front());
         relFactor.setType(FactorType::CONST);
         relFactorQueue.pop();
@@ -506,12 +506,12 @@ Statement ConcreteSyntaxWithValidation::parseIf(std::queue<Token>& tokensQueue) 
 
     // parse condExpr
     // remove if_keyword
-    if (tokensQueue.front().getToken() != TokenType::IF_KEYWORD) {
+    if (!isFrontQueueTokenType(tokensQueue, TokenType::IF_KEYWORD)) {
         throw std::invalid_argument("Missing if keyword.");
     }
     tokensQueue.pop();
     // remove left_brace
-    if (tokensQueue.front().getToken() != TokenType::LEFT_BRACE) {
+    if (!isFrontQueueTokenType(tokensQueue, TokenType::LEFT_BRACE)) {
         throw std::invalid_argument("Missing left brace.");
     }
     tokensQueue.pop();
@@ -530,12 +530,12 @@ Statement ConcreteSyntaxWithValidation::parseIf(std::queue<Token>& tokensQueue) 
 
     // parse then stmtLst
     // remove then_keyword
-    if (tokensQueue.front().getToken() != TokenType::THEN_KEYWORD) {
+    if (!isFrontQueueTokenType(tokensQueue, TokenType::THEN_KEYWORD)) {
         throw std::invalid_argument("Missing then keyword.");
     }
     tokensQueue.pop();
     // remove left_curly
-    if (tokensQueue.front().getToken() != TokenType::LEFT_CURLY) {
+    if (!isFrontQueueTokenType(tokensQueue, TokenType::LEFT_CURLY)) {
         throw std::invalid_argument("Missing left curly.");
     }
     tokensQueue.pop();
@@ -548,18 +548,18 @@ Statement ConcreteSyntaxWithValidation::parseIf(std::queue<Token>& tokensQueue) 
         throw;
     }
     // set then stmtLst
-    stmtLst.SetContainerType(ContainerType::kifthen);
+    stmtLst.SetContainerType(ContainerType::IF_THEN_CONTAINER);
     std::shared_ptr<StmtLst> p1 = std::make_shared<StmtLst>(stmtLst);
     ifStmt.ifthenStmtList = p1;
 
     // parse else stmtLst
     // remove else_keyword
-    if (tokensQueue.front().getToken() != TokenType::ELSE_KEYWORD) {
+    if (!isFrontQueueTokenType(tokensQueue, TokenType::ELSE_KEYWORD)) {
         throw std::invalid_argument("Missing else keyword.");
     }
     tokensQueue.pop();
     // remove left_curly
-    if (tokensQueue.front().getToken() != TokenType::LEFT_CURLY) {
+    if (!isFrontQueueTokenType(tokensQueue, TokenType::LEFT_CURLY)) {
         throw std::invalid_argument("Missing left curly.");
     }
     tokensQueue.pop();
@@ -572,7 +572,7 @@ Statement ConcreteSyntaxWithValidation::parseIf(std::queue<Token>& tokensQueue) 
         throw;
     }
     // set else stmtLst
-    stmtLstElse.SetContainerType(ContainerType::kifelse);
+    stmtLstElse.SetContainerType(ContainerType::IF_ELSE_CONTAINER);
     std::shared_ptr<StmtLst> p2 = std::make_shared<StmtLst>(stmtLstElse);
     ifStmt.ifelseStmtList = p2;
 
@@ -591,13 +591,13 @@ Statement ConcreteSyntaxWithValidation::parseRead(std::queue<Token>& tokensQueue
     stmt_count++;
     readStmt.statementType = StatementType::READ_STMT;
     // remove read_keyword
-    if (tokensQueue.front().getToken() != TokenType::READ_KEYWORD) {
+    if (!isFrontQueueTokenType(tokensQueue, TokenType::READ_KEYWORD)) {
         throw std::invalid_argument("Missing read keyword.");
     }
     tokensQueue.pop();
     // Iteration 1 only passing vector of string
     std::vector<std::string> result;
-    if (tokensQueue.front().getToken() != TokenType::NAME) {
+    if (!isFrontQueueTokenType(tokensQueue, TokenType::NAME)) {
         throw std::invalid_argument("Missing variable name.");
     }
     result.push_back(tokensQueue.front().getId());
@@ -605,7 +605,7 @@ Statement ConcreteSyntaxWithValidation::parseRead(std::queue<Token>& tokensQueue
     // remove varName
     tokensQueue.pop();
     // remove semicolon
-    if (tokensQueue.front().getToken() != TokenType::SEMICOLON) {
+    if (!isFrontQueueTokenType(tokensQueue, TokenType::SEMICOLON)) {
         throw std::invalid_argument("Missing semicolon.");
     }
     tokensQueue.pop();
@@ -623,13 +623,13 @@ Statement ConcreteSyntaxWithValidation::parsePrint(std::queue<Token>& tokensQueu
     stmt_count++;
     printStmt.statementType = StatementType::PRINT_STMT;
     // remove print_keyword
-    if (tokensQueue.front().getToken() != TokenType::PRINT_KEYWORD) {
+    if (!isFrontQueueTokenType(tokensQueue, TokenType::PRINT_KEYWORD)) {
         throw std::invalid_argument("Missing print keyword.");
     }
     tokensQueue.pop();
     // Iteration 1 only passing vector of string
     std::vector<std::string> result;
-    if (tokensQueue.front().getToken() != TokenType::NAME) {
+    if (!isFrontQueueTokenType(tokensQueue, TokenType::NAME)) {
         throw std::invalid_argument("Missing variable name.");
     }
     result.push_back(tokensQueue.front().getId());
@@ -637,7 +637,7 @@ Statement ConcreteSyntaxWithValidation::parsePrint(std::queue<Token>& tokensQueu
     // remove varName
     tokensQueue.pop();
     // remove semicolon
-    if (tokensQueue.front().getToken() != TokenType::SEMICOLON) {
+    if (!isFrontQueueTokenType(tokensQueue, TokenType::SEMICOLON)) {
         throw std::invalid_argument("Missing semicolon.");
     }
     tokensQueue.pop();
@@ -666,3 +666,9 @@ Statement ConcreteSyntaxWithValidation::parseCall(std::queue<Token>& tokensQueue
     return callStmt;
 }
 // end for parsing CALL
+
+// Helper functions
+
+bool ConcreteSyntaxWithValidation::isFrontQueueTokenType(std::queue<Token>& tokensQueue, TokenType tokenType) {
+    return tokensQueue.front().getToken() == tokenType;
+}

@@ -73,14 +73,14 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 
     //populate container type (parent)
     switch (containerType) {
-    case ContainerType::kifthen:
-    case ContainerType::kifelse:
+    case ContainerType::IF_THEN_CONTAINER:
+    case ContainerType::IF_ELSE_CONTAINER:
         current_statement.ifStmtNo = containerNum;
         break;
-    case ContainerType::kwhile:
+    case ContainerType::WHILE_CONTAINER:
         current_statement.whileStmtNo = containerNum;
         break;
-    case ContainerType::kprocedure:
+    case ContainerType::PROCEDURE_CONTAINER:
         break;
     default:
         throw std::invalid_argument("no such container type");
