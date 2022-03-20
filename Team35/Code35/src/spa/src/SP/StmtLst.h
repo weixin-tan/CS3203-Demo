@@ -5,10 +5,10 @@
 #include "Statement.h"
 
 enum class ContainerType {
-    kprocedure,
-    kifthen,
-    kwhile,
-    kifelse
+    PROCEDURE_CONTAINER,
+    IF_THEN_CONTAINER,
+    WHILE_CONTAINER,
+    IF_ELSE_CONTAINER
 };
 
 class Statement;

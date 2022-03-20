@@ -59,7 +59,7 @@ Procedure ConcreteSyntaxWithValidation::parseProcedure(std::queue<Token>& tokens
     catch (const std::invalid_argument& e){
         throw;
     }
-    stmtLst.SetContainerType(ContainerType::kprocedure);
+    stmtLst.SetContainerType(ContainerType::PROCEDURE_CONTAINER);
     procedure.setStmtLst(stmtLst);
     procedure.setSize(stmt_count);
 
@@ -287,7 +287,7 @@ Statement ConcreteSyntaxWithValidation::parseWhile(std::queue<Token>& tokensQueu
     catch (const std::invalid_argument& e) {
         throw;
     }
-    stmtLst.SetContainerType(ContainerType::kwhile);
+    stmtLst.SetContainerType(ContainerType::WHILE_CONTAINER);
     std::shared_ptr<StmtLst> p = std::make_shared<StmtLst>(stmtLst);
     whileStmt.whileStmtList = p;
     return whileStmt;
@@ -511,7 +511,7 @@ Statement ConcreteSyntaxWithValidation::parseIf(std::queue<Token>& tokensQueue) 
     }
     tokensQueue.pop();
     // remove left_brace
-    if (!isFrontQueueTokenType(tokensQueue, TokenType::READ_KEYWORD)) {
+    if (!isFrontQueueTokenType(tokensQueue, TokenType::LEFT_BRACE)) {
         throw std::invalid_argument("Missing left brace.");
     }
     tokensQueue.pop();
@@ -548,7 +548,7 @@ Statement ConcreteSyntaxWithValidation::parseIf(std::queue<Token>& tokensQueue) 
         throw;
     }
     // set then stmtLst
-    stmtLst.SetContainerType(ContainerType::kifthen);
+    stmtLst.SetContainerType(ContainerType::IF_THEN_CONTAINER);
     std::shared_ptr<StmtLst> p1 = std::make_shared<StmtLst>(stmtLst);
     ifStmt.ifthenStmtList = p1;
 
@@ -572,7 +572,7 @@ Statement ConcreteSyntaxWithValidation::parseIf(std::queue<Token>& tokensQueue) 
         throw;
     }
     // set else stmtLst
-    stmtLstElse.SetContainerType(ContainerType::kifelse);
+    stmtLstElse.SetContainerType(ContainerType::IF_ELSE_CONTAINER);
     std::shared_ptr<StmtLst> p2 = std::make_shared<StmtLst>(stmtLstElse);
     ifStmt.ifelseStmtList = p2;
 

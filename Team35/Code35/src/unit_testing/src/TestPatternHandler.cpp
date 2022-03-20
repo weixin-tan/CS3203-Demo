@@ -102,15 +102,15 @@ TEST_CASE("Testing Right Side WILDCARD PATTERN Relationships") {
         expectedResult1.setValid(true);
         expectedResult1.setTwoSynEntities(std::pair<Entity, Entity>(whileSyn, varSyn));
         std::set<std::pair<ProgramElement, ProgramElement>> result1Elements;
-        result1Elements.insert(std::pair<ProgramElement, ProgramElement>(ProgramElement::createStatement(ElementType::kWhile, 6), ProgramElement::createVariable("z")));
-        result1Elements.insert(std::pair<ProgramElement, ProgramElement>(ProgramElement::createStatement(ElementType::kWhile, 6), ProgramElement::createVariable("x")));
+        result1Elements.insert(std::pair<ProgramElement, ProgramElement>(ProgramElement::createStatement(ElementType::kwhile, 6), ProgramElement::createVariable("z")));
+        result1Elements.insert(std::pair<ProgramElement, ProgramElement>(ProgramElement::createStatement(ElementType::kwhile, 6), ProgramElement::createVariable("x")));
         expectedResult1.setTwoSynSet(result1Elements);
 
         Result expectedResultWhile;
         expectedResultWhile.setValid(true);
         expectedResultWhile.setOneSynEntity(whileSyn);
         std::set<ProgramElement> resultWhileElements;
-        resultWhileElements.insert(ProgramElement::createStatement(ElementType::kWhile, 6));
+        resultWhileElements.insert(ProgramElement::createStatement(ElementType::kwhile, 6));
         expectedResultWhile.setOneSynSet(resultWhileElements);
 
         REQUIRE(result1 == expectedResult1);
