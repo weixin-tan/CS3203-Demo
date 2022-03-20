@@ -1,0 +1,415 @@
+1 - positive full exact match
+assign a;
+Select a pattern a ( _ , "v + x * y + z * t")
+1
+5000
+2 - negative exact match
+assign a;
+Select a pattern a ( _ , "v")
+
+5000
+3 - positive subexpression match
+assign a;
+Select a pattern a ( _ , _"v"_)
+1
+5000
+4 - positive subexpression match
+assign a;
+Select a pattern a ( _ , _"x*y"_)
+1
+5000
+5 - negative subexpression match
+assign a;
+Select a pattern a ( _ , _"v+x"_)
+
+5000
+6 - positive subexpression match
+assign a;
+Select a pattern a ( _ , _"v+x*y"_)
+1
+5000
+7 - negative subexpression match
+assign a;
+Select a pattern a ( _ , _"y+z*t"_) 	
+
+5000
+8 - negative subexpression match
+assign a;
+Select a pattern a ( _, _"x * y + z * t"_) 	
+
+5000
+9 - positive subexpression match
+assign a;
+Select a pattern a ( _ , _"v + x * y + z * t"_)
+1
+5000
+10 - positive subexpression match
+assign a;
+Select a pattern a (_, _"c*x"_)
+2
+5000
+10 - positive subexpression match
+assign a;
+Select a pattern a (_, _"a/y"_)
+2
+5000
+10 - positive subexpression match
+assign a;
+Select a pattern a (_, _"a/y+b"_)
+2
+5000
+10 - negative subexpression match
+assign a;
+Select a pattern a (_, _"a/y+b-c"_)
+
+5000
+10 - negative subexpression match
+assign a;
+Select a pattern a (_, _"y+b-c*x"_)
+
+5000
+10 - negative subexpression match
+assign a;
+Select a pattern a (_, _"y+b-c"_)
+
+5000
+10 - negative subexpression match
+assign a;
+Select a pattern a (_, _"b-c*x"_)
+
+5000
+10 - negative subexpression match
+assign a;
+Select a pattern a (_, _"y+b"_)
+
+5000
+10 - negative subexpression match
+assign a;
+Select a pattern a (_, _"b-c"_)
+
+5000
+12124123 - positive subexpression match
+assign a;
+Select a pattern a ("x", _"a+b"_)
+3
+5000
+10 - positive subexpression match
+assign a;
+Select a pattern a (_, _"c/d"_)
+3
+5000
+10 - positive subexpression match
+assign a;
+Select a pattern a (_, _"e*f"_)
+3
+5000
+10 - positive subexpression match
+assign a;
+Select a pattern a (_, _"e*f*g"_)
+3
+5000
+10 - positive subexpression match
+assign a;
+Select a pattern a (_, _"e*f*g/h"_)
+3
+5000
+10 - positive full subexpression match
+assign a;
+Select a pattern a (_, _"a+b+c/d-e*f*g/h+i/j-k*m"_)
+3
+5000
+10 - positive subexpression match
+assign a;
+Select a pattern a (_, _"a+b+c/d"_)
+3
+5000
+1012312312 - negative subexpression match
+assign a;
+Select a pattern a (_, _"c/d-e*f"_)
+
+5000
+10 - negative subexpression match
+assign a;
+Select a pattern a (_, _"g/h+i/j"_)
+
+5000
+10 - negative subexpression match
+assign a;
+Select a pattern a (_, _"i/j-k*m"_)
+
+5000
+10 - negative subexpression match
+assign a;
+Select a pattern a (_, _"b+c/d-e"_)
+
+5000
+10 - negative subexpression match
+assign a;
+Select a pattern a (_, _"c/d-e*f*g/h+i"_)
+
+5000
+10 - negative subexpression match
+assign a;
+Select a pattern a (_, _"g/h+i/j-k*m"_)
+
+5000
+10 - negative subexpression match
+assign a;
+Select a pattern a (_, _"a+b+c/d-e*f*g/h+i/j-k"_)
+
+5000
+10 - negative subexpression match
+assign a;
+Select a pattern a (_, _"b+c/d-e*f*g/h+i/j-k*m"_)
+
+5000
+10 - negative subexpression match
+assign a;
+Select a pattern a (_, _"h+i"_)
+
+5000
+10 - negative subexpression match
+assign a;
+Select a pattern a (_, _"b+c"_)
+
+5000
+99 - positive full exact match
+assign a;
+Select a pattern a ("twenty", "a*(b/(c+d-e)-f/g)/h*((i+j*k)-m+n)")
+4
+5000
+99 - positive full subexpression match
+assign a;
+Select a pattern a ("twenty", _"a*(b/(c+d-e)-f/g)/h*((i+j*k)-m+n)"_)
+4
+5000
+99 - positive subexpression match
+assign a;
+Select a pattern a ("twenty", _"a"_)
+4
+5000
+99 - positive subexpression match
+assign a;
+Select a pattern a ("twenty", _"c+d"_)
+4
+5000
+99 - positive subexpression match
+assign a;
+Select a pattern a ("twenty", _"c+d-e"_)
+4
+5000
+99 - positive subexpression match
+assign a;
+Select a pattern a ("twenty", _"b/(c+d-e)"_)
+4
+5000
+99 - positive subexpression match
+assign a;
+Select a pattern a ("twenty", _"a*(b/(c+d-e)-f/g)"_)
+4
+5000
+99 - positive subexpression match
+assign a;
+Select a pattern a ("twenty", _"i+j*k"_)
+4
+5000
+99 - positive subexpression match
+assign a;
+Select a pattern a ("twenty", _"(i+j*k)-m"_)
+4
+5000
+99 - positive subexpression match
+assign a;
+Select a pattern a ("twenty", _"((i+j*k)-m+n)"_)
+4
+5000
+99 - positive subexpression match
+assign a;
+Select a pattern a ("twenty", _"(i+j*k)-m+n"_)
+4
+5000
+99 - positive subexpression match
+assign a;
+Select a pattern a ("twenty", _"a*(b/(c+d-e)-f/g)/h"_)
+4
+5000
+99 - negative subexpression match
+assign a;
+Select a pattern a ("twenty", _"a*(b/(c+d-e))"_)
+
+5000
+99 - negative subexpression match
+assign a;
+Select a pattern a ("twenty", _"b/c+d-e-f/g"_)
+
+5000
+99 - negative subexpression match
+assign a;
+Select a pattern a ("twenty", _"(b/(c+d-e)-f/g)/h"_)
+
+5000
+99 - negative subexpression match
+assign a;
+Select a pattern a ("twenty", _"h*((i+j*k)-m+n)"_)
+
+5000
+99 - negative subexpression match
+assign a;
+Select a pattern a ("twenty", _"m+n"_)
+
+5000
+99 - negative subexpression match
+assign a;
+Select a pattern a ("twenty", _"i+j"_)
+
+5000
+99 - negative subexpression match
+assign a;
+Select a pattern a ("twenty", _"f/g/h"_)
+
+5000
+99 - negative subexpression match
+assign a;
+Select a pattern a ("twenty", _"h*(i+j*k)-m+n"_)
+
+5000
+99 - negative subexpression match
+assign a;
+Select a pattern a ("twenty", _"h*i+j*k-m+n"_)
+
+5000
+99 - negative subexpression match
+assign a;
+Select a pattern a ("twenty", _"(c+d-e)-f"_)
+
+5000
+99 - negative subexpression match
+assign a;
+Select a pattern a ("twenty", _"(c+d-e)-f/g"_)
+
+5000
+99 - negative subexpression match
+assign a;
+Select a pattern a ("twenty", _"h*i"_)
+
+5000
+54 - positive subexpression match
+assign a;
+Select a pattern a ("one", _"a+b"_)
+5
+5000
+54 - positive subexpression match
+assign a;
+Select a pattern a ("one", _"a+b+c"_)
+5
+5000
+54 - positive subexpression match
+assign a;
+Select a pattern a ("one", _"a+b+c+d"_)
+5
+5000
+54 - positive subexpression match
+assign a;
+Select a pattern a ("one", _" a+b+c+d+e+f+g+h"_)
+5
+5000
+54 - positive subexpression match
+assign a;
+Select a pattern a ("one", _"a+b+c+d+e+f+g+h+i+j"_)
+5
+5000
+54 - positive subexpression match
+assign a;
+Select a pattern a ("one", _"a+b+c+d+e+f+g+h+i+j+k+m+n"_)
+5
+5000
+54 - negative subexpression match
+assign a;
+Select a pattern a ("one", _"b+c"_)
+
+5000
+54 - negative subexpression match
+assign a;
+Select a pattern a ("one", _"b+c+d"_)
+
+5000
+54 - negative subexpression match
+assign a;
+Select a pattern a ("one", _"b+c+d+e+f+g+h"_)
+
+5000
+54 - negative subexpression match
+assign a;
+Select a pattern a ("one", _"b+c+d+e+f+g+h+i+j+k+m+n"_)
+
+5000
+54 - negative subexpression match
+assign a;
+Select a pattern a ("one", _"e+f+g"_)
+
+5000
+54 - negative subexpression match
+assign a;
+Select a pattern a ("one", _"e+f+g+h+i+j"_)
+
+5000
+54 - negative subexpression match
+assign a;
+Select a pattern a ("one", _"j+k+m+n"_)
+
+5000
+54 - negative subexpression match
+assign a;
+Select a pattern a ("one", _"m+n"_)
+
+5000
+66 - positive subexpression match
+assign a;
+Select a pattern a ("two", _"a*b"_)
+6
+5000
+66 - positive subexpression match
+assign a;
+Select a pattern a ("two", _"a*b*c*d"_)
+6
+5000
+66 - positive subexpression match
+assign a;
+Select a pattern a ("two", _"a*b*c*d*e*f*g"_)
+6
+5000
+66 - positive subexpression match
+assign a;
+Select a pattern a ("two", _"a*b*c*d*e*f*g*h*i*j"_)
+6
+5000
+66 - positive subexpression match
+assign a;
+Select a pattern a ("two", _"a*b*c*d*e*f*g*h*i*j*k*m*n"_)
+6
+5000
+66 - negative subexpression match
+assign a;
+Select a pattern a ("two", _"b*c"_)
+
+5000
+66 - negative subexpression match
+assign a;
+Select a pattern a ("two", _"m*n"_)
+
+5000
+66 - negative subexpression match
+assign a;
+Select a pattern a ("two", _"b*c*d*e*f"_)
+
+5000
+66 - negative subexpression match
+assign a;
+Select a pattern a ("two", _"i*j*k*m*n"_)
+
+5000
+66 - negative subexpression match
+assign a;
+Select a pattern a ("two", _"b*c*d*e*f*g*h*i*j*k*m*n"_)
+
+5000
