@@ -1,4 +1,4 @@
-#include "../QpsTypeToPkbTypeConvertor.h"
+#include "QpsTypeToPkbTypeConvertor.h"
 #include "SuchThatHandler.h"
 
 //Constructor

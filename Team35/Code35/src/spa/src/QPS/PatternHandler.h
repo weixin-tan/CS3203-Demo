@@ -3,7 +3,7 @@
 
 #include "../EP/ExpressionProcessor.h"
 #include "../PKB/PkbGetter.h"
-#include "../QpsTypeToPkbTypeConvertor.h"
+#include "QpsTypeToPkbTypeConvertor.h"
 #include "RelationshipRef.h"
 #include "Result.h"
 
