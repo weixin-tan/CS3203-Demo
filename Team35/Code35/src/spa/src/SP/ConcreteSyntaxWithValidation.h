@@ -27,11 +27,13 @@ public:
     RelFactor parseRelFactor(std::queue<Token>& relFactorQueue);
     Statement parseIf(std::queue<Token>& tokensQueue);
     Statement parseRead(std::queue<Token>& tokensQueue);
-    Statement parsePrint(std::queue<Token>& tokensQueue);
+    Statement parsePrint(std::queue<Token>& tokensQueue); 
     Statement parseCall(std::queue<Token>& tokensQueue);
 
     std::vector<std::vector<std::string>> parseExprString(std::queue<Token> tokensQueue);
     std::vector<std::vector<std::string>> parseCondExprString(std::queue<Token>& tokensQueue);
+
+    bool isFrontQueueTokenType(std::queue<Token>& tokensQueue, TokenType tokenType);
 };
 
 #endif
