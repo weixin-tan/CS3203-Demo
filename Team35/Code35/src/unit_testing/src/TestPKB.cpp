@@ -1509,17 +1509,17 @@ TEST_CASE("PATTERN RECOGNITION") {
         SECTION("get assignment given var and expression") {
             pairResult = pkb_getter->getAssignmentWithVariableGivenExpression(ep.stringToExpr("x"), ExpressionIndicator::PARTIAL_MATCH);
             pairExpected = {
-                std::make_pair(ProgramElement::createVariable("x"), tcData.stmt.at(1)),
-                std::make_pair(ProgramElement::createVariable("x"), tcData.stmt.at(7)),
-                std::make_pair(ProgramElement::createVariable("z"), tcData.stmt.at(8)),
-                std::make_pair(ProgramElement::createVariable("y"), tcData.stmt.at(9))
+                std::make_pair(tcData.stmt.at(1), ProgramElement::createVariable("x")),
+                std::make_pair(tcData.stmt.at(7), ProgramElement::createVariable("x")),
+                std::make_pair(tcData.stmt.at(8), ProgramElement::createVariable("z")),
+                std::make_pair(tcData.stmt.at(9), ProgramElement::createVariable("y"))
                     
             };
             REQUIRE(pairResult == pairExpected);
 
             pairResult = pkb_getter->getAssignmentWithVariableGivenExpression(ep.stringToExpr("x * y + 100"), ExpressionIndicator::FULL_MATCH);
             pairExpected = {
-                std::make_pair(ProgramElement::createVariable("x"), tcData.stmt.at(7))
+                std::make_pair(tcData.stmt.at(7), ProgramElement::createVariable("x"))
 
             };
             REQUIRE(pairResult == pairExpected);
@@ -1556,16 +1556,16 @@ TEST_CASE("PATTERN RECOGNITION") {
         SECTION("get if/while with variable") {
             pairResult = pkb_getter->getIfWithVariable();
             pairExpected = {
-                std::make_pair(ProgramElement::createVariable("y"), tcData.stmt.at(6)),
-                std::make_pair(ProgramElement::createVariable("z"), tcData.stmt.at(6))
+                std::make_pair(tcData.stmt.at(6), ProgramElement::createVariable("y")),
+                std::make_pair(tcData.stmt.at(6), ProgramElement::createVariable("z"))
 
             };
             REQUIRE(pairResult == pairExpected);
 
             pairResult = pkb_getter->getWhileWithVariable();
             pairExpected = {
-                std::make_pair(ProgramElement::createVariable("y"), tcData.stmt.at(4)),
-                std::make_pair(ProgramElement::createVariable("x"), tcData.stmt.at(4))
+                std::make_pair(tcData.stmt.at(4), ProgramElement::createVariable("y")),
+                std::make_pair(tcData.stmt.at(4), ProgramElement::createVariable("x"))
 
             };
             REQUIRE(pairResult == pairExpected);
