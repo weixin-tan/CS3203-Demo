@@ -4,7 +4,7 @@
 #include "../PKB/PkbGetter.h"
 #include "Result.h"
 #include "RelationshipRef.h"
-#include "../QpsTypeToPkbTypeConvertor.h"
+#include "QpsTypeToPkbTypeConvertor.h"
 
 class WithHandler {
 public:

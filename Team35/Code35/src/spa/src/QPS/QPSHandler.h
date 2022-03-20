@@ -4,7 +4,7 @@
 #include "Clause.h"
 #include "PatternHandler.h"
 #include "../PKB/PkbGetter.h"
-#include "../QpsTypeToPkbTypeConvertor.h"
+#include "QpsTypeToPkbTypeConvertor.h"
 #include "Result.h"
 #include "SuchThatHandler.h"
 #include "WithHandler.h"
