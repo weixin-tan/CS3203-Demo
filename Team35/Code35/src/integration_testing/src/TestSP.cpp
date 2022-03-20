@@ -20,7 +20,6 @@ TEST_CASE("SP round 0 iteration test") {
     std::stringstream buffer;
     buffer << t.rdbuf();
     ProcedureLst procedureLst;
-    /*
     std::queue<Token> tokenQueue = tokeniser.putInQueue(buffer.str());
     Procedure parsedProcedure = concrete.parseProcedure(tokenQueue);
     procedureLst.setNextProcedure(parsedProcedure);
@@ -61,10 +60,9 @@ TEST_CASE("SP round 0 iteration test") {
     REQUIRE(parsedStatement3.statementType == StatementType::ASSIGNMENT_STMT);
 
     //"Checking if the procedure is correct")
-    REQUIRE(parsedStatement1.procedureCalled == "f");
-    REQUIRE(parsedStatement2.procedureCalled == "f");
-    REQUIRE(parsedStatement3.procedureCalled == "f");
-    */
+    REQUIRE(parsedStatement1.procedureName == "f");
+    REQUIRE(parsedStatement2.procedureName == "f");
+    REQUIRE(parsedStatement3.procedureName == "f");
 }
 
 TEST_CASE("SP round 1 basic iteration test") {
@@ -81,7 +79,6 @@ TEST_CASE("SP round 1 basic iteration test") {
     buffer << t.rdbuf();
     ProcedureLst procedureLst;
     // Creating the queue of tokens
-    /*
     std::queue<Token> tokenQueue = tokeniser.putInQueue(buffer.str());
     Procedure parsedProcedure = concrete.parseProcedure(tokenQueue);
     procedureLst.setNextProcedure(parsedProcedure);
@@ -204,12 +201,12 @@ TEST_CASE("SP round 1 basic iteration test") {
     REQUIRE(parsedStatement8.constant[0] == "5");
     REQUIRE(parsedStatement9.constant[0] == "100");
     REQUIRE(parsedStatement10.constant[0] == "0");
-    */
 }
 
 
 
 TEST_CASE("SP Forbidden word") {
+    //SAMPLE SIMPLE SOURCE CODE
     //procedure main{
     //a = procedure;
     //a = if;
@@ -240,7 +237,6 @@ TEST_CASE("SP Forbidden word") {
     buffer << t.rdbuf();
     ProcedureLst procedureLst;
     // Creating the queue of tokens
-    /*
     std::queue<Token> tokenQueue = tokeniser.putInQueue(buffer.str());
     Procedure parsedProcedure = concrete.parseProcedure(tokenQueue);
     procedureLst.setNextProcedure(parsedProcedure);
@@ -287,10 +283,7 @@ TEST_CASE("SP Forbidden word") {
     REQUIRE(parsedStatement8.varUsed[0] == "if");
     REQUIRE(parsedStatement8.varUsed[1] == "read");
     REQUIRE(parsedStatement10.varUsed[0] == "read");
-    */
     
-
-
 }
 
 

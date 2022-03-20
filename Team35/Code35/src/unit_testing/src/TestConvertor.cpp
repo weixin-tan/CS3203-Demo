@@ -35,7 +35,7 @@ TEST_CASE("Case 1") {
     //place statements into statementlist
     stmtCont.setNextStmt(statement1);
     stmtCont.setNextStmt(statement2);
-    stmtCont.SetContainerType(ContainerType::kprocedure);
+    stmtCont.SetContainerType(ContainerType::PROCEDURE_CONTAINER);
 
     //Creating the procedure
     Procedure procedure1;
@@ -88,7 +88,7 @@ TEST_CASE("Case 1") {
     REQUIRE(parsedStatement2.statementType == StatementType::ASSIGNMENT_STMT);
 } 
 
-//
+// SIMPLE SOURCE CODE
     //procedure f {
 //  x = 5;  // 1
 //  y = x;  // 2
@@ -110,25 +110,25 @@ TEST_CASE("Case 2") {
     PKB pkb;
 
     StmtLst stmtCont;
-    stmtCont.SetContainerType(ContainerType::kprocedure);
+    stmtCont.SetContainerType(ContainerType::PROCEDURE_CONTAINER);
 
     //ifthenstmt list
     StmtLst ifThenStmtLst1;
-    ifThenStmtLst1.SetContainerType(ContainerType::kifthen);
+    ifThenStmtLst1.SetContainerType(ContainerType::IF_THEN_CONTAINER);
 
     ifThenStmtLst1.setNextStmt(Statement(7, StatementType::ASSIGNMENT_STMT, { "x" }, {}, {}, "f", { "100" }, nullptr, nullptr, nullptr));
     ifThenStmtLst1.setNextStmt(Statement(8, StatementType::ASSIGNMENT_STMT, { "z" }, {}, {}, "f", { "5" }, nullptr, nullptr, nullptr));
 
     //ifelsestmt list
     StmtLst ifElseStmtLst1;
-    ifElseStmtLst1.SetContainerType(ContainerType::kifelse);
+    ifElseStmtLst1.SetContainerType(ContainerType::IF_ELSE_CONTAINER);
 
     ifElseStmtLst1.setNextStmt(Statement(9, StatementType::ASSIGNMENT_STMT, { "y" }, {}, {}, "f", { "100" }, nullptr, nullptr, nullptr));
     ifElseStmtLst1.setNextStmt(Statement(10, StatementType::ASSIGNMENT_STMT, { "z" }, {}, {}, "f", { "0" }, nullptr, nullptr, nullptr));
 
     //while statement list
     StmtLst whileStmtLst1;
-    whileStmtLst1.SetContainerType(ContainerType::kwhile);
+    whileStmtLst1.SetContainerType(ContainerType::WHILE_CONTAINER);
 
     whileStmtLst1.setNextStmt(Statement(5, StatementType::READ_STMT, { "z" }, {}, {}, "f", {}, nullptr, nullptr, nullptr));
     std::shared_ptr<StmtLst> SP_ifThenStmtLst1 = std::make_shared<StmtLst>(ifThenStmtLst1);
@@ -276,7 +276,7 @@ TEST_CASE("Incorrect convertor statement type 1") {
     PKB pkb;
 
     StmtLst stmtCont;
-    stmtCont.SetContainerType(ContainerType::kprocedure);
+    stmtCont.SetContainerType(ContainerType::PROCEDURE_CONTAINER);
 
     stmtCont.setNextStmt(Statement(1, StatementType::ASSIGNMENT_STMT, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
     stmtCont.setNextStmt(Statement(2, StatementType::ASSIGNMENT_STMT, { "y" }, { "x" }, {}, "f", {}, nullptr, nullptr, nullptr));
@@ -305,7 +305,7 @@ TEST_CASE("Incorrect convertor statement type 2") {
     PKB pkb;
 
     StmtLst stmtCont;
-    stmtCont.SetContainerType(ContainerType::kprocedure);
+    stmtCont.SetContainerType(ContainerType::PROCEDURE_CONTAINER);
 
     stmtCont.setNextStmt(Statement(1, StatementType::ASSIGNMENT_STMT, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
     stmtCont.setNextStmt(Statement(2, StatementType::ASSIGNMENT_STMT, { "y" }, { "x" }, {}, "f", {}, nullptr, nullptr, nullptr));
@@ -334,11 +334,11 @@ TEST_CASE("Incorrect convertor statement type 3 - in nested container") {
     PKB pkb;
 
     StmtLst stmtCont;
-    stmtCont.SetContainerType(ContainerType::kprocedure);
+    stmtCont.SetContainerType(ContainerType::PROCEDURE_CONTAINER);
 
     //while statement list
     StmtLst whileStmtLst1;
-    whileStmtLst1.SetContainerType(ContainerType::kwhile);
+    whileStmtLst1.SetContainerType(ContainerType::WHILE_CONTAINER);
     whileStmtLst1.setNextStmt(Statement(4, StatementType::NONE_STMT, { "x" }, { "5" }, {}, "f", { "5" }, nullptr, nullptr, nullptr));
 
     std::shared_ptr<StmtLst> SP_whileStmtLst2 = std::make_shared<StmtLst>(whileStmtLst1);
