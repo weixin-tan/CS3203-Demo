@@ -707,7 +707,7 @@ TEST_CASE("advanced trippy queries") {
 
 TEST_CASE("debugging") {
     QueryProcessor qp = QueryProcessor();
-    string s1 = "assign a; Select a pattern a(_, _\"5\"_)";
+    string s1 = "assign a;Select a such that Uses (a, \"g\") with a.stmt# = 10";
     vector<Clause> c = qp.parsePQL(s1);
     /*
     if (c.empty()) {
