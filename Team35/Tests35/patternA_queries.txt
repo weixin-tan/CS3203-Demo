@@ -413,3 +413,83 @@ assign a;
 Select a pattern a ("two", _"b*c*d*e*f*g*h*i*j*k*m*n"_)
 
 5000
+6570334 - positive subexpression match
+assign a;
+Select a pattern a ("another", _"a/(b*c)"_)
+7
+5000
+6570334 - positive subexpression match
+assign a;
+Select a pattern a ("another", _"d*(e-f)"_)
+7
+5000
+6570334 - positive subexpression match
+assign a;
+Select a pattern a ("another", _"m/n"_)
+7
+5000
+6570334 - positive subexpression match
+assign a;
+Select a pattern a ("another", _"j+k"_)
+7
+5000
+6570334 - positive subexpression match
+assign a;
+Select a pattern a ("another", _"i*(j+k)"_)
+7
+5000
+6570334 - positive subexpression match
+assign a;
+Select a pattern a ("another", _"a/(b*c)+d*(e-f)"_)
+7
+5000
+6570334 - positive subexpression match
+assign a;
+Select a pattern a ("another", _"h-i*(j+k)-m/n"_)
+7
+5000
+6570334 - positive subexpression match
+assign a;
+Select a pattern a ("another", _"g/(h-i*(j+k)-m/n)"_)
+7
+5000
+6570321 - negative subexpression match
+assign a;
+Select a pattern a ("another", _"a/b*c"_)
+
+5000
+6570321 - negative subexpression match
+assign a;
+Select a pattern a ("another", _"(a/(b*c))"_)
+
+5000
+6570321 - negative subexpression match
+assign a;
+Select a pattern a ("another", _"d*e-f"_)
+
+5000
+6570321 - negative subexpression match
+assign a;
+Select a pattern a ("another", _"a/(b*c)+d"_)
+
+5000
+6570321 - negative subexpression match
+assign a;
+Select a pattern a ("another", _"f-g"_)
+
+5000
+6570321 - negative subexpression match
+assign a;
+Select a pattern a ("another", _"(j+k)-m/n"_)
+
+5000
+6570321 - negative subexpression match
+assign a;
+Select a pattern a ("another", _"(e-f)-g"_)
+
+5000
+6570321 - negative subexpression match
+assign a;
+Select a pattern a ("another", _"(h-i*((j+k))-m/n)"_)
+
+5000
