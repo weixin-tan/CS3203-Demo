@@ -1,0 +1,40 @@
+1 - Uses Modifies Follows
+assign a; print pn;
+Select a such that Uses (a, "b") and Modifies (a, "a") and Follows (a, pn)
+3
+5000
+2 - Uses Modifies Follows Uses Modifies
+assign a, a1;
+Select a such that Uses (a, "b") and Modifies (a, "a") and Follows (a, a1) and Uses (a1, "d") and Modifies (a1, "c")
+5
+5000
+3 - Uses Modifies Parent Next
+assign a; while w;
+Select a such that Uses (a, "d") and Modifies (a, "c") and Parent (w, a) and Next (a, w)
+8
+5000
+4 - Uses*8, single
+stmt s;
+Select s such that Uses (s, "a") and Uses (s, "b") and Uses (s, "c") and Uses (s, "d") and Uses (s, "e") and Uses (s, "f") and Uses (s, "g") and Uses (s, "h")
+9
+5000
+5 - large all the way
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Modifies (s, v1) and Next* (s, s1) and Uses (s1, v2) and Modifies (s1, v3) and Next* (s1, s2) and Uses (s2, v4) and Modifies (s2, v5)
+1, 2, 3, 5, 6, 7, 8
+5000
+6 - narrowing
+stmt s, s1, s2, ct; variable v, v1, v2, v3, v4, v5; call c; read r; print pn;
+Select s such that Uses (s, v) and Modifies (s, v1) and Parent (ct, s) and Next* (s, pn) and Next* (s, s1) and Next* (s1, r)
+8
+50000
+7 - single
+stmt s, s1, s2, ct; variable v, v1, v2, v3, v4, v5; call c; read r; print pn;
+Select s such that Uses (s, v) and Modifies (s1, v) and Follows* (s, r) and Next (s2, s) and Uses (s2, "d")
+9
+5000
+8 - Uses Modifies Follows Parent
+stmt s, s1, s2; variable v, v1;
+Select s such that Uses (s1, v) and Modifies (s1, v1) and Follows (s, s1) and Parent (s, s2)
+7
+5000

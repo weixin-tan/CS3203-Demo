@@ -1,0 +1,14 @@
+procedure main {
+	a = b;
+	c = e;
+	a = b;
+	print message;
+	a = b;
+	c = d;
+	while (index == 0) {
+		c = d;
+	}
+	x = a + b + c + d + e + f + g + h;
+	print message;
+	read input;
+}
