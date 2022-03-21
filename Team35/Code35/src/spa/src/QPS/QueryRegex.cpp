@@ -896,17 +896,17 @@ bool checkWith(const RelationshipRef& r) {
 }
 
 bool checkWithEntity(const Entity& e) {
-    if (e.eType == EntityType::PROCEDURE || e.eType == EntityType::CALL) {
-        return e.aType == EntityAttributeType::PROCNAME;
-    } else if (e.eType == EntityType::VARIABLE || e.eType == EntityType::READ || e.eType == EntityType::PRINT) {
-        return e.aType == EntityAttributeType::VARNAME;
-    } else if (e.eType == EntityType::CONSTANT) {
-        return e.aType == EntityAttributeType::VALUE;
-    } else if (e.eType == EntityType::STATEMENT || e.eType == EntityType::READ || e.eType == EntityType::PRINT ||
-            e.eType == EntityType::CALL || e.eType == EntityType::WHILE || e.eType == EntityType::IF ||
-            e.eType == EntityType::ASSIGNMENT) {
-        return e.aType == EntityAttributeType::STMT;
-    } else {
+    if (e.aType == EntityAttributeType::PROCNAME){
+        return e.eType == EntityType::PROCEDURE || e.eType == EntityType::CALL;
+    }else if (e.aType == EntityAttributeType::VARNAME){
+        return e.eType == EntityType::VARIABLE || e.eType == EntityType::READ || e.eType == EntityType::PRINT;
+    }else if (e.aType == EntityAttributeType::VALUE){
+        return e.eType == EntityType::CONSTANT;
+    }else if (e.aType == EntityAttributeType::STMT) {
+        return e.eType == EntityType::STATEMENT || e.eType == EntityType::READ || e.eType == EntityType::PRINT ||
+                e.eType == EntityType::CALL || e.eType == EntityType::WHILE || e.eType == EntityType::IF ||
+                e.eType == EntityType::ASSIGNMENT;
+    }else{
         return e.eType == EntityType::FIXED_STRING || e.eType == EntityType::FIXED_INTEGER;
     }
 }
