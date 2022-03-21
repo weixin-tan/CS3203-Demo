@@ -1,0 +1,40 @@
+1 - 
+assign a;
+Select a pattern a ("x", _) pattern a (_, "v + x * y + z * t")
+1
+5000
+2 - 
+assign a;
+Select a pattern a ("x", _) pattern a (_, _"z * t"_)
+1
+5000
+3 - 
+assign a;
+Select a pattern a ("twenty", _) pattern a (_, _)
+4
+5000
+4 - 
+assign a;
+Select a pattern a ("x", _) pattern a (_, _"b"_)
+2, 3
+5000
+5 - 
+assign a;
+Select a pattern a (_, _"b/(c+d-e)"_) pattern a (_, _"a*(b/(c+d-e)-f/g)"_)
+4
+5000
+6 - positive negative
+assign a;
+Select a pattern a (_, _"i+j*k"_) pattern a (_, _"b/c+d-e-f/g"_)
+
+5000
+7 - 
+assign a;
+Select a pattern a (_, _"a+b+c"_) pattern a (_, _" a+b+c+d+e+f+g+h"_)
+5
+5000
+8 - 
+assign a;
+Select a pattern a (_, _"m/n"_) pattern a (_, _"j+k"_)
+7
+5000
