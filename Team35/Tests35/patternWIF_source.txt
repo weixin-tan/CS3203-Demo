@@ -1,0 +1,26 @@
+procedure main {
+	while (1 < 2) {
+		print x;
+	}
+	while ((d > p) || (e < q) && (f == r) && !(g != s) || (h >= t) || (i <= u)) {
+		print x;
+	}
+	while ((length > breadth) || (rank < order) && (area == volume) && !(radius != diameter) || (argument >= modulus) || (width <= height)) {
+		print x;
+	}
+	if (1 < 2) then {
+		print x;
+	} else {
+		print x;
+	}
+	if ((d > p) || (e < q) && (f == r) && !(g != s) || (h >= t) || (i <= u)) then {
+		print x;
+	} else {
+		print x;
+	}
+	if ((length > breadth) || (rank < order) && (area == volume) && !(radius != diameter) || (argument >= modulus) || (width <= height)) then {
+		print x;
+	} else {
+		print x;
+	}
+}
