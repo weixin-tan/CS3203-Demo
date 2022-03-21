@@ -36,7 +36,7 @@ Select c with c.value = 3
 8 - constant.value
 constant c; stmt s;
 Select s such that Uses (s, c) with c.value = 3
-3
+
 5000
 9 - stmt.stmt#
 stmt s;
