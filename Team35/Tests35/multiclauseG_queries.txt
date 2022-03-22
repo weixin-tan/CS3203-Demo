@@ -1,0 +1,100 @@
+1 - 4 PDA
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select s such that Uses (s, "a") and Uses (s, "b") and Uses (s, "c") and Follows (c, s)
+22, 25, 50, 69
+5000
+2 - 4 PDA
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select s such that Uses (s, "b") and Modifies (s, "a") and Parent (s1, s) and Follows* (s, a)
+20, 30, 52
+5000
+3 - 4 PDA
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select s such that Follows (s, pn) and Follows (pn, s1) and Follows* (s, r) and Follows (pn, ifs)
+9
+5000
+4 - 4 PDA
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select s such that Follows (s, a) and Follows (a, r) and Follows (r, a1) and Follows (a1, pn)
+6
+5000
+5 - 4 PDA
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select s such that Next (s, w) and Next (w, r) and Next (r, a) and Next (a, s)
+38
+5000
+6 - 4 PDA
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select c such that Parent (ifs, c) and Follows (ifs, pn) and Uses (pn, "aa") and Follows (pn, a)
+24
+5000
+7 - 4 PDA
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select v such that Uses (28, v) and Uses (17, v) and Uses (s2, v) and Uses (a, v)
+g, h
+5000
+8 - 4 PDA
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select v such that Modifies (1, v) and Modifies (s1, v) and Modifies (s2, v) and Modifies (a, v)
+a
+50000
+9 - 4 PDA
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select ifs such that Parent (ifs, a) and Parent (ifs, ifs1) and Parent (ifs1, a1) and Parent (ifs1, ifs2)
+18
+5000
+10 - 4 PDA
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select s such that Parent (ifs, s1) and Parent (s1, s2) and Parent (s2, w) and Parent (w, s)
+54, 55, 58
+5000
+11 - 5 PDA
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select s such that Modifies (s, "e") and Follows* (s, pn) and Uses (pn, "e") and Follows (pn, ifs) and Modifies (ifs, "g")
+6, 7, 8, 9
+5000
+12 - 5 PDA
+stmt s, s1, s2, s3; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select v such that Uses (s, v) and Follows (s, s1) and Uses (s1, v) and Follows (s1, s2) and Uses (s2, v) and Follows (s2, s3)
+d, g, h
+5000
+13 - 5 PDA
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select s such that Parent (s, s1) and Parent (s1, s2) and Parent* (s, s2) and Parent* (s1, a) and Parent* (s2, a1)
+18, 48, 62
+5000
+14 - 5 PDA
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select a such that Uses (a, "b") and Follows (a, a1) and Follows* (a, pn) and Uses (pn, "message") and Follows* (pn, w)
+3, 4, 76, 78
+5000
+15 - 5 PDA
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select v such that Uses (a, v) and Next (c, a) and Next (a, w) and Modifies (a, "x") pattern a (_, _"g"_)
+a, b, c, d, e, f, g, h
+5000
+16 - 6 PDA
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select s such that Parent* (s, a) pattern a (_, _"a+b"_) such that Next (a, r) and Follows (s1, a) and Follows (w, s1) and Parent (ifs, w)
+18, 48, 50
+5000
+17 - 6 PDA
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select c such that Parent* (ifs, c) and Parent* (ifs, a) pattern a (_, _"g"_) such that Follows* (c, a1) and Parent (ifs, pn) and Uses (pn, "cc")
+21, 42, 51, 54
+5000
+18 - 7 PDA
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select s such that Uses (s, "b") and Parent* (s1, s) and Parent* (s1, s2) and Uses (s2, "i") and Follows (c, s2) and Next (s2, w) pattern w ("jjjj", _)
+20, 22, 25, 28, 30, 31, 34, 41, 45, 48, 50, 52, 60
+5000
+19 - 7 PDA
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select v such that Uses (17, v) and Uses (28, v) and Uses (37, v) and Uses (35, v) and Uses (25, v) and Uses (22, v) and Uses (18, v)
+g, h
+5000
+20 - 8 PDA
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select a such that Uses (a, "g") and Modifies (a, "x") pattern a (_, _"a+b+c+d"_) such that Parent (ifs, a) and Uses (ifs, "eee") and Parent (ifs1, ifs) and Uses (ifs1, "ee") and Parent (ifs2, ifs1)
+28
+5000
