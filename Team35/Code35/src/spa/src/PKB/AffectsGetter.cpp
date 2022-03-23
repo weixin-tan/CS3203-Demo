@@ -12,11 +12,14 @@ void AffectsGetter::dfsAffects(
     std::stack<int> stk;
     std::set<int> visited;
     stk.push(src);
+    bool isStart = true;
     while (!stk.empty()) {
         int curStmtNo = stk.top();
         stk.pop();
 
-        if (db->modifiesSTable.at(curStmtNo).count(var) == 1) continue;  // modifies, don't dfs further
+        ElementType stmtType = db->elementStmtTable.at(curStmtNo).elementType;
+        if (!isStart && ((stmtType != ElementType::WHILE) && (stmtType != ElementType::IF)) && db->modifiesSTable.at(curStmtNo).count(var) == 1) continue;  // modifies, don't dfs further
+        isStart = false;
         auto nextStmtNos = nextGraph.find(curStmtNo);
         if (nextStmtNos == nextGraph.end()) continue;
         for (int nextStmtNo : nextStmtNos->second) {
@@ -27,11 +30,11 @@ void AffectsGetter::dfsAffects(
         }
     }
     std::set<int> actualAffects;
-    for (int stmtNo : actualAffects)
+    for (int stmtNo : visited)
         if (db->elementStmtTable.at(stmtNo).elementType == ElementType::ASSIGNMENT
             && db->usesSTable.at(stmtNo).count(var) == 1)
             actualAffects.insert(stmtNo);
-    affectsGraph.insert({src, visited});
+    affectsGraph.insert({src, actualAffects});
 }
 
 void AffectsGetter::computeAndCacheAffects(int src) {
@@ -44,9 +47,11 @@ void AffectsGetter::computeAndCacheAffects(int src) {
 void AffectsGetter::computeAndCacheAffectsR(int src) {
     if (db->computedAffectsRSrc.count(src)) return;
     db->computedAffectsRSrc.insert(src);
-    for (int stmtNo : db->nextTTableR.at(src))
+    // TODO: change to computing from NextT, maybe have reference to NextT getter for this?
+    for (const auto& [stmtNo, _] : db->elementStmtTable)
         if (isRelationship(db->elementStmtTable.at(stmtNo), db->elementStmtTable.at(src)))
-            db->affectsTableR.at(src).insert(stmtNo);
+            db->affectsTableR[src].insert(stmtNo);
+    if (db->affectsTableR.count(src) == 0) db->affectsTableR.insert({src, {}});
 }
 
 bool AffectsGetter::isRelationship(const ProgramElement& leftSide, const ProgramElement& rightSide) {
@@ -57,8 +62,8 @@ bool AffectsGetter::isRelationship(const ProgramElement& leftSide, const Program
     if (db->usesSTable.at(rightSide.stmtNo).count(*db->modifiesSTable.at(leftSide.stmtNo).begin()) == 0)
         return false;
     computeAndCacheAffects(leftSide.stmtNo);
-    auto affects = db->affectsTable.find(leftSide.stmtNo);
-    return (affects != db->nextTTable.end() && affects->second.find(rightSide.stmtNo) != affects->second.end());
+    auto affects = db->affectsTable.at(leftSide.stmtNo);
+    return affects.count(rightSide.stmtNo) != 0;
 }
 
 // TODO: maybe optimise
@@ -66,6 +71,8 @@ std::set<ProgramElement> AffectsGetter::getLeftSide(const ProgramElement& rightS
     std::set<ProgramElement> result;
     if(!(isStatementType(rightSide.elementType) && typeToGet == ElementType::ASSIGNMENT))
         throw std::invalid_argument("Wrong element type for getLeftSide on Affects");
+    if (db->elementStmtTable.at(rightSide.stmtNo).elementType != ElementType::ASSIGNMENT)
+        return {};
     computeAndCacheAffectsR(rightSide.stmtNo);
     for (const int& affectsStmtNo : db->affectsTableR.at(rightSide.stmtNo))
         RelationshipGetter::insertStmtElement(result, db->elementStmtTable.at(affectsStmtNo), typeToGet);
