@@ -4,14 +4,14 @@
 
 ResultProcessor::ResultProcessor() = default;
 
-std::vector<ProgramElement> ResultProcessor::processResults(std::vector<Group> groups) {
+std::vector<ProgramElement> ResultProcessor::processResults(std::vector<ResultGroup> groups) {
     std::vector<Result> results;
 
-    Group group1 = groups[0];
+    ResultGroup group1 = groups[0];
     results.push_back(group1.getGroup()[0]);
 
     if (groups.size() != 1) {
-        Group group2 = groups[1];
+        ResultGroup group2 = groups[1];
         for (Result r : groups[1].getGroup()) {
             results.push_back(r);
         }

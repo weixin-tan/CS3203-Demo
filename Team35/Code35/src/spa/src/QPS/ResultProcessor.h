@@ -2,7 +2,7 @@
 #define SPA_RESULTPROCESSOR_H
 
 #include "Result.h"
-#include "Group.h"
+#include "ResultGroup.h"
 #include <vector>
 #include <iostream>
 #include "Result.h"
@@ -10,7 +10,7 @@
 class ResultProcessor {
 public:
     ResultProcessor();
-    std::vector<ProgramElement> processResults(std::vector<Group> groups);
+    std::vector<ProgramElement> processResults(std::vector<ResultGroup> groups);
     int getIndexEntity(std::vector<Entity> v, Entity e);
 
     std::vector<ProgramElement> setToVector(std::set<ProgramElement> s);

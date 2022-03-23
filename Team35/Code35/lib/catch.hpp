@@ -16629,7 +16629,7 @@ void ConsoleReporter::lazyPrintRunInfo() {
 }
 void ConsoleReporter::lazyPrintGroupInfo() {
     if (!currentGroupInfo->name.empty() && currentGroupInfo->groupsCounts > 1) {
-        printClosedHeader("Group: " + currentGroupInfo->name);
+        printClosedHeader("ResultGroup: " + currentGroupInfo->name);
         currentGroupInfo.used = true;
     }
 }
@@ -17290,7 +17290,7 @@ namespace Catch {
 
     void XmlReporter::testGroupStarting( GroupInfo const& groupInfo ) {
         StreamingReporterBase::testGroupStarting( groupInfo );
-        m_xml.startElement( "Group" )
+        m_xml.startElement( "ResultGroup" )
             .writeAttribute( "name", groupInfo.name );
     }
 

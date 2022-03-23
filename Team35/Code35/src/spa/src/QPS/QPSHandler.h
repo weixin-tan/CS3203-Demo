@@ -6,8 +6,11 @@
 #include "../PKB/PkbGetter.h"
 #include "QpsTypeToPkbTypeConvertor.h"
 #include "Result.h"
+#include "ResultGroup.h"
 #include "SuchThatHandler.h"
 #include "WithHandler.h"
+#include "RelationshipRefGroup.h"
+#include "GroupedClause.h"
 
 class QPSHandler {
 private:
@@ -20,8 +23,7 @@ private:
 
 public:
     explicit QPSHandler(PkbGetter* pg);
-    std::vector<Result> processClause(const std::vector<Clause>& clauses) const;
-
+    std::vector<ResultGroup> processClause(const GroupedClause& groupedClause) const;
 };
 
 #endif //SPA_QPSHANDLER_H
