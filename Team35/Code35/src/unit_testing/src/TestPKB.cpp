@@ -1432,7 +1432,7 @@ TEST_CASE("Compute Reverse") {
             {1, {"a", "b", "c"}}
     };
     std::map<std::string, std::set<int>> reverseMap;
-    DesignExtractor::computeReverse<int, std::string>(normalMap, reverseMap);
+    DesignExtractor::computeReverse<int, std::string>(normalMap, reverseMap, {"a", "b", "c"});
     REQUIRE(!reverseMap.empty());
 }
 
@@ -1513,7 +1513,7 @@ TEST_CASE("PATTERN RECOGNITION") {
                 std::make_pair(tcData.stmt.at(7), ProgramElement::createVariable("x")),
                 std::make_pair(tcData.stmt.at(8), ProgramElement::createVariable("z")),
                 std::make_pair(tcData.stmt.at(9), ProgramElement::createVariable("y"))
-                    
+
             };
             REQUIRE(pairResult == pairExpected);
 

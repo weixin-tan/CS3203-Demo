@@ -26,7 +26,7 @@ public:
     void extractNext(std::map<int, std::set<int>>& nextTable);
 
     template<typename U, typename V>
-    static void computeReverse(std::map<U, std::set<V>>& normalMap, std::map<V, std::set<U>>& reverseMap);
+    static void computeReverse(std::map<U, std::set<V>>& normalMap, std::map<V, std::set<U>>& reverseMap, const std::set<V>& fullRange);
 };
 
 #endif //SPA_TEAM35_CODE35_SRC_SPA_SRC_PKB_DESIGNEXTRACTOR_H_
