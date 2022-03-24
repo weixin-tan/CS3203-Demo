@@ -1,5 +1,6 @@
 #include "QPSHandler.h"
 
+
 QPSHandler::QPSHandler(PkbGetter* pg) {
     QPSHandler::pg = pg;
     QPSHandler::patternHandler = new PatternHandler(pg);
@@ -7,28 +8,39 @@ QPSHandler::QPSHandler(PkbGetter* pg) {
     QPSHandler::withHandler = new WithHandler(pg);
 }
 
-std::vector<Result> QPSHandler::processClause(const std::vector<Clause>& clauses) const {
-    std::vector<Result> results;
+std::vector<ResultGroup> QPSHandler::processClause(const GroupedClause& groupedClause) const {
+    std::vector<ResultGroup> resultGroups;
 
-    Clause c = clauses[0];
-    Entity entityToFind = c.entityToFindList.front(); // Only returning 1 entity is supported
-
-    Result noClauseResult = getNoClauseResult(entityToFind);
-    results.push_back(noClauseResult);
-
-    for (const auto& r : c.refList) {
-        Result result;
-        if (r.rType == RelationshipType::PATTERN) {
-            result = patternHandler->handlePattern(r);
-        } else if (r.rType == RelationshipType::WITH) {
-            result = withHandler->handleWith(r);
-        } else {
-            result = suchThatHandler->handleSuchThat(r);
-        }
-        results.push_back(result);
+    //variables to select in the first group
+    ResultGroup selectGroup = ResultGroup();
+    std::vector<Result> selectResultList;
+    Result noClauseResult;
+    for (const auto& entityToFind: groupedClause.entityToFindList){
+        noClauseResult = getNoClauseResult(entityToFind);
+        selectResultList.push_back(noClauseResult);
     }
+    selectGroup.setGroup(selectResultList);
+    resultGroups.push_back(selectGroup);
 
-    return results;
+    ResultGroup tempGroup;
+    Result tempResult;
+    for (const auto& group: groupedClause.relRefGroups){
+        std::vector<Result> results;
+        tempGroup = ResultGroup();
+        for (const auto& r : group.relRefGroup) {
+            if (r.rType == RelationshipType::PATTERN) {
+                tempResult = patternHandler->handlePattern(r);
+            } else if (r.rType == RelationshipType::WITH) {
+                tempResult = withHandler->handleWith(r);
+            } else {
+                tempResult = suchThatHandler->handleSuchThat(r);
+            }
+            results.push_back(tempResult);
+        }
+        tempGroup.setGroup(results);
+        resultGroups.push_back(tempGroup);
+    }
+    return resultGroups;
 }
 
 Result QPSHandler::getNoClauseResult(const Entity& entityToFind) const {
