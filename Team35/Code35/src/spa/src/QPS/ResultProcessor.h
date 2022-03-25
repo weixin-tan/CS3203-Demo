@@ -9,7 +9,7 @@
 
 class ResultProcessor {
 public:
-    std::vector<ProgramElement> processResults(std::vector<Group> groups);
+    std::vector<ProgramElement> processResults(std::vector<ResultGroup> groups);
 };
 
 #endif //SPA_RESULTPROCESSOR_H

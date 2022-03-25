@@ -13,7 +13,7 @@ Optimiser op = Optimiser();
 ResultProcessor rp = ResultProcessor();
 
 
-//SETUP:
+//SETUP: 
 //procedure f {
 //  x = 5;  // 1
 //  y = x;  // 2

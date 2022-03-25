@@ -1,7 +1,3 @@
-//
-// Created by Prerthan Munireternam on 14/03/2022.
-//
-
 #ifndef SPA_TABLE_H
 #define SPA_TABLE_H
 
