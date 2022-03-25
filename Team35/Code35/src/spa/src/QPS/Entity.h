@@ -20,6 +20,7 @@ public:
     bool equals(const Entity& e1);
     bool operator==(const Entity& e1) const;
     bool operator!=(const Entity& e1) const;
+    bool operator<(const Entity& e1) const;
 };
 
 #endif //SPA_ENTITY_H

@@ -38,4 +38,7 @@ bool Entity::operator!=(const Entity& e1) const {
 bool Entity::equals(const Entity& e1) {
     return eType == e1.eType && name == e1.name && aType == e1.aType;
 }
+bool Entity::operator<(const Entity& e1) const {
+    return name < e1.name;
+}
 
