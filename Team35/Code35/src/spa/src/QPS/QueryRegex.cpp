@@ -779,9 +779,10 @@ bool checkRelationshipRef(const RelationshipRef& r) {
         bool returnBool;
         if (r.rType == RelationshipType::FOLLOWS || r.rType == RelationshipType::FOLLOWS_T ||
                 r.rType == RelationshipType::PARENT || r.rType == RelationshipType::PARENT_T ||
-                r.rType == RelationshipType::NEXT || r.rType == RelationshipType::NEXT_T
-                || r.rType == RelationshipType::AFFECTS) {
-            returnBool = checkFollowsOrParentsOrNextOrAffects(r);
+                r.rType == RelationshipType::NEXT || r.rType == RelationshipType::NEXT_T) {
+            returnBool = checkFollowsOrParentsOrNext(r);
+        }else if(r.rType == RelationshipType::AFFECTS || r.rType == RelationshipType::AFFECTS_T){
+            returnBool = checkAffects(r);
         } else if (r.rType == RelationshipType::USES) {
             returnBool = checkUses(r);
         } else if (r.rType == RelationshipType::MODIFIES) {
@@ -811,10 +812,10 @@ bool checkEntityIsStmtRef(const Entity& e) {
             || e.eType == EntityType::WILDCARD;
 }
 
-bool checkFollowsOrParentsOrNextOrAffects(const RelationshipRef& r) {
-    bool leftSideBool = checkEntityIsStmtRef(r.leftEntity);
-    bool rightSideBool = checkEntityIsStmtRef(r.rightEntity);
-    return leftSideBool && rightSideBool;
+bool checkVariable(const Entity& e){
+    return e.eType == EntityType::FIXED_STRING
+            || e.eType == EntityType::VARIABLE
+            || e.eType == EntityType::WILDCARD;
 }
 
 bool checkUsesLeftSide(const Entity& e) {
@@ -830,14 +831,6 @@ bool checkUsesLeftSide(const Entity& e) {
             || e.eType == EntityType::WILDCARD;
 }
 
-bool checkUses(const RelationshipRef& r) {
-    bool leftSideBool = checkUsesLeftSide(r.leftEntity);
-    bool rightSideBool = r.rightEntity.eType == EntityType::FIXED_STRING
-            || r.rightEntity.eType == EntityType::VARIABLE
-            || r.rightEntity.eType == EntityType::WILDCARD;
-    return leftSideBool && rightSideBool;
-}
-
 bool checkModifiesLeftSide(const Entity& e) {
     return e.eType == EntityType::FIXED_INTEGER
             || e.eType == EntityType::FIXED_STRING
@@ -851,18 +844,34 @@ bool checkModifiesLeftSide(const Entity& e) {
             || e.eType == EntityType::WILDCARD;
 }
 
-bool checkModifies(const RelationshipRef& r) {
-    bool leftSideBool = checkModifiesLeftSide(r.leftEntity);
-    bool rightSideBool = r.rightEntity.eType == EntityType::FIXED_STRING
-            || r.rightEntity.eType == EntityType::VARIABLE
-            || r.rightEntity.eType == EntityType::WILDCARD;
-    return leftSideBool && rightSideBool;
-}
-
 bool checkCallsEntity(const Entity& e) {
     return e.eType == EntityType::FIXED_STRING
             || e.eType == EntityType::PROCEDURE
             || e.eType == EntityType::WILDCARD;
+}
+
+bool checkAssignments(const Entity& e){
+    return e.eType == EntityType::FIXED_INTEGER
+        || e.eType == EntityType::WILDCARD
+        || e.eType == EntityType::ASSIGNMENT;
+}
+
+bool checkFollowsOrParentsOrNext(const RelationshipRef& r) {
+    bool leftSideBool = checkEntityIsStmtRef(r.leftEntity);
+    bool rightSideBool = checkEntityIsStmtRef(r.rightEntity);
+    return leftSideBool && rightSideBool;
+}
+
+bool checkUses(const RelationshipRef& r) {
+    bool leftSideBool = checkUsesLeftSide(r.leftEntity);
+    bool rightSideBool = checkVariable(r.rightEntity) ;
+    return leftSideBool && rightSideBool;
+}
+
+bool checkModifies(const RelationshipRef& r) {
+    bool leftSideBool = checkModifiesLeftSide(r.leftEntity);
+    bool rightSideBool = checkVariable(r.rightEntity);
+    return leftSideBool && rightSideBool;
 }
 
 bool checkCalls(const RelationshipRef& r) {
@@ -871,19 +880,21 @@ bool checkCalls(const RelationshipRef& r) {
     return leftSideBool && rightSideBool;
 }
 
+bool checkAffects(const RelationshipRef& r){
+    bool leftSideBool = checkAssignments(r.leftEntity);
+    bool rightSideBool = checkAssignments(r.rightEntity);
+    return leftSideBool && rightSideBool;
+}
+
 bool checkPattern(const RelationshipRef& r) {
     if (r.AssignmentEntity.eType == EntityType::ASSIGNMENT) {
-        bool leftSideBool = r.leftEntity.eType == EntityType::FIXED_STRING
-                || r.leftEntity.eType == EntityType::VARIABLE
-                || r.leftEntity.eType == EntityType::WILDCARD;
+        bool leftSideBool = checkVariable(r.leftEntity);
         bool rightSideBool = r.rightEntity.eType == EntityType::WILDCARD ||
                 r.rightEntity.eType == EntityType::FIXED_STRING_WITHIN_WILDCARD ||
                 r.rightEntity.eType == EntityType::FIXED_STRING;
         return leftSideBool && rightSideBool;
     } else if (r.AssignmentEntity.eType == EntityType::WHILE || r.AssignmentEntity.eType == EntityType::IF) {
-        bool leftSideBool = r.leftEntity.eType == EntityType::FIXED_STRING
-                || r.leftEntity.eType == EntityType::WILDCARD
-                || r.leftEntity.eType == EntityType::VARIABLE;
+        bool leftSideBool = checkVariable(r.leftEntity);
         bool rightSideBool = r.rightEntity.eType == EntityType::WILDCARD;
         return leftSideBool && rightSideBool;
     } else {
@@ -922,6 +933,6 @@ bool checkVariableToSelect(const Entity& e) {
         if (e.eType == EntityType::BOOLEAN) {
             return e.aType == EntityAttributeType::NULL_ATTRIBUTE;
         }
-        return isIdent(e.name);
+        return true;
     }
 }
