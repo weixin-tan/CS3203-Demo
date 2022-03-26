@@ -8,9 +8,6 @@ Table::Table(Result r) {
     // in the result. 
     std::set<ProgramElement> oneSynSet = r.getOneSynSet();
     std::set<std::pair<ProgramElement, ProgramElement>> twoSynSet = r.getTwoSynSet();
-    // if both are empty, we add nothing. 
-    if (oneSynSet.empty() && twoSynSet.empty())
-        rows.insert({});
     // Else, we will just add them individually into the table. 
     // The set will have pair indicating the entity and the element itself
     if (!oneSynSet.empty())
@@ -26,12 +23,12 @@ Table::Table(Result r) {
                 }});
 }
 
-Table::Table(std::set<TableRow> rows) : rows(rows) {};
+Table::Table(std::unordered_set<TableRow, TableRowHash> rows) : rows(rows) {};
 
 
 // Combining tables together. 
 Table::Table(Table t1, Table t2) {
-    std::set<TableRow> result;
+    std::unordered_set<TableRow, TableRowHash> result;
     for (const auto row1 : t1.rows) {
         for (const auto row2 : t2.rows) {
             std::pair<bool, TableRow> newRow = TableRow::combineRow(row1, row2);

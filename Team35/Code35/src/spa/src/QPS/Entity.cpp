@@ -42,3 +42,8 @@ bool Entity::operator<(const Entity& e1) const {
     return name < e1.name;
 }
 
+// for use in mapping in TableRow. 
+size_t EntityHashFunction::operator()(const Entity& e) const
+{
+    return std::hash<std::string>{}(e.name) ^ (static_cast<std::size_t>(e.eType) * static_cast<std::size_t>(e.aType));
+}

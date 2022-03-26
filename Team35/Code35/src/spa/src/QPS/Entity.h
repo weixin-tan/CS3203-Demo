@@ -23,4 +23,13 @@ public:
     bool operator<(const Entity& e1) const;
 };
 
+class EntityHashFunction {
+public:
+
+    // Use sum of lengths of first and last names
+    // as hash function.
+    size_t operator()(const Entity& e) const;
+
+};
+
 #endif //SPA_ENTITY_H

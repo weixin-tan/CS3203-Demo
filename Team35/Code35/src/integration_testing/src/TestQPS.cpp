@@ -4,6 +4,9 @@
 #include "QPS/QueryProcessor.h"
 #include "QPS/QPSMainLogic.h"
 
+#include <chrono>
+
+
 PKB pkb = PKB();
 QPSMainLogic* qr = QPSMainLogic::getInstance(pkb.getGetter());
 QueryProcessor qp = QueryProcessor();
@@ -11,6 +14,8 @@ QPSHandler qh = QPSHandler(pkb.getGetter());
 PreOptimiser preOp = PreOptimiser();
 Optimiser op = Optimiser();
 ResultProcessor rp = ResultProcessor();
+
+
 
 
 //SETUP: 
@@ -209,6 +214,8 @@ std::vector<ParsedStatement> pStatements = {
 };
 
 TEST_CASE("Integration Testing") {
+    auto start = std::chrono::high_resolution_clock::now();
+
     std::vector<std::vector<ParsedStatement>> stmtlsts;
     std::vector<ParsedStatement> stmtlst;
 
@@ -598,5 +605,10 @@ TEST_CASE("Integration Testing") {
         REQUIRE(compareProgramElementLists(result9, expectedResult9));
         REQUIRE(compareProgramElementLists(result10, expectedResult10));
     }
+    
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    cout << "Time taken by function: "
+        << duration.count() << " microseconds" << endl;
 }
 
