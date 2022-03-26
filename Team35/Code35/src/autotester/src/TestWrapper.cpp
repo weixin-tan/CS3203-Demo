@@ -15,9 +15,7 @@ volatile bool AbstractWrapper::GlobalStop = false;
 AbstractWrapper::~AbstractWrapper() = default;
 
 // a default constructor
-TestWrapper::TestWrapper() : pkb(), sp(pkb.getSetter()) {
-	TestWrapper::qpsMainLogic = QPSMainLogic::getInstance(pkb.getGetter());
-}
+TestWrapper::TestWrapper() : pkb(), sp(pkb.getSetter()), qps(pkb.getGetter()) {}
 
 TestWrapper::~TestWrapper() = default;
 
@@ -28,7 +26,7 @@ void TestWrapper::parse(std::string filename) {
 
 // method to evaluating a query
 void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
-	std::list<std::string> resultStr = qpsMainLogic->parse(query);
+	std::list<std::string> resultStr = qps.parse(query);
 	for (const auto& s : resultStr) {
 		results.push_back(s);
 	}
