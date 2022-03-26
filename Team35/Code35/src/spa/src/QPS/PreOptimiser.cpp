@@ -62,22 +62,26 @@ void PreOptimiser::addRelationshipToAdjacencyList(int index1, std::unordered_map
     }
 }
 
-void PreOptimiser::traverseGraph(std::queue<int> *myQueue, std::vector<int> *visited, RelationshipRefGroup *tempGroup,
-                   const std::vector<RelationshipRef>& relationships, std::unordered_map<int, std::vector<int>> *adjacencyList){
-    while (!(*myQueue).empty()){
-        int currentNode = (*myQueue).front();
-        (*myQueue).pop();
+RelationshipRefGroup PreOptimiser::traverseGraph(std::vector<int> *visited, const std::vector<RelationshipRef>& relationships, std::unordered_map<int, std::vector<int>> *adjacencyList){
+    RelationshipRefGroup tempGroup;
+    std::queue<int> myQueue;
+    myQueue.push(notVisitedYet(*(visited)));
+
+    while (!myQueue.empty()){
+        int currentNode = myQueue.front();
+        myQueue.pop();
 
         if ((*visited)[currentNode] == 0){
             (*visited)[currentNode] = 1;
-            (*tempGroup).addRelRef(relationships[currentNode]);
-            for (auto neighbour: (*adjacencyList)[currentNode]){
+            tempGroup.addRelRef(relationships[currentNode]);
+            for (int neighbour: (*adjacencyList)[currentNode]){
                 if ((*visited)[neighbour] == 0){
-                    (*myQueue).push(neighbour);
+                    myQueue.push(neighbour);
                 }
             }
         }
     }
+    return tempGroup;
 }
 
 void PreOptimiser::sortGroup(RelationshipRefGroup *tempGroup){
@@ -111,10 +115,7 @@ std::vector<RelationshipRefGroup> PreOptimiser::groupRelationships(const std::ve
     }
 
     while (notVisitedYet(visited) != -1){
-        RelationshipRefGroup tempGroup;
-        std::queue<int> myQueue;
-        myQueue.push(notVisitedYet(visited));
-        traverseGraph(&myQueue, &visited, &tempGroup, relationships, &adjacencyList);
+        RelationshipRefGroup tempGroup = traverseGraph( &visited, relationships, &adjacencyList);
         sortGroup(&tempGroup);
         groups.push_back(tempGroup);
     }
