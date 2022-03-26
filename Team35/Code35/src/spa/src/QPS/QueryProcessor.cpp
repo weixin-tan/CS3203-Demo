@@ -269,7 +269,9 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
             if (isValid) {
                 RelationshipRef newRef = createRelationshipObject(relRefList, &entityMap);
                 isValid = isValid && checkRelationshipRef(newRef);
-                newClause.appendRef(newRef);
+                if (!checkAlreadyInClause(newClause.refList, newRef)){
+                    newClause.appendRef(newRef);
+                }
             }
         }
         if (!isValid) {
@@ -282,7 +284,9 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
             if (isValid) {
                 RelationshipRef newRef = createPatternObject(patternList, &entityMap);
                 isValid = isValid && checkRelationshipRef(newRef);
-                newClause.appendRef(newRef);
+                if (!checkAlreadyInClause(newClause.refList, newRef)){
+                    newClause.appendRef(newRef);
+                }
             }
         }
 
@@ -296,7 +300,9 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
             if (isValid) {
                 RelationshipRef newRef = createWithObject(clausesList, &entityMap);
                 isValid = isValid && checkRelationshipRef(newRef);
-                newClause.appendRef(newRef);
+                if (!checkAlreadyInClause(newClause.refList, newRef)){
+                    newClause.appendRef(newRef);
+                }
             }
         }
         if (!isValid) {

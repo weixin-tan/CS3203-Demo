@@ -936,3 +936,11 @@ bool checkVariableToSelect(const Entity& e) {
         return true;
     }
 }
+
+bool checkAlreadyInClause(const std::vector<RelationshipRef>& relationshipList, RelationshipRef newRelationship){
+    bool toReturn = false;
+    for (const RelationshipRef& rel: relationshipList){
+        toReturn = toReturn || newRelationship.equals(rel);
+    }
+    return toReturn;
+}
