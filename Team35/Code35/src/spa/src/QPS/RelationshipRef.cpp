@@ -41,7 +41,7 @@ bool RelationshipRef::operator==(const RelationshipRef& r1) const {
     && AssignmentEntity == r1.AssignmentEntity;
 }
 bool RelationshipRef::equals(const RelationshipRef& r1) {
-    if (rType == RelationshipType::WITH and r1.rType == RelationshipType::WITH){
+    if (rType == RelationshipType::WITH && r1.rType == RelationshipType::WITH){
         return (leftEntity.equals(r1.leftEntity)
                     && rightEntity.equals(r1.rightEntity)) ||
                 (leftEntity.equals(r1.rightEntity)
