@@ -24,5 +24,6 @@ private:
                                                       std::unordered_map<std::string, Entity>* entityMap);
     static RelationshipRef createWithObject(std::vector<std::string> clauseList,
                                             std::unordered_map<std::string, Entity>* entityMap);
+    static void addIfNotDuplicate(Clause *newClause, const RelationshipRef& newRef);
 };
 #endif //SPA_SRC_SPA_SRC_QUERYPROCESSOR_H_

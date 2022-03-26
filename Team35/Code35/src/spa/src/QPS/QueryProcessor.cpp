@@ -202,6 +202,12 @@ RelationshipRef QueryProcessor::createWithObject(std::vector<std::string> clause
     }
 }
 
+void QueryProcessor::addIfNotDuplicate(Clause *newClause, const RelationshipRef& newRef){
+    if (!checkAlreadyInClause((*newClause).refList, newRef)){
+        (*newClause).appendRef(newRef);
+    }
+}
+
 /**
  * Translate query string into a list of clauses
  * @param parsePQL query string
@@ -269,9 +275,7 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
             if (isValid) {
                 RelationshipRef newRef = createRelationshipObject(relRefList, &entityMap);
                 isValid = isValid && checkRelationshipRef(newRef);
-                if (!checkAlreadyInClause(newClause.refList, newRef)){
-                    newClause.appendRef(newRef);
-                }
+                addIfNotDuplicate(&newClause, newRef);
             }
         }
         if (!isValid) {
@@ -284,9 +288,7 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
             if (isValid) {
                 RelationshipRef newRef = createPatternObject(patternList, &entityMap);
                 isValid = isValid && checkRelationshipRef(newRef);
-                if (!checkAlreadyInClause(newClause.refList, newRef)){
-                    newClause.appendRef(newRef);
-                }
+                addIfNotDuplicate(&newClause, newRef);
             }
         }
 
@@ -300,9 +302,7 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
             if (isValid) {
                 RelationshipRef newRef = createWithObject(clausesList, &entityMap);
                 isValid = isValid && checkRelationshipRef(newRef);
-                if (!checkAlreadyInClause(newClause.refList, newRef)){
-                    newClause.appendRef(newRef);
-                }
+                addIfNotDuplicate(&newClause, newRef);
             }
         }
         if (!isValid) {
