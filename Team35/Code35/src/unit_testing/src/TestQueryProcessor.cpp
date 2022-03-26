@@ -737,7 +737,7 @@ TEST_CASE("remove duplicate relationships"){
 
 TEST_CASE("debugging") {
     QueryProcessor qp = QueryProcessor();
-    string s1 = "assign a, a1; variable v, v1; Select a pattern a (v, \"x+1\") and a (v, \"y+1\")";
+    string s1 = "procedure p, q; Select p.procName such that Calls (p, q)";
     vector<Clause> c = qp.parsePQL(s1);
     /*
     if (c.empty()) {
