@@ -20,9 +20,12 @@ private:
     static bool entityMatchRelRef(const Entity& e, const RelationshipRef& r);
     static bool checkRelationshipsConnected(const RelationshipRef& r1, const RelationshipRef& r2);
     static int notVisitedYet(std::vector<int> visited);
-    static void addRelationshipToAdjacencyList(int index1,
-                                               std::unordered_map<int, std::vector<int>>* adjacencyList,
-                                               const std::vector<RelationshipRef>& relationships);
+    static void addRelationshipIfConnected(int index1, int index2, const std::vector<RelationshipRef>& relationships,
+                                           std::unordered_map<int, std::vector<int>>* adjacencyList);
+
+    static void findConnectedRelationshipsAndAdd(int index1,
+                                                 std::unordered_map<int, std::vector<int>>* adjacencyList,
+                                                 const std::vector<RelationshipRef>& relationships);
     static RelationshipRefGroup traverseGraph(std::vector<int> *visited, const std::vector<RelationshipRef>& relationships,
                               std::unordered_map<int, std::vector<int>> *adjacencyList);
     void sortGroup(RelationshipRefGroup* tempGroup);

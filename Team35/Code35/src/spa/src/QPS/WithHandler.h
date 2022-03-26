@@ -15,6 +15,8 @@ private:
     PkbGetter* pg;
     static bool isFixedEntity(const Entity& entity);
     std::set<ProgramElement> getProgramElements(const EntityType& eType);
+    static void insertIfSameAttributeString(const std::string& stringA, const std::string& stringB, const ProgramElement& elementA, const ProgramElement& elementB,
+                                                  std::set<std::pair<ProgramElement, ProgramElement>> *toReturn);
     static std::set<ProgramElement> matchProgramElements(const std::set<ProgramElement>& setA,
                                                          const Entity& fixedEntity,
                                                          EntityAttributeType aType);

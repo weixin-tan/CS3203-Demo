@@ -47,17 +47,30 @@ int PreOptimiser::notVisitedYet(std::vector<int> visited){
     return -1;
 }
 
-void PreOptimiser::addRelationshipToAdjacencyList(int index1, std::unordered_map<int, std::vector<int>>* adjacencyList, const std::vector<RelationshipRef>& relationships){
+void PreOptimiser::addRelationshipIfConnected(int index1, int index2, const std::vector<RelationshipRef>& relationships, std::unordered_map<int, std::vector<int>>* adjacencyList){
+    if (index1 != index2){
+        RelationshipRef r1 = relationships[index1];
+        RelationshipRef r2 = relationships[index2];
+        if (checkRelationshipsConnected(r1, r2)){
+            (*adjacencyList)[index1].push_back(index2);
+        }
+    }
+}
+
+void PreOptimiser::findConnectedRelationshipsAndAdd(int index1, std::unordered_map<int, std::vector<int>>* adjacencyList, const std::vector<RelationshipRef>& relationships){
     (*adjacencyList)[index1] = {};
     RelationshipRef r1 = relationships[index1];
     RelationshipRef r2;
 
     for (int index2=0; index2<relationships.size(); index2++){
-        if (index1 != index2){
-            r2 = relationships[index2];
-            if (checkRelationshipsConnected(r1, r2)){
-                (*adjacencyList)[index1].push_back(index2);
-            }
+        addRelationshipIfConnected(index1, index2, relationships, adjacencyList);
+    }
+}
+
+void traverseNeighbours(std::unordered_map<int, std::vector<int>> *adjacencyList, int currentNode, std::vector<int> *visited, std::queue<int> *myQueue){
+    for (int neighbour: (*adjacencyList)[currentNode]){
+        if ((*visited)[neighbour] == 0){
+            (*myQueue).push(neighbour);
         }
     }
 }
@@ -70,15 +83,10 @@ RelationshipRefGroup PreOptimiser::traverseGraph(std::vector<int> *visited, cons
     while (!myQueue.empty()){
         int currentNode = myQueue.front();
         myQueue.pop();
-
         if ((*visited)[currentNode] == 0){
             (*visited)[currentNode] = 1;
             tempGroup.addRelRef(relationships[currentNode]);
-            for (int neighbour: (*adjacencyList)[currentNode]){
-                if ((*visited)[neighbour] == 0){
-                    myQueue.push(neighbour);
-                }
-            }
+            traverseNeighbours(adjacencyList, currentNode, visited, &myQueue);
         }
     }
     return tempGroup;
@@ -106,7 +114,7 @@ std::vector<RelationshipRefGroup> PreOptimiser::groupRelationships(const std::ve
             noSynonymGroup.addRelRef(r1);
             visited[index1] = 1;
         }else {
-            addRelationshipToAdjacencyList(index1, &adjacencyList, relationships);
+            findConnectedRelationshipsAndAdd(index1, &adjacencyList, relationships);
         }
     }
 
