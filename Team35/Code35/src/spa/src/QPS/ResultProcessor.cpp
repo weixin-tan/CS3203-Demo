@@ -41,6 +41,9 @@ Table ResultProcessor::buildIntermediateTable(std::vector<Result> results) {
 
     if (!results.empty()) {
         for (const auto& result : results) {
+            if (result.getValid() && result.getOneSynSet().empty() && result.getTwoSynSet().empty()) {
+                continue;
+            }
             intermediateTable = Table(intermediateTable, Table(result));
             if (intermediateTable.rows.empty()) {
                 break;

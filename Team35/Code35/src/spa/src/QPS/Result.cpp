@@ -48,7 +48,7 @@ Entity Result::getOneSynEntity() {
     return Result::oneSynEntity;
 }
 
-std::set<ProgramElement> Result::getOneSynSet() {
+std::set<ProgramElement> Result::getOneSynSet() const {
     return Result::oneSynSet;
 }
 
@@ -56,7 +56,7 @@ std::pair<Entity, Entity> Result::getTwoSynEntities() {
     return Result::twoSynEntities;
 }
 
-std::set<std::pair<ProgramElement, ProgramElement>> Result::getTwoSynSet() {
+std::set<std::pair<ProgramElement, ProgramElement>> Result::getTwoSynSet() const {
     return Result::twoSynSet;
 }
 

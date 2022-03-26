@@ -267,5 +267,17 @@ std::set<std::pair<ProgramElement, ProgramElement>>
 SuchThatHandler::handleTwoSyn(PkbRelationshipType r, Entity left, Entity right) {
     ElementType leftElemType = QpsTypeToPkbTypeConvertor::convertToPkbElement(left.eType);
     ElementType rightElemType = QpsTypeToPkbTypeConvertor::convertToPkbElement(right.eType);
-    return pg->getRelationshipPairs(r, leftElemType, rightElemType);
+    std::set<std::pair<ProgramElement, ProgramElement>> allPairs = pg->getRelationshipPairs(r,leftElemType,
+                                                                                            rightElemType);
+    if (left == right) {
+        std::set<std::pair<ProgramElement, ProgramElement>> resultPairs;
+        for (const auto& p : allPairs) {
+            if (p.first == p.second) {
+                resultPairs.insert(p);
+            }
+        }
+        return resultPairs;
+    } else {
+        return allPairs;
+    }
 }
