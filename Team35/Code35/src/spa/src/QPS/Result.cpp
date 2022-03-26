@@ -40,7 +40,7 @@ ResultType Result::getResultType() {
     return Result::type;
 }
 
-bool Result::getValid() {
+bool Result::getValid() const {
     return Result::valid;
 }
 

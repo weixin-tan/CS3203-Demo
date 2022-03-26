@@ -27,7 +27,7 @@ public:
     void setTwoSynSet(std::set<std::pair<ProgramElement, ProgramElement>> t);
 
     ResultType getResultType();
-    bool getValid();
+    bool getValid() const;
     Entity getOneSynEntity();
     std::set<ProgramElement> getOneSynSet();
     std::pair<Entity, Entity> getTwoSynEntities();
