@@ -5,7 +5,7 @@
 #include "QPS/QPSMainLogic.h"
 
 PKB pkb = PKB();
-QPSMainLogic* qr = QPSMainLogic::getInstance(pkb.getGetter());
+QPSMainLogic qr = QPSMainLogic(pkb.getGetter());
 QueryProcessor qp = QueryProcessor();
 QPSHandler qh = QPSHandler(pkb.getGetter());
 PreOptimiser preOp = PreOptimiser();
