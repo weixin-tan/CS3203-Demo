@@ -158,7 +158,7 @@ Entity QueryProcessor::createExpressionEntity(const std::string& s) {
 }
 
 Entity QueryProcessor::findRelationshipEntityWithAttribute(const std::string& s,
-                                                           std::unordered_map<std::string, Entity>* entityMap) {
+                                                           std::unordered_map<std::string, Entity> *entityMap) {
     std::vector<std::string> tempArr = splitString(s, ".");
     if (tempArr.size() == 1) {
         return findRelationshipEntity(s, entityMap);
@@ -199,6 +199,60 @@ RelationshipRef QueryProcessor::createWithObject(std::vector<std::string> clause
         return RelationshipRef(RelationshipType::NULL_RELATIONSHIP, leftEntity, rightEntity);
     } else {
         return RelationshipRef(rType, leftEntity, rightEntity);
+    }
+}
+
+void QueryProcessor::addIfNotDuplicate(Clause *newClause, const RelationshipRef& newRef){
+    if (!checkAlreadyInClause((*newClause).refList, newRef)){
+        (*newClause).appendRef(newRef);
+    }
+}
+
+void QueryProcessor::handleVariablesToFind(std::vector<std::string> *variablesToSelect, Clause *newClause, bool *isValid,
+                           std::unordered_map<std::string, Entity>* entityMap){
+    for (const auto& s : (*variablesToSelect)) {
+        Entity toAdd = findRelationshipEntityWithAttribute(s, entityMap);
+        (*newClause).appendEntityToFind(toAdd);
+        (*isValid) = (*isValid) && checkVariableToSelect(toAdd);
+    }
+}
+
+void QueryProcessor::handleSuchThat(std::vector<std::string> *SuchThatClauses, Clause *newClause, bool *isValid,
+                                    std::unordered_map<std::string, Entity>* entityMap){
+    for (const auto& s : *SuchThatClauses) {
+        std::vector<std::string> relRefList = extractItemsInBrackets(s);
+        (*isValid) = (*isValid) && checkRelRefList(relRefList);
+        if ((*isValid)) {
+            RelationshipRef newRef = createRelationshipObject(relRefList, entityMap);
+            (*isValid) = (*isValid) && checkRelationshipRef(newRef);
+            addIfNotDuplicate(newClause, newRef);
+        }
+    }
+}
+
+void QueryProcessor::handlePattern(std::vector<std::string> *PatternClauses, Clause *newClause, bool *isValid,
+                                    std::unordered_map<std::string, Entity>* entityMap){
+    for (const auto& s : *PatternClauses) {
+        std::vector<std::string> patternList = extractPatternBrackets(s);
+        (*isValid) = (*isValid) && checkPatternList(patternList, entityMap);
+        if ((*isValid)) {
+            RelationshipRef newRef = createPatternObject(patternList, entityMap);
+            (*isValid) = (*isValid) && checkRelationshipRef(newRef);
+            addIfNotDuplicate(newClause, newRef);
+        }
+    }
+}
+
+void QueryProcessor::handleWith(std::vector<std::string> *WithClauses, Clause *newClause, bool *isValid,
+                                   std::unordered_map<std::string, Entity>* entityMap){
+    for (const auto& s : *WithClauses) {
+        std::vector<std::string> clausesList = splitStringBySpaces(s);
+        (*isValid) = (*isValid) && clausesList.size() == 2;
+        if ((*isValid)) {
+            RelationshipRef newRef = createWithObject(clausesList, entityMap);
+            (*isValid) = (*isValid)&& checkRelationshipRef(newRef);
+            addIfNotDuplicate(newClause, newRef);
+        }
     }
 }
 
@@ -253,52 +307,27 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
         if (!isValid) {
             break;
         }
-        for (const auto& s : variablesToSelect) {
-            Entity toAdd = findRelationshipEntityWithAttribute(s, &entityMap);
-            newClause.appendEntityToFind(toAdd);
-            isValid = isValid && checkVariableToSelect(toAdd);
-        }
+
+        handleVariablesToFind(&variablesToSelect, &newClause, &isValid,&entityMap);
 
         if (!isValid) {
             break;
         }
 
-        for (const auto& s : SuchThatClauses) {
-            std::vector<std::string> relRefList = extractItemsInBrackets(s);
-            isValid = isValid && checkRelRefList(relRefList);
-            if (isValid) {
-                RelationshipRef newRef = createRelationshipObject(relRefList, &entityMap);
-                isValid = isValid && checkRelationshipRef(newRef);
-                newClause.appendRef(newRef);
-            }
-        }
-        if (!isValid) {
-            break;
-        }
-
-        for (const auto& s : PatternClauses) {
-            std::vector<std::string> patternList = extractPatternBrackets(s);
-            isValid = isValid && checkPatternList(patternList, &entityMap);
-            if (isValid) {
-                RelationshipRef newRef = createPatternObject(patternList, &entityMap);
-                isValid = isValid && checkRelationshipRef(newRef);
-                newClause.appendRef(newRef);
-            }
-        }
+        handleSuchThat(&SuchThatClauses, &newClause, &isValid, &entityMap);
 
         if (!isValid) {
             break;
         }
 
-        for (const auto& s : WithClauses) {
-            std::vector<std::string> clausesList = splitStringBySpaces(s);
-            isValid = isValid && clausesList.size() == 2;
-            if (isValid) {
-                RelationshipRef newRef = createWithObject(clausesList, &entityMap);
-                isValid = isValid && checkRelationshipRef(newRef);
-                newClause.appendRef(newRef);
-            }
+        handlePattern(&PatternClauses, &newClause, &isValid, &entityMap);
+
+        if (!isValid) {
+            break;
         }
+
+        handleWith(&WithClauses, &newClause, &isValid, &entityMap);
+
         if (!isValid) {
             break;
         }

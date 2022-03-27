@@ -25,6 +25,7 @@ bool isSelect(const std::string& s);
 bool isPattern(const std::string& s);
 bool isWith(const std::string& s);
 bool existSuchThat(const std::string& s);
+bool checkListIsIdent(std::vector<std::string> *sArr);
 
 bool checkDesignEntitySynonymsList(std::vector<std::string> sArr);
 bool checkRelRefList(std::vector<std::string> s);
@@ -42,6 +43,7 @@ std::string removeSuchThat(const std::string& s);
 std::string removePattern(const std::string& s);
 std::string removeWith(const std::string& s);
 
+long newPatternPosition(long temp, long patternPosition, long commandWordLength);
 long findClauseStartPosition(const std::string& s, const std::string& commandWord, const std::string& original);
 long findPatternClause(const std::string& s);
 long findWithClause(const std::string& s);
@@ -69,10 +71,23 @@ std::vector<std::string> splitDeclarationAndSelect(const std::string& s);
 std::vector<std::vector<std::string>> extractSelectAndDeclarationStatements(const std::string& s);
 std::vector<std::string> extractDesignEntityAndSynonyms(const std::string& s);
 
+enum class lastClauseType {
+    None,
+    SuchThat,
+    Pattern,
+    With
+};
+
 std::vector<std::string> splitVariablesAndClauses(const std::string& s);
 std::vector<std::string> extractWithClauses(const std::string& s);
+void joinWordToPhrases(const std::string& stmt, std::vector<std::string> *wordsList, int* count);
+void splitWithAndOtherClauses(const std::string& stmt, std::vector<std::string> *returnList);
 std::vector<std::string> splitSuchThatPatternWithClauses(const std::string& s);
 std::vector<std::string> extractVariablesToSelect(const std::string& s);
+void decideWhichListToPush(const std::string& stmt, lastClauseType *lastType,
+                           std::vector<std::string> *suchThatList,
+                           std::vector<std::string> *patternList,
+                           std::vector<std::string> *withList);
 std::vector<std::vector<std::string>> extractClauses(const std::string& s);
 
 std::vector<std::string> extractItemsInBrackets(const std::string& s);
@@ -96,5 +111,7 @@ bool checkPattern(const RelationshipRef& r);
 bool checkWith(const RelationshipRef& r);
 bool checkWithEntity(const Entity& e);
 bool checkVariableToSelect(const Entity& e);
+
+bool checkAlreadyInClause(const std::vector<RelationshipRef>& relationshipList, RelationshipRef newRelationship);
 
 #endif //SPA_SRC_SPA_SRC_QUERYREGEX_H_

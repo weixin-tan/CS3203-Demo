@@ -35,10 +35,21 @@ std::string RelationshipRef::toString() {
     return buffer.str();
 }
 bool RelationshipRef::operator==(const RelationshipRef& r1) const {
-    return rType == r1.rType && leftEntity == r1.leftEntity && rightEntity == r1.rightEntity
-            && AssignmentEntity == r1.AssignmentEntity;
+    return rType == r1.rType
+    && leftEntity == r1.leftEntity
+    && rightEntity == r1.rightEntity
+    && AssignmentEntity == r1.AssignmentEntity;
 }
 bool RelationshipRef::equals(const RelationshipRef& r1) {
-    return rType == r1.rType && leftEntity.equals(r1.leftEntity) && rightEntity.equals(rightEntity)
-            && AssignmentEntity.equals(r1.AssignmentEntity);
+    if (rType == RelationshipType::WITH && r1.rType == RelationshipType::WITH){
+        return (leftEntity.equals(r1.leftEntity)
+                    && rightEntity.equals(r1.rightEntity)) ||
+                (leftEntity.equals(r1.rightEntity)
+                    && rightEntity.equals(r1.leftEntity));
+    }else{
+        return rType == r1.rType
+        && leftEntity.equals(r1.leftEntity)
+        && rightEntity.equals(r1.rightEntity)
+        && AssignmentEntity.equals(r1.AssignmentEntity);
+    }
 }
