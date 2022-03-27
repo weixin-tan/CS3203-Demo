@@ -4,18 +4,18 @@
 FormattedResult ResultProcessor::processResults(std::vector<ResultGroup> groups) {
     FormattedResult result;
     std::vector<Result> noClauseResults = groups[0].getGroup();
-
+    // Handle invalid results in NoClauseResults
     for (const auto& r : noClauseResults) {
         if (!r.getValid()) {
             return handleInvalidResult(r);
         }
     }
-
+    // Handle cases with zero clauses
     groups.erase(groups.begin());
     if (groups.empty()) {
         return handleZeroClause(noClauseResults);
     }
-
+    // Build all intermediate tables
     std::vector<Table> intermediateTables;
     for (const auto& group : groups) {
         std::vector<Result> results = group.getGroup();
@@ -29,8 +29,8 @@ FormattedResult ResultProcessor::processResults(std::vector<ResultGroup> groups)
     if (intermediateTables.empty()) {
         return handleInvalidResult(noClauseResults[0]);
     }
-
-    std::set<Entity> entitiesToReturn = extractEntities(noClauseResults);
+    // Extract only the necessary tables
+    std::set<Entity> entitiesToReturn = extractEntitySet(noClauseResults);
     std::vector<Table> necessaryTables;
     for (const auto& table : intermediateTables) {
         TableRow firstRow = *table.rows.begin();
@@ -42,7 +42,7 @@ FormattedResult ResultProcessor::processResults(std::vector<ResultGroup> groups)
         }
         necessaryTables.push_back(table.extractColumns(entities));
     }
-
+    // Get FormattedResult
     if (necessaryTables.empty()) {
         return handleZeroClause(noClauseResults);
     } else {
@@ -51,10 +51,13 @@ FormattedResult ResultProcessor::processResults(std::vector<ResultGroup> groups)
             result.setResultType(FormattedResultType::BOOLEAN);
             return result;
         }
+
         Table finalTable = buildFinalTable(necessaryTables);
         std::vector<Entity> finalTableEntities = extractTableEntities(finalTable);
-        if (finalTableEntities.size() == entitiesToReturn.size()) {
-            return extractTableInformation(finalTable);
+        std::vector<Entity> finalEntities = extractOrderedEntities(noClauseResults);
+
+        if (finalTableEntities.size() == finalEntities.size()) {
+            return extractTableInformation(finalEntities, finalTable);
         }
         std::set<Entity> missingEntities;
         for (const auto& e : finalTableEntities) {
@@ -71,7 +74,7 @@ FormattedResult ResultProcessor::processResults(std::vector<ResultGroup> groups)
         for (const auto& r : missingResults) {
             finalTable = Table(finalTable, Table(r));
         }
-        return extractTableInformation(finalTable);
+        return extractTableInformation(finalEntities, finalTable);
     }
 }
 
@@ -107,7 +110,7 @@ Table ResultProcessor::buildFinalTable(std::vector<Table> tables) {
     return finalTable;
 }
 
-std::set<Entity> ResultProcessor::extractEntities(std::vector<Result> resultList) {
+std::set<Entity> ResultProcessor::extractEntitySet(std::vector<Result> resultList) {
     std::set<Entity> entityList;
     for (const auto& r : resultList) {
         entityList.insert(r.getOneSynEntity());
@@ -134,6 +137,7 @@ FormattedResult ResultProcessor::handleZeroClause(std::vector<Result> resultList
         return formattedResult;
     }
 
+    std::vector<Entity> noClauseEntities = extractOrderedEntities(resultList);
     Table table = Table(resultList[0]);
     resultList.erase(resultList.begin());
     if (!resultList.empty()) {
@@ -141,12 +145,10 @@ FormattedResult ResultProcessor::handleZeroClause(std::vector<Result> resultList
             table = Table(table, Table(r));
         }
     }
-    return extractTableInformation(table);
+    return extractTableInformation(noClauseEntities, table);
 }
 
-FormattedResult ResultProcessor::extractTableInformation(Table table) {
-    std::vector<Entity> entities = extractTableEntities(table);
-
+FormattedResult ResultProcessor::extractTableInformation(std::vector<Entity> entities, Table table) {
     std::vector<std::vector<ProgramElement>> programElementLists;
     for (const auto& row : table.rows) {
         for (int i = 0; i < entities.size(); i++) {
@@ -171,6 +173,14 @@ std::vector<Entity> ResultProcessor::extractTableEntities(Table table) {
     TableRow firstRow = *table.rows.begin();
     for (const auto& r : firstRow.row) {
         entities.push_back(r.first);
+    }
+    return entities;
+}
+
+std::vector<Entity> ResultProcessor::extractOrderedEntities(std::vector<Result> results) {
+    std::vector<Entity> entities;
+    for (const auto& r : results) {
+        entities.push_back(r.getOneSynEntity());
     }
     return entities;
 }
