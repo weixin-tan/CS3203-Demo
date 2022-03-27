@@ -19,6 +19,7 @@
 #include "../EP/ExpressionProcessor.h"
 #include "../EP/ExpressionIndicator.h"
 #include "NextTGetter.h"
+#include "AffectsGetter.h"
 
 class PkbGetter {
 private:
@@ -33,6 +34,7 @@ private:
     CallsTGetter callsTGetter;
     NextGetter nextGetter;
     NextTGetter nextTGetter;
+    AffectsGetter affectsGetter;
     std::map<PkbRelationshipType, RelationshipGetter*> relationshipGetterMap;
 
     ExpressionProcessor expressionProcessor;

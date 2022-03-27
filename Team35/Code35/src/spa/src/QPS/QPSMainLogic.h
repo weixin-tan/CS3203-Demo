@@ -9,11 +9,12 @@
 #include "Result.h"
 #include "ResultFormatter.h"
 #include "ResultProcessor.h"
+#include "PreOptimiser.h"
 
 class QPSMainLogic {
 public:
     static QPSMainLogic* getInstance(PkbGetter* pg); // Static access method
-    std::list<std::string> parse(std::string query);
+    std::list<std::string> parse(const std::string& query);
 
 private:
     explicit QPSMainLogic(PkbGetter* pg); // Make constructor private
@@ -25,12 +26,14 @@ private:
     Optimiser* optimiser;
     ResultProcessor* resultProcessor;
     ResultFormatter* resultFormatter;
+    PreOptimiser* preOptimiser;
 
-    std::vector<Clause> callParser(std::string query);
-    std::vector<Result> callHandler(std::vector<Clause> clauses);
-    std::vector<Group> callOptimiser(std::vector<Result> results);
-    std::vector<ProgramElement> callProcessor(std::vector<Group> groups);
-    std::list<std::string> callFormatter(std::vector<ProgramElement> result);
+    std::vector<Clause> callParser(const std::string& query);
+    std::vector<ResultGroup> callHandler(const GroupedClause& groupedClause);
+    std::vector<ResultGroup> callPostOptimiser(const std::vector<ResultGroup>& resultsGroups) ;
+    std::vector<ProgramElement> callProcessor(const std::vector<ResultGroup>& groups);
+    std::list<std::string> callFormatter(const std::vector<ProgramElement>& result);
+    GroupedClause callPreOptimiser(const std::vector<Clause>& clauses);
 };
 
 #endif //SPA_QPSMAINLOGIC_H

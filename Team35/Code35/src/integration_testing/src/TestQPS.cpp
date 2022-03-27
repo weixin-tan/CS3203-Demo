@@ -4,15 +4,21 @@
 #include "QPS/QueryProcessor.h"
 #include "QPS/QPSMainLogic.h"
 
+#include <chrono>
+
+
 PKB pkb = PKB();
 QPSMainLogic* qr = QPSMainLogic::getInstance(pkb.getGetter());
 QueryProcessor qp = QueryProcessor();
 QPSHandler qh = QPSHandler(pkb.getGetter());
+PreOptimiser preOp = PreOptimiser();
 Optimiser op = Optimiser();
 ResultProcessor rp = ResultProcessor();
 
 
-//SETUP:
+
+
+//SETUP: 
 //procedure f {
 //  x = 5;  // 1
 //  y = x;  // 2
@@ -208,6 +214,8 @@ std::vector<ParsedStatement> pStatements = {
 };
 
 TEST_CASE("Integration Testing") {
+    auto start = std::chrono::high_resolution_clock::now();
+
     std::vector<std::vector<ParsedStatement>> stmtlsts;
     std::vector<ParsedStatement> stmtlst;
 
@@ -303,10 +311,14 @@ TEST_CASE("Integration Testing") {
         std::string nc3 = "assign a; Select a";
         std::string nc4 = "print p; Select p";
 
-        std::vector<ProgramElement> result1 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(nc1))));
-        std::vector<ProgramElement> result2 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(nc2))));
-        std::vector<ProgramElement> result3 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(nc3))));
-        std::vector<ProgramElement> result4 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(nc4))));
+        std::vector<ProgramElement> result1 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                nc1)))));
+        std::vector<ProgramElement> result2 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                nc2)))));
+        std::vector<ProgramElement> result3 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                nc3)))));
+        std::vector<ProgramElement> result4 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                nc4)))));
 
         REQUIRE(compareProgramElementLists(result1, variables));
         REQUIRE(compareProgramElementLists(result2, constants));
@@ -344,18 +356,30 @@ TEST_CASE("Integration Testing") {
         expectedResult7.push_back(a7);
         expectedResult7.push_back(a9);
 
-        std::vector<ProgramElement> result1 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st1))));
-        std::vector<ProgramElement> result2 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st2))));
-        std::vector<ProgramElement> result3 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st3))));
-        std::vector<ProgramElement> result4 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st4))));
-        std::vector<ProgramElement> result5 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st5))));
-        std::vector<ProgramElement> result6 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st6))));
-        std::vector<ProgramElement> result7 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st7))));
-        std::vector<ProgramElement> result8 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st8))));
-        std::vector<ProgramElement> result9 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st9))));
-        std::vector<ProgramElement> result10 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st10))));
-        std::vector<ProgramElement> result11 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st11))));
-        std::vector<ProgramElement> result12 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st12))));
+        std::vector<ProgramElement> result1 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st1)))));
+        std::vector<ProgramElement> result2 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st2)))));
+        std::vector<ProgramElement> result3 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st3)))));
+        std::vector<ProgramElement> result4 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st4)))));
+        std::vector<ProgramElement> result5 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st5)))));
+        std::vector<ProgramElement> result6 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st6)))));
+        std::vector<ProgramElement> result7 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st7)))));
+        std::vector<ProgramElement> result8 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st8)))));
+        std::vector<ProgramElement> result9 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st9)))));
+        std::vector<ProgramElement> result10 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st10)))));
+        std::vector<ProgramElement> result11 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st11)))));
+        std::vector<ProgramElement> result12 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st12)))));
 
         REQUIRE(compareProgramElementLists(result1, prints));
         REQUIRE(compareProgramElementLists(result2, expectedResult2));
@@ -404,19 +428,32 @@ TEST_CASE("Integration Testing") {
         expectedResult13.push_back(s10);
 
         std::vector<ProgramElement> empty = {};
-        std::vector<ProgramElement> result1 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st1))));
-        std::vector<ProgramElement> result2 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st2))));
-        std::vector<ProgramElement> result3 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st3))));
-        std::vector<ProgramElement> result4 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st4))));
-        std::vector<ProgramElement> result5 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st5))));
-        std::vector<ProgramElement> result6 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st6))));
-        std::vector<ProgramElement> result7 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st7))));
-        std::vector<ProgramElement> result8 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st8))));
-        std::vector<ProgramElement> result9 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st9))));
-        std::vector<ProgramElement> result10 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st10))));
-        std::vector<ProgramElement> result11 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st11))));
-        std::vector<ProgramElement> result12 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st12))));
-        std::vector<ProgramElement> result13 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(st13))));
+        std::vector<ProgramElement> result1 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st1)))));
+        std::vector<ProgramElement> result2 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st2)))));
+        std::vector<ProgramElement> result3 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st3)))));
+        std::vector<ProgramElement> result4 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st4)))));
+        std::vector<ProgramElement> result5 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st5)))));
+        std::vector<ProgramElement> result6 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st6)))));
+        std::vector<ProgramElement> result7 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st7)))));
+        std::vector<ProgramElement> result8 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st8)))));
+        std::vector<ProgramElement> result9 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st9)))));
+        std::vector<ProgramElement> result10 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st10)))));
+        std::vector<ProgramElement> result11 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st11)))));
+        std::vector<ProgramElement> result12 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st12)))));
+        std::vector<ProgramElement> result13 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                st13)))));
 
         REQUIRE(compareProgramElementLists(result1, assignments));
         REQUIRE(compareProgramElementLists(result2, assignments));
@@ -460,18 +497,30 @@ TEST_CASE("Integration Testing") {
         std::vector<ProgramElement> expectedResult3;
         expectedResult3.push_back(a2);
 
-        std::vector<ProgramElement> result1 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(p1))));
-        std::vector<ProgramElement> result2 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(p2))));
-        std::vector<ProgramElement> result3 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(p3))));
-        std::vector<ProgramElement> result4 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(p4))));
-        std::vector<ProgramElement> result5 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(p5))));
-        std::vector<ProgramElement> result6 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(p6))));
-        std::vector<ProgramElement> result7 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(p7))));
-        std::vector<ProgramElement> result8 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(p8))));
-        std::vector<ProgramElement> result9 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(p9))));
-        std::vector<ProgramElement> result10 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(p10))));
-        std::vector<ProgramElement> result11 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(p11))));
-        std::vector<ProgramElement> result12 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(p12))));
+        std::vector<ProgramElement> result1 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                p1)))));
+        std::vector<ProgramElement> result2 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                p2)))));
+        std::vector<ProgramElement> result3 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                p3)))));
+        std::vector<ProgramElement> result4 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                p4)))));
+        std::vector<ProgramElement> result5 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                p5)))));
+        std::vector<ProgramElement> result6 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                p6)))));
+        std::vector<ProgramElement> result7 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                p7)))));
+        std::vector<ProgramElement> result8 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                p8)))));
+        std::vector<ProgramElement> result9 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                p9)))));
+        std::vector<ProgramElement> result10 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                p10)))));
+        std::vector<ProgramElement> result11 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                p11)))));
+        std::vector<ProgramElement> result12 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                p12)))));
 
         REQUIRE(compareProgramElementLists(result1, expectedResult1));
         REQUIRE(compareProgramElementLists(result2, expectedResult2));
@@ -524,16 +573,26 @@ TEST_CASE("Integration Testing") {
         std::vector<ProgramElement> expectedResult10;
         expectedResult10.push_back(a2);
 
-        std::vector<ProgramElement> result1 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(com1))));
-        std::vector<ProgramElement> result2 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(com2))));
-        std::vector<ProgramElement> result3 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(com3))));
-        std::vector<ProgramElement> result4 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(com4))));
-        std::vector<ProgramElement> result5 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(com5))));
-        std::vector<ProgramElement> result6 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(com6))));
-        std::vector<ProgramElement> result7 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(com7))));
-        std::vector<ProgramElement> result8 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(com8))));
-        std::vector<ProgramElement> result9 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(com9))));
-        std::vector<ProgramElement> result10 = rp.processResults(op.optimise(qh.processClause(qp.parsePQL(com10))));
+        std::vector<ProgramElement> result1 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                com1)))));
+        std::vector<ProgramElement> result2 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                com2)))));
+        std::vector<ProgramElement> result3 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                com3)))));
+        std::vector<ProgramElement> result4 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                com4)))));
+        std::vector<ProgramElement> result5 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                com5)))));
+        std::vector<ProgramElement> result6 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                com6)))));
+        std::vector<ProgramElement> result7 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                com7)))));
+        std::vector<ProgramElement> result8 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                com8)))));
+        std::vector<ProgramElement> result9 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                com9)))));
+        std::vector<ProgramElement> result10 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
+                com10)))));
 
         REQUIRE(compareProgramElementLists(result1, expectedResult1));
         REQUIRE(compareProgramElementLists(result2, expectedResult2));
@@ -546,5 +605,10 @@ TEST_CASE("Integration Testing") {
         REQUIRE(compareProgramElementLists(result9, expectedResult9));
         REQUIRE(compareProgramElementLists(result10, expectedResult10));
     }
+    
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    cout << "Time taken by function: "
+        << duration.count() << " microseconds" << endl;
 }
 
