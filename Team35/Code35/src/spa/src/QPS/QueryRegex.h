@@ -80,13 +80,18 @@ std::vector<std::string> extractPatternBrackets(const std::string& s);
 
 bool checkRelationshipRef(const RelationshipRef& r);
 bool checkEntityIsStmtRef(const Entity& e);
-bool checkFollowsOrParentsOrNextOrAffects(const RelationshipRef& r);
+bool checkVariable(const Entity& e);
 bool checkUsesLeftSide(const Entity& e);
-bool checkUses(const RelationshipRef& r);
 bool checkModifiesLeftSide(const Entity& e);
-bool checkModifies(const RelationshipRef& r);
 bool checkCallsEntity(const Entity& e);
+bool checkAssignments(const Entity& e);
+
+bool checkFollowsOrParentsOrNext(const RelationshipRef& r);
+bool checkUses(const RelationshipRef& r);
+bool checkModifies(const RelationshipRef& r);
 bool checkCalls(const RelationshipRef& r);
+bool checkAffects(const RelationshipRef& r);
+
 bool checkPattern(const RelationshipRef& r);
 bool checkWith(const RelationshipRef& r);
 bool checkWithEntity(const Entity& e);

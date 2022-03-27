@@ -1395,6 +1395,523 @@ struct PKB_NEXT_TEST_CASE {
             ) {}
 };
 
+struct PKB_AFFECTS_TEST_CASE_1 {
+    std::vector<std::vector<ParsedStatement>> stmtLists;
+    std::map<int, ProgramElement> stmt;
+    std::map<std::string, ProgramElement> procs;
+    std::map<std::string, ProgramElement> vars;
+    std::map<std::string, ProgramElement> constants;
+
+    /* FOR TESTING REFERENCE
+    procedure Second {
+        x = 0; // 1
+        i = 5; // 2
+        while (i!=0) { // 3
+            x = x + 2 * y; // 4
+            call Third; // 5
+            i = i - 1; } // 6
+        if (x==1) then { // 7
+            x = x+1; } // 8
+        else {
+            z = 1; } // 9
+        z = z + x + i; // 10
+        y = z + 2; // 11
+        x = x * y + z; // 12
+    }
+
+    procedure Third {
+        z = 5;
+        v = z;
+        print v;
+    }
+    */
+
+    PKB_AFFECTS_TEST_CASE_1() :
+            stmtLists(
+                    {
+                            {
+                                    ParsedStatement(
+                                            1,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::ASSIGNMENT_STMT,
+                                            Expr(),
+                                            "Second",
+                                            {},
+                                            {"x"},
+                                            {"0"},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
+                                    ),
+                                    ParsedStatement(
+                                            2,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::ASSIGNMENT_STMT,
+                                            Expr(),
+                                            "Second",
+                                            {},
+                                            {"i"},
+                                            {"5"},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            1
+                                    ),
+                                    ParsedStatement(
+                                            3,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::WHILE_STMT,
+                                            Expr(),
+                                            "Second",
+                                            {"i"},
+                                            {},
+                                            {"0"},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            2
+                                    ),
+                                    ParsedStatement(
+                                            4,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            3,
+                                            StatementType::ASSIGNMENT_STMT,
+                                            Expr(),
+                                            "Second",
+                                            {"x", "y"},
+                                            {"x"},
+                                            {"2"},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
+                                    ),
+                                    ParsedStatement(
+                                            5,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            3,
+                                            StatementType::CALL_STMT,
+                                            Expr(),
+                                            "Second",
+                                            {},
+                                            {},
+                                            {},
+                                            "Third",
+                                            4
+                                    ),
+                                    ParsedStatement(
+                                            6,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            3,
+                                            StatementType::ASSIGNMENT_STMT,
+                                            Expr(),
+                                            "Second",
+                                            {"i"},
+                                            {"i"},
+                                            {"1"},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            5
+                                    ),
+                                    ParsedStatement(
+                                            7,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::IF_STMT,
+                                            Expr(),
+                                            "Second",
+                                            {"x"},
+                                            {},
+                                            {"1"},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            3
+                                    ),
+                                    ParsedStatement(
+                                            8,
+                                            7,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::ASSIGNMENT_STMT,
+                                            Expr(),
+                                            "Second",
+                                            {"x"},
+                                            {"x"},
+                                            {"1"},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
+                                    ),
+                                    ParsedStatement(
+                                            9,
+                                            7,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::ASSIGNMENT_STMT,
+                                            Expr(),
+                                            "Second",
+                                            {},
+                                            {"z"},
+                                            {"1"},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
+                                    ),
+                                    ParsedStatement(
+                                            10,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::ASSIGNMENT_STMT,
+                                            Expr(),
+                                            "Second",
+                                            {"z", "x", "i"},
+                                            {"z"},
+                                            {"1"},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            7
+                                    ),
+                                    ParsedStatement(
+                                            11,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::ASSIGNMENT_STMT,
+                                            Expr(),
+                                            "Second",
+                                            {"z"},
+                                            {"y"},
+                                            {"2"},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            10
+                                    ),
+                                    ParsedStatement(
+                                            12,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::ASSIGNMENT_STMT,
+                                            Expr(),
+                                            "Second",
+                                            {"x", "y", "z"},
+                                            {"x"},
+                                            {},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            11
+                                    ),
+                            },
+                            {
+                                    ParsedStatement(
+                                            13,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::ASSIGNMENT_STMT,
+                                            Expr(),
+                                            "Third",
+                                            {},
+                                            {"z"},
+                                            {"5"},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
+                                    ),
+                                    ParsedStatement(
+                                            14,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::ASSIGNMENT_STMT,
+                                            Expr(),
+                                            "Third",
+                                            {"z"},
+                                            {"v"},
+                                            {},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            13
+                                    ),
+                                    ParsedStatement(
+                                            15,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            14,
+                                            StatementType::ASSIGNMENT_STMT,
+                                            Expr(),
+                                            "Third",
+                                            {"z"},
+                                            {"v"},
+                                            {},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            14
+                                    ),
+                            },
+                    }
+            ),
+            stmt(
+                    {
+                            {1, ProgramElement::createStatement(ElementType::ASSIGNMENT, 1)},
+                            {2, ProgramElement::createStatement(ElementType::ASSIGNMENT, 2)},
+                            {3, ProgramElement::createStatement(ElementType::WHILE, 3)},
+                            {4, ProgramElement::createStatement(ElementType::ASSIGNMENT, 4)},
+                            {5, ProgramElement::createStatement(ElementType::CALL, 5, "third")},
+                            {6, ProgramElement::createStatement(ElementType::ASSIGNMENT, 6)},
+                            {7, ProgramElement::createStatement(ElementType::IF, 7)},
+                            {8, ProgramElement::createStatement(ElementType::ASSIGNMENT, 8)},
+                            {9, ProgramElement::createStatement(ElementType::ASSIGNMENT, 9)},
+                            {10, ProgramElement::createStatement(ElementType::ASSIGNMENT, 10)},
+                            {11, ProgramElement::createStatement(ElementType::ASSIGNMENT, 11)},
+                            {12, ProgramElement::createStatement(ElementType::ASSIGNMENT, 12)},
+                            {13, ProgramElement::createStatement(ElementType::ASSIGNMENT, 13)},
+                            {14, ProgramElement::createStatement(ElementType::ASSIGNMENT, 14)},
+                            {15, ProgramElement::createStatement(ElementType::PRINT, 15, "v")},
+                    }
+            ) {}
+};
+
+struct PKB_AFFECTS_TEST_CASE_2 {
+    std::vector<std::vector<ParsedStatement>> stmtLists;
+    std::map<int, ProgramElement> stmt;
+    std::map<std::string, ProgramElement> procs;
+    std::map<std::string, ProgramElement> vars;
+    std::map<std::string, ProgramElement> constants;
+
+    /* FOR TESTING REFERENCE
+    procedure Third {
+        a = a + 1; // 1
+        while (condition == 0) { // 2
+            a = a + 1; } // 3
+        x = 1; // 4
+        if ( i != 2 ) then { // 5
+            x = a + 1; } // 6
+        else {
+            a = b; } // 7
+        a = x; // 8
+        call modifyingA; // 9
+        b = a; // 10
+        a = x; // 11
+        call notModifyingA; // 12
+        b = a; // 13
+    }
+
+    procedure modifyingA {
+        a = 100; // 14
+    }
+
+    procedure notModifyingA {
+        b = 100; // 15
+    }
+    */
+
+    PKB_AFFECTS_TEST_CASE_2() :
+            stmtLists(
+                    {
+                            {
+                                    ParsedStatement(
+                                            1,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::ASSIGNMENT_STMT,
+                                            Expr(),
+                                            "Third",
+                                            {"a"},
+                                            {"a"},
+                                            {"1"},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
+                                    ),
+                                    ParsedStatement(
+                                            2,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::WHILE_STMT,
+                                            Expr(),
+                                            "Third",
+                                            {"condition"},
+                                            {},
+                                            {"0"},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            1
+                                    ),
+                                    ParsedStatement(
+                                            3,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            2,
+                                            StatementType::ASSIGNMENT_STMT,
+                                            Expr(),
+                                            "Third",
+                                            {"a"},
+                                            {"a"},
+                                            {"1"},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
+                                    ),
+                                    ParsedStatement(
+                                            4,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::ASSIGNMENT_STMT,
+                                            Expr(),
+                                            "Third",
+                                            {},
+                                            {"x"},
+                                            {"1"},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            2
+                                    ),
+                                    ParsedStatement(
+                                            5,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::IF_STMT,
+                                            Expr(),
+                                            "Third",
+                                            {"i"},
+                                            {},
+                                            {"2"},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            4
+                                    ),
+                                    ParsedStatement(
+                                            6,
+                                            5,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::ASSIGNMENT_STMT,
+                                            Expr(),
+                                            "Third",
+                                            {"a"},
+                                            {"x"},
+                                            {"1"},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
+                                    ),
+                                    ParsedStatement(
+                                            7,
+                                            5,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::ASSIGNMENT_STMT,
+                                            Expr(),
+                                            "Third",
+                                            {"b"},
+                                            {"a"},
+                                            {},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
+                                    ),
+                                    ParsedStatement(
+                                            8,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::ASSIGNMENT_STMT,
+                                            Expr(),
+                                            "Third",
+                                            {"x"},
+                                            {"a"},
+                                            {},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            5
+                                    ),
+                                    ParsedStatement(
+                                            9,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::CALL_STMT,
+                                            Expr(),
+                                            "Third",
+                                            {},
+                                            {},
+                                            {},
+                                            "modifyingA",
+                                            8
+                                    ),
+                                    ParsedStatement(
+                                            10,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::ASSIGNMENT_STMT,
+                                            Expr(),
+                                            "Third",
+                                            {"a"},
+                                            {"b"},
+                                            {},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            9
+                                    ),
+                                    ParsedStatement(
+                                            11,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::ASSIGNMENT_STMT,
+                                            Expr(),
+                                            "Third",
+                                            {"x"},
+                                            {"a"},
+                                            {},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            10
+                                    ),
+                                    ParsedStatement(
+                                            12,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::CALL_STMT,
+                                            Expr(),
+                                            "Third",
+                                            {},
+                                            {},
+                                            {},
+                                            "notModifyingA",
+                                            11
+                                    ),
+                                    ParsedStatement(
+                                            13,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::ASSIGNMENT_STMT,
+                                            Expr(),
+                                            "Third",
+                                            {"a"},
+                                            {"b"},
+                                            {},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            12
+                                    ),
+                            },
+                            {
+                                    ParsedStatement(
+                                            14,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::ASSIGNMENT_STMT,
+                                            Expr(),
+                                            "modifyingA",
+                                            {},
+                                            {"a"},
+                                            {"100"},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
+                                    ),
+                            },
+                            {
+                                    ParsedStatement(
+                                            15,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                            StatementType::ASSIGNMENT_STMT,
+                                            Expr(),
+                                            "notModifyingA",
+                                            {},
+                                            {"b"},
+                                            {"100"},
+                                            ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                            ParsedStatement::DEFAULT_NULL_STMT_NO
+                                    ),
+                            },
+                    }
+            ),
+            stmt(
+                    {
+                            {1, ProgramElement::createStatement(ElementType::ASSIGNMENT, 1)},
+                            {2, ProgramElement::createStatement(ElementType::WHILE, 2)},
+                            {3, ProgramElement::createStatement(ElementType::ASSIGNMENT, 3)},
+                            {4, ProgramElement::createStatement(ElementType::ASSIGNMENT, 4)},
+                            {5, ProgramElement::createStatement(ElementType::IF, 5)},
+                            {6, ProgramElement::createStatement(ElementType::ASSIGNMENT, 6)},
+                            {7, ProgramElement::createStatement(ElementType::ASSIGNMENT, 7)},
+                            {8, ProgramElement::createStatement(ElementType::ASSIGNMENT, 8)},
+                            {9, ProgramElement::createStatement(ElementType::CALL, 9, "modifyingA")},
+                            {10, ProgramElement::createStatement(ElementType::ASSIGNMENT, 10)},
+                            {11, ProgramElement::createStatement(ElementType::ASSIGNMENT, 11)},
+                            {12, ProgramElement::createStatement(ElementType::CALL, 12, "notModifyingA")},
+                            {13, ProgramElement::createStatement(ElementType::ASSIGNMENT, 13)},
+                            {14, ProgramElement::createStatement(ElementType::ASSIGNMENT, 14)},
+                            {15, ProgramElement::createStatement(ElementType::ASSIGNMENT, 15)},
+                    }
+            ) {}
+};
+
 struct PKB_VALIDATION_TEST_CASES {
     std::vector<std::vector<ParsedStatement>> RECURSIVE_CALL_STMT_LIST =
             {

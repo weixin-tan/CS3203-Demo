@@ -27,8 +27,6 @@ void PkbSetter::handleProcedure(const ParsedStatement& parsedStatement) {
 
 void PkbSetter::handleConstants(const ParsedStatement& statement) {
     for (const std::string& c : statement.constant) {
-        db->constantToStmtTable[c].insert(statement.stmtNo);
-        db->usesStmtToConstantTable[statement.stmtNo].insert(c);
         db->constants.insert(c);
     }
 }
@@ -65,11 +63,14 @@ void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& pro
         for (const auto& parsedStatement : procedure)
             insertStmt(parsedStatement);
 
+    std::set<int> stmtNos;
+    for (const auto& [stmtNo, _] : db->stmtTable) stmtNos.insert(stmtNo);
+
     // extract design abstractions
     designExtractor.extractCalls(db->callsTable);
-    DesignExtractor::computeReverse(db->callsTable, db->callsTableR);
+    DesignExtractor::computeReverse(db->callsTable, db->callsTableR, db->procedures);
     designExtractor.extractCallsT(db->callsTTable);
-    DesignExtractor::computeReverse(db->callsTTable, db->callsTTableR);
+    DesignExtractor::computeReverse(db->callsTTable, db->callsTTableR, db->procedures);
 
     // validate design abstractions
     try {
@@ -86,21 +87,21 @@ void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& pro
 
     // extract design abstractions (these assume that data is clean)
     designExtractor.extractFollows(db->followsTable);
-    DesignExtractor::computeReverse(db->followsTable, db->followsTableR);
+    DesignExtractor::computeReverse(db->followsTable, db->followsTableR, stmtNos);
     designExtractor.extractFollowsT(db->followsTTable);
-    DesignExtractor::computeReverse(db->followsTTable, db->followsTTableR);
+    DesignExtractor::computeReverse(db->followsTTable, db->followsTTableR, stmtNos);
     designExtractor.extractParent(db->parentTable);
-    DesignExtractor::computeReverse(db->parentTable, db->parentTableR);
+    DesignExtractor::computeReverse(db->parentTable, db->parentTableR, stmtNos);
     designExtractor.extractParentT(db->parentTTable);
-    DesignExtractor::computeReverse(db->parentTTable, db->parentTTableR);
+    DesignExtractor::computeReverse(db->parentTTable, db->parentTTableR, stmtNos);
     designExtractor.extractModifiesP(db->modifiesPTable);
-    DesignExtractor::computeReverse(db->modifiesPTable, db->modifiesPTableR);
+    DesignExtractor::computeReverse(db->modifiesPTable, db->modifiesPTableR, db->variables);
     designExtractor.extractModifiesS(db->modifiesSTable);
-    DesignExtractor::computeReverse(db->modifiesSTable, db->modifiesSTableR);
+    DesignExtractor::computeReverse(db->modifiesSTable, db->modifiesSTableR, db->variables);
     designExtractor.extractUsesP(db->usesPTable);
-    DesignExtractor::computeReverse(db->usesPTable, db->usesPTableR);
+    DesignExtractor::computeReverse(db->usesPTable, db->usesPTableR, db->variables);
     designExtractor.extractUsesS(db->usesSTable);
-    DesignExtractor::computeReverse(db->usesSTable, db->usesSTableR);
+    DesignExtractor::computeReverse(db->usesSTable, db->usesSTableR, db->variables);
     designExtractor.extractNext(db->nextTable);
-    DesignExtractor::computeReverse(db->nextTable, db->nextTableR);
+    DesignExtractor::computeReverse(db->nextTable, db->nextTableR, stmtNos);
 }

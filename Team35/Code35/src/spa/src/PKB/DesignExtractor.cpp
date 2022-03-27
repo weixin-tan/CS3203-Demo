@@ -9,10 +9,10 @@ void DesignExtractor::dfsCallsT(const std::string& originProc, std::set<std::str
     while (!q.empty()) {
         std::string proc = q.front();
         q.pop();
-        auto calls = db->callsTable.find(proc);
-        if (calls == db->callsTable.end()) continue;
-        for (const auto& calledProc : calls->second) {
-            if (visited.find(calledProc) == visited.end()) {
+        auto calledProcs = db->callsTable.at(proc);
+        if (calledProcs.empty()) continue;
+        for (const auto& calledProc : calledProcs) {
+            if (visited.count(calledProc) == 0) {
                 visited.insert(calledProc);
                 q.push(calledProc);
             }
@@ -26,10 +26,10 @@ void DesignExtractor::dfsFollowsT(const int& originStmt, std::set<int>& visited)
     while (!q.empty()) {
         int stmtNo = q.front();
         q.pop();
-        auto follows = db->followsTable.find(stmtNo);
-        if (follows == db->followsTable.end()) continue;
-        for (const auto& followsStmtNo : follows->second) {
-            if (visited.find(followsStmtNo) == visited.end()) {
+        auto follows = db->followsTable.at(stmtNo);
+        if (follows.empty()) continue;
+        for (const auto& followsStmtNo : follows) {
+            if (visited.count(followsStmtNo) == 0) {
                 visited.insert(followsStmtNo);
                 q.push(followsStmtNo);
             }
@@ -43,10 +43,10 @@ void DesignExtractor::dfsParentT(const int& originStmt, std::set<int>& visited) 
     while (!q.empty()) {
         int stmtNo = q.front();
         q.pop();
-        auto children = db->parentTable.find(stmtNo);
-        if (children == db->parentTable.end()) continue;
-        for (const auto& childStmtNo : children->second) {
-            if (visited.find(childStmtNo) == visited.end()) {
+        auto children = db->parentTable.at(stmtNo);
+        if (children.empty()) continue;
+        for (const auto& childStmtNo : children) {
+            if (visited.count(childStmtNo) == 0) {
                 visited.insert(childStmtNo);
                 q.push(childStmtNo);
             }
@@ -71,23 +71,22 @@ void DesignExtractor::dfsNext(const int& originStmt, std::set<int>& visited, con
             for (const int& listHeadStmtNo : stmtListHead.at(stmtNo))
                 q.push({listHeadStmtNo, stmtNo});
         if (stmtType == ElementType::IF) {
-            auto followsStmtNo = db->followsTable.find(stmtNo);
-            int newReturnStmtNo = ((followsStmtNo != db->followsTable.end()) ? *followsStmtNo->second.begin() : returnStmtNo);
+            auto followsStmtNo = db->followsTable.at(stmtNo);
+            int newReturnStmtNo = ((followsStmtNo.empty()) ? returnStmtNo : *followsStmtNo.begin());
             for (const int& listHeadStmtNo : stmtListHead.at(stmtNo))
                 q.push({listHeadStmtNo, newReturnStmtNo});
         }
 
-        auto followsStmtNo = db->followsTable.find(stmtNo);
+        auto followsStmtNo = db->followsTable.at(stmtNo);
         if (stmtType != ElementType::IF) {
-            if (followsStmtNo != db->followsTable.end()) {
-                nextTable[stmtNo].insert(*followsStmtNo->second.begin());
+            if (!followsStmtNo.empty()) {
+                nextTable[stmtNo].insert(*followsStmtNo.begin());
             } else if (returnStmtNo != nullReturnStmt)
                 nextTable[stmtNo].insert(returnStmtNo);
         }
-        if (followsStmtNo != db->followsTable.end())
-            q.push({*followsStmtNo->second.begin(), returnStmtNo});
+        if (!followsStmtNo.empty())
+            q.push({*followsStmtNo.begin(), returnStmtNo});
     }
-
 }
 
 void DesignExtractor::extractFollows(std::map<int, std::set<int>>& followsTable) {
@@ -95,11 +94,15 @@ void DesignExtractor::extractFollows(std::map<int, std::set<int>>& followsTable)
         if (parsedStatement.preceding != ParsedStatement::DEFAULT_NULL_STMT_NO)
             followsTable[parsedStatement.preceding].insert(parsedStatement.stmtNo);
     }
+    for (const auto&[stmtNo, _] : db->stmtTable)
+        if (followsTable.find(stmtNo) == followsTable.end()) followsTable.insert({stmtNo, {}});
 }
 
 void DesignExtractor::extractFollowsT(std::map<int, std::set<int>>& followsTTable) {
     for (const auto&[originStmt, _] : db->followsTable)
         dfsFollowsT(originStmt, followsTTable[originStmt]);
+    for (const auto&[stmtNo, _] : db->stmtTable)
+        if (followsTTable.find(stmtNo) == followsTTable.end()) followsTTable.insert({stmtNo, {}});
 }
 
 void DesignExtractor::extractParent(std::map<int, std::set<int>>& parentTable) {
@@ -110,11 +113,15 @@ void DesignExtractor::extractParent(std::map<int, std::set<int>>& parentTable) {
         if (parentStmtNo != ParsedStatement::DEFAULT_NULL_STMT_NO)
             parentTable[parentStmtNo].insert(parsedStatement.stmtNo);
     }
+    for (const auto&[stmtNo, _] : db->stmtTable)
+        if (parentTable.find(stmtNo) == parentTable.end()) parentTable.insert({stmtNo, {}});
 }
 
 void DesignExtractor::extractParentT(std::map<int, std::set<int>>& parentTTable) {
     for (const auto&[originStmt, _] : db->parentTable)
         dfsParentT(originStmt, parentTTable[originStmt]);
+    for (const auto&[stmtNo, _] : db->stmtTable)
+        if (parentTTable.find(stmtNo) == parentTTable.end()) parentTTable.insert({stmtNo, {}});
 }
 
 void DesignExtractor::extractCalls(std::map<std::string, std::set<std::string>>& callsTable) {
@@ -122,11 +129,15 @@ void DesignExtractor::extractCalls(std::map<std::string, std::set<std::string>>&
         if (parsedStatement.statementType == StatementType::CALL_STMT)
             callsTable[parsedStatement.procedureName].insert(parsedStatement.procedureCalled);
     }
+    for (const auto& proc : db->procedures)
+        if (callsTable.find(proc) == callsTable.end()) callsTable.insert({proc, {}});
 }
 
 void DesignExtractor::extractCallsT(std::map<std::string, std::set<std::string>>& callsTTable) {
     for (const auto&[originProc, _] : db->callsTable)
         dfsCallsT(originProc, callsTTable[originProc]);
+    for (const auto& proc : db->procedures)
+        if (callsTTable.find(proc) == callsTTable.end()) callsTTable.insert({proc, {}});
 }
 
 void DesignExtractor::extractModifiesP(std::map<std::string, std::set<std::string>>& modifiesPTable) {
@@ -141,6 +152,8 @@ void DesignExtractor::extractModifiesP(std::map<std::string, std::set<std::strin
             modifiesPTable[callingProc].insert(modifiedVars->second.begin(), modifiedVars->second.end());
         }
     }
+    for (const auto& proc : db->procedures)
+        if (modifiesPTable.find(proc) == modifiesPTable.end()) modifiesPTable.insert({proc, {}});
 }
 
 void DesignExtractor::extractModifiesS(std::map<int, std::set<std::string>>& modifiesSTable) {
@@ -162,6 +175,8 @@ void DesignExtractor::extractModifiesS(std::map<int, std::set<std::string>>& mod
             modifiesSTable[parentStmt].insert(modifiedVars->second.begin(), modifiedVars->second.end());
         }
     }
+    for (const auto&[stmtNo, _] : db->stmtTable)
+        if (modifiesSTable.find(stmtNo) == modifiesSTable.end()) modifiesSTable.insert({stmtNo, {}});
 }
 
 void DesignExtractor::extractUsesP(std::map<std::string, std::set<std::string>>& usesPTable) {
@@ -176,6 +191,8 @@ void DesignExtractor::extractUsesP(std::map<std::string, std::set<std::string>>&
             usesPTable[callingProc].insert(usedVars->second.begin(), usedVars->second.end());
         }
     }
+    for (const auto& proc : db->procedures)
+        if (usesPTable.find(proc) == usesPTable.end()) usesPTable.insert({proc, {}});
 }
 
 void DesignExtractor::extractUsesS(std::map<int, std::set<std::string>>& usesSTable) {
@@ -197,6 +214,8 @@ void DesignExtractor::extractUsesS(std::map<int, std::set<std::string>>& usesSTa
             usesSTable[parentStmt].insert(usedVars->second.begin(), usedVars->second.end());
         }
     }
+    for (const auto&[stmtNo, _] : db->stmtTable)
+        if (usesSTable.find(stmtNo) == usesSTable.end()) usesSTable.insert({stmtNo, {}});
 }
 
 void DesignExtractor::extractNext(std::map<int, std::set<int>>& nextTable) {
@@ -224,16 +243,20 @@ void DesignExtractor::extractNext(std::map<int, std::set<int>>& nextTable) {
         if (visited.find(stmtNo) == visited.end())
             dfsNext(stmtNo, visited, stmtListHead, nextTable);
     }
+    for (const auto&[stmtNo, _] : db->stmtTable)
+        if (nextTable.find(stmtNo) == nextTable.end()) nextTable.insert({stmtNo, {}});
 }
 
 template<typename U, typename V>
-void DesignExtractor::computeReverse(std::map<U, std::set<V>>& normalMap, std::map<V, std::set<U>>& reverseMap) {
+void DesignExtractor::computeReverse(std::map<U, std::set<V>>& normalMap, std::map<V, std::set<U>>& reverseMap, const std::set<V>& fullRange) {
     for (const auto& [leftSide, rightSides] : normalMap)
         for (const auto& rightSide : rightSides)
             reverseMap[rightSide].insert(leftSide);
+    for (const auto& r : fullRange)
+        if (reverseMap.find(r) == reverseMap.end()) reverseMap.insert({r, {}});
 }
 
-template void DesignExtractor::computeReverse<int, int>(std::map<int, std::set<int>>& normalMap, std::map<int, std::set<int>>& reverseMap);
-template void DesignExtractor::computeReverse<int, std::string>(std::map<int, std::set<std::string>>& normalMap, std::map<std::string, std::set<int>>& reverseMap);
-template void DesignExtractor::computeReverse<std::string, std::string>(std::map<std::string, std::set<std::string>>& normalMap, std::map<std::string, std::set<std::string>>& reverseMap);
-template void DesignExtractor::computeReverse<std::string, int>(std::map<std::string, std::set<int>>& normalMap, std::map<int, std::set<std::string>>& reverseMap);
+template void DesignExtractor::computeReverse<int, int>(std::map<int, std::set<int>>& normalMap, std::map<int, std::set<int>>& reverseMap, const std::set<int>& fullRange);
+template void DesignExtractor::computeReverse<int, std::string>(std::map<int, std::set<std::string>>& normalMap, std::map<std::string, std::set<int>>& reverseMap, const std::set<std::string>& fullRange);
+template void DesignExtractor::computeReverse<std::string, std::string>(std::map<std::string, std::set<std::string>>& normalMap, std::map<std::string, std::set<std::string>>& reverseMap, const std::set<std::string>& fullRange);
+template void DesignExtractor::computeReverse<std::string, int>(std::map<std::string, std::set<int>>& normalMap, std::map<int, std::set<std::string>>& reverseMap, const std::set<int>& fullRange);

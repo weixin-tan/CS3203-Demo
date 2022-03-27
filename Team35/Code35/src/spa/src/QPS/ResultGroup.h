@@ -5,15 +5,14 @@
 
 #include "Result.h"
 
-class Group {
+class ResultGroup {
 private:
     std::vector<Result> results;
 
 public:
-    Group();
+    ResultGroup();
     void setGroup(std::vector<Result> r);
-    std::vector<Result> getGroup();
-
+    std::vector<Result> getGroup() const;
 };
 
 #endif //SPA_GROUP_H
