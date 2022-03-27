@@ -47,6 +47,12 @@ Result QPSHandler::getNoClauseResult(const Entity& entityToFind) const {
     Result result;
     result.setResultType(ResultType::NO_CLAUSE);
 
+    if (entityToFind.eType == EntityType::BOOLEAN) {
+        result.setValid(true);
+        result.setOneSynEntity(entityToFind);
+        return result;
+    }
+
     ElementType elementTypeToGet = QpsTypeToPkbTypeConvertor::convertToPkbElement(entityToFind.eType);
     std::set<ProgramElement> oneSyn = pg->getEntity(elementTypeToGet);
 

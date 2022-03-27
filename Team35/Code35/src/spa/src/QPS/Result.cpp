@@ -44,7 +44,7 @@ bool Result::getValid() const {
     return Result::valid;
 }
 
-Entity Result::getOneSynEntity() {
+Entity Result::getOneSynEntity() const {
     return Result::oneSynEntity;
 }
 
