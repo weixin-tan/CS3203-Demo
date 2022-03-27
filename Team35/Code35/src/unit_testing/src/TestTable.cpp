@@ -69,7 +69,6 @@ TEST_CASE("Test case 1"){
     Result result1 = st->handleSuchThat(modifiesRef_procSyn_varSyn);// Modifies(p1, v) 2
     Result result2 = st->handleSuchThat(usesRef_fixedStr_varSyn);// Uses("f", v) 1
     Result result3 = st->handleSuchThat(modifiesRef_stmtSyn_varSyn);// Modifies(r, v) 2
-    Result result4 = st->handleSuchThat(usesRef_fixedInt_varSyn);// Uses("2", v) 1
     Result result5 = st->handleSuchThat(usesRef_procSyn_fixedStr);// Uses(p1, "x") 1
     Result result6 = st->handleSuchThat(modifiesRef_fixedStr_fixedStr);// Modifies("f", "y") True
     Result result7 = st->handleSuchThat(usesRef_stmtSyn_fixedStr);// Uses(ifs, "z") 1
@@ -80,27 +79,146 @@ TEST_CASE("Test case 1"){
     Result result12 = st->handleSuchThat(usesRef_fixedInt_wc);// Uses("6", _) True
 
 
-    SECTION("Table with 1 element"){
-        //Create Table
-        Table t;
-        //Table with 1 element
-        Entity result2Head = result2.getOneSynEntity();
-        std::vector<ProgramElement> result2Body(result2.getOneSynSet().begin(),result2.getOneSynSet().end());
-        t.inputElement(result2Head);
-        t.inputProgramElements(result2Body);
-        //test
-        REQUIRE(t.getHeader()[0] == result2Head);
-        REQUIRE(t.getBody()[0] == result2Body);
-        REQUIRE(t.getIndexElement(result2Body, result2Body[0]) == 0);
-        //clear
-        t.makeTableEmpty();
-        REQUIRE((t.getHeader()).size() == 0);
-        REQUIRE(t.getBody().size() == 0);
+    SECTION("Merger 2 1 syn"){
+        Table t1(result2);
+        Table t2(result2);
+        Table tResult(t1, t2);
+
     }
 
-    SECTION("Table with 2 element"){
-        
+    SECTION("Merger 2 1 syn"){
+        Table t1(result5);
+        Table t2(result5);
+        Table tResult(t1, t2);
     }
 
+    SECTION("Merger 2 1 syn"){
+        Table t1(result7);
+        Table t2(result7);
+        Table tResult(t1, t2);
 
+    }
+
+    SECTION("Merger 2 1 syn"){
+        Table t1(result9);
+        Table t2(result9);
+        Table tResult(t1, t2);
+
+    }
+
+    SECTION("Merger 2 1 syn"){
+        Table t1(result11);
+        Table t2(result11);
+        Table tResult(t1, t2);
+
+    }
+
+    SECTION("Merger 2 1 syn"){
+        Table t1(result2);
+        Table t2(result5);
+        Table tResult(t1, t2);
+
+    }
+
+    SECTION("Merger 2 1 syn"){
+        Table t1(result2);
+        Table t2(result7);
+        Table tResult(t1, t2);
+
+    }
+
+    SECTION("Merger 2 1 syn"){
+        Table t1(result2);
+        Table t2(result9);
+        Table tResult(t1, t2);
+
+    }
+
+    SECTION("Merger 2 1 syn"){
+        Table t1(result2);
+        Table t2(result11);
+        Table tResult(t1, t2);
+
+    }
+
+    SECTION("Merger 2 2 syn"){
+        Table t1(result1);
+        Table t2(result1);
+        Table tResult(t1, t2);
+
+    }
+
+    SECTION("Merger 2 2 syn"){
+        Table t1(result3);
+        Table t2(result3);
+        Table tResult(t1, t2);
+
+    }
+
+    SECTION("Merger 2 2 syn"){
+        Table t1(result1);
+        Table t2(result3);
+        Table tResult(t1, t2);
+
+    }
+
+    SECTION("Merger 1 syn 2 syn"){
+        Table t1(result1);
+        Table t2(result2);
+        Table tResult(t1, t2);
+    }
+
+    SECTION("Merger 1 syn 2 syn"){
+        Table t1(result1);
+        Table t2(result5);
+        Table tResult(t1, t2);
+    }
+
+    SECTION("Merger 1 syn 2 syn"){
+        Table t1(result1);
+        Table t2(result7);
+        Table tResult(t1, t2);
+    }
+
+    SECTION("Merger 1 syn 2 syn"){
+        Table t1(result1);
+        Table t2(result9);
+        Table tResult(t1, t2);
+    }
+
+    SECTION("Merger 1 syn 2 syn"){
+        Table t1(result1);
+        Table t2(result11);
+        Table tResult(t1, t2);
+    }
+
+    SECTION("Merger 1 syn 2 syn"){
+        Table t1(result3);
+        Table t2(result2);
+        Table tResult(t1, t2);
+    }
+
+    SECTION("Merger 1 syn 2 syn"){
+        Table t1(result3);
+        Table t2(result5);
+        Table tResult(t1, t2);
+    }
+
+    SECTION("Merger 1 syn 2 syn"){
+        Table t1(result3);
+        Table t2(result7);
+        Table tResult(t1, t2);
+    }
+
+    SECTION("Merger 1 syn 2 syn"){
+        Table t1(result3);
+        Table t2(result9);
+        Table tResult(t1, t2);
+    }
+
+    SECTION("Merger 1 syn 2 syn"){
+        Table t1(result3);
+        Table t2(result11);
+        Table tResult(t1, t2);
+    }
 }
