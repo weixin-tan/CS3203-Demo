@@ -100,12 +100,80 @@ TEST_CASE("Testing Linear Graphs"){
     expected1.push_back(group2);
 
     std::vector<RelationshipRefGroup> output1 = preOp.groupRelationships(relationshipList1);
-    printGroups(output1);
 
     SECTION("testing 2 linear graphs"){
         REQUIRE(compareTwoLists(expected1[0], output1[0]));
         REQUIRE(compareTwoLists(expected1[1], output1[1]));
         REQUIRE(compareTwoLists(expected1[2], output1[2]));
+        REQUIRE(compareTwoGroupsLists(expected1, output1));
+    }
+}
+
+TEST_CASE("testing more complicate graphs"){
+    PreOptimiser preOp = PreOptimiser();
+    Entity v = Entity(EntityType::VARIABLE, "v");
+    Entity v1 = Entity(EntityType::VARIABLE, "v1");
+
+    Entity a = Entity(EntityType::ASSIGNMENT, "a");
+    Entity a1 = Entity(EntityType::ASSIGNMENT, "a1");
+
+    Entity expr1 = Entity(EntityType::FIXED_STRING, "(count + 1)");
+
+    Entity vAttribute = Entity(EntityType::VARIABLE, "v", EntityAttributeType::VARNAME);
+    Entity v1Attribute = Entity(EntityType::VARIABLE, "v1", EntityAttributeType::VARNAME);
+
+    Entity p = Entity(EntityType::PROCEDURE, "p");
+    Entity p1 = Entity(EntityType::PROCEDURE, "p1");
+
+    Entity pAttribute = Entity(EntityType::PROCEDURE, "p", EntityAttributeType::PROCNAME);
+    Entity p1Attribute = Entity(EntityType::PROCEDURE, "p1", EntityAttributeType::PROCNAME);
+
+    Entity e1 = Entity(EntityType::FIXED_INTEGER, "1");
+    Entity e2 = Entity(EntityType::FIXED_INTEGER, "2");
+    Entity e3 = Entity(EntityType::FIXED_INTEGER, "3");
+    Entity count = Entity(EntityType::FIXED_STRING, "count");
+
+    RelationshipRef r1 = RelationshipRef(RelationshipType::AFFECTS_T, a, a1);
+    RelationshipRef r2 = RelationshipRef(RelationshipType::PATTERN, v, expr1, a);
+    RelationshipRef r3 = RelationshipRef(RelationshipType::PATTERN, v1, expr1, a1);
+    RelationshipRef r4 = RelationshipRef(RelationshipType::WITH, vAttribute, pAttribute);
+    RelationshipRef r5 = RelationshipRef(RelationshipType::WITH, v1Attribute, p1Attribute);
+    RelationshipRef r6 = RelationshipRef(RelationshipType::CALLS, p1Attribute, p);
+    RelationshipRef r7 = RelationshipRef(RelationshipType::FOLLOWS, e1, e2);
+    RelationshipRef r8 = RelationshipRef(RelationshipType::MODIFIES, e3, count);
+    RelationshipRef r9 = RelationshipRef(RelationshipType::WITH, e1, count);
+
+    vector<RelationshipRef> relationshipList1;
+    relationshipList1.push_back(r1);
+    relationshipList1.push_back(r2);
+    relationshipList1.push_back(r3);
+    relationshipList1.push_back(r4);
+    relationshipList1.push_back(r5);
+    relationshipList1.push_back(r6);
+    relationshipList1.push_back(r7);
+    relationshipList1.push_back(r8);
+    relationshipList1.push_back(r9);
+
+    RelationshipRefGroup group0;
+    RelationshipRefGroup group1;
+
+    group0.addRelRef(r7);
+    group0.addRelRef(r8);
+    group0.addRelRef(r9);
+    group1.addRelRef(r1);
+    group1.addRelRef(r2);
+    group1.addRelRef(r3);
+    group1.addRelRef(r4);
+    group1.addRelRef(r5);
+    group1.addRelRef(r6);
+
+    std::vector<RelationshipRefGroup> expected1;
+    expected1.push_back(group0);
+    expected1.push_back(group1);
+
+    std::vector<RelationshipRefGroup> output1 = preOp.groupRelationships(relationshipList1);
+
+    SECTION("testing complicated graph"){
         REQUIRE(compareTwoGroupsLists(expected1, output1));
     }
 }
