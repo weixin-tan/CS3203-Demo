@@ -9,6 +9,13 @@ const std::unordered_map<ResultType, std::string> Type::resultTypeToStringMap = 
         {ResultType::NULL_CLAUSE, "NullClause"}
 };
 
+const std::unordered_map<FormattedResultType, std::string> Type::formattedResultTypeToStringMap = {
+        {FormattedResultType::BOOLEAN, "Boolean"},
+        {FormattedResultType::SINGLE, "Single"},
+        {FormattedResultType::TUPLE, "Tuple"},
+        {FormattedResultType::NULL_RESULT, "Null"}
+};
+
 const std::unordered_map<EntityType, std::string> Type::entityTypeToStringMap = {
         {EntityType::STATEMENT, "STATEMENT"},
         {EntityType::ASSIGNMENT, "ASSIGNMENT"},
@@ -71,5 +78,10 @@ std::string Type::attributeTypeToString(EntityAttributeType a) {
 
 std::string Type::resultTypeToString(ResultType r) {
     auto iter = Type::resultTypeToStringMap.find(r);
+    return iter->second;
+}
+
+std::string Type::formattedResultTypeToString(FormattedResultType f) {
+    auto iter = Type::formattedResultTypeToStringMap.find(f);
     return iter->second;
 }

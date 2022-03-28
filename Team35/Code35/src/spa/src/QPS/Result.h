@@ -28,7 +28,7 @@ public:
 
     ResultType getResultType();
     bool getValid() const;
-    Entity getOneSynEntity();
+    Entity getOneSynEntity() const;
     std::set<ProgramElement> getOneSynSet() const;
     std::pair<Entity, Entity> getTwoSynEntities();
     std::set<std::pair<ProgramElement, ProgramElement>> getTwoSynSet() const;
