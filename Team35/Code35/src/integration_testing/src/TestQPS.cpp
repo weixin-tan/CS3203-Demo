@@ -33,6 +33,13 @@ ResultProcessor rp = ResultProcessor();
 
 bool compareProgramElementLists(std::vector<ProgramElement> lista, std::vector<ProgramElement> listb) {
     bool toReturn = true;
+    if (lista.empty() && listb.empty()){
+        return true;
+    }else if (listb.empty() && !lista.empty()){
+        return false;
+    }else if (lista.empty() && !listb.empty()){
+        return false;
+    }
     for (ProgramElement a : lista) {
         bool temp = false;
         for (ProgramElement b : listb) {
