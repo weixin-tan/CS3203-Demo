@@ -31,7 +31,6 @@ private:
     std::vector<ResultGroup> callPostOptimiser(const std::vector<ResultGroup>& resultsGroups) ;
     FormattedResult callProcessor(const std::vector<ResultGroup>& groups);
     std::list<std::string> callFormatter(FormattedResult result);
-    GroupedClause callPreOptimiser(const std::vector<Clause>& clauses);
 };
 
 #endif //SPA_QPSMAINLOGIC_H

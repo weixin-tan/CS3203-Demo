@@ -40,7 +40,9 @@ FormattedResult ResultProcessor::processResults(std::vector<ResultGroup> groups)
                 entities.push_back(r.first);
             }
         }
-        necessaryTables.push_back(table.extractColumns(entities));
+        if (!entities.empty()) {
+            necessaryTables.push_back(table.extractColumns(entities));
+        }
     }
     // Get FormattedResult
     if (necessaryTables.empty()) {
