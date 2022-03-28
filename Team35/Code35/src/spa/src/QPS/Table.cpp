@@ -38,3 +38,20 @@ Table::Table(Table t1, Table t2) {
     }
     rows = result;
 }
+
+// Getting specific columns out of table
+Table Table::extractColumns(std::vector<Entity> entities) {
+    std::unordered_set<TableRow, TableRowHash> result;
+    for (const auto row : rows) {
+        TableRow newRow = TableRow::filterRow(row, entities);
+        // Note that this will only happen at the VERY first iteration. 
+        // The result will always be empty. 
+        if (newRow.row.size() == 0) {
+            return result;
+        }
+        else {
+            result.insert(newRow);
+        }
+    }
+    return result; 
+}
