@@ -79,7 +79,7 @@ TEST_CASE("Test case 1"){
     Result result3;
     result3.setResultType(ResultType::SUCH_THAT_CLAUSE);
     result3.setValid(true);
-    result3.setTwoSynEntities(std::pair<Entity, Entity>(readSyn, varSyn));
+    result3.setTwoS2ynEntities(std::pair<Entity, Entity>(readSyn, varSyn));
     std::set<std::pair<ProgramElement, ProgramElement>> result3Elements;
     result3Elements.insert(std::pair<ProgramElement, ProgramElement>(ProgramElement::createStatement(ElementType::READ, 5), ProgramElement::createVariable("z")));
     result3.setTwoSynSet(result3Elements);
@@ -131,13 +131,21 @@ TEST_CASE("Test case 1"){
     result8Elements.insert(ProgramElement::createStatement(ElementType::STATEMENT, 10));
     result8.setOneSynSet(result8Elements);
 
-/*
+    /*
+     * r1 - 2
+     * r2 - 1
+     * r3 - 2
+     * r4 - 1
+     * r5 - 1
+     * r6 - 
+     */
+
+
     SECTION("Merger 2 1 syn"){
         Table t1(result2);
         Table t2(result2);
         Table tResult(t1, t2);
 
     }
-    */
 
 }
