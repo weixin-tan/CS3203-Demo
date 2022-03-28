@@ -35,6 +35,18 @@ std::pair<bool, TableRow> TableRow::combineRow(TableRow row1, TableRow row2) {
     return {true, {newRow}};
 }
 
+TableRow TableRow::filterRow(TableRow row, std::vector<Entity> entities) {
+    std::unordered_map<Entity, ProgramElement, EntityHashFunction> newRow;
+    for (Entity entity : entities) {
+        if (row.row.find(entity) != m.end()) {
+            newRow.emplace(entity, row.row.at(entity));
+        }
+        else {
+            return TableRow();
+        }
+    }
+}
+
 // for comparing elements for map
 bool TableRow::operator<(TableRow row1) const {
     return this->tableId < row1.tableId;
