@@ -32,7 +32,7 @@ FormattedResult ResultProcessor::processResults(std::vector<ResultGroup> groups)
     // Extract only the necessary tables
     std::set<Entity> entitiesToReturn = extractEntitySet(noClauseResults);
     std::vector<Table> necessaryTables;
-    for (const auto& table : intermediateTables) {
+    for (Table table : intermediateTables) {
         TableRow firstRow = *table.rows.begin();
         std::vector<Entity> entities;
         for (const auto& r : firstRow.row) {
@@ -150,6 +150,10 @@ FormattedResult ResultProcessor::handleZeroClause(std::vector<Result> resultList
 
 FormattedResult ResultProcessor::extractTableInformation(std::vector<Entity> entities, Table table) {
     std::vector<std::vector<ProgramElement>> programElementLists;
+    for (int i = 0; i < entities.size(); i++) {
+        std::vector<ProgramElement> newVector;
+        programElementLists.push_back(newVector);
+    }
     for (const auto& row : table.rows) {
         for (int i = 0; i < entities.size(); i++) {
             programElementLists[i].push_back(row.row.at(entities[i]));
