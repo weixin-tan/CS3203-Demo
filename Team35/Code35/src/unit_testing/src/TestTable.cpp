@@ -3,14 +3,9 @@
 //
 #include <vector>
 #include <set>
-
 #include "catch.hpp"
-#include "QPS/Optimiser.h"
-#include "QPS/QueryProcessor.h"
-#include "QPS/QPSMainLogic.h"
 #include "Table.h"
-#include "PkbGetterStubForTestSuchThatHandler.h"
-#include "Result.h"
+#include "TableRow.h"
 
 //create entities
 
@@ -57,10 +52,84 @@ ProgramElement s9 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 9);
 ProgramElement s10 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 10);
 ProgramElement s11 = ProgramElement::createStatement(ElementType::PRINT, 11, "x");
 
-//create Results
 
 
 TEST_CASE("Test case 1"){
+
+    //create results
+    Result result1;
+    result1.setResultType(ResultType::SUCH_THAT_CLAUSE);
+    result1.setValid(true);
+    result1.setTwoSynEntities(std::pair<Entity, Entity>(procSyn1, varSyn));
+    std::set<std::pair<ProgramElement, ProgramElement>> result1Elements;
+    result1Elements.insert(std::pair<ProgramElement, ProgramElement>(ProgramElement::createProcedure("f"), ProgramElement::createVariable("x")));
+    result1Elements.insert(std::pair<ProgramElement, ProgramElement>(ProgramElement::createProcedure("f"), ProgramElement::createVariable("y")));
+    result1Elements.insert(std::pair<ProgramElement, ProgramElement>(ProgramElement::createProcedure("f"), ProgramElement::createVariable("z")));
+    result1.setTwoSynSet(result1Elements);
+
+    Result result2;
+    result2.setResultType(ResultType::SUCH_THAT_CLAUSE);
+    result2.setValid(true);
+    result2.setOneSynEntity(varSyn);
+    std::set<ProgramElement> result2Elements;
+    result2Elements.insert(ProgramElement::createVariable("x"));
+    result2Elements.insert(ProgramElement::createVariable("z"));
+    result2.setOneSynSet(result2Elements);
+
+    Result result3;
+    result3.setResultType(ResultType::SUCH_THAT_CLAUSE);
+    result3.setValid(true);
+    result3.setTwoSynEntities(std::pair<Entity, Entity>(readSyn, varSyn));
+    std::set<std::pair<ProgramElement, ProgramElement>> result3Elements;
+    result3Elements.insert(std::pair<ProgramElement, ProgramElement>(ProgramElement::createStatement(ElementType::READ, 5), ProgramElement::createVariable("z")));
+    result3.setTwoSynSet(result3Elements);
+
+    Result result4;
+    result4.setResultType(ResultType::SUCH_THAT_CLAUSE);
+    result4.setValid(true);
+    result4.setOneSynEntity(varSyn);
+    std::set<ProgramElement> result4Elements;
+    result4Elements.insert(ProgramElement::createVariable("x"));
+    result4.setOneSynSet(result4Elements);
+
+    Result result5;
+    result5.setResultType(ResultType::SUCH_THAT_CLAUSE);
+    result5.setValid(true);
+    result5.setOneSynEntity(procSyn1);
+    std::set<ProgramElement> result5Elements;
+    result5Elements.insert(ProgramElement::createProcedure("f"));
+    result5.setOneSynSet(result5Elements);
+
+    Result result6;
+    result6.setResultType(ResultType::SUCH_THAT_CLAUSE);
+    result6.setValid(true);
+    result6.setOneSynEntity(ifSyn);
+    std::set<ProgramElement> result6Elements;
+    result6Elements.insert(ProgramElement::createStatement(ElementType::IF, 6));
+    result6.setOneSynSet(result6Elements);
+
+    Result result7;
+    result7.setResultType(ResultType::SUCH_THAT_CLAUSE);
+    result7.setValid(true);
+    result7.setOneSynEntity(procSyn1);
+    std::set<ProgramElement> result7Elements;
+    result7Elements.insert(ProgramElement::createProcedure("f"));
+    result7.setOneSynSet(result7Elements);
+
+    Result result8;
+    result8.setResultType(ResultType::SUCH_THAT_CLAUSE);
+    result8.setValid(true);
+    result8.setOneSynEntity(stmtSyn);
+    std::set<ProgramElement> result8Elements;
+    result8Elements.insert(ProgramElement::createStatement(ElementType::STATEMENT, 1));
+    result8Elements.insert(ProgramElement::createStatement(ElementType::STATEMENT, 2));
+    result8Elements.insert(ProgramElement::createStatement(ElementType::STATEMENT, 3));
+    result8Elements.insert(ProgramElement::createStatement(ElementType::STATEMENT, 5));
+    result8Elements.insert(ProgramElement::createStatement(ElementType::STATEMENT, 7));
+    result8Elements.insert(ProgramElement::createStatement(ElementType::STATEMENT, 8));
+    result8Elements.insert(ProgramElement::createStatement(ElementType::STATEMENT, 9));
+    result8Elements.insert(ProgramElement::createStatement(ElementType::STATEMENT, 10));
+    result8.setOneSynSet(result8Elements);
 
 /*
     SECTION("Merger 2 1 syn"){
