@@ -4,7 +4,7 @@
 #include <string>
 
 #include "FormattedResult.h"
-#include "Optimiser.h"
+#include "PostOptimiser.h"
 #include "QPSHandler.h"
 #include "QueryProcessor.h"
 #include "Result.h"
@@ -14,22 +14,19 @@
 
 class QPSMainLogic {
 public:
-    static QPSMainLogic* getInstance(PkbGetter* pg); // Static access method
+    explicit QPSMainLogic(PkbGetter* pg);
     std::list<std::string> parse(const std::string& query);
 
 private:
-    explicit QPSMainLogic(PkbGetter* pg); // Make constructor private
-    QPSMainLogic(const QPSMainLogic&); // Make copy constructor private
-    QPSMainLogic& operator=(const QPSMainLogic&); // Make assignment operator private
-    static QPSMainLogic* instance; // The instance of QPSMainLogic will be stored here
     QueryProcessor* queryProcessor;
+    PreOptimiser* preOptimiser;
     QPSHandler* qpsHandler;
-    Optimiser* optimiser;
+    PostOptimiser* postOptimiser;
     ResultProcessor* resultProcessor;
     ResultFormatter* resultFormatter;
-    PreOptimiser* preOptimiser;
 
     std::vector<Clause> callParser(const std::string& query);
+    GroupedClause callPreOptimiser(const std::vector<Clause>& clauses);
     std::vector<ResultGroup> callHandler(const GroupedClause& groupedClause);
     std::vector<ResultGroup> callPostOptimiser(const std::vector<ResultGroup>& resultsGroups) ;
     FormattedResult callProcessor(const std::vector<ResultGroup>& groups);

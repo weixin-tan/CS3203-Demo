@@ -98,3 +98,53 @@ stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, i
 Select a such that Uses (a, "g") and Modifies (a, "x") pattern a (_, _"a+b+c+d"_) such that Parent (ifs, a) and Uses (ifs, "eee") and Parent (ifs1, ifs) and Uses (ifs1, "ee") and Parent (ifs2, ifs1)
 28
 5000
+1 - invalid syntax such that and
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select s such that Uses (s, "a") such that and Uses (s, "b") and Uses (s, "c") and Follows (c, s)
+
+5000
+2 - invalid syntax no such that
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select s and Uses (s, "b") and Modifies (s, "a") and Parent (s1, s) and Follows* (s, a)
+
+5000
+3 - invalid syntax and such that
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select s such that Follows (s, pn) and Follows (pn, s1) and such that Follows* (s, r) and Follows (pn, ifs)
+
+5000
+15 - invalid syntax and pattern
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select v such that Uses (a, v) and Next (c, a) and Next (a, w) and Modifies (a, "x") and pattern a (_, _"g"_)
+
+5000
+16 - invalid syntax such that pattern
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select s such that Parent* (s, a) such that pattern a (_, _"a+b"_) such that Next (a, r) and Follows (s1, a) and Follows (w, s1) and Parent (ifs, w)
+
+5000
+17 - invalid syntax and such that pattern
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select c such that Parent* (ifs, c) and Parent* (ifs, a) and such that pattern a (_, _"g"_) such that Follows* (c, a1) and Parent (ifs, pn) and Uses (pn, "cc")
+
+5000
+18 - invalid syntax such that such that
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select s such that Uses (s, "b") and Parent* (s1, s) such that such that Parent* (s1, s2) and Uses (s2, "i") and Follows (c, s2) and Next (s2, w) pattern w ("jjjj", _)
+
+5000
+20 - invalid syntax and pattern
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select a such that Uses (a, "g") and Modifies (a, "x") and pattern a (_, _"a+b+c+d"_) such that Parent (ifs, a) and Uses (ifs, "eee") and Parent (ifs1, ifs) and Uses (ifs1, "ee") and Parent (ifs2, ifs1)
+
+5000
+20 - invalid syntax pattern and PDA
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select a such that Uses (a, "g") and Modifies (a, "x") pattern a (_, _"a+b+c+d"_) and Parent (ifs, a) and Uses (ifs, "eee") and Parent (ifs1, ifs) and Uses (ifs1, "ee") and Parent (ifs2, ifs1)
+
+5000
+20 - invalid syntax PDA and pattern
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select a such that Uses (a, "g") such that Modifies (a, "x") and pattern a (_, _"a+b+c+d"_) such that Parent (ifs, a) and Uses (ifs, "eee") and Parent (ifs1, ifs) and Uses (ifs1, "ee") and Parent (ifs2, ifs1)
+
+5000
