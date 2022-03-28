@@ -3,6 +3,8 @@
 FormattedResult::FormattedResult() {
     valid = false;
     resultType = FormattedResultType::NULL_RESULT;
+    entityList = {};
+    programElementLists = {};
 }
 
 bool FormattedResult::getValid() {

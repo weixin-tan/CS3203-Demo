@@ -15,7 +15,7 @@ PreOptimiser preOp = PreOptimiser();
 PostOptimiser op = PostOptimiser();
 ResultProcessor rp = ResultProcessor();
 
-
+/*
 
 
 //SETUP: 
@@ -327,7 +327,7 @@ TEST_CASE("Integration Testing") {
 
     }
 
-    SECTION("SUCH THAT CLAUSE - Follows/Follows*/Parent/Parent*") {
+    SECTION("SUCH THAT CLAUSE - Follows/FollowsT/Parent/ParentT") {
         std::string st1 = "if ifs; print p;\nSelect p such that Parent (4, ifs)";
         std::string st2 = "while w; assign a;\nSelect a such that Parent* (w, a)";
         std::string st3 = "print p; Select p such that Follows* (_, p)";
@@ -611,4 +611,4 @@ TEST_CASE("Integration Testing") {
     cout << "Time taken by function: "
         << duration.count() << " microseconds" << endl;
 }
-
+*/
