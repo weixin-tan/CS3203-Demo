@@ -210,10 +210,17 @@ void QueryProcessor::addIfNotDuplicate(Clause *newClause, const RelationshipRef&
 
 void QueryProcessor::handleVariablesToFind(std::vector<std::string> *variablesToSelect, Clause *newClause, bool *isValid,
                            std::unordered_map<std::string, Entity>* entityMap){
+    bool containsBoolean = false;
     for (const auto& s : (*variablesToSelect)) {
         Entity toAdd = findRelationshipEntityWithAttribute(s, entityMap);
         (*newClause).appendEntityToFind(toAdd);
         (*isValid) = (*isValid) && checkVariableToSelect(toAdd);
+        if (toAdd.eType == EntityType::BOOLEAN){
+            containsBoolean = true;
+        }
+    }
+    if (containsBoolean && (*newClause).entityToFindList.size() > 1){
+        (*isValid) = false;
     }
 }
 
@@ -303,7 +310,6 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
         removeAndPattern(&PatternClauses);
         isValid = isValid && checkAndWith(WithClauses);
         removeAndWith(&WithClauses);
-
         if (!isValid) {
             break;
         }
@@ -332,6 +338,10 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
             break;
         }
         clauseList.push_back(newClause);
+
+        if (!isValid) {
+            break;
+        }
     }
 
     if (isValid) {

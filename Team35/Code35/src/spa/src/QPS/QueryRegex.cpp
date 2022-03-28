@@ -123,20 +123,16 @@ bool existSuchThat(const std::string& s) {
     std::vector<long> myList = findSuchThatClause(s);
     long suchPosition = myList[0];
     long thatPosition = myList[1];
-    int suchLength = 4;
-    if (suchPosition == std::string::npos || thatPosition == std::string::npos) {
-        return false;
-    } else {
-        return thatPosition - suchPosition - suchLength > 0;
-    }
+    return suchPosition != std::string::npos || thatPosition != std::string::npos;
 }
 
 bool checkListIsIdent(std::vector<std::string> *sArr){
-    bool returnBool = true;
     for (int i = 1; i < (*sArr).size(); i++) {
-        returnBool = returnBool && isIdent((*sArr)[i]);
+        if (!isIdent((*sArr)[i])){
+            return false;
+        }
     }
-    return returnBool;
+    return true;
 }
 
 /**
@@ -290,17 +286,16 @@ long findClauseStartPosition(const std::string& s, const std::string& commandWor
     long commandWordLength = commandWord.length();
     long temp;
     std::string placeholder;
-    long patternPosition = s.find(commandWord);
-
-    if (patternPosition != std::string::npos) {
-        if (doesStringExist(s.substr(patternPosition, s.length() - patternPosition), ">")
-                || isSpaces(original.substr(selectLength, patternPosition - selectLength))) {
-            temp = findClauseStartPosition(s.substr(patternPosition + commandWordLength, s.size() - patternPosition),
+    long commandWordPosition = s.find(commandWord);
+    if (commandWordPosition != std::string::npos) {
+        if (doesStringExist(s.substr(commandWordPosition, s.length() - commandWordPosition), ">")
+                || isSpaces(original.substr(selectLength, commandWordPosition - selectLength))) {
+            temp = findClauseStartPosition(s.substr(commandWordPosition + commandWordLength, s.size() - commandWordPosition),
                                            commandWord,
                                            original);
-            patternPosition = newPatternPosition(temp, patternPosition, commandWordLength);
+            commandWordPosition = newPatternPosition(temp, commandWordPosition, commandWordLength);
         }
-        return patternPosition;
+        return commandWordPosition;
     } else {
         return std::string::npos;
     }
@@ -319,7 +314,7 @@ long findWithClause(const std::string& s) {
     return findClauseStartPosition(s, "with", s);
 }
 
-long findPatternClauseInSubstring(const std::string& s, std::string original) {
+long recursiveFindPatternClauseInSubstring(const std::string& s, std::string original){
     long commaPosition = original.rfind(',');
     if (commaPosition != std::string::npos) {
         original = original.substr(0, commaPosition);
@@ -329,16 +324,20 @@ long findPatternClauseInSubstring(const std::string& s, std::string original) {
     int patternLength = 7;
 
     if (patternPosition != std::string::npos) {
-        if (bracketPosition > patternPosition && !isSpaces(original.substr(patternPosition + patternLength,
-                                                                           bracketPosition - patternPosition
-                                                                                   - patternLength))) {
+        if (bracketPosition > patternPosition
+                && !isSpaces(original.substr(patternPosition + patternLength,
+                                             bracketPosition - patternPosition - patternLength))) {
             return patternPosition;
         } else {
-            return findPatternClauseInSubstring(s.substr(0, patternPosition), original);
+            return recursiveFindPatternClauseInSubstring(s.substr(0, patternPosition), original);
         }
     } else {
         return std::string::npos;
     }
+}
+
+long findPatternClauseInSubstring(const std::string& s) {
+    return recursiveFindPatternClauseInSubstring(s, s);
 }
 
 /**
@@ -352,38 +351,40 @@ std::vector<long> findSuchThatClause(const std::string& s) {
     long temp;
     long suchPosition = s.find("such");
     long thatPosition = s.find("that");
-    if ((suchPosition == std::string::npos || thatPosition == std::string::npos)) {
+    if (suchPosition == std::string::npos || thatPosition == std::string::npos) {
         returnList.push_back(std::string::npos);
         returnList.push_back(std::string::npos);
+        return returnList;
     } else if (stripString(s.substr(suchPosition + suchLength, thatPosition - suchPosition - suchLength)).empty()
-            && suchPosition < thatPosition) {
-        if (thatPosition - suchPosition == suchLength) {
-            temp = thatPosition;
-            returnList = findSuchThatClause(s.substr(temp + suchLength, s.size() - temp));
-            returnList[0] = returnList[0] + temp + suchLength;
-            returnList[1] = returnList[1] + temp + suchLength;
-        } else {
-            returnList.push_back(suchPosition);
-            returnList.push_back(thatPosition);
-        }
+            && suchPosition < thatPosition
+            && thatPosition - suchPosition > suchLength){
+        returnList.push_back(suchPosition);
+        returnList.push_back(thatPosition);
+        return returnList;
+    }
+
+    if (suchPosition < thatPosition) {
+        temp = suchPosition;
     } else {
-        if (suchPosition < thatPosition) {
-            temp = suchPosition;
-        } else {
-            temp = thatPosition;
-        }
-        returnList = findSuchThatClause(s.substr(temp + suchLength, s.size() - temp));
+        temp = thatPosition;
+    }
+    returnList = findSuchThatClause(s.substr(temp + suchLength, s.size() - temp));
+
+    if (returnList[0] == std::string::npos || returnList[1] == std::string::npos) {
+        returnList.push_back(std::string::npos);
+        returnList.push_back(std::string::npos);
+        return returnList;
+    }else{
         returnList[0] = returnList[0] + temp + suchLength;
         returnList[1] = returnList[1] + temp + suchLength;
+        return returnList;
     }
-    return returnList;
 }
 
-long smallestNumber(const long positionList[3]) {
+long smallestNumber(std::vector<long> positionList) {
     long toReturn = INT32_MAX;
     long temp;
-    int positionListSize = 3;
-    for (int i = 0; i < positionListSize; i++) {
+    for (int i = 0; i < positionList.size(); i++) {
         temp = positionList[i];
         if (std::string::npos != temp && temp < toReturn && temp >= 0) {
             toReturn = temp;
@@ -527,9 +528,7 @@ std::vector<std::string> extractDesignEntityAndSynonyms(const std::string& s) {
     std::vector<std::string> laterSynonymsList = splitString(s, ",");
     std::vector<std::string> frontDesignEntityAndSynonym = splitStringBySpaces(laterSynonymsList.front());
     for (auto& i : frontDesignEntityAndSynonym) {
-        if (!isSpaces(i)) {
-            returnList.push_back(i);
-        }
+        returnList.push_back(i);
     }
 
     if (returnList.size() != 2) {
@@ -538,9 +537,7 @@ std::vector<std::string> extractDesignEntityAndSynonyms(const std::string& s) {
     }
 
     for (int i = 1; i < laterSynonymsList.size(); i++) {
-        if (!isSpaces(laterSynonymsList[i])) {
-            returnList.push_back(stripString(laterSynonymsList[i]));
-        }
+        returnList.push_back(stripString(laterSynonymsList[i]));
     }
     return returnList;
 }
@@ -559,7 +556,7 @@ std::vector<std::string> splitVariablesAndClauses(const std::string& s) {
     long patternPosition = findPatternClause(s);
     long withPosition = findWithClause(s);
 
-    long positionList[3] = {suchThatPosition, patternPosition, withPosition};
+    std::vector<long> positionList = {suchThatPosition, patternPosition, withPosition};
     long selected = smallestNumber(positionList);
 
     if ((suchThatPosition == std::string::npos) && (patternPosition == std::string::npos)
@@ -617,44 +614,28 @@ std::vector<std::string> extractWithClauses(const std::string& s) {
     return toReturn;
 }
 
-void joinWordToPhrases(const std::string& stmt, std::vector<std::string> *wordsList, int* count){
+void reconstructWordsToPhrases(const std::string& stmt, std::vector<std::string> *phraseList, int* count){
     if (!stmt.empty()) {
         if (firstWordChecker(stmt, "and") || isWith(stmt) ||
                 firstWordChecker(stmt, "such") || isPattern(stmt)) {
-            (*wordsList).push_back(stmt);
+            (*phraseList).push_back(stmt);
             (*count) = (*count) + 1;
         } else {
-            (*wordsList)[(*count) - 1] = (*wordsList)[(*count) - 1] + ")" + stmt;
+            (*phraseList)[(*count) - 1] = (*phraseList)[(*count) - 1] + ")" + stmt;
         }
     } else {
-        (*wordsList)[(*count) - 1] = (*wordsList)[(*count) - 1] + ")";
+        (*phraseList)[(*count) - 1] = (*phraseList)[(*count) - 1] + ")";
     }
 }
 
-void splitWithAndOtherClauses(const std::string& stmt, std::vector<std::string> *returnList){
+void insertWithListAndOtherClause(const std::string& stmt, long x, std::vector<std::string> *returnList){
     std::vector<std::string> temp;
-    if (!isWith(stmt)) {
-        (*returnList).push_back(stmt + ")");
-    } else if (isWith(stmt) && existSuchThat(stmt)) {
-        long x = findSuchThatClause(stmt)[0];
-        std::string first = stmt.substr(0, x);
-        std::string second = stmt.substr(x, stmt.length() - x);
-        temp = extractWithClauses(first);
-        (*returnList).insert((*returnList).end(), temp.begin(), temp.end());
-        (*returnList).push_back(second + ")");
-    } else if (isWith(stmt) && findPatternClauseInSubstring(stmt, stmt) != std::string::npos) {
-        long x = findPatternClauseInSubstring(stmt, stmt);
-        std::string first = stmt.substr(0, x);
-        std::string second = stmt.substr(x, stmt.length() - x);
-        temp = extractWithClauses(first);
-        (*returnList).insert((*returnList).end(), temp.begin(), temp.end());
-        (*returnList).push_back(second + ")");
-    } else {
-        temp = extractWithClauses(stmt);
-        (*returnList).insert((*returnList).end(), temp.begin(), temp.end());
-    }
+    std::string first = stmt.substr(0, x);
+    std::string second = stmt.substr(x, stmt.length() - x);
+    temp = extractWithClauses(first);
+    (*returnList).insert((*returnList).end(), temp.begin(), temp.end());
+    (*returnList).push_back(second + ")");
 }
-
 
 /**
  * split clauses into pattern and such that clauses
@@ -663,18 +644,25 @@ void splitWithAndOtherClauses(const std::string& stmt, std::vector<std::string> 
  */
 std::vector<std::string> splitSuchThatPatternWithClauses(const std::string& s) {
     std::vector<std::string> returnList;
+    std::vector<std::string> wordsList = splitString(s, ")"); //wordsList = splitString(s, ")");
+    std::vector<std::string> phraseList;
     std::vector<std::string> temp;
-    std::vector<std::string> tempList = splitString(s, ")"); //tempList = splitString(s, ")");
-    std::vector<std::string> wordsList;
 
     int count = 0;
-    for (const auto& stmt : tempList) {
-        joinWordToPhrases(stmt, &wordsList, &count);
+    for (const auto& stmt : wordsList) {
+        reconstructWordsToPhrases(stmt, &phraseList, &count);
     }
 
-    for (const auto& stmt : wordsList) {
-        if (!stmt.empty()) {
-            splitWithAndOtherClauses(stmt, &returnList);
+    for (const auto& stmt : phraseList) {
+        if (!isWith(stmt)) {
+            returnList.push_back(stmt + ")");
+        } else if (isWith(stmt) && existSuchThat(stmt)) {
+            insertWithListAndOtherClause(stmt, findSuchThatClause(stmt)[0], &returnList);
+        } else if (isWith(stmt) && findPatternClauseInSubstring(stmt) != std::string::npos) {
+            insertWithListAndOtherClause(stmt, findPatternClauseInSubstring(stmt), &returnList);
+        } else {
+            temp = extractWithClauses(stmt);
+            returnList.insert(returnList.end(), temp.begin(), temp.end());
         }
     }
     return returnList;
@@ -689,24 +677,25 @@ std::vector<std::string> extractVariablesToSelect(const std::string& s) {
     std::vector<std::string> returnList;
     std::string variableString = splitVariablesAndClauses(s)[0];
 
-    if (isSelect(variableString)) {
-        variableString = removeSelect(variableString);
-        if (existVBrackets(variableString)) {
-            variableString = removeVBrackets(variableString);
-            for (const auto& word : splitString(variableString, ",")) {
-                returnList.push_back(word);
-            }
-        } else {
-            returnList.push_back(variableString);
+    if (!isSelect(variableString)){
+        return returnList;
+    }
+    variableString = removeSelect(variableString);
+    if (existVBrackets(variableString)) {
+        variableString = removeVBrackets(variableString);
+        for (const auto& word : splitString(variableString, ",")) {
+            returnList.push_back(word);
         }
+    } else {
+        returnList.push_back(variableString);
     }
     return returnList;
 }
 
-void decideWhichListToPush(const std::string& stmt, lastClauseType *lastType,
-                           std::vector<std::string> *suchThatList,
-                           std::vector<std::string> *patternList,
-                           std::vector<std::string> *withList){
+void decideWhichListToAddRelationshipTo(const std::string& stmt, lastClauseType *lastType,
+                                        std::vector<std::string> *suchThatList,
+                                        std::vector<std::string> *patternList,
+                                        std::vector<std::string> *withList){
     if (isWith(stmt)) {
         (*withList).push_back(stmt);
         (*lastType) = lastClauseType::With;
@@ -743,7 +732,7 @@ std::vector<std::vector<std::string>> extractClauses(const std::string& s) {
         lastClauseType lastType = lastClauseType::None;
 
         for (const auto& stmt : clausesList) {
-            decideWhichListToPush(stmt, &lastType, &suchThatList, &patternList, &withList);
+            decideWhichListToAddRelationshipTo(stmt, &lastType, &suchThatList, &patternList, &withList);
         }
     }
     returnList.push_back(suchThatList);

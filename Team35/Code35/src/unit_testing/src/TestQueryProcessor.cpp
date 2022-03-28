@@ -477,7 +477,7 @@ TEST_CASE("test advanced queries") {
     Entity pProcname = Entity(EntityType::PROCEDURE, "p", EntityAttributeType::PROCNAME);
 
     string s1 = "\nSelect       BOOLEAN\t\t\t\tsuch\n\n\n\nthat     Next* (\t1\t,\t2\t)\n\n";
-    string s2 = "assign a1, a2;Select <a1, a2\n.\nstmt#, BOOLEAN> such that Affects (a1, a2)";
+    string s2 = "assign a1, a2;Select <a1, a2\n.\nstmt#> such that Affects (a1, a2)";
     string s3 = "procedure p; call c; Select c.procName with c\t.\tprocName = p    .    procName";
     string s4 = "while w; if ifs; Select w pattern w (\"x\", _) and ifs (\"x\", _, _)";
     string s5 =
@@ -528,6 +528,7 @@ TEST_CASE("test advanced queries") {
     Clause s15_output = qp.parsePQL(s15)[0];
     Clause s16_output = qp.parsePQL(s16)[0];
 
+
     RelationshipRef r1 = RelationshipRef(RelationshipType::NEXT_T, int1, int2);
     RelationshipRef r2 = RelationshipRef(RelationshipType::AFFECTS, a1, a2);
     RelationshipRef r3 = RelationshipRef(RelationshipType::WITH, cProcname, pProcname);
@@ -543,6 +544,7 @@ TEST_CASE("test advanced queries") {
     RelationshipRef r11_b = RelationshipRef(RelationshipType::WITH, a1stmt, int3);
     RelationshipRef r11_c = RelationshipRef(RelationshipType::WITH, int1, int3);
 
+
     SECTION("no mixed clauses query") {
         c1.appendEntityToFind(boolean);
         c1.appendRef(r1);
@@ -550,7 +552,6 @@ TEST_CASE("test advanced queries") {
 
         c2.appendEntityToFind(a1);
         c2.appendEntityToFind(a2stmt);
-        c2.appendEntityToFind(boolean);
         c2.appendRef(r2);
         REQUIRE(s2_output.equals(c2));
 
@@ -572,6 +573,7 @@ TEST_CASE("test advanced queries") {
         REQUIRE(s7_output.equals(c5));
     }
 
+
     SECTION("multiple pattern queries") {
         c8.appendEntityToFind(a);
         c8.appendRef(r8_a);
@@ -591,7 +593,6 @@ TEST_CASE("test advanced queries") {
         REQUIRE(s12_output.equals(c11));
         REQUIRE(s13_output.equals(c11));
     }
-
     SECTION("mixed queries") {
         c14.appendEntityToFind(a);
         c14.appendRef(r11_a);
@@ -648,7 +649,7 @@ TEST_CASE("advanced trippy queries") {
 
     //interleave
     string s5 = "assign pattern, with; variable and;\n"
-                "Select <pattern.stmt#, with.stmt#, and.varName, BOOLEAN>\n"
+                "Select <pattern.stmt#, with.stmt#, and.varName>\n"
                 "with pattern.stmt# = with.stmt# pattern pattern (and, \"Modifies\") such that Next(pattern, with)\n"
                 "such that Next(with, pattern) with and.varName = pattern.stmt# pattern with (and, \"Follows\")";
 
@@ -731,8 +732,6 @@ TEST_CASE("remove duplicate relationships"){
         REQUIRE(r6.size() == 2);
         REQUIRE(r7.size() == 2);
     }
-
-
 }
 
 TEST_CASE("debugging") {
