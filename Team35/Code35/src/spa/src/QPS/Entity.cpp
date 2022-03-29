@@ -17,6 +17,10 @@ Entity::Entity(EntityType eType, std::string name, EntityAttributeType aType) {
     Entity::aType = aType;
 }
 
+void Entity::clear_aType() {
+    this->aType = EntityAttributeType::NULL_ATTRIBUTE;
+}
+
 std::string Entity::toString() {
     std::ostringstream buffer;
     buffer << "Type: " << Type::entityTypeToString(eType) << ", Name: " << name;

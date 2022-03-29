@@ -1,13 +1,13 @@
-#ifndef SPA_OPTIMISER_H
-#define SPA_OPTIMISER_H
+#ifndef SPA_POSTOPTIMISER_H
+#define SPA_POSTOPTIMISER_H
 
 #include "../QPS/ResultGroup.h"
 #include "Result.h"
 
-class Optimiser {
+class PostOptimiser {
 public:
-    Optimiser();
+    PostOptimiser();
     std::vector<ResultGroup> optimise(std::vector<ResultGroup> resultsGroups);
 };
 
-#endif //SPA_OPTIMISER_H
+#endif //SPA_POSTOPTIMISER_H

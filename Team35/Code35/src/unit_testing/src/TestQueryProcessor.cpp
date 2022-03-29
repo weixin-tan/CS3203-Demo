@@ -1,4 +1,3 @@
-#include <string>
 #include <vector>
 #include <iostream>
 
@@ -705,9 +704,40 @@ TEST_CASE("advanced trippy queries") {
     }
 }
 
+TEST_CASE("remove duplicate relationships"){
+    QueryProcessor qp = QueryProcessor();
+    string s1 = "procedure p, q; Select p.procName such that Calls (p, q)  and Calls (p, q)"; // 1
+    string s2 = "procedure p, q; Select p.procName such that Calls (p, q) and Modifies (p, \"i\") and Calls (p, q)"; // 2
+    string s3 = "assign a, a1; variable v; Select a pattern a (v, _) and a1 (v, _) and a (v, _)"; // 2
+    string s4 = "assign a; Select a pattern a (\"x\", _) and a (\"x\", _) and a (\"y\", _)"; // 2
+    string s5 = "assign a, a1; variable v, v1; Select a pattern a (v, \"x+1\") and a (v, \"x+1\") and a (v, \"y+1\")"; // 2
+    string s6 = "procedure p, q; Select p with p.procName = \"Third\" with q.procName = \"Third\" and \"Third\" = q.procName"; //2
+    string s7 = "procedure p, q; Select p with p.procName = \"Third\" with q.procName = \"Third\" and q.procName = \"Third\""; //2
+
+    vector<RelationshipRef> r1 = qp.parsePQL(s1)[0].refList;
+    vector<RelationshipRef> r2 = qp.parsePQL(s2)[0].refList;
+    vector<RelationshipRef> r3 = qp.parsePQL(s3)[0].refList;
+    vector<RelationshipRef> r4 = qp.parsePQL(s4)[0].refList;
+    vector<RelationshipRef> r5 = qp.parsePQL(s5)[0].refList;
+    vector<RelationshipRef> r6 = qp.parsePQL(s6)[0].refList;
+    vector<RelationshipRef> r7 = qp.parsePQL(s7)[0].refList;
+
+    SECTION("test number of relationships"){
+        REQUIRE(r1.size() == 1);
+        REQUIRE(r2.size() == 2);
+        REQUIRE(r3.size() == 2);
+        REQUIRE(r4.size() == 2);
+        REQUIRE(r5.size() == 2);
+        REQUIRE(r6.size() == 2);
+        REQUIRE(r7.size() == 2);
+    }
+
+
+}
+
 TEST_CASE("debugging") {
     QueryProcessor qp = QueryProcessor();
-    string s1 = "assign a;Select a such that Uses (a, \"g\") with a.stmt# = 10";
+    string s1 = "procedure p, q; Select p.procName such that Calls (p, q)";
     vector<Clause> c = qp.parsePQL(s1);
     /*
     if (c.empty()) {

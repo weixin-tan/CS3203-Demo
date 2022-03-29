@@ -9,8 +9,8 @@ class FormattedResult {
 private:
     bool valid;
     FormattedResultType resultType;
-    std::vector<Entity> entityList {};
-    std::vector<std::vector<ProgramElement>> programElementLists {};
+    std::vector<Entity> entityList;
+    std::vector<std::vector<ProgramElement>> programElementLists;
 public:
     FormattedResult();
     bool getValid();

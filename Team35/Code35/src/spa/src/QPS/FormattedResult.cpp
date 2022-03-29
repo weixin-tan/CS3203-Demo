@@ -3,39 +3,38 @@
 FormattedResult::FormattedResult() {
     valid = false;
     resultType = FormattedResultType::NULL_RESULT;
+    entityList = {};
+    programElementLists = {};
 }
 
 bool FormattedResult::getValid() {
-    return valid;
+    return FormattedResult::valid;
 }
 
 FormattedResultType FormattedResult::getResultType() {
-    return resultType;
+    return FormattedResult::resultType;
 }
 
 std::vector<Entity> FormattedResult::getEntityList() {
-    return entityList;
+    return FormattedResult::entityList;
 }
 
 std::vector<std::vector<ProgramElement>> FormattedResult::getProgramElementLists() {
-    return programElementLists;
+    return FormattedResult::programElementLists;
 }
 
 void FormattedResult::setValid(bool b) {
-    valid = b;
+    FormattedResult::valid = b;
 }
 
 void FormattedResult::setResultType(FormattedResultType f) {
-    resultType = f;
+    FormattedResult::resultType = f;
 }
 
 void FormattedResult::setEntityList(std::vector<Entity> entities) {
-    entityList = entities;
+    FormattedResult::entityList = entities;
 }
 
 void FormattedResult::setProgramElementsLists(std::vector<std::vector<ProgramElement>> lists) {
-    programElementLists = lists;
+    FormattedResult::programElementLists = lists;
 }
-
-
-

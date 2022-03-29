@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include "QPS/Optimiser.h"
+#include "QPS/PostOptimiser.h"
 #include "PKB.h"
 #include "QPS/QueryProcessor.h"
 #include "QPS/QPSMainLogic.h"
@@ -8,14 +8,14 @@
 
 
 PKB pkb = PKB();
-QPSMainLogic* qr = QPSMainLogic::getInstance(pkb.getGetter());
+QPSMainLogic qr = QPSMainLogic(pkb.getGetter());
 QueryProcessor qp = QueryProcessor();
 QPSHandler qh = QPSHandler(pkb.getGetter());
 PreOptimiser preOp = PreOptimiser();
-Optimiser op = Optimiser();
+PostOptimiser op = PostOptimiser();
 ResultProcessor rp = ResultProcessor();
 
-
+/*
 
 
 //SETUP: 
@@ -327,7 +327,7 @@ TEST_CASE("Integration Testing") {
 
     }
 
-    SECTION("SUCH THAT CLAUSE - Follows/Follows*/Parent/Parent*") {
+    SECTION("SUCH THAT CLAUSE - Follows/FollowsT/Parent/ParentT") {
         std::string st1 = "if ifs; print p;\nSelect p such that Parent (4, ifs)";
         std::string st2 = "while w; assign a;\nSelect a such that Parent* (w, a)";
         std::string st3 = "print p; Select p such that Follows* (_, p)";
@@ -611,4 +611,4 @@ TEST_CASE("Integration Testing") {
     cout << "Time taken by function: "
         << duration.count() << " microseconds" << endl;
 }
-
+*/

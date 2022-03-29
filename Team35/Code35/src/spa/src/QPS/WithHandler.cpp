@@ -17,14 +17,18 @@ Result WithHandler::handleWith(const RelationshipRef& relRef) {
         return result;
     } else if (isFixedEntity(left) && !isFixedEntity(right)) {
         oneSynSet = handleOneSideFixed(left, right);
+        right.aType = EntityAttributeType::NULL_ATTRIBUTE;
         result.setOneSynEntity(right);
         result.setOneSynSet(oneSynSet);
     } else if (!isFixedEntity(left) && isFixedEntity(right)) {
         oneSynSet = handleOneSideFixed(right, left);
+        left.aType = EntityAttributeType::NULL_ATTRIBUTE;
         result.setOneSynEntity(left);
         result.setOneSynSet(oneSynSet);
     } else {
         twoSynSet = handleNoSideFixed(left, right);
+        left.aType = EntityAttributeType::NULL_ATTRIBUTE;
+        right.aType = EntityAttributeType::NULL_ATTRIBUTE;
         result.setTwoSynEntities(std::pair<Entity, Entity>(left, right));
         result.setTwoSynSet(twoSynSet);
     }
@@ -62,6 +66,15 @@ std::set<ProgramElement> WithHandler::matchProgramElements(const std::set<Progra
     return toReturn;
 }
 
+void WithHandler::insertIfSameAttributeString(const std::string& stringA, const std::string& stringB,
+                                              const ProgramElement& elementA, const ProgramElement& elementB,
+                                 std::set<std::pair<ProgramElement, ProgramElement>> *toReturn){
+    if (stringA == stringB) {
+        std::pair<ProgramElement, ProgramElement> tempPair(elementA, elementB);
+        (*toReturn).insert(tempPair);
+    }
+}
+
 std::set<std::pair<ProgramElement,
                    ProgramElement>> WithHandler::matchProgramElements(const std::set<ProgramElement>& setA,
                                                                       const std::set<ProgramElement>& setB,
@@ -74,10 +87,7 @@ std::set<std::pair<ProgramElement,
         stringA = elementA.toString(aType);
         for (const auto& elementB : setB) {
             stringB = elementB.toString(bType);
-            if (stringA == stringB) {
-                std::pair<ProgramElement, ProgramElement> tempPair(elementA, elementB);
-                toReturn.insert(tempPair);
-            }
+            insertIfSameAttributeString(stringA, stringB, elementA, elementB, &toReturn);
         }
     }
     return toReturn;
