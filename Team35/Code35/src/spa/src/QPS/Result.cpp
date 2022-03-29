@@ -52,7 +52,7 @@ std::set<ProgramElement> Result::getOneSynSet() const {
     return Result::oneSynSet;
 }
 
-std::pair<Entity, Entity> Result::getTwoSynEntities() {
+std::pair<Entity, Entity> Result::getTwoSynEntities() const {
     return Result::twoSynEntities;
 }
 

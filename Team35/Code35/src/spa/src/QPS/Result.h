@@ -30,7 +30,7 @@ public:
     bool getValid() const;
     Entity getOneSynEntity() const;
     std::set<ProgramElement> getOneSynSet() const;
-    std::pair<Entity, Entity> getTwoSynEntities();
+    std::pair<Entity, Entity> getTwoSynEntities() const;
     std::set<std::pair<ProgramElement, ProgramElement>> getTwoSynSet() const;
     bool operator==(const Result& r1) const;
 };
