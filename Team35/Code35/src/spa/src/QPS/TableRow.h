@@ -19,7 +19,7 @@ public:
     static std::pair<bool, TableRow> combineRow(TableRow row1, TableRow row2);
     static TableRow filterRow(TableRow row, std::vector<Entity> entities);
     bool operator<(TableRow row1) const;
-    bool TableRow::operator==(TableRow row1) const;
+    bool operator==(TableRow row1) const;
 };
 
 class TableRowHash {
