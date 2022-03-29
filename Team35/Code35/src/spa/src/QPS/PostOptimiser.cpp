@@ -14,17 +14,6 @@ std::vector<ResultGroup> PostOptimiser::optimise(std::vector<ResultGroup> result
         std::vector<Result> optimisedResults;
         for (Result result : results) {
             if (!(result.getValid() && result.getOneSynSet().empty() && result.getTwoSynSet().empty())) {
-                if (result.getOneSynSet().empty()) {
-                    std::pair<Entity, Entity> entities = result.getTwoSynEntities();
-                    entities.first.aType = EntityAttributeType::NULL_ATTRIBUTE;
-                    entities.second.aType = EntityAttributeType::NULL_ATTRIBUTE;
-                    result.setTwoSynEntities(entities);
-                }
-                if (result.getTwoSynSet().empty()) {
-                    Entity entity = result.getOneSynEntity();
-                    entity.aType = EntityAttributeType::NULL_ATTRIBUTE;
-                    result.setOneSynEntity(entity);
-                }
                 optimisedResults.push_back(result);
             }
         }
