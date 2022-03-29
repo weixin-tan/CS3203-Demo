@@ -32,7 +32,7 @@ void AffectsGetter::dfsAffects(
     std::set<int> actualAffects;
     for (int stmtNo : visited)
         if (db->elementStmtTable.at(stmtNo).elementType == ElementType::ASSIGNMENT
-            && db->usesSTable.at(stmtNo).count(var) == 1)
+                && db->usesSTable.at(stmtNo).count(var) == 1)
             actualAffects.insert(stmtNo);
     affectsGraph.insert({src, actualAffects});
 }
@@ -69,9 +69,10 @@ bool AffectsGetter::isRelationship(const ProgramElement& leftSide, const Program
 // TODO: maybe optimise
 std::set<ProgramElement> AffectsGetter::getLeftSide(const ProgramElement& rightSide, const ElementType& typeToGet) {
     std::set<ProgramElement> result;
-    if(!(isStatementType(rightSide.elementType) && typeToGet == ElementType::ASSIGNMENT))
+    if(!(isStatementType(rightSide.elementType) && isStatementType(typeToGet)))
         throw std::invalid_argument("Wrong element type for getLeftSide on Affects");
-    if (db->elementStmtTable.at(rightSide.stmtNo).elementType != ElementType::ASSIGNMENT)
+    if (db->elementStmtTable.at(rightSide.stmtNo).elementType != ElementType::ASSIGNMENT
+            || ((typeToGet != ElementType::ASSIGNMENT) && (typeToGet != ElementType::STATEMENT)))
         return {};
     computeAndCacheAffectsR(rightSide.stmtNo);
     for (const int& affectsStmtNo : db->affectsTableR.at(rightSide.stmtNo))
@@ -81,9 +82,10 @@ std::set<ProgramElement> AffectsGetter::getLeftSide(const ProgramElement& rightS
 
 std::set<ProgramElement> AffectsGetter::getRightSide(const ProgramElement& leftSide, const ElementType& typeToGet) {
     std::set<ProgramElement> result;
-    if (!(isStatementType(leftSide.elementType) && typeToGet == ElementType::ASSIGNMENT))
+    if (!(isStatementType(leftSide.elementType) && isStatementType(typeToGet)))
         throw std::invalid_argument("Wrong element type for isAffects");
-    if (db->elementStmtTable.at(leftSide.stmtNo).elementType != ElementType::ASSIGNMENT)
+    if (db->elementStmtTable.at(leftSide.stmtNo).elementType != ElementType::ASSIGNMENT
+            || ((typeToGet != ElementType::ASSIGNMENT) && (typeToGet != ElementType::STATEMENT)))
         return {};
     const std::string var = *db->modifiesSTable.at(leftSide.stmtNo).begin();
     computeAndCacheAffects(leftSide.stmtNo);
