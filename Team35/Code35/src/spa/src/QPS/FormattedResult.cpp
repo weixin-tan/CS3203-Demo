@@ -1,4 +1,5 @@
 #include "FormattedResult.h"
+#include <vector>
 
 FormattedResult::FormattedResult() {
     valid = false;
