@@ -1,6 +1,8 @@
 #ifndef SPA_TEAM35_CODE35_SRC_SPA_SRC_SP_TABLEROW_H_
 #define SPA_TEAM35_CODE35_SRC_SPA_SRC_SP_TABLEROW_H_
 
+#include <vector>
+
 #include "Entity.h"
 #include "../PKB/ProgramElement.h"
 
