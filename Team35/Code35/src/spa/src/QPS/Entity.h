@@ -18,6 +18,8 @@ public:
 
     std::string toString();
     bool equals(const Entity& e1);
+
+    void clear_aType();
     bool operator==(const Entity& e1) const;
     bool operator!=(const Entity& e1) const;
     bool operator<(const Entity& e1) const;

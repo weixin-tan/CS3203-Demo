@@ -11,16 +11,21 @@ Table::Table(Result r) {
     // Else, we will just add them individually into the table. 
     // The set will have pair indicating the entity and the element itself
     if (!oneSynSet.empty())
-        for (const ProgramElement& elem : oneSynSet)
-            rows.insert({{std::make_pair(r.getOneSynEntity(), elem)}});
+        for (const ProgramElement& elem : oneSynSet) {
+            r.getOneSynEntity().clear_aType();
+            rows.insert({ {std::make_pair(r.getOneSynEntity(), elem)} });
+        }
 
 
     if (!twoSynSet.empty())
-        for (const auto& [elem1, elem2] : twoSynSet)
-            rows.insert({{
+        for (const auto& [elem1, elem2] : twoSynSet) {
+            r.getTwoSynEntities().first.clear_aType();
+            r.getTwoSynEntities().second.clear_aType(); 
+            rows.insert({ {
                 std::make_pair(r.getTwoSynEntities().first, elem1),
                 std::make_pair(r.getTwoSynEntities().second, elem2),
-                }});
+                } });
+        }
 }
 
 Table::Table(std::unordered_set<TableRow, TableRowHash> rows) : rows(rows) {};
