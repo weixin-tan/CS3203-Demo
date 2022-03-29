@@ -1,118 +1,192 @@
 #include "ResultProcessor.h"
 #include "Table.h"
-#include <set>
 
-ResultProcessor::ResultProcessor() = default;
-
-std::vector<ProgramElement> ResultProcessor::processResults(std::vector<ResultGroup> groups) {
-    std::vector<Result> results;
-
-    ResultGroup group1 = groups[0];
-    results.push_back(group1.getGroup()[0]);
-
-    if (groups.size() != 1) {
-        ResultGroup group2 = groups[1];
-        for (Result r : groups[1].getGroup()) {
-            results.push_back(r);
+FormattedResult ResultProcessor::processResults(std::vector<ResultGroup> groups) {
+    FormattedResult result;
+    std::vector<Result> noClauseResults = groups[0].getGroup();
+    // Handle invalid results in NoClauseResults
+    for (const auto& r : noClauseResults) {
+        if (!r.getValid()) {
+            return handleInvalidResult(r);
         }
     }
-
-    //get front of list
-    Result firstResult = results[0];
-
-    if (!firstResult.getValid()) {
-        return std::vector<ProgramElement>{};
+    // Handle cases with zero clauses
+    groups.erase(groups.begin());
+    if (groups.empty()) {
+        return handleZeroClause(noClauseResults);
     }
-
-    if (results.size() == 1) {
-        std::set<ProgramElement> result = firstResult.getOneSynSet();
-        return setToVector(result);
+    // Build all intermediate tables
+    std::vector<Table> intermediateTables;
+    for (const auto& group : groups) {
+        std::vector<Result> results = group.getGroup();
+        Table intermediateTable = buildIntermediateTable(results);
+        if (intermediateTable.rows.empty()) {
+            intermediateTables = {};
+            break;
+        }
+        intermediateTables.push_back(intermediateTable);
     }
+    if (intermediateTables.empty()) {
+        return handleInvalidResult(noClauseResults[0]);
+    }
+    // Extract only the necessary tables
+    std::set<Entity> entitiesToReturn = extractEntitySet(noClauseResults);
+    std::vector<Table> necessaryTables;
+    for (Table table : intermediateTables) {
+        TableRow firstRow = *table.rows.begin();
+        std::vector<Entity> entities;
+        for (const auto& r : firstRow.row) {
+            if (entitiesToReturn.find(r.first) != entitiesToReturn.end()) {
+                entities.push_back(r.first);
+            }
+        }
+        if (!entities.empty()) {
+            necessaryTables.push_back(table.extractColumns(entities));
+        }
+    }
+    // Get FormattedResult
+    if (necessaryTables.empty()) {
+        return handleZeroClause(noClauseResults);
+    } else {
+        if (entitiesToReturn.begin()->eType == EntityType::BOOLEAN) {
+            result.setValid(true);
+            result.setResultType(FormattedResultType::BOOLEAN);
+            return result;
+        }
 
+        Table finalTable = buildFinalTable(necessaryTables);
+        std::vector<Entity> finalTableEntities = extractTableEntities(finalTable);
+        std::vector<Entity> finalEntities = extractOrderedEntities(noClauseResults);
+
+        if (finalTableEntities.size() == finalEntities.size()) {
+            return extractTableInformation(finalEntities, finalTable);
+        }
+        std::set<Entity> missingEntities;
+        for (const auto& e : finalTableEntities) {
+            if (entitiesToReturn.find(e) == entitiesToReturn.end()) {
+                missingEntities.insert(e);
+            }
+        }
+        std::vector<Result> missingResults;
+        for (const auto& r : noClauseResults) {
+            if (missingEntities.find(r.getOneSynEntity()) != missingEntities.end()) {
+                missingResults.push_back(r);
+            }
+        }
+        for (const auto& r : missingResults) {
+            finalTable = Table(finalTable, Table(r));
+        }
+        return extractTableInformation(finalEntities, finalTable);
+    }
+}
+
+Table ResultProcessor::buildIntermediateTable(std::vector<Result> results) {
+    Table intermediateTable = Table(results[0]);
     results.erase(results.begin());
 
-    Table table;
+    if (results.empty()) {
+        return intermediateTable;
+    }
 
-    for (Result result : results) {  //for each result in the results list
-        if (result.getResultType() == ResultType::NULL_CLAUSE || !result.getValid()) {
-            return std::vector<ProgramElement>{};
-        }
-
-        if (result.getOneSynSet().empty() && result.getTwoSynSet().empty()) {
+    for (const auto& result : results) {
+        if (result.getValid() && result.getOneSynSet().empty() && result.getTwoSynSet().empty()) {
             continue;
         }
-
-        if (!result.getOneSynSet().empty()) {
-            Entity oneSyn = result.getOneSynEntity();
-            std::set<ProgramElement> programElementSet = result.getOneSynSet();
-            std::vector<ProgramElement> programElementVector = setToVector(programElementSet);
-
-            int pos = getIndexEntity(table.getHeader(), oneSyn);
-            if (pos == -1) {
-                table.crossProductOneSyn(oneSyn, programElementVector);
-            } else {
-                table.eliminateOneSyn(programElementVector, pos);
-            }
-
-        } else if (!result.getTwoSynSet().empty()) {
-            std::pair<Entity, Entity> twoSyn = result.getTwoSynEntities();
-            Entity left = twoSyn.first;
-            Entity right = twoSyn.second;
-            std::set<std::pair<ProgramElement, ProgramElement>> programElementPairSet = result.getTwoSynSet();
-            std::vector<std::pair<ProgramElement, ProgramElement>> programElementPairVector = setPairToVectorPair(
-                    programElementPairSet);
-
-            int leftPos = getIndexEntity(table.getHeader(), left);
-            int rightPos = getIndexEntity(table.getHeader(), right);
-
-            if (leftPos == -1 && rightPos == -1) {
-                table.crossProductTwoSyn(twoSyn, programElementPairVector);
-            } else if (leftPos == -1 || rightPos == -1) {
-                table.eliminateTwoSynOne(twoSyn, programElementPairVector, leftPos, rightPos);
-            } else {
-                table.eliminateTwoSynBoth(programElementPairVector, leftPos, rightPos);
-            }
-        }
-
-        if (table.isTableEmpty()) {
-            return std::vector<ProgramElement>{};
+        intermediateTable = Table(intermediateTable, Table(result));
+        if (intermediateTable.rows.empty()) {
+            break;
         }
     }
+    return intermediateTable;
+}
 
-    Entity entityToReturn = firstResult.getOneSynEntity();
+Table ResultProcessor::buildFinalTable(std::vector<Table> tables) {
+    Table finalTable = tables[0];
+    tables.erase(tables.begin());
 
-    int pos = getIndexEntity(table.getHeader(), entityToReturn);
+    if (!tables.empty()) {
+        for (const auto& table : tables) {
+            finalTable = Table(finalTable, table);
+        }
+    }
+    return finalTable;
+}
 
-    if (pos == -1) {
-        return setToVector(firstResult.getOneSynSet());
+std::set<Entity> ResultProcessor::extractEntitySet(std::vector<Result> resultList) {
+    std::set<Entity> entityList;
+    for (const auto& r : resultList) {
+        entityList.insert(r.getOneSynEntity());
+    }
+    return entityList;
+}
+
+FormattedResult ResultProcessor::handleInvalidResult(Result r) {
+    FormattedResult formattedResult;
+    if (r.getOneSynEntity().eType == EntityType::BOOLEAN) {
+        formattedResult.setResultType(FormattedResultType::BOOLEAN);
+    }
+    return formattedResult;
+}
+
+FormattedResult ResultProcessor::handleZeroClause(std::vector<Result> resultList) {
+    std::vector<std::vector<ProgramElement>> returnElements;
+    FormattedResult formattedResult;
+    formattedResult.setValid(true);
+
+    Result firstResult = resultList[0];
+    if (firstResult.getOneSynEntity().eType == EntityType::BOOLEAN) {
+        formattedResult.setResultType(FormattedResultType::BOOLEAN);
+        return formattedResult;
+    }
+
+    std::vector<Entity> noClauseEntities = extractOrderedEntities(resultList);
+    Table table = Table(resultList[0]);
+    resultList.erase(resultList.begin());
+    if (!resultList.empty()) {
+        for (const auto& r : resultList) {
+            table = Table(table, Table(r));
+        }
+    }
+    return extractTableInformation(noClauseEntities, table);
+}
+
+FormattedResult ResultProcessor::extractTableInformation(std::vector<Entity> entities, Table table) {
+    std::vector<std::vector<ProgramElement>> programElementLists;
+    for (int i = 0; i < entities.size(); i++) {
+        std::vector<ProgramElement> newVector;
+        programElementLists.push_back(newVector);
+    }
+    for (const auto& row : table.rows) {
+        for (int i = 0; i < entities.size(); i++) {
+            programElementLists[i].push_back(row.row.at(entities[i]));
+        }
+    }
+
+    FormattedResult formattedResult;
+    formattedResult.setValid(true);
+    if (entities.size() == 1) {
+        formattedResult.setResultType(FormattedResultType::SINGLE);
     } else {
-        return table.getBody()[pos];
+        formattedResult.setResultType(FormattedResultType::TUPLE);
     }
-
+    formattedResult.setEntityList(entities);
+    formattedResult.setProgramElementsLists(programElementLists);
+    return formattedResult;
 }
 
-int ResultProcessor::getIndexEntity(std::vector<Entity> v, Entity e) {
-    auto posIterator = find(v.begin(), v.end(), e);
-    if (posIterator != v.end()) {
-        int pos = posIterator - v.begin();
-        return pos;
-    } else {
-        return -1;
+std::vector<Entity> ResultProcessor::extractTableEntities(Table table) {
+    std::vector<Entity> entities;
+    TableRow firstRow = *table.rows.begin();
+    for (const auto& r : firstRow.row) {
+        entities.push_back(r.first);
     }
+    return entities;
 }
 
-std::vector<ProgramElement> ResultProcessor::setToVector(std::set<ProgramElement> s) {
-    std::vector<ProgramElement> results;
-    for (ProgramElement e : s) {
-        results.push_back(e);
+std::vector<Entity> ResultProcessor::extractOrderedEntities(std::vector<Result> results) {
+    std::vector<Entity> entities;
+    for (const auto& r : results) {
+        entities.push_back(r.getOneSynEntity());
     }
-    return results;
-}
-
-std::vector<std::pair<ProgramElement, ProgramElement>> ResultProcessor::setPairToVectorPair(std::set<std::pair<ProgramElement, ProgramElement>> s) {
-    std::vector<std::pair<ProgramElement, ProgramElement>> results;
-    for (std::pair<ProgramElement, ProgramElement> p : s) {
-        results.push_back(p);
-    }
-    return results;
+    return entities;
 }

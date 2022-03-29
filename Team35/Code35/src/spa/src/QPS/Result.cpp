@@ -40,23 +40,23 @@ ResultType Result::getResultType() {
     return Result::type;
 }
 
-bool Result::getValid() {
+bool Result::getValid() const {
     return Result::valid;
 }
 
-Entity Result::getOneSynEntity() {
+Entity Result::getOneSynEntity() const {
     return Result::oneSynEntity;
 }
 
-std::set<ProgramElement> Result::getOneSynSet() {
+std::set<ProgramElement> Result::getOneSynSet() const {
     return Result::oneSynSet;
 }
 
-std::pair<Entity, Entity> Result::getTwoSynEntities() {
+std::pair<Entity, Entity> Result::getTwoSynEntities() const {
     return Result::twoSynEntities;
 }
 
-std::set<std::pair<ProgramElement, ProgramElement>> Result::getTwoSynSet() {
+std::set<std::pair<ProgramElement, ProgramElement>> Result::getTwoSynSet() const {
     return Result::twoSynSet;
 }
 

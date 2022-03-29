@@ -17,6 +17,10 @@ Entity::Entity(EntityType eType, std::string name, EntityAttributeType aType) {
     Entity::aType = aType;
 }
 
+void Entity::clear_aType() {
+    this->aType = EntityAttributeType::NULL_ATTRIBUTE;
+}
+
 std::string Entity::toString() {
     std::ostringstream buffer;
     buffer << "Type: " << Type::entityTypeToString(eType) << ", Name: " << name;
@@ -38,4 +42,12 @@ bool Entity::operator!=(const Entity& e1) const {
 bool Entity::equals(const Entity& e1) {
     return eType == e1.eType && name == e1.name && aType == e1.aType;
 }
+bool Entity::operator<(const Entity& e1) const {
+    return name < e1.name;
+}
 
+// for use in mapping in TableRow. 
+size_t EntityHashFunction::operator()(const Entity& e) const
+{
+    return std::hash<std::string>{}(e.name) ^ (static_cast<std::size_t>(e.eType) * static_cast<std::size_t>(e.aType));
+}

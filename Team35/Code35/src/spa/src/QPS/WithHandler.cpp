@@ -17,14 +17,18 @@ Result WithHandler::handleWith(const RelationshipRef& relRef) {
         return result;
     } else if (isFixedEntity(left) && !isFixedEntity(right)) {
         oneSynSet = handleOneSideFixed(left, right);
+        right.aType = EntityAttributeType::NULL_ATTRIBUTE;
         result.setOneSynEntity(right);
         result.setOneSynSet(oneSynSet);
     } else if (!isFixedEntity(left) && isFixedEntity(right)) {
         oneSynSet = handleOneSideFixed(right, left);
+        left.aType = EntityAttributeType::NULL_ATTRIBUTE;
         result.setOneSynEntity(left);
         result.setOneSynSet(oneSynSet);
     } else {
         twoSynSet = handleNoSideFixed(left, right);
+        left.aType = EntityAttributeType::NULL_ATTRIBUTE;
+        right.aType = EntityAttributeType::NULL_ATTRIBUTE;
         result.setTwoSynEntities(std::pair<Entity, Entity>(left, right));
         result.setTwoSynSet(twoSynSet);
     }

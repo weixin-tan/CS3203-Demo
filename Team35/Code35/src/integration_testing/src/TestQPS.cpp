@@ -4,6 +4,9 @@
 #include "QPS/QueryProcessor.h"
 #include "QPS/QPSMainLogic.h"
 
+#include <chrono>
+
+
 PKB pkb = PKB();
 QPSMainLogic qr = QPSMainLogic(pkb.getGetter());
 QueryProcessor qp = QueryProcessor();
@@ -12,8 +15,10 @@ PreOptimiser preOp = PreOptimiser();
 PostOptimiser op = PostOptimiser();
 ResultProcessor rp = ResultProcessor();
 
+/*
 
-//SETUP:
+
+//SETUP: 
 //procedure f {
 //  x = 5;  // 1
 //  y = x;  // 2
@@ -209,6 +214,8 @@ std::vector<ParsedStatement> pStatements = {
 };
 
 TEST_CASE("Integration Testing") {
+    auto start = std::chrono::high_resolution_clock::now();
+
     std::vector<std::vector<ParsedStatement>> stmtlsts;
     std::vector<ParsedStatement> stmtlst;
 
@@ -320,7 +327,7 @@ TEST_CASE("Integration Testing") {
 
     }
 
-    SECTION("SUCH THAT CLAUSE - Follows/Follows*/Parent/Parent*") {
+    SECTION("SUCH THAT CLAUSE - Follows/FollowsT/Parent/ParentT") {
         std::string st1 = "if ifs; print p;\nSelect p such that Parent (4, ifs)";
         std::string st2 = "while w; assign a;\nSelect a such that Parent* (w, a)";
         std::string st3 = "print p; Select p such that Follows* (_, p)";
@@ -598,5 +605,10 @@ TEST_CASE("Integration Testing") {
         REQUIRE(compareProgramElementLists(result9, expectedResult9));
         REQUIRE(compareProgramElementLists(result10, expectedResult10));
     }
+    
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    cout << "Time taken by function: "
+        << duration.count() << " microseconds" << endl;
 }
-
+*/
