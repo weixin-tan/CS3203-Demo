@@ -1,6 +1,8 @@
 #ifndef SPA_FORMATTEDRESULT_H
 #define SPA_FORMATTEDRESULT_H
 
+#include <vector>
+
 #include "Entity.h"
 #include "Type.h"
 #include "../PKB/ProgramElement.h"
