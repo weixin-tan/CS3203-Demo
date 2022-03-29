@@ -1,0 +1,130 @@
+1 - procedure.procName
+procedure p;
+Select p.procName
+main, helper
+5000
+2 - call.procName
+call c;
+Select c.procName such that Calls("main", "helper")
+helper
+5000
+3 - variable.varName
+variable v;
+Select v.varName with v.varName = "a"
+a
+5000
+4 - variable.varName
+variable v; stmt s;
+Select s.stmt# such that Modifies (s, v) with v.varName = "a"
+1
+5000
+5 - read.varName
+read r;
+Select r.varName with r.varName = "input"
+input
+5000
+6 - print.varName
+print pn;
+Select pn.stmt# with pn.varName = "output"
+6
+5000
+7 - constant.value
+constant c;
+Select c.value with c.value = 3
+3
+5000
+8 - constant.value
+constant c; stmt s;
+Select s.stmt# such that Uses (s, c) with c.value = 3
+
+5000
+9 - stmt.stmt#
+stmt s;
+Select s.stmt# with s.stmt# = 2
+2
+5000
+10 - stmt.stmt# negative
+stmt s;
+Select s.stmt# with s.stmt# = 25
+
+5000
+11 - read.stmt#
+read r;
+Select r.varName with r.stmt# = 5
+input
+5000
+12 - print.stmt#
+print pn; variable v;
+Select v.varName such that Uses (pn, v) with pn.stmt# = 6
+output
+5000
+13 - call.stmt#
+call c;
+Select c.procName with c.stmt# = 2
+helper
+5000
+14 - while.stmt#
+while w; variable v;
+Select v.varName such that Uses (w, v) with w.stmt# = 9
+length
+5000
+15 - if.stmt#
+if ifs; variable v;
+Select v.varName such that Uses (ifs, v) with ifs.stmt# = 16
+order
+5000
+16 - assign.stmt#
+assign a;
+Select a.stmt# such that Uses (a, "g") with a.stmt# = 7
+7
+5000
+17 - assign.stmt# negative
+assign a;
+Select a.stmt# such that Uses (a, "g") with a.stmt# = 10
+
+5000
+18 - diagnostic
+constant c;
+Select c.value
+0, 1, 3
+5000
+19 - diagnostic
+read r;
+Select r.stmt#
+5, 8
+5000
+20 - diagnostic
+read r;
+Select r.varName
+input, book
+5000
+21 - diagnostic
+print pn;
+Select pn.stmt#
+6, 12, 14, 15, 17, 18
+5000
+22 - diagnostic
+print pn;
+Select pn.varName
+output, radius, rank, order
+5000
+23 - diagnostic
+call c;
+Select c.stmt#
+2
+5000
+24 - diagnostic
+call c;
+Select c.procName
+helper
+5000
+25 - 
+while w;
+Select w.stmt#
+9, 11
+5000
+26 - 
+if ifs;
+Select ifs.stmt#
+13, 16
+5000
