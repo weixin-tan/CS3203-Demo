@@ -140,20 +140,25 @@ bool checkListIsIdent(std::vector<std::string> *sArr){
  * @param sArr List where the first element is a designEntity, and the rest are synonyms
  * @return returns true if the Entity Declaration STATEMENT is valid. else, return false
  */
-bool checkDesignEntitySynonymsList(std::vector<std::string> sArr) {
+bool checkDesignEntitySynonymsList(std::vector<std::string> sArr, std::unordered_map<std::string, Entity> *entityMap) {
     std::vector<std::string>
             designEntity{"stmt", "read", "print", "call", "while", "if", "assign", "variable", "constant", "procedure"};
     if (sArr.size() <= 1) {
         return false;
-    } else {
-        std::string designStr = sArr[0];
-        if (std::find(std::begin(designEntity), std::end(designEntity), designStr) != std::end(designEntity)) {
-            //designStr contains one of the design entity keywords
-            return checkListIsIdent(&sArr);
-        } else {
+    }
+    std::string designStr = sArr[0];
+    for (int i = 1; i < sArr.size(); i++){
+        if (entityMapContains(sArr[i], entityMap)){
             return false;
         }
     }
+    if (std::find(std::begin(designEntity), std::end(designEntity), designStr) != std::end(designEntity)) {
+        //designStr contains one of the design entity keywords
+        return checkListIsIdent(&sArr);
+    } else {
+        return false;
+    }
+
 }
 
 /**
@@ -589,14 +594,27 @@ std::vector<std::string> extractWithClauses(const std::string& s) {
     bool afterDot = false;
     int i = 0;
     int j = 0;
+    int quotationCount = 0;
 
     while (i < tempList.size()) {
         if (tempList[i] == ".") {
             afterDot = true;
-        } else if (afterDot) {
+        }else if (extractFirstChar(tempList[i]) == "\"" && extractLastChar(tempList[i]) == "\"" && tempList[i].size() > 1){
+            tokenList.push_back(tempList[i]);
+            j = j + 1;
+        }else if (extractFirstChar(tempList[i]) == "\"" && quotationCount == 0){
+            tokenList.push_back(tempList[i]);
+            j = j + 1;
+            quotationCount = 1;
+        }else if (extractLastChar(tempList[i]) == "\"" && quotationCount == 1){
+            tokenList[j - 1] = tokenList[j - 1] + tempList[i];
+            quotationCount = 0;
+        }else if (quotationCount == 1){
+            tokenList[j - 1] = tokenList[j - 1] + tempList[i];
+        }else if (afterDot) {
             tokenList[j - 1] = tokenList[j - 1] + "." + tempList[i];
             afterDot = false;
-        } else {
+        }else {
             tokenList.push_back(tempList[i]);
             j = j + 1;
         }
@@ -858,10 +876,11 @@ bool checkCallsEntity(const Entity& e) {
             || e.eType == EntityType::WILDCARD;
 }
 
-bool checkAssignments(const Entity& e){
+bool checkAssignEntity(const Entity& e){
     return e.eType == EntityType::FIXED_INTEGER
         || e.eType == EntityType::WILDCARD
-        || e.eType == EntityType::ASSIGNMENT;
+        || e.eType == EntityType::ASSIGNMENT
+        || e.eType == EntityType::STATEMENT;
 }
 
 bool checkFollowsOrParentsOrNext(const RelationshipRef& r) {
@@ -889,8 +908,8 @@ bool checkCalls(const RelationshipRef& r) {
 }
 
 bool checkAffects(const RelationshipRef& r){
-    bool leftSideBool = checkAssignments(r.leftEntity);
-    bool rightSideBool = checkAssignments(r.rightEntity);
+    bool leftSideBool = checkAssignEntity(r.leftEntity);
+    bool rightSideBool = checkAssignEntity(r.rightEntity);
     return leftSideBool && rightSideBool;
 }
 

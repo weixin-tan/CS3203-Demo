@@ -27,7 +27,7 @@ bool isWith(const std::string& s);
 bool existSuchThat(const std::string& s);
 bool checkListIsIdent(std::vector<std::string> *sArr);
 
-bool checkDesignEntitySynonymsList(std::vector<std::string> sArr);
+bool checkDesignEntitySynonymsList(std::vector<std::string> sArr, std::unordered_map<std::string, Entity> *entityMap);
 bool checkRelRefList(std::vector<std::string> s);
 bool checkPatternList(std::vector<std::string> patternList, std::unordered_map<std::string, Entity>* entityMap);
 
@@ -100,7 +100,7 @@ bool checkVariable(const Entity& e);
 bool checkUsesLeftSide(const Entity& e);
 bool checkModifiesLeftSide(const Entity& e);
 bool checkCallsEntity(const Entity& e);
-bool checkAssignments(const Entity& e);
+bool checkAssignEntity(const Entity& e);
 
 bool checkFollowsOrParentsOrNext(const RelationshipRef& r);
 bool checkUses(const RelationshipRef& r);

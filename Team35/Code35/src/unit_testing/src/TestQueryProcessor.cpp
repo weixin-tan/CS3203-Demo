@@ -734,9 +734,33 @@ TEST_CASE("remove duplicate relationships"){
     }
 }
 
+TEST_CASE("edge cases"){
+    QueryProcessor qp = QueryProcessor();
+    string s1 = "variable v; Select v with v   .   varName = \"   x   \"";
+    string s2 = "variable v; Select v with v\n.\tvarName = \"x   \"";
+    string s3 = "variable v; Select v with v.varName = \"   x\"";
+    string s4 = "variable v; Select v with v.varName = \"\tx\n\"";
+    string s5 = "variable v; Select v with v.varName = \"x\"";
+    string s6 = "stmt s1, s2; Select s1 such that Affects(s1, s2)";
+
+    SECTION("valid"){
+        REQUIRE(!qp.parsePQL(s1).empty());
+        REQUIRE(!qp.parsePQL(s2).empty());
+        REQUIRE(!qp.parsePQL(s3).empty());
+        REQUIRE(!qp.parsePQL(s4).empty());
+        REQUIRE(!qp.parsePQL(s5).empty());
+        REQUIRE(!qp.parsePQL(s6).empty());
+    }
+
+    string in1 = "variable v; assign v; Select v";
+    SECTION("invalid"){
+        REQUIRE(qp.parsePQL(in1).empty());
+    }
+}
+
 TEST_CASE("debugging") {
     QueryProcessor qp = QueryProcessor();
-    string s1 = "procedure p, q; Select p.procName such that Calls (p, q)";
+    string s1 = "variable v; assign v; Select v";
     vector<Clause> c = qp.parsePQL(s1);
     /*
     if (c.empty()) {

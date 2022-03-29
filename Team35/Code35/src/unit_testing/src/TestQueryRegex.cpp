@@ -116,10 +116,12 @@ TEST_CASE("test basic boolean methods") {
 }
 
 TEST_CASE("test advanced boolean methods") {
+    std::unordered_map<std::string, Entity> entityMap;
     SECTION("checking checkDesignEntitySynonymsList") {
-        REQUIRE(checkDesignEntitySynonymsList({"constant", "a", "b", "c"}));
-        REQUIRE(!checkDesignEntitySynonymsList({"invalid", "a"}));
-        REQUIRE(!checkDesignEntitySynonymsList({"variable", "1"}));
+
+        REQUIRE(checkDesignEntitySynonymsList({"constant", "a", "b", "c"}, &entityMap));
+        REQUIRE(!checkDesignEntitySynonymsList({"invalid", "a"}, &entityMap));
+        REQUIRE(!checkDesignEntitySynonymsList({"variable", "1"}, &entityMap));
     }
 
     SECTION("checking checkRelRefList") {

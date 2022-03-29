@@ -280,7 +280,7 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& parsePQL) {
 
     for (const auto& declarationStmt : declarationStmtList) {
         std::vector<std::string> designEntityArr = extractDesignEntityAndSynonyms(declarationStmt);
-        isValid = isValid && checkDesignEntitySynonymsList(designEntityArr);
+        isValid = isValid && checkDesignEntitySynonymsList(designEntityArr, &entityMap);
         if (isValid) {
             createDeclarationObjects(designEntityArr, &entityMap);
         }
