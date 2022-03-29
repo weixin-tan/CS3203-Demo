@@ -1,0 +1,224 @@
+procedure Second {
+    x = 0;
+    i = 5;
+    while (i!=0) {
+        x = x + 2*y;
+        call Third;
+        i = i - 1; }
+    if (x==1) then {
+        x = x+1; }
+      else {
+        z = 1; }
+    z = z + x + i;
+    y = z + 2;
+    x = x * y + z; }
+
+procedure Third {
+  z = 5;
+  v = z;
+  print v; }
+
+procedure alpha {
+    x = 1;
+    if ( i != 2 ) then {
+        x = a + 1; }
+      else {
+        a = b; }
+    a = x; }
+
+procedure p {
+    x = 1;
+    y = 2;
+    z = y;
+    call q;
+    z = x + y + z; }
+
+procedure q {
+    x = 5;
+    t = 4;
+    if ( z > 0 ) then {
+        t = x + 1; }
+       else {
+       y = z + x; }
+  x = t + 1; }
+
+procedure alphaa {
+    x = 1;
+    call beta;
+    a = x; }
+
+procedure beta {
+    if ( i != 2 ) then {
+        x = a + 1; }
+      else {
+        a = b; } }
+
+procedure pp {
+    x = a;
+    read x;
+    v = x; }
+
+procedure ppp {
+ x = a;
+ v = x;
+ z = v; }
+
+procedure main {
+    a = 44;
+
+    call helper;
+    aa = cc;
+    d = e;
+    e = f;
+    f = g;
+    g = h;
+    h = i;
+    read j;
+    read k;
+    read l;
+    m = n;
+    p = q;
+    r = s;
+    t = u;
+    v = w;
+    x = y;
+    aa = z;
+
+    c = a;
+}
+
+procedure helper {
+    aa = cc;
+    d = e;
+    e = f;
+    f = g;
+    g = h;
+    h = i;
+    read j;
+    read k;
+    read l;
+    m = n;
+    p = q;
+    r = s;
+    t = u;
+    v = w;
+    x = y;
+    aa = z;
+    call auxiliary;
+}
+
+procedure auxiliary {
+    aa = cc;
+    d = e;
+    e = f;
+    f = g;
+    g = h;
+    h = i;
+    read j;
+    read k;
+    read l;
+    m = n;
+    p = q;
+    r = s;
+    t = u;
+    v = w;
+    x = y;
+    aa = z;
+    call mergesort;
+}
+
+procedure mergesort {
+    aa = cc;
+    d = e;
+    e = f;
+    f = g;
+    g = h;
+    h = i;
+    read j;
+    read k;
+    read l;
+    m = n;
+    p = q;
+    r = s;
+    t = u;
+    v = w;
+    x = y;
+    aa = z;
+    call merge;
+}
+
+procedure merge {
+    aa = cc;
+    d = e;
+    e = f;
+    f = g;
+    g = h;
+    h = i;
+    read j;
+    read k;
+    read l;
+    m = n;
+    p = q;
+    r = s;
+    t = u;
+    v = w;
+    x = y;
+    aa = z;
+
+    if (i == 130) then {
+        if (i == 131) then {
+            if (i == 132) then {
+                if (i == 133) then {
+                    if (i == 134) then {
+                        a = 135;
+                    } else {
+                        a = 136;
+                    }
+                } else {
+                    a = 137;
+                }
+            } else {
+                a = 138;
+            }
+        } else {
+            a = 139;
+        }
+    } else {
+        a = 140;
+    }
+}
+
+procedure central {
+    b = 141;
+    c = b;
+    d = c;
+    e = d;
+    f = e;
+    g = f;
+    h = g;
+    i = h;
+    j = i;
+    k = j;
+    m = k;
+    n = m;
+    p = n;
+    q = p;
+    r = q;
+    s = r;
+    t = s;
+    u = t;
+    v = u;
+    w = v;
+    x = w;
+    y = x;
+    z = y;
+    z = 164;
+}
+
+procedure distraction {
+    b = 165;
+    while (b == 1) {
+        b = 2;
+    }
+    c = b;
+}

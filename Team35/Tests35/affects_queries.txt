@@ -1,0 +1,150 @@
+1 - affects positive code6
+
+Select BOOLEAN such that Affects (2, 6)
+TRUE
+5000
+2 - affects positive code6
+
+Select BOOLEAN such that Affects (4, 8)
+TRUE
+5000
+3 - affects positive code6
+
+Select BOOLEAN such that Affects (4, 10)
+TRUE
+5000
+4 - affects positive code6
+
+Select BOOLEAN such that Affects (6, 6)
+TRUE
+5000
+5 - affects positive code6
+
+Select BOOLEAN such that Affects (1, 4)
+TRUE
+5000
+6 - affects positive code6
+
+Select BOOLEAN such that Affects (1, 8)
+TRUE
+5000
+7 - affects positive code6
+
+Select BOOLEAN such that Affects (1, 10)
+TRUE
+5000
+8 - affects positive code6
+
+Select BOOLEAN such that Affects (1, 12)
+TRUE
+5000
+9 - affects positive code6
+
+Select BOOLEAN such that Affects (2, 10)
+TRUE
+5000
+10 - affects positive code6
+
+Select BOOLEAN such that Affects (9, 10)
+TRUE
+5000
+11 - affects negative code6
+
+Select BOOLEAN such that Affects (9, 11)
+FALSE
+5000
+12 - affects negative code6
+
+Select BOOLEAN such that Affects (9, 12)
+FALSE
+5000
+13 - affects negative code6
+
+Select BOOLEAN such that Affects (2, 3)
+FALSE
+5000
+14 - affects negative code6
+
+Select BOOLEAN such that Affects (9, 6)
+FALSE
+5000
+15 - affects* positive code6
+
+Select BOOLEAN such that Affects* (1, 4)
+TRUE
+5000
+16 - affects* positive code6
+
+Select BOOLEAN such that Affects* (1, 10)
+TRUE
+5000
+17 - affects* positive code6
+
+Select BOOLEAN such that Affects* (1, 11)
+TRUE
+5000
+18 - affects* positive code6
+
+Select BOOLEAN such that Affects* (1, 12)
+TRUE
+5000
+19 - affects positive code7
+
+Select BOOLEAN such that Affects (16, 20)
+TRUE
+5000
+20 - affects negative code9
+
+Select BOOLEAN such that Affects (21, 25)
+FALSE
+5000
+21 - affects negative code9
+
+Select BOOLEAN such that Affects (22, 25)
+FALSE
+5000
+22 - affects negative code9
+
+Select BOOLEAN such that Affects (23, 30)
+FALSE
+5000
+23 - affects negative code10
+
+Select BOOLEAN such that Affects (32, 34)
+FALSE
+5000
+24 - affects negative code11
+
+Select BOOLEAN such that Affects (38, 40)
+FALSE
+5000
+25 - affects positive code12
+
+Select BOOLEAN such that Affects (41, 42)
+TRUE
+5000
+26 - affects positive code12
+
+Select BOOLEAN such that Affects (42, 43)
+TRUE
+5000
+27 - affects* positive code12
+
+Select BOOLEAN such that Affects* (41, 43)
+TRUE
+5000
+28 - affects negative main long call chain
+
+Select BOOLEAN such that Affects (44, 62)
+FALSE
+5000
+29 - affect* positive central long affects* chain
+
+Select BOOLEAN such that Affects* (141, 163)
+TRUE
+5000
+30 - affect negative distraction
+
+Select BOOLEAN such that Affects (165, 168)
+TRUE
+5000
