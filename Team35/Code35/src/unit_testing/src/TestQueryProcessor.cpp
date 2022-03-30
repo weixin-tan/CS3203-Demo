@@ -367,11 +367,11 @@ TEST_CASE("trippy queries") {
     string s4 = "read read; while while; if if; variable variable; Select read such that Follows(while, if)";
     string s5 = "assign Uses; variable Modifies; Select Uses pattern Uses (Modifies, _)";
     string s6 = "stmt procName; constant value; Select procName with procName.stmt# = value.value";
-    string s7 = "variable Select; Select Select such that Uses(_, Select)";
+    string s7 = "assign a; variable Select; Select Select such that Uses(a, Select)";
     string s8 = "stmt Next; Select Next such that Next (5, Next) and Next (Next, 12)";
 
-    string s9 = "variable such; Select such such that Uses(_, such)";
-    string s10 = "variable that; Select that such that Uses(_, that)";
+    string s9 = "assign a; variable such; Select such such that Uses(a, such)";
+    string s10 = "assign a; variable that; Select that such that Uses(a, that)";
     string s11 = "assign such; Select such pattern such(\"x\", _)";
     string s12 = "assign that; Select that pattern that(\"x\", _)";
     string s13 = "assign such, that; Select such with such.stmt# = that.stmt#";
@@ -382,7 +382,7 @@ TEST_CASE("trippy queries") {
     string s17 = "assign pattern; Select pattern pattern pattern (\"x\", _) and pattern(\"y\", _)";
     string s18 = "procedure with; Select with with with.procName = \"Third\"";
 
-    string s19 = "variable and; Select and such that Uses(_,and) and Modifies(1,and)";
+    string s19 = "variable and; Select and such that Uses(1,and) and Modifies(1,and)";
     string s20 = "stmt and; Select and such that Parent(and, 1) and Parent(and, 2)";
     string s21 = "assign and; Select and pattern and (\"x\", _) and and (\"y\", _)";
     string s22 = "assign and; Select and pattern and (_,\"x\") and and (_, \"y\")";
@@ -754,13 +754,15 @@ TEST_CASE("edge cases"){
 
     string in1 = "variable v; assign v; Select v";
     string in2 = "stmt s; Select s.procName with s.stmt# = 5";
-    string in3 = "variable v; Select BOOLEAN such that Uses(_, v)";
-    string in4 = "variable v; Select BOOLEAN such that Modifies(_, v)";
+    string in3 = "procedure p; Select p.varName with p.procName = 3";
+    string in4 = "variable v; Select BOOLEAN such that Uses(_, v)";
+    string in5 = "variable v; Select BOOLEAN such that Modifies(_, v)";
     SECTION("invalid"){
         REQUIRE(qp.parsePQL(in1).empty());
         REQUIRE(qp.parsePQL(in2).empty());
         REQUIRE(qp.parsePQL(in3).empty());
         REQUIRE(qp.parsePQL(in4).empty());
+        REQUIRE(qp.parsePQL(in5).empty());
     }
 }
 
