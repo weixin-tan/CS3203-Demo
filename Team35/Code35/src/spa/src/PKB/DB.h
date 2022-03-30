@@ -48,6 +48,10 @@ public:
     std::map<int, std::set<int>> affectsTableR;
     std::set<int> computedAffectsSrc;
     std::set<int> computedAffectsRSrc;
+    std::map<int, std::set<int>> affectsTTable;
+    std::map<int, std::set<int>> affectsTTableR;
+    std::set<int> computedAffectsTSrc;
+    std::set<int> computedAffectsTRSrc;
 
     // entity tables
     std::set<std::string> variables;

@@ -45,6 +45,7 @@ PkbGetter::PkbGetter(DB* db) :
         nextGetter(db),
         nextTGetter(db),
         affectsGetter(db),
+        affectsTGetter(db),
         relationshipGetterMap({
                                       {PkbRelationshipType::MODIFIES, &modifiesGetter},
                                       {PkbRelationshipType::USES, &usesGetter},
@@ -56,7 +57,8 @@ PkbGetter::PkbGetter(DB* db) :
                                       {PkbRelationshipType::CALLS_T, &callsTGetter},
                                       {PkbRelationshipType::NEXT, &nextGetter},
                                       {PkbRelationshipType::NEXT_T, &nextTGetter},
-                                      {PkbRelationshipType::AFFECTS, &affectsGetter}
+                                      {PkbRelationshipType::AFFECTS, &affectsGetter},
+                                      {PkbRelationshipType::AFFECTS_T, &affectsTGetter}
                               })
 {
 }

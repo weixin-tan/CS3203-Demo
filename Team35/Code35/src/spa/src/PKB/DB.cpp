@@ -12,4 +12,9 @@ void DB::clearCache() {
     affectsTableR.clear();
     computedAffectsSrc.clear();
     computedAffectsRSrc.clear();
+
+    affectsTTable.clear();
+    affectsTTableR.clear();
+    computedAffectsTSrc.clear();
+    computedAffectsTRSrc.clear();
 }

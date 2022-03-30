@@ -16,6 +16,8 @@ private:
     void dfsNextTR(int src);
     void dfsAffects(int src, const std::string& var);
     void dfsAffectsR(int src, const std::string& var, std::set<int>& combinedAffectsR);
+    void dfsAffectsT(int src);
+    void dfsAffectsTR(int src);
     void extractFollows(std::map<int, std::set<int>>& followsTable);
     void extractFollowsT(std::map<int, std::set<int>>& followsTTable);
     void extractParent(std::map<int, std::set<int>>& parentTable);
@@ -36,6 +38,8 @@ public:
     void extractNextTR(int src);
     void extractAffects(int src);
     void extractAffectsR(int src);
+    void extractAffectsT(int src);
+    void extractAffectsTR(int src);
 
     template<typename U, typename V>
     static void computeReverse(std::map<U, std::set<V>>& normalMap, std::map<V, std::set<U>>& reverseMap, const std::set<V>& fullRange);

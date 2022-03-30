@@ -188,6 +188,42 @@ void DesignExtractor::dfsAffectsR(int src, const std::string& var, std::set<int>
             combinedAffectsR.insert(stmtNo);
 }
 
+void DesignExtractor::dfsAffectsT(int src) {
+    std::stack<int> stk;
+    std::set<int> visited;
+    stk.push(src);
+    while (!stk.empty()) {
+        int curStmtNo = stk.top();
+        stk.pop();
+
+        extractAffects(curStmtNo);
+        for (int affectsStmtNo : db->affectsTable.at(curStmtNo)) {
+            if (visited.count(affectsStmtNo) == 1) continue;
+            visited.insert(affectsStmtNo);
+            stk.push(affectsStmtNo);
+        }
+    }
+    db->affectsTTable.insert({src, visited});
+}
+
+void DesignExtractor::dfsAffectsTR(int src) {
+    std::stack<int> stk;
+    std::set<int> visited;
+    stk.push(src);
+    while (!stk.empty()) {
+        int curStmtNo = stk.top();
+        stk.pop();
+
+        extractAffectsR(curStmtNo);
+        for (int affectsStmtNo : db->affectsTableR.at(curStmtNo)) {
+            if (visited.count(affectsStmtNo) == 1) continue;
+            visited.insert(affectsStmtNo);
+            stk.push(affectsStmtNo);
+        }
+    }
+    db->affectsTTableR.insert({src, visited});
+}
+
 void DesignExtractor::extractFollows(std::map<int, std::set<int>>& followsTable) {
     for (const auto&[stmtNo, parsedStatement] : db->stmtTable) {
         if (parsedStatement.preceding != ParsedStatement::DEFAULT_NULL_STMT_NO)
@@ -367,6 +403,18 @@ void DesignExtractor::extractAffectsR(int src) {
     db->affectsTableR.insert({src, {}});
     for (const std::string& var : db->usesSTable.at(src))
         dfsAffectsR(src, var, db->affectsTableR.at(src));
+}
+
+void DesignExtractor::extractAffectsT(int src) {
+    if (db->computedAffectsTSrc.count(src)) return;
+    db->computedAffectsTSrc.insert(src);
+    dfsAffectsT(src);
+}
+
+void DesignExtractor::extractAffectsTR(int src) {
+    if (db->computedAffectsTRSrc.count(src)) return;
+    db->computedAffectsTRSrc.insert(src);
+    dfsAffectsTR(src);
 }
 
 void DesignExtractor::precompute() {

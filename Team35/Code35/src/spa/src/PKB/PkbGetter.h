@@ -15,11 +15,11 @@
 #include "CallsTGetter.h"
 #include "NextGetter.h"
 
-//TODO: FILE NAME CHANGE 
 #include "../EP/ExpressionProcessor.h"
 #include "../EP/ExpressionIndicator.h"
 #include "NextTGetter.h"
 #include "AffectsGetter.h"
+#include "AffectsTGetter.h"
 
 class PkbGetter {
 private:
@@ -35,6 +35,7 @@ private:
     NextGetter nextGetter;
     NextTGetter nextTGetter;
     AffectsGetter affectsGetter;
+    AffectsTGetter affectsTGetter;
     std::map<PkbRelationshipType, RelationshipGetter*> relationshipGetterMap;
 
     ExpressionProcessor expressionProcessor;
