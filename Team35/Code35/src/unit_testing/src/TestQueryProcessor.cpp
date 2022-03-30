@@ -753,14 +753,20 @@ TEST_CASE("edge cases"){
     }
 
     string in1 = "variable v; assign v; Select v";
+    string in2 = "stmt s; Select s.procName with s.stmt# = 5";
+    string in3 = "variable v; Select BOOLEAN such that Uses(_, v)";
+    string in4 = "variable v; Select BOOLEAN such that Modifies(_, v)";
     SECTION("invalid"){
         REQUIRE(qp.parsePQL(in1).empty());
+        REQUIRE(qp.parsePQL(in2).empty());
+        REQUIRE(qp.parsePQL(in3).empty());
+        REQUIRE(qp.parsePQL(in4).empty());
     }
 }
 
 TEST_CASE("debugging") {
     QueryProcessor qp = QueryProcessor();
-    string s1 = "variable v; assign v; Select v";
+    string s1 = "variable v; Select BOOLEAN such that Uses(_, v)";
     vector<Clause> c = qp.parsePQL(s1);
     /*
     if (c.empty()) {

@@ -853,8 +853,7 @@ bool checkUsesLeftSide(const Entity& e) {
             || e.eType == EntityType::WHILE
             || e.eType == EntityType::IF
             || e.eType == EntityType::PROCEDURE
-            || e.eType == EntityType::CALL
-            || e.eType == EntityType::WILDCARD;
+            || e.eType == EntityType::CALL;
 }
 
 bool checkModifiesLeftSide(const Entity& e) {
@@ -866,8 +865,7 @@ bool checkModifiesLeftSide(const Entity& e) {
             || e.eType == EntityType::WHILE
             || e.eType == EntityType::IF
             || e.eType == EntityType::PROCEDURE
-            || e.eType == EntityType::CALL
-            || e.eType == EntityType::WILDCARD;
+            || e.eType == EntityType::CALL;
 }
 
 bool checkCallsEntity(const Entity& e) {
@@ -960,7 +958,12 @@ bool checkVariableToSelect(const Entity& e) {
         if (e.eType == EntityType::BOOLEAN) {
             return e.aType == EntityAttributeType::NULL_ATTRIBUTE;
         }
-        return true;
+
+        if (e.aType != EntityAttributeType::NULL_ATTRIBUTE){
+            return checkWithEntity(e);
+        }else{
+            return true;
+        }
     }
 }
 
