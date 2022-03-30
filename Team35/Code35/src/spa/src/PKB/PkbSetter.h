@@ -5,7 +5,7 @@
 #include "../SP/ParsedStatement.h"
 #include "../SP/StatementType.h"
 #include "ElementType.h"
-#include "DesignExtractor.h"
+#include "../DesignExtractor/DesignExtractor.h"
 #include "PkbValidator.h"
 #include <map>
 
@@ -23,7 +23,6 @@ private:
     void handleProcedure(const ParsedStatement& parsedStatement);
     void handleConstants(const ParsedStatement &statement);
     void handleExpression(const ParsedStatement& statement);
-    
 
 public:
     explicit PkbSetter(DB* db);

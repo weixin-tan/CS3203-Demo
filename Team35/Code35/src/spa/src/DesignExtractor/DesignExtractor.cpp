@@ -1,5 +1,6 @@
-    #include "DesignExtractor.h"
+#include "DesignExtractor.h"
 #include <queue>
+#include <stack>
 
 DesignExtractor::DesignExtractor(DB* db) : db(db) {}
 
@@ -89,6 +90,104 @@ void DesignExtractor::dfsNext(const int& originStmt, std::set<int>& visited, con
     }
 }
 
+void DesignExtractor::dfsNextT(int src) {
+    if (db->computedNextTSrc.count(src)) return;
+    db->computedNextTSrc.insert(src);
+    std::queue<int> q;
+    std::set<int> visited;
+    q.push(src);
+    while (!q.empty()) {
+        int curStmtNo = q.front();
+        q.pop();
+        auto nextStmtNos = db->nextTable.at(curStmtNo);
+        for (int nextStmtNo : nextStmtNos) {
+            if (visited.count(nextStmtNo) == 0) {
+                visited.insert(nextStmtNo);
+                q.push(nextStmtNo);
+            }
+        }
+    }
+    db->nextTTable.insert({src, visited});
+}
+
+void DesignExtractor::dfsNextTR(int src) {
+    if (db->computedNextTRSrc.count(src)) return;
+    db->computedNextTRSrc.insert(src);
+    std::queue<int> q;
+    std::set<int> visited;
+    q.push(src);
+    while (!q.empty()) {
+        int curStmtNo = q.front();
+        q.pop();
+        auto nextRStmtNos = db->nextTableR.at(curStmtNo);
+        for (int nextRStmtNo : nextRStmtNos) {
+            if (visited.count(nextRStmtNo) == 0) {
+                visited.insert(nextRStmtNo);
+                q.push(nextRStmtNo);
+            }
+        }
+    }
+    db->nextTTableR.insert({src, visited});
+}
+
+void DesignExtractor::dfsAffects(int src, const std::string& var) {
+    std::stack<int> stk;
+    std::set<int> visited;
+    stk.push(src);
+    bool isStart = true;
+    while (!stk.empty()) {
+        int curStmtNo = stk.top();
+        stk.pop();
+
+        ElementType stmtType = db->elementStmtTable.at(curStmtNo).elementType;
+        if (!isStart && ((stmtType != ElementType::WHILE) && (stmtType != ElementType::IF))
+                && db->modifiesSTable.at(curStmtNo).count(var) == 1) continue;  // modifies, don't dfs further
+        isStart = false;
+        auto nextStmtNos = db->nextTable.find(curStmtNo);
+        if (nextStmtNos == db->nextTable.end()) continue;
+        for (int nextStmtNo : nextStmtNos->second) {
+            if (visited.count(nextStmtNo) == 0) {
+                visited.insert(nextStmtNo);
+                stk.push(nextStmtNo);
+            }
+        }
+    }
+    std::set<int> actualAffects;
+    for (int stmtNo : visited)
+        if (db->elementStmtTable.at(stmtNo).elementType == ElementType::ASSIGNMENT
+                && db->usesSTable.at(stmtNo).count(var) == 1)
+            actualAffects.insert(stmtNo);
+    db->affectsTable.insert({src, actualAffects});
+}
+
+void DesignExtractor::dfsAffectsR(int src, const std::string& var, std::set<int>& combinedAffectsR) {
+    std::stack<int> stk;
+    std::set<int> visited;
+    stk.push(src);
+    bool isStart = true;
+    while (!stk.empty()) {
+        int curStmtNo = stk.top();
+        stk.pop();
+
+        ElementType stmtType = db->elementStmtTable.at(curStmtNo).elementType;
+        if (!isStart && ((stmtType != ElementType::WHILE) && (stmtType != ElementType::IF))
+                && db->modifiesSTable.at(curStmtNo).count(var) == 1) continue;  // modifies, don't dfs further
+        isStart = false;
+        auto nextStmtNos = db->nextTableR.find(curStmtNo);
+        if (nextStmtNos == db->nextTableR.end()) continue;
+        for (int nextStmtNo : nextStmtNos->second) {
+            if (visited.count(nextStmtNo) == 0) {
+                visited.insert(nextStmtNo);
+                stk.push(nextStmtNo);
+            }
+        }
+    }
+    for (int stmtNo : visited)
+        if (db->elementStmtTable.at(stmtNo).elementType == ElementType::ASSIGNMENT
+                && db->modifiesSTable.at(stmtNo).count(var) == 1)
+            combinedAffectsR.insert(stmtNo);
+}
+
 void DesignExtractor::extractFollows(std::map<int, std::set<int>>& followsTable) {
     for (const auto&[stmtNo, parsedStatement] : db->stmtTable) {
         if (parsedStatement.preceding != ParsedStatement::DEFAULT_NULL_STMT_NO)
@@ -108,8 +207,8 @@ void DesignExtractor::extractFollowsT(std::map<int, std::set<int>>& followsTTabl
 void DesignExtractor::extractParent(std::map<int, std::set<int>>& parentTable) {
     for (const auto&[stmtNo, parsedStatement] : db->stmtTable) {
         int parentStmtNo = ((parsedStatement.ifStmtNo != ParsedStatement::DEFAULT_NULL_STMT_NO)
-                ? parsedStatement.ifStmtNo
-                : parsedStatement.whileStmtNo);
+                            ? parsedStatement.ifStmtNo
+                            : parsedStatement.whileStmtNo);
         if (parentStmtNo != ParsedStatement::DEFAULT_NULL_STMT_NO)
             parentTable[parentStmtNo].insert(parsedStatement.stmtNo);
     }
@@ -160,7 +259,7 @@ void DesignExtractor::extractModifiesS(std::map<int, std::set<std::string>>& mod
     // insert local
     for (const auto&[_, parsedStatement] : db->stmtTable) {
         modifiesSTable[parsedStatement.stmtNo].insert(parsedStatement.varModified.begin(),
-                                                       parsedStatement.varModified.end());
+                                                      parsedStatement.varModified.end());
         if (parsedStatement.statementType == StatementType::CALL_STMT) {
             auto modifiedVars = db->modifiesPTable.find(parsedStatement.procedureCalled);
             if (modifiedVars == db->modifiesPTable.end()) continue;
@@ -199,7 +298,7 @@ void DesignExtractor::extractUsesS(std::map<int, std::set<std::string>>& usesSTa
     // insert local
     for (const auto&[_, parsedStatement] : db->stmtTable) {
         usesSTable[parsedStatement.stmtNo].insert(parsedStatement.varUsed.begin(),
-                                                       parsedStatement.varUsed.end());
+                                                  parsedStatement.varUsed.end());
         if (parsedStatement.statementType == StatementType::CALL_STMT) {
             auto usedVars = db->usesPTable.find(parsedStatement.procedureCalled);
             if (usedVars == db->usesPTable.end()) continue;
@@ -225,7 +324,7 @@ void DesignExtractor::extractNext(std::map<int, std::set<int>>& nextTable) {
                             ? parsedStatement.ifStmtNo
                             : parsedStatement.whileStmtNo);
         if (parentStmtNo != ParsedStatement::DEFAULT_NULL_STMT_NO
-            && parsedStatement.preceding == ParsedStatement::DEFAULT_NULL_STMT_NO) {  // first in a statement list
+                && parsedStatement.preceding == ParsedStatement::DEFAULT_NULL_STMT_NO) {  // first in a statement list
             stmtListHead[parentStmtNo].insert(stmtNo);
         }
     }
@@ -245,6 +344,57 @@ void DesignExtractor::extractNext(std::map<int, std::set<int>>& nextTable) {
     }
     for (const auto&[stmtNo, _] : db->stmtTable)
         if (nextTable.find(stmtNo) == nextTable.end()) nextTable.insert({stmtNo, {}});
+}
+
+void DesignExtractor::extractNextT(int src) {
+    dfsNextT(src);
+}
+
+void DesignExtractor::extractNextTR(int src) {
+    dfsNextTR(src);
+}
+
+void DesignExtractor::extractAffects(int src) {
+    if (db->computedAffectsSrc.count(src)) return;
+    db->computedAffectsSrc.insert(src);
+    std::string var = *db->modifiesSTable.at(src).begin();
+    dfsAffects(src, var);
+}
+
+void DesignExtractor::extractAffectsR(int src) {
+    if (db->computedAffectsRSrc.count(src)) return;
+    db->computedAffectsRSrc.insert(src);
+    db->affectsTableR.insert({src, {}});
+    for (const std::string& var : db->usesSTable.at(src))
+        dfsAffectsR(src, var, db->affectsTableR.at(src));
+}
+
+void DesignExtractor::precompute() {
+    std::set<int> stmtNos;
+    for (const auto& [stmtNo, _] : db->stmtTable) stmtNos.insert(stmtNo);
+
+    extractCalls(db->callsTable);
+    computeReverse(db->callsTable, db->callsTableR, db->procedures);
+    extractCallsT(db->callsTTable);
+    computeReverse(db->callsTTable, db->callsTTableR, db->procedures);
+    extractFollows(db->followsTable);
+    computeReverse(db->followsTable, db->followsTableR, stmtNos);
+    extractFollowsT(db->followsTTable);
+    computeReverse(db->followsTTable, db->followsTTableR, stmtNos);
+    extractParent(db->parentTable);
+    computeReverse(db->parentTable, db->parentTableR, stmtNos);
+    extractParentT(db->parentTTable);
+    computeReverse(db->parentTTable, db->parentTTableR, stmtNos);
+    extractModifiesP(db->modifiesPTable);
+    computeReverse(db->modifiesPTable, db->modifiesPTableR, db->variables);
+    extractModifiesS(db->modifiesSTable);
+    computeReverse(db->modifiesSTable, db->modifiesSTableR, db->variables);
+    extractUsesP(db->usesPTable);
+    computeReverse(db->usesPTable, db->usesPTableR, db->variables);
+    extractUsesS(db->usesSTable);
+    computeReverse(db->usesSTable, db->usesSTableR, db->variables);
+    extractNext(db->nextTable);
+    computeReverse(db->nextTable, db->nextTableR, stmtNos);
 }
 
 template<typename U, typename V>

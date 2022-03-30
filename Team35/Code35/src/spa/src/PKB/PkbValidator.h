@@ -7,11 +7,14 @@ class PkbValidator {
 private:
     DB* db;
 
-public:
-    explicit PkbValidator(DB* db);
+private:
     void validateNoCyclicCall();
     void validateCallsExists();
     static void validateNoDuplicateProcedure(const std::vector<std::vector<ParsedStatement>>& procedures);
+
+public:
+    explicit PkbValidator(DB* db);
+    void validate(const std::vector<std::vector<ParsedStatement>>& procedures, bool testing);
 };
 
 #endif //SPA_TEAM35_CODE35_SRC_SPA_SRC_PKB_PKBVALIDATOR_H_

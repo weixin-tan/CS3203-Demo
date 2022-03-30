@@ -3,7 +3,7 @@
 #include "PKB.h"
 #include "PkbRelationshipType.h"
 #include "PkbUtil.h"
-#include "DesignExtractor.h"
+#include "DesignExtractor/DesignExtractor.h"
 
 #include "catch.hpp"
 
