@@ -26,16 +26,16 @@ private:
                                             std::unordered_map<std::string, Entity>* entityMap);
     static void addIfNotDuplicate(Clause *newClause, const RelationshipRef& newRef);
 
-    static void handleVariablesToFind(std::vector<std::string> *variablesToSelect, Clause *newClause, bool *isValid,
-                                               std::unordered_map<std::string, Entity>* entityMap);
+    static void handleVariablesToFind(std::vector<std::string> *variablesToSelect, Clause *newClause,
+                                       bool *isValid, std::unordered_map<std::string, Entity>* entityMap);
 
-    static void handleSuchThat(std::vector<std::string> *SuchThatClauses, Clause *newClause, bool *isValid,
-                                        std::unordered_map<std::string, Entity>* entityMap);
+    static void handleSuchThat(std::vector<std::string> *SuchThatClauses, Clause *newClause,
+                               bool *isValid,  bool *isSemanticallyValid, std::unordered_map<std::string, Entity>* entityMap);
 
-    static void handlePattern(std::vector<std::string> *PatternClauses, Clause *newClause, bool *isValid,
-                                       std::unordered_map<std::string, Entity>* entityMap);
+    static void handlePattern(std::vector<std::string> *PatternClauses, Clause *newClause,
+                              bool *isValid,  bool *isSemanticallyValid, std::unordered_map<std::string, Entity>* entityMap);
 
-    static void handleWith(std::vector<std::string> *WithClauses, Clause *newClause, bool *isValid,
-                                       std::unordered_map<std::string, Entity>* entityMap);
+    static void handleWith(std::vector<std::string> *WithClauses, Clause *newClause,
+                           bool *isValid,  bool *isSemanticallyValid, std::unordered_map<std::string, Entity>* entityMap);
 };
 #endif //SPA_SRC_SPA_SRC_QUERYPROCESSOR_H_

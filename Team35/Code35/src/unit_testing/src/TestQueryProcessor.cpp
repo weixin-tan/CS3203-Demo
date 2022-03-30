@@ -761,8 +761,8 @@ TEST_CASE("edge cases"){
         REQUIRE(qp.parsePQL(in1).empty());
         REQUIRE(qp.parsePQL(in2).empty());
         REQUIRE(qp.parsePQL(in3).empty());
-        REQUIRE(qp.parsePQL(in4).empty());
-        REQUIRE(qp.parsePQL(in5).empty());
+        REQUIRE(qp.parsePQL(in4)[0].entityToFindList[0].name == "FALSE");
+        REQUIRE(qp.parsePQL(in5)[0].entityToFindList[0].name == "FALSE");
     }
 }
 
