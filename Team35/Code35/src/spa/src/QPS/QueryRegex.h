@@ -27,7 +27,7 @@ bool isWith(const std::string& s);
 bool existSuchThat(const std::string& s);
 bool checkListIsIdent(std::vector<std::string> *sArr);
 
-bool checkDesignEntitySynonymsList(std::vector<std::string> sArr);
+bool checkDesignEntitySynonymsList(std::vector<std::string> sArr, std::unordered_map<std::string, Entity> *entityMap);
 bool checkRelRefList(std::vector<std::string> s);
 bool checkPatternList(std::vector<std::string> patternList, std::unordered_map<std::string, Entity>* entityMap);
 
@@ -47,9 +47,10 @@ long newPatternPosition(long temp, long patternPosition, long commandWordLength)
 long findClauseStartPosition(const std::string& s, const std::string& commandWord, const std::string& original);
 long findPatternClause(const std::string& s);
 long findWithClause(const std::string& s);
-long findPatternClauseInSubstring(const std::string& s, std::string original);
+long recursiveFindPatternClauseInSubstring(const std::string& s, std::string original);
+long findPatternClauseInSubstring(const std::string& s);
 std::vector<long> findSuchThatClause(const std::string& s);
-long smallestNumber(const long positionList[3]);
+long smallestNumber(std::vector<long> positionList);
 
 std::vector<std::string> splitString(const std::string& s, const std::string& delimiter);
 std::vector<std::string> splitStringBySpaces(const std::string& s);
@@ -80,14 +81,14 @@ enum class lastClauseType {
 
 std::vector<std::string> splitVariablesAndClauses(const std::string& s);
 std::vector<std::string> extractWithClauses(const std::string& s);
-void joinWordToPhrases(const std::string& stmt, std::vector<std::string> *wordsList, int* count);
-void splitWithAndOtherClauses(const std::string& stmt, std::vector<std::string> *returnList);
+void reconstructWordsToPhrases(const std::string& stmt, std::vector<std::string> *phraseList, int* count);
+void insertWithListAndOtherClause(const std::string& stmt, long x, std::vector<std::string> *returnList);
 std::vector<std::string> splitSuchThatPatternWithClauses(const std::string& s);
 std::vector<std::string> extractVariablesToSelect(const std::string& s);
-void decideWhichListToPush(const std::string& stmt, lastClauseType *lastType,
-                           std::vector<std::string> *suchThatList,
-                           std::vector<std::string> *patternList,
-                           std::vector<std::string> *withList);
+void decideWhichListToAddRelationshipTo(const std::string& stmt, lastClauseType *lastType,
+                                        std::vector<std::string> *suchThatList,
+                                        std::vector<std::string> *patternList,
+                                        std::vector<std::string> *withList);
 std::vector<std::vector<std::string>> extractClauses(const std::string& s);
 
 std::vector<std::string> extractItemsInBrackets(const std::string& s);
@@ -99,7 +100,7 @@ bool checkVariable(const Entity& e);
 bool checkUsesLeftSide(const Entity& e);
 bool checkModifiesLeftSide(const Entity& e);
 bool checkCallsEntity(const Entity& e);
-bool checkAssignments(const Entity& e);
+bool checkAssignEntity(const Entity& e);
 
 bool checkFollowsOrParentsOrNext(const RelationshipRef& r);
 bool checkUses(const RelationshipRef& r);
