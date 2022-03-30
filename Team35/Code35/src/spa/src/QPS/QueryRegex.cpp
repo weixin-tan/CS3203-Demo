@@ -360,7 +360,7 @@ std::vector<long> findSuchThatClause(const std::string& s) {
         returnList.push_back(std::string::npos);
         returnList.push_back(std::string::npos);
         return returnList;
-    } else if (stripString(s.substr(suchPosition + suchLength, thatPosition - suchPosition - suchLength)).empty()
+    } else if (isSpaces(stripString(s.substr(suchPosition + suchLength, thatPosition - suchPosition - suchLength)))
             && suchPosition < thatPosition
             && thatPosition - suchPosition > suchLength){
         returnList.push_back(suchPosition);
