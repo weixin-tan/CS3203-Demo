@@ -1,5 +1,4 @@
 #include "catch.hpp"
-#include "QPS/PostOptimiser.h"
 #include "PKB.h"
 #include "QPS/QueryProcessor.h"
 #include "QPS/QPSMainLogic.h"
@@ -12,7 +11,6 @@ QPSMainLogic qr = QPSMainLogic(pkb.getGetter());
 QueryProcessor qp = QueryProcessor();
 QPSHandler qh = QPSHandler(pkb.getGetter());
 PreOptimiser preOp = PreOptimiser();
-PostOptimiser op = PostOptimiser();
 ResultProcessor rp = ResultProcessor();
 
 /*

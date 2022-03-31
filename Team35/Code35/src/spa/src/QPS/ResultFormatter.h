@@ -11,11 +11,11 @@
 class ResultFormatter {
 public:
     ResultFormatter();
-    std::list<std::string> formatResult(FormattedResult finalResult);
+    std::list<std::string> formatResult(const FormattedResult& finalResult);
 
 private:
-    std::list<std::string> handleSingle(Entity entity, std::vector<ProgramElement> elements);
-    std::list<std::string> handleTuple(std::vector<Entity> entities, std::vector<std::vector<ProgramElement>> lists);
+    std::list<std::string> extractTableInformation(const std::vector<Entity> &entities, const Table& table);
+    std::string extractTableRowInformation(const std::vector<Entity> &entities, const TableRow &tableRow);
 };
 
 #endif //SPA_RESULTFORMATTER_H

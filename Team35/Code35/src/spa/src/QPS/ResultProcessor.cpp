@@ -1,98 +1,97 @@
 #include "ResultProcessor.h"
 #include "Table.h"
 
-FormattedResult ResultProcessor::processResults(std::vector<ResultGroup> groups) {
-    FormattedResult result;
-    std::vector<Result> noClauseResults = groups[0].getGroup();
-    // Handle invalid results in NoClauseResults
-    for (const auto& r : noClauseResults) {
-        if (!r.getValid()) {
-            return handleInvalidResult(r);
-        }
+FormattedResult ResultProcessor::processResults(const ResultGroup& resultGroup) {
+    std::vector<std::vector<Result>> resultLists = resultGroup.getResultLists();
+
+    FormattedResult emptyFormattedResult;
+    if (resultGroup.getIsBoolReturn()) {
+        emptyFormattedResult.setBoolReturn(true);
     }
-    // Handle cases with zero clauses
-    groups.erase(groups.begin());
-    if (groups.empty()) {
-        return handleZeroClause(noClauseResults);
+    if (!resultGroup.getIsValid()) {
+        return emptyFormattedResult;
     }
-    // Build all intermediate tables
-    std::vector<Table> intermediateTables;
-    for (const auto& group : groups) {
-        std::vector<Result> results = group.getGroup();
-        Table intermediateTable = buildIntermediateTable(results);
-        if (intermediateTable.rows.empty()) {
-            intermediateTables = {};
-            break;
-        }
-        intermediateTables.push_back(intermediateTable);
+    std::vector<Result> noClauseResults = resultLists[0];
+    if (resultLists.size() == 1) {
+        return handleZeroClause(resultGroup.getEntitiesToReturn(), noClauseResults);
     }
+    resultLists.erase(resultLists.begin());
+
+    std::vector<Table> intermediateTables = buildAllIntermediateTables(resultLists);
     if (intermediateTables.empty()) {
-        return handleInvalidResult(noClauseResults[0]);
+        return emptyFormattedResult;
     }
-    // Extract only the necessary tables
-    std::set<Entity> entitiesToReturn = extractEntitySet(noClauseResults);
-    std::vector<Table> necessaryTables;
-    for (Table table : intermediateTables) {
-        TableRow firstRow = *table.rows.begin();
-        std::vector<Entity> entities;
-        for (const auto& r : firstRow.row) {
-            if (entitiesToReturn.find(r.first) != entitiesToReturn.end()) {
-                entities.push_back(r.first);
-            }
-        }
-        if (!entities.empty()) {
-            necessaryTables.push_back(table.extractColumns(entities));
-        }
+    if (resultGroup.getIsBoolReturn()) {
+        emptyFormattedResult.setValid(true);
+        return emptyFormattedResult;
     }
-    // Get FormattedResult
+
+    std::vector<Entity> entitiesToReturn = resultGroup.getEntitiesToReturn();
+    std::set<Entity> tableEntities = extractEntitySet(entitiesToReturn);
+    std::vector<Table> necessaryTables = extractNecessaryTables(intermediateTables, tableEntities);
     if (necessaryTables.empty()) {
-        return handleZeroClause(noClauseResults);
-    } else {
-        if (entitiesToReturn.begin()->eType == EntityType::BOOLEAN) {
-            result.setValid(true);
-            result.setResultType(FormattedResultType::BOOLEAN);
-            return result;
-        }
+        return handleZeroClause(entitiesToReturn, noClauseResults);
+    }
 
-        Table finalTable = buildFinalTable(necessaryTables);
-        std::vector<Entity> finalTableEntities = extractTableEntities(finalTable);
-        std::vector<Entity> finalEntities = extractOrderedEntities(noClauseResults);
+    Table finalTable = buildFinalTable(necessaryTables);
+    TableRow firstRow = *finalTable.rows.begin();
+    std::set<Entity> finalTableEntities = extractTableEntities(firstRow);
 
-        if (finalTableEntities.size() == finalEntities.size()) {
-            return extractTableInformation(finalEntities, finalTable);
-        }
-        std::set<Entity> missingEntities;
-        for (const auto& e : finalTableEntities) {
-            if (entitiesToReturn.find(e) == entitiesToReturn.end()) {
-                missingEntities.insert(e);
-            }
-        }
-        std::vector<Result> missingResults;
-        for (const auto& r : noClauseResults) {
-            if (missingEntities.find(r.getOneSynEntity()) != missingEntities.end()) {
-                missingResults.push_back(r);
-            }
-        }
-        for (const auto& r : missingResults) {
+    if (tableEntities.size() != finalTableEntities.size()) {
+        std::set<Entity> missingEntities = findMissingEntities(tableEntities, finalTableEntities);
+        std::vector<Result> resultsOfMissingEntities = findMissingResults(missingEntities, noClauseResults);
+        for (const auto& r : resultsOfMissingEntities) {
             finalTable = Table(finalTable, Table(r));
         }
-        return extractTableInformation(finalEntities, finalTable);
     }
+    emptyFormattedResult.setValid(true);
+    emptyFormattedResult.setEntityList(entitiesToReturn);
+    emptyFormattedResult.setFinalTable(finalTable);
+    return emptyFormattedResult;
 }
 
-Table ResultProcessor::buildIntermediateTable(std::vector<Result> results) {
-    Table intermediateTable = Table(results[0]);
-    results.erase(results.begin());
+FormattedResult ResultProcessor::handleZeroClause(const std::vector<Entity>& entities, const std::vector<Result>& resultList) {
+    FormattedResult formattedResult;
+    formattedResult.setValid(true);
+    std::vector<Result> scrubbedResultList = scrubResultList(resultList);
 
-    if (results.empty()) {
+    if (entities[0].eType == EntityType::BOOLEAN) {
+        formattedResult.setBoolReturn(true);
+        return formattedResult;
+    }
+
+    formattedResult.setEntityList(entities);
+    Table table = Table(scrubbedResultList[0]);
+    if (scrubbedResultList.size() != 1) {
+        for (int i = 1; i < entities.size(); i++) {
+            table = Table(table, Table(scrubbedResultList[i]));
+        }
+    }
+    formattedResult.setFinalTable(table);
+    return formattedResult;
+}
+
+std::vector<Result> ResultProcessor::scrubResultList(const std::vector<Result>& resultList) {
+    std::vector<Result> scrubbedResults;
+    for (const auto& result : resultList) {
+        Result scrubbedResult = result;
+        Entity scrubbedEntity = result.getOneSynEntity();
+        scrubbedEntity.aType = EntityAttributeType::NULL_ATTRIBUTE;
+        scrubbedResult.setOneSynEntity(scrubbedEntity);
+        scrubbedResults.push_back(scrubbedResult);
+    }
+    return scrubbedResults;
+}
+
+Table ResultProcessor::buildIntermediateTable(const std::vector<Result>& results) {
+    Table intermediateTable = Table(results[0]);
+
+    if (results.size() == 1) {
         return intermediateTable;
     }
 
-    for (const auto& result : results) {
-        if (result.getValid() && result.getOneSynSet().empty() && result.getTwoSynSet().empty()) {
-            continue;
-        }
-        intermediateTable = Table(intermediateTable, Table(result));
+    for (int i = 1; i < results.size(); i++) {
+        intermediateTable = Table(intermediateTable, Table(results[i]));
         if (intermediateTable.rows.empty()) {
             break;
         }
@@ -100,93 +99,92 @@ Table ResultProcessor::buildIntermediateTable(std::vector<Result> results) {
     return intermediateTable;
 }
 
-Table ResultProcessor::buildFinalTable(std::vector<Table> tables) {
-    Table finalTable = tables[0];
-    tables.erase(tables.begin());
+std::vector<Table> ResultProcessor::buildAllIntermediateTables(const std::vector<std::vector<Result>>& resultLists) {
+    std::vector<Table> intermediateTables;
+    for (const auto& resultList : resultLists) {
+        Table intermediateTable = buildIntermediateTable(resultList);
+        if (intermediateTable.rows.empty()) {
+            return {};
+        }
+        intermediateTables.push_back(intermediateTable);
+    }
+    return intermediateTables;
+}
 
-    if (!tables.empty()) {
-        for (const auto& table : tables) {
-            finalTable = Table(finalTable, table);
+std::set<Entity> ResultProcessor::extractEntitySet(const std::vector<Entity>& entityList) {
+    std::set<Entity> entitySet;
+    for (const auto& entity : entityList) {
+        Entity scrubbedEntity = entity;
+        scrubbedEntity.aType = EntityAttributeType::NULL_ATTRIBUTE;
+        entitySet.insert(scrubbedEntity);
+    }
+    return entitySet;
+}
+
+std::vector<Entity> ResultProcessor::getNecessaryEntities(const std::set<Entity>& tableEntities, const TableRow& row) {
+    std::vector<Entity> entities;
+    for (const auto& r : row.row) {
+        if (tableEntities.find(r.first) != tableEntities.end()) {
+            entities.push_back(r.first);
+        }
+    }
+    return entities;
+}
+
+std::vector<Table> ResultProcessor::extractNecessaryTables(const std::vector<Table>& intermediateTables,
+                                                           const std::set<Entity>& tableEntities) {
+    std::vector<Table> necessaryTables;
+    for (Table table : intermediateTables) {
+        TableRow firstRow = *table.rows.begin();
+        std::vector<Entity> entities = getNecessaryEntities(tableEntities, firstRow);
+        if (!entities.empty()) {
+            necessaryTables.push_back(table.extractColumns(entities));
+        }
+    }
+    return necessaryTables;
+}
+
+Table ResultProcessor::buildFinalTable(const std::vector<Table>& tables) {
+    Table finalTable = tables[0];
+
+    if (tables.size() != 1) {
+        for (int i = 1; i < tables.size(); i++) {
+            finalTable = Table(finalTable, tables[i]);
         }
     }
     return finalTable;
 }
 
-std::set<Entity> ResultProcessor::extractEntitySet(std::vector<Result> resultList) {
-    std::set<Entity> entityList;
-    for (const auto& r : resultList) {
-        entityList.insert(r.getOneSynEntity());
-    }
-    return entityList;
-}
-
-FormattedResult ResultProcessor::handleInvalidResult(Result r) {
-    FormattedResult formattedResult;
-    if (r.getOneSynEntity().eType == EntityType::BOOLEAN) {
-        formattedResult.setResultType(FormattedResultType::BOOLEAN);
-    }
-    return formattedResult;
-}
-
-FormattedResult ResultProcessor::handleZeroClause(std::vector<Result> resultList) {
-    std::vector<std::vector<ProgramElement>> returnElements;
-    FormattedResult formattedResult;
-    formattedResult.setValid(true);
-
-    Result firstResult = resultList[0];
-    if (firstResult.getOneSynEntity().eType == EntityType::BOOLEAN) {
-        formattedResult.setResultType(FormattedResultType::BOOLEAN);
-        return formattedResult;
-    }
-
-    std::vector<Entity> noClauseEntities = extractOrderedEntities(resultList);
-    Table table = Table(resultList[0]);
-    resultList.erase(resultList.begin());
-    if (!resultList.empty()) {
-        for (const auto& r : resultList) {
-            table = Table(table, Table(r));
-        }
-    }
-    return extractTableInformation(noClauseEntities, table);
-}
-
-FormattedResult ResultProcessor::extractTableInformation(std::vector<Entity> entities, Table table) {
-    std::vector<std::vector<ProgramElement>> programElementLists;
-    for (int i = 0; i < entities.size(); i++) {
-        std::vector<ProgramElement> newVector;
-        programElementLists.push_back(newVector);
-    }
-    for (const auto& row : table.rows) {
-        for (int i = 0; i < entities.size(); i++) {
-            programElementLists[i].push_back(row.row.at(entities[i]));
-        }
-    }
-
-    FormattedResult formattedResult;
-    formattedResult.setValid(true);
-    if (entities.size() == 1) {
-        formattedResult.setResultType(FormattedResultType::SINGLE);
-    } else {
-        formattedResult.setResultType(FormattedResultType::TUPLE);
-    }
-    formattedResult.setEntityList(entities);
-    formattedResult.setProgramElementsLists(programElementLists);
-    return formattedResult;
-}
-
-std::vector<Entity> ResultProcessor::extractTableEntities(Table table) {
-    std::vector<Entity> entities;
-    TableRow firstRow = *table.rows.begin();
-    for (const auto& r : firstRow.row) {
-        entities.push_back(r.first);
+std::set<Entity> ResultProcessor::extractTableEntities(const TableRow& tableRow) {
+    std::set<Entity> entities;
+    for (const auto& r : tableRow.row) {
+        entities.insert(r.first);
     }
     return entities;
 }
 
-std::vector<Entity> ResultProcessor::extractOrderedEntities(std::vector<Result> results) {
-    std::vector<Entity> entities;
+std::set<Entity> ResultProcessor::findMissingEntities(const std::set<Entity>& returnEntities,
+                                                      const std::set<Entity>& finalTableEntities) {
+    std::set<Entity> missingEntities;
+    for (const auto& e : returnEntities) {
+        if (finalTableEntities.find(e) == finalTableEntities.end()) {
+            missingEntities.insert(e);
+        }
+    }
+    return missingEntities;
+}
+
+std::vector<Result> ResultProcessor::findMissingResults(const std::set<Entity>& entities,
+                                                        const std::vector<Result>& results) {
+    std::vector<Result> missingResults;
     for (const auto& r : results) {
-        entities.push_back(r.getOneSynEntity());
+        Entity scrubbedEntity = r.getOneSynEntity();
+        scrubbedEntity.aType = EntityAttributeType::NULL_ATTRIBUTE;
+        if (entities.find(scrubbedEntity) != entities.end()) {
+            Result scrubbedResult = r;
+            scrubbedResult.setOneSynEntity(scrubbedEntity);
+            missingResults.push_back(scrubbedResult);
+        }
     }
-    return entities;
+    return missingResults;
 }

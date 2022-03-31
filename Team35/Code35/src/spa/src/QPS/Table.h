@@ -13,6 +13,7 @@ public:
     std::unordered_set<TableRow, TableRowHash> rows;
 
 public:
+    Table();
     explicit Table(Result r);
     Table(std::unordered_set<TableRow, TableRowHash> rows);
     Table(Table t1, Table t2);
