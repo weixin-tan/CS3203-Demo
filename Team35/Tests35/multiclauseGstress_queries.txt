@@ -1,0 +1,45 @@
+1 - default
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, "b") and Follows (s, s1) and Uses (s1, "f")
+
+5000
+2 - default
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5; if ifs;
+Select s such that Parent (ifs, s) and Uses (s, "b") and Follows (s, s1) and Uses (s1, "g")
+
+5000
+5 - small -> single
+stmt s, s1, s2, ct; variable v, v1, v2, v3, v4, v5; call c; read r; assign a; while w;
+Select a such that Parent (ct, a) and Next (a, ct)
+
+5000
+6 - two
+stmt s, s1, s2, ct, ct2; variable v, v1, v2, v3, v4, v5; call c; read r; assign a; while w; if ifs;
+Select a such that Parent (w, ifs) and Parent (ifs, a)
+
+5000
+7 - one large
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v)
+
+5000
+8 - two large
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Modifies (s, v1)
+
+5000
+9 - three large, timeout
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Modifies (s, v1) and Uses (s1, v2)
+
+5000
+3 - eight large, timeout
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Modifies (s, v1) and Next* (s, s1) and Uses (s1, v2) and Modifies (s1, v3) and Next* (s1, s2) and Uses (s2, v4) and Modifies (s2, v5)
+
+5000
+4 - narrowing, timeout
+stmt s, s1, s2, ct; variable v, v1, v2, v3, v4, v5; call c; read r; print pn;
+Select s such that Uses (s, v) and Modifies (s, v1) and Parent (ct, s) and Next* (s, c) and Next* (s, s1) and Next* (s1, r)
+
+5000
