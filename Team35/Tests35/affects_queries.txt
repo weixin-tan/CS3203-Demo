@@ -148,3 +148,603 @@ TRUE
 Select BOOLEAN such that Affects (165, 168)
 TRUE
 5000
+1 - affects positive code6
+stmt s;
+Select s such that Affects (s, 6)
+2,6
+5000
+2 - affects positive code6
+stmt s;
+Select s such that Affects (s, 8)
+1,4
+5000
+3 - affects positive code6
+stmt s;
+Select s such that Affects (s, 10)
+1,2,4,6,8,9
+5000
+4 - affects positive code6
+stmt s;
+Select s such that Affects (s, 6)
+2,6
+5000
+5 - affects positive code6
+stmt s;
+Select s such that Affects (s, 4)
+1,4
+5000
+6 - affects positive code6
+stmt s;
+Select s such that Affects (s, 8)
+1,4
+5000
+7 - affects positive code6
+stmt s;
+Select s such that Affects (s, 10)
+1,2,4,6,8,9
+5000
+8 - affects positive code6
+stmt s;
+Select s such that Affects (s, 12)
+1,10,11,4,8
+5000
+9 - affects positive code6
+stmt s;
+Select s such that Affects (s, 10)
+1,2,4,6,8,9
+5000
+10 - affects positive code6
+stmt s;
+Select s such that Affects (s, 10)
+1,2,4,6,8,9
+5000
+11 - affects negative code6
+stmt s;
+Select s such that Affects (s, 11)
+10
+5000
+12 - affects negative code6
+stmt s;
+Select s such that Affects (s, 12)
+1,10,11,4,8
+5000
+13 - affects negative code6
+stmt s;
+Select s such that Affects (s, 3)
+
+5000
+14 - affects negative code6
+stmt s;
+Select s such that Affects (s, 6)
+2,6
+5000
+15 - affects* positive code6
+stmt s;
+Select s such that Affects* (s, 4)
+1,4
+5000
+16 - affects* positive code6
+stmt s;
+Select s such that Affects* (s, 10)
+1,2,4,6,8,9
+5000
+17 - affects* positive code6
+stmt s;
+Select s such that Affects* (s, 11)
+1,10,2,4,6,8,9
+5000
+18 - affects* positive code6
+stmt s;
+Select s such that Affects* (s, 12)
+1,10,11,2,4,6,8,9
+5000
+19 - affects positive code7
+stmt s;
+Select s such that Affects (s, 20)
+16,18
+5000
+20 - affects negative code9
+stmt s;
+Select s such that Affects (s, 25)
+23
+5000
+21 - affects negative code9
+stmt s;
+Select s such that Affects (s, 25)
+23
+5000
+22 - affects negative code9
+stmt s;
+Select s such that Affects (s, 30)
+26
+5000
+23 - affects negative code10
+stmt s;
+Select s such that Affects (s, 34)
+
+5000
+24 - affects negative code11
+stmt s;
+Select s such that Affects (s, 40)
+
+5000
+25 - affects positive code12
+stmt s;
+Select s such that Affects (s, 42)
+41
+5000
+26 - affects positive code12
+stmt s;
+Select s such that Affects (s, 43)
+42
+5000
+27 - affects* positive code12
+stmt s;
+Select s such that Affects* (s, 43)
+41,42
+5000
+28 - affects negative main long call chain
+stmt s;
+Select s such that Affects (s, 62)
+
+5000
+29 - affect* positive central long affects* chain
+stmt s;
+Select s such that Affects* (s, 163)
+141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162
+5000
+30 - affect negative distraction
+stmt s;
+Select s such that Affects (s, 168)
+165,167
+5000
+1 - affects positive code6
+assign a;
+Select a such that Affects (a, 6)
+2,6
+5000
+2 - affects positive code6
+assign a;
+Select a such that Affects (a, 8)
+1,4
+5000
+3 - affects positive code6
+assign a;
+Select a such that Affects (a, 10)
+1,2,4,6,8,9
+5000
+4 - affects positive code6
+assign a;
+Select a such that Affects (a, 6)
+2,6
+5000
+5 - affects positive code6
+assign a;
+Select a such that Affects (a, 4)
+1,4
+5000
+6 - affects positive code6
+assign a;
+Select a such that Affects (a, 8)
+1,4
+5000
+7 - affects positive code6
+assign a;
+Select a such that Affects (a, 10)
+1,2,4,6,8,9
+5000
+8 - affects positive code6
+assign a;
+Select a such that Affects (a, 12)
+1,10,11,4,8
+5000
+9 - affects positive code6
+assign a;
+Select a such that Affects (a, 10)
+1,2,4,6,8,9
+5000
+10 - affects positive code6
+assign a;
+Select a such that Affects (a, 10)
+1,2,4,6,8,9
+5000
+11 - affects negative code6
+assign a;
+Select a such that Affects (a, 11)
+10
+5000
+12 - affects negative code6
+assign a;
+Select a such that Affects (a, 12)
+1,10,11,4,8
+5000
+13 - affects negative code6
+assign a;
+Select a such that Affects (a, 3)
+
+5000
+14 - affects negative code6
+assign a;
+Select a such that Affects (a, 6)
+2,6
+5000
+15 - affects* positive code6
+assign a;
+Select a such that Affects* (a, 4)
+1,4
+5000
+16 - affects* positive code6
+assign a;
+Select a such that Affects* (a, 10)
+1,2,4,6,8,9
+5000
+17 - affects* positive code6
+assign a;
+Select a such that Affects* (a, 11)
+1,10,2,4,6,8,9
+5000
+18 - affects* positive code6
+assign a;
+Select a such that Affects* (a, 12)
+1,10,11,2,4,6,8,9
+5000
+19 - affects positive code7
+assign a;
+Select a such that Affects (a, 20)
+16,18
+5000
+20 - affects negative code9
+assign a;
+Select a such that Affects (a, 25)
+23
+5000
+21 - affects negative code9
+assign a;
+Select a such that Affects (a, 25)
+23
+5000
+22 - affects negative code9
+assign a;
+Select a such that Affects (a, 30)
+26
+5000
+23 - affects negative code10
+assign a;
+Select a such that Affects (a, 34)
+
+5000
+24 - affects negative code11
+assign a;
+Select a such that Affects (a, 40)
+
+5000
+25 - affects positive code12
+assign a;
+Select a such that Affects (a, 42)
+41
+5000
+26 - affects positive code12
+assign a;
+Select a such that Affects (a, 43)
+42
+5000
+27 - affects* positive code12
+assign a;
+Select a such that Affects* (a, 43)
+41,42
+5000
+28 - affects negative main long call chain
+assign a;
+Select a such that Affects (a, 62)
+
+5000
+29 - affect* positive central long affects* chain
+assign a;
+Select a such that Affects* (a, 163)
+141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162
+5000
+30 - affect negative distraction
+assign a;
+Select a such that Affects (a, 168)
+165,167
+5000
+1 - affects positive code6
+stmt s;
+Select s such that Affects (2, s)
+10,6
+5000
+2 - affects positive code6
+stmt s;
+Select s such that Affects (4, s)
+10,12,4,8
+5000
+3 - affects positive code6
+stmt s;
+Select s such that Affects (4, s)
+10,12,4,8
+5000
+4 - affects positive code6
+stmt s;
+Select s such that Affects (6, s)
+10,6
+5000
+5 - affects positive code6
+stmt s;
+Select s such that Affects (1, s)
+10,12,4,8
+5000
+6 - affects positive code6
+stmt s;
+Select s such that Affects (1, s)
+10,12,4,8
+5000
+7 - affects positive code6
+stmt s;
+Select s such that Affects (1, s)
+10,12,4,8
+5000
+8 - affects positive code6
+stmt s;
+Select s such that Affects (1, s)
+10,12,4,8
+5000
+9 - affects positive code6
+stmt s;
+Select s such that Affects (2, s)
+10,6
+5000
+10 - affects positive code6
+stmt s;
+Select s such that Affects (9, s)
+10
+5000
+11 - affects negative code6
+stmt s;
+Select s such that Affects (9, s)
+10
+5000
+12 - affects negative code6
+stmt s;
+Select s such that Affects (9, s)
+10
+5000
+13 - affects negative code6
+stmt s;
+Select s such that Affects (2, s)
+10,6
+5000
+14 - affects negative code6
+stmt s;
+Select s such that Affects (9, s)
+10
+5000
+15 - affects* positive code6
+stmt s;
+Select s such that Affects* (1, s)
+10,11,12,4,8
+5000
+16 - affects* positive code6
+stmt s;
+Select s such that Affects* (1, s)
+10,11,12,4,8
+5000
+17 - affects* positive code6
+stmt s;
+Select s such that Affects* (1, s)
+10,11,12,4,8
+5000
+18 - affects* positive code6
+stmt s;
+Select s such that Affects* (1, s)
+10,11,12,4,8
+5000
+19 - affects positive code7
+stmt s;
+Select s such that Affects (16, s)
+20
+5000
+20 - affects negative code9
+stmt s;
+Select s such that Affects (21, s)
+
+5000
+21 - affects negative code9
+stmt s;
+Select s such that Affects (22, s)
+23
+5000
+22 - affects negative code9
+stmt s;
+Select s such that Affects (23, s)
+25
+5000
+23 - affects negative code10
+stmt s;
+Select s such that Affects (32, s)
+
+5000
+24 - affects negative code11
+stmt s;
+Select s such that Affects (38, s)
+
+5000
+25 - affects positive code12
+stmt s;
+Select s such that Affects (41, s)
+42
+5000
+26 - affects positive code12
+stmt s;
+Select s such that Affects (42, s)
+43
+5000
+27 - affects* positive code12
+stmt s;
+Select s such that Affects* (41, s)
+42,43
+5000
+28 - affects negative main long call chain
+stmt s;
+Select s such that Affects (44, s)
+
+5000
+29 - affect* positive central long affects* chain
+stmt s;
+Select s such that Affects* (141, s)
+142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163
+5000
+30 - affect negative distraction
+stmt s;
+Select s such that Affects (165, s)
+168
+5000
+1 - affects positive code6
+assign a;
+Select a such that Affects (2, a)
+10,6
+5000
+2 - affects positive code6
+assign a;
+Select a such that Affects (4, a)
+10,12,4,8
+5000
+3 - affects positive code6
+assign a;
+Select a such that Affects (4, a)
+10,12,4,8
+5000
+4 - affects positive code6
+assign a;
+Select a such that Affects (6, a)
+10,6
+5000
+5 - affects positive code6
+assign a;
+Select a such that Affects (1, a)
+10,12,4,8
+5000
+6 - affects positive code6
+assign a;
+Select a such that Affects (1, a)
+10,12,4,8
+5000
+7 - affects positive code6
+assign a;
+Select a such that Affects (1, a)
+10,12,4,8
+5000
+8 - affects positive code6
+assign a;
+Select a such that Affects (1, a)
+10,12,4,8
+5000
+9 - affects positive code6
+assign a;
+Select a such that Affects (2, a)
+10,6
+5000
+10 - affects positive code6
+assign a;
+Select a such that Affects (9, a)
+10
+5000
+11 - affects negative code6
+assign a;
+Select a such that Affects (9, a)
+10
+5000
+12 - affects negative code6
+assign a;
+Select a such that Affects (9, a)
+10
+5000
+13 - affects negative code6
+assign a;
+Select a such that Affects (2, a)
+10,6
+5000
+14 - affects negative code6
+assign a;
+Select a such that Affects (9, a)
+10
+5000
+15 - affects* positive code6
+assign a;
+Select a such that Affects* (1, a)
+10,11,12,4,8
+5000
+16 - affects* positive code6
+assign a;
+Select a such that Affects* (1, a)
+10,11,12,4,8
+5000
+17 - affects* positive code6
+assign a;
+Select a such that Affects* (1, a)
+10,11,12,4,8
+5000
+18 - affects* positive code6
+assign a;
+Select a such that Affects* (1, a)
+10,11,12,4,8
+5000
+19 - affects positive code7
+assign a;
+Select a such that Affects (16, a)
+20
+5000
+20 - affects negative code9
+assign a;
+Select a such that Affects (21, a)
+
+5000
+21 - affects negative code9
+assign a;
+Select a such that Affects (22, a)
+23
+5000
+22 - affects negative code9
+assign a;
+Select a such that Affects (23, a)
+25
+5000
+23 - affects negative code10
+assign a;
+Select a such that Affects (32, a)
+
+5000
+24 - affects negative code11
+assign a;
+Select a such that Affects (38, a)
+
+5000
+25 - affects positive code12
+assign a;
+Select a such that Affects (41, a)
+42
+5000
+26 - affects positive code12
+assign a;
+Select a such that Affects (42, a)
+43
+5000
+27 - affects* positive code12
+assign a;
+Select a such that Affects* (41, a)
+42,43
+5000
+28 - affects negative main long call chain
+assign a;
+Select a such that Affects (44, a)
+
+5000
+29 - affect* positive central long affects* chain
+assign a;
+Select a such that Affects* (141, a)
+142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163
+5000
+30 - affect negative distraction
+assign a;
+Select a such that Affects (165, a)
+168
+5000
