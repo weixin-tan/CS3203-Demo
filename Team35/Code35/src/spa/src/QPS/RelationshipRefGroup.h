@@ -11,7 +11,7 @@ public:
     RelationshipRefGroup();
 
     void addRelRef(const RelationshipRef& r);
-
+    void setRelRefGroup(std::vector<RelationshipRef> g);
 };
 
 #endif //SPA_SRC_SPA_SRC_QPS_RELATIONSHIPREFGROUP_H_
