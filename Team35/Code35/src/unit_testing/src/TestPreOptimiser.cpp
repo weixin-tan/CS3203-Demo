@@ -73,12 +73,12 @@ TEST_CASE("Testing Linear Graphs"){
 
     vector<RelationshipRef> relationshipList1;
     relationshipList1.push_back(r1);
-    relationshipList1.push_back(r5);
     relationshipList1.push_back(r2);
-    relationshipList1.push_back(r6);
     relationshipList1.push_back(r3);
-    relationshipList1.push_back(r7);
     relationshipList1.push_back(r4);
+    relationshipList1.push_back(r5);
+    relationshipList1.push_back(r6);
+    relationshipList1.push_back(r7);
     relationshipList1.push_back(r8);
 
     RelationshipRefGroup group0;
@@ -90,9 +90,9 @@ TEST_CASE("Testing Linear Graphs"){
     group1.addRelRef(r2);
     group1.addRelRef(r3);
     group1.addRelRef(r4);
-    group2.addRelRef(r5);
-    group2.addRelRef(r6);
     group2.addRelRef(r7);
+    group2.addRelRef(r6);
+    group2.addRelRef(r5);
 
     std::vector<RelationshipRefGroup> expected1;
     expected1.push_back(group0);
@@ -107,6 +107,7 @@ TEST_CASE("Testing Linear Graphs"){
         REQUIRE(compareTwoLists(expected1[2], output1[2]));
         REQUIRE(compareTwoGroupsLists(expected1, output1));
     }
+
 }
 
 TEST_CASE("testing more complicate graphs"){
@@ -138,7 +139,7 @@ TEST_CASE("testing more complicate graphs"){
     RelationshipRef r3 = RelationshipRef(RelationshipType::PATTERN, v1, expr1, a1);
     RelationshipRef r4 = RelationshipRef(RelationshipType::WITH, vAttribute, pAttribute);
     RelationshipRef r5 = RelationshipRef(RelationshipType::WITH, v1Attribute, p1Attribute);
-    RelationshipRef r6 = RelationshipRef(RelationshipType::CALLS, p1Attribute, p);
+    RelationshipRef r6 = RelationshipRef(RelationshipType::CALLS, p1, p);
     RelationshipRef r7 = RelationshipRef(RelationshipType::FOLLOWS, e1, e2);
     RelationshipRef r8 = RelationshipRef(RelationshipType::MODIFIES, e3, count);
     RelationshipRef r9 = RelationshipRef(RelationshipType::WITH, e1, count);
@@ -160,12 +161,12 @@ TEST_CASE("testing more complicate graphs"){
     group0.addRelRef(r7);
     group0.addRelRef(r8);
     group0.addRelRef(r9);
-    group1.addRelRef(r1);
-    group1.addRelRef(r2);
-    group1.addRelRef(r3);
+    group1.addRelRef(r6);
     group1.addRelRef(r4);
     group1.addRelRef(r5);
-    group1.addRelRef(r6);
+    group1.addRelRef(r2);
+    group1.addRelRef(r3);
+    group1.addRelRef(r1);
 
     std::vector<RelationshipRefGroup> expected1;
     expected1.push_back(group0);
@@ -174,6 +175,8 @@ TEST_CASE("testing more complicate graphs"){
     std::vector<RelationshipRefGroup> output1 = preOp.groupRelationships(relationshipList1);
 
     SECTION("testing complicated graph"){
+        REQUIRE(compareTwoLists(expected1[0], output1[0]));
+        REQUIRE(compareTwoLists(expected1[1], output1[1]));
         REQUIRE(compareTwoGroupsLists(expected1, output1));
     }
 }
