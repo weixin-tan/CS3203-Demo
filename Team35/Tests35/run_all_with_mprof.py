@@ -36,10 +36,12 @@ for file in os.listdir("."):
     if file.endswith(sourceidentifier):
     	if file[:-len(sourceidentifier)] in source_dic:
     		print("duplicate file -> " + file)
+    		continue
     	source_dic[file[:-len(sourceidentifier)]] = file
     if file.endswith(queryidentifier):
     	if file[:-len(queryidentifier)] in query_dic:
     		print("duplicate file -> " + file)
+    		continue
     	query_dic[file[:-len(queryidentifier)]] = file
 
 parser = argparse.ArgumentParser()
