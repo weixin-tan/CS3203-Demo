@@ -96,7 +96,14 @@ int PreOptimiser::checkRelationshipsConnected(const RelationshipRef& r1, const R
             && entityMatchRelRef(r1.AssignmentEntity, r2)){
         numEntityConnected = numEntityConnected + 1;
     }
-    return numEntityConnected;
+
+    if (numEntityConnected > 0 &&
+            (isFixedEntity(r2.leftEntity) || isFixedEntity(r2.rightEntity))
+            && r2.rType != RelationshipType::PATTERN){
+        return numEntityConnected + 1;
+    }else{
+        return numEntityConnected;
+    }
 }
 
 int PreOptimiser::countNumberOfNonFixedEntity(const RelationshipRef& relationship){
@@ -118,7 +125,7 @@ int PreOptimiser::notVisitedYet(std::vector<int> visited, const std::vector<Rela
     for (int i = 0; i < visited.size(); i++){
         if (visited[i] == 0 && countNumberOfNonFixedEntity(relationships[i]) == 1){
             return i;
-        }else if (visited[i] == 0){
+        }else if (visited[i] == 0 && temp == -1){
             temp = i;
         }
     }
