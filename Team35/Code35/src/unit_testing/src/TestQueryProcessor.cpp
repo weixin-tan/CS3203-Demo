@@ -528,7 +528,6 @@ TEST_CASE("test advanced queries") {
     Clause s15_output = qp.parsePQL(s15)[0];
     Clause s16_output = qp.parsePQL(s16)[0];
 
-
     RelationshipRef r1 = RelationshipRef(RelationshipType::NEXT_T, int1, int2);
     RelationshipRef r2 = RelationshipRef(RelationshipType::AFFECTS, a1, a2);
     RelationshipRef r3 = RelationshipRef(RelationshipType::WITH, cProcname, pProcname);
@@ -573,7 +572,6 @@ TEST_CASE("test advanced queries") {
         REQUIRE(s7_output.equals(c5));
     }
 
-
     SECTION("multiple pattern queries") {
         c8.appendEntityToFind(a);
         c8.appendRef(r8_a);
@@ -592,8 +590,7 @@ TEST_CASE("test advanced queries") {
         REQUIRE(s11_output.equals(c11));
         REQUIRE(s12_output.equals(c11));
         REQUIRE(s13_output.equals(c11));
-    }
-    SECTION("mixed queries") {
+    }SECTION("mixed queries") {
         c14.appendEntityToFind(a);
         c14.appendRef(r11_a);
         c14.appendRef(r11_b);
@@ -705,15 +702,19 @@ TEST_CASE("advanced trippy queries") {
     }
 }
 
-TEST_CASE("remove duplicate relationships"){
+TEST_CASE("remove duplicate relationships") {
     QueryProcessor qp = QueryProcessor();
     string s1 = "procedure p, q; Select p.procName such that Calls (p, q)  and Calls (p, q)"; // 1
-    string s2 = "procedure p, q; Select p.procName such that Calls (p, q) and Modifies (p, \"i\") and Calls (p, q)"; // 2
+    string s2 =
+            "procedure p, q; Select p.procName such that Calls (p, q) and Modifies (p, \"i\") and Calls (p, q)"; // 2
     string s3 = "assign a, a1; variable v; Select a pattern a (v, _) and a1 (v, _) and a (v, _)"; // 2
     string s4 = "assign a; Select a pattern a (\"x\", _) and a (\"x\", _) and a (\"y\", _)"; // 2
-    string s5 = "assign a, a1; variable v, v1; Select a pattern a (v, \"x+1\") and a (v, \"x+1\") and a (v, \"y+1\")"; // 2
-    string s6 = "procedure p, q; Select p with p.procName = \"Third\" with q.procName = \"Third\" and \"Third\" = q.procName"; //2
-    string s7 = "procedure p, q; Select p with p.procName = \"Third\" with q.procName = \"Third\" and q.procName = \"Third\""; //2
+    string s5 =
+            "assign a, a1; variable v, v1; Select a pattern a (v, \"x+1\") and a (v, \"x+1\") and a (v, \"y+1\")"; // 2
+    string s6 =
+            "procedure p, q; Select p with p.procName = \"Third\" with q.procName = \"Third\" and \"Third\" = q.procName"; //2
+    string s7 =
+            "procedure p, q; Select p with p.procName = \"Third\" with q.procName = \"Third\" and q.procName = \"Third\""; //2
 
     vector<RelationshipRef> r1 = qp.parsePQL(s1)[0].refList;
     vector<RelationshipRef> r2 = qp.parsePQL(s2)[0].refList;
@@ -723,7 +724,7 @@ TEST_CASE("remove duplicate relationships"){
     vector<RelationshipRef> r6 = qp.parsePQL(s6)[0].refList;
     vector<RelationshipRef> r7 = qp.parsePQL(s7)[0].refList;
 
-    SECTION("test number of relationships"){
+    SECTION("test number of relationships") {
         REQUIRE(r1.size() == 1);
         REQUIRE(r2.size() == 2);
         REQUIRE(r3.size() == 2);
@@ -734,7 +735,7 @@ TEST_CASE("remove duplicate relationships"){
     }
 }
 
-TEST_CASE("edge cases"){
+TEST_CASE("edge cases") {
     QueryProcessor qp = QueryProcessor();
     string s1 = "variable v; Select v with v   .   varName = \"   x   \"";
     string s2 = "variable v; Select v with v\n.\tvarName = \"x   \"";
@@ -743,7 +744,7 @@ TEST_CASE("edge cases"){
     string s5 = "variable v; Select v with v.varName = \"x\"";
     string s6 = "stmt s1, s2; Select s1 such that Affects(s1, s2)";
 
-    SECTION("valid"){
+    SECTION("valid") {
         REQUIRE(!qp.parsePQL(s1).empty());
         REQUIRE(!qp.parsePQL(s2).empty());
         REQUIRE(!qp.parsePQL(s3).empty());
@@ -757,18 +758,49 @@ TEST_CASE("edge cases"){
     string in3 = "procedure p; Select p.varName with p.procName = 3";
     string in4 = "variable v; Select BOOLEAN such that Uses(_, v)";
     string in5 = "variable v; Select BOOLEAN such that Modifies(_, v)";
-    SECTION("invalid"){
+    string in6 = "while w; Select w;";
+    SECTION("invalid") {
         REQUIRE(qp.parsePQL(in1).empty());
         REQUIRE(qp.parsePQL(in2).empty());
         REQUIRE(qp.parsePQL(in3).empty());
         REQUIRE(qp.parsePQL(in4)[0].entityToFindList[0].name == "FALSE");
         REQUIRE(qp.parsePQL(in5)[0].entityToFindList[0].name == "FALSE");
+        REQUIRE(qp.parsePQL(in6).empty());
+    }
+
+    string pat1 = " variable v; assign a; stmt s; if ifs; while w; Select BOOLEAN pattern ifs (v, _)";
+    string pat2 = " variable v; assign a; stmt s; if ifs; while w; Select BOOLEAN pattern a (v, _, _)";
+    string pat3 = " variable v; assign a; stmt s; if ifs; while w; Select BOOLEAN pattern w (v, _, _)";
+    string pat4 = " variable v; assign a; stmt s; if ifs; while w; Select BOOLEAN pattern s (v, _)";
+    string pat5 = " variable v; assign a; stmt s; if ifs; while w; Select BOOLEAN pattern s (v, _, _)";
+    string pat6 = " variable v; assign a; stmt s; if ifs; while w; Select BOOLEAN pattern s (v, _, _)";
+    SECTION("pattern edge cases") {
+        REQUIRE(qp.parsePQL(pat1).empty());
+        REQUIRE(qp.parsePQL(pat2).empty());
+        REQUIRE(qp.parsePQL(pat3).empty());
+        REQUIRE(qp.parsePQL(pat4)[0].entityToFindList[0].name == "FALSE");
+        REQUIRE(qp.parsePQL(pat5)[0].entityToFindList[0].name == "FALSE");
+        REQUIRE(qp.parsePQL(pat6)[0].entityToFindList[0].name == "FALSE");
+    }
+
+    string space1 = "while w; Selectw";
+    string space2 = "if i; variable v; Select BOOLEAN such thatModifies(i,v)";
+    string space3 = "assign a; Select BOOLEAN patterna (_,_)";
+    string space4 = "Select BOOLEAN with1=1";
+
+    SECTION("no space edge cases") {
+        REQUIRE(qp.parsePQL(space1).empty());
+        REQUIRE(qp.parsePQL(space2).empty());
+        REQUIRE(qp.parsePQL(space3).empty());
+        REQUIRE(qp.parsePQL(space4).empty());
+
     }
 }
 
 TEST_CASE("debugging") {
     QueryProcessor qp = QueryProcessor();
-    string s1 = "variable v; Select BOOLEAN such that Uses(_, v)";
+    string s1 = "assign a; Select BOOLEAN patterna (_,_)";
+
     vector<Clause> c = qp.parsePQL(s1);
     /*
     if (c.empty()) {

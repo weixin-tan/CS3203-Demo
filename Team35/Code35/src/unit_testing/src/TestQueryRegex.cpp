@@ -117,17 +117,23 @@ TEST_CASE("test basic boolean methods") {
 
 TEST_CASE("test advanced boolean methods") {
     std::unordered_map<std::string, Entity> entityMap;
+    vector<string> v1 = {"constant", "a", "b", "c"};
+    vector<string> v2 = {"invalid", "a"};
+    vector<string> v3 = {"variable", "1"};
+    vector<string> v4 = {"Modifies", "x", "_"};
+    vector<string> v5 = {"invalid", "x", "y"};
+    vector<string> v6 = {"Uses", "1a", "y"};
+    vector<string> v7 = {"Uses", "a", "_1"};
     SECTION("checking checkDesignEntitySynonymsList") {
-
-        REQUIRE(checkDesignEntitySynonymsList({"constant", "a", "b", "c"}, &entityMap));
-        REQUIRE(!checkDesignEntitySynonymsList({"invalid", "a"}, &entityMap));
-        REQUIRE(!checkDesignEntitySynonymsList({"variable", "1"}, &entityMap));
+        REQUIRE(checkDesignEntitySynonymsList(&v1, &entityMap));
+        REQUIRE(!checkDesignEntitySynonymsList(&v2, &entityMap));
+        REQUIRE(!checkDesignEntitySynonymsList(&v3, &entityMap));
     }
 
     SECTION("checking checkRelRefList") {
-        REQUIRE(checkRelRefList({"Modifies", "x", "_"}));
-        REQUIRE(!checkRelRefList({"invalid", "x", "y"}));
-        REQUIRE(!checkRelRefList({"Uses", "1a", "y"}));
-        REQUIRE(!checkRelRefList({"Uses", "a", "_1"}));
+        REQUIRE(checkRelRefList(&v4));
+        REQUIRE(!checkRelRefList(&v5));
+        REQUIRE(!checkRelRefList(&v6));
+        REQUIRE(!checkRelRefList(&v7));
     }
 }

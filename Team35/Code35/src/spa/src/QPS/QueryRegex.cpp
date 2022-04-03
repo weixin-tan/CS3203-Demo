@@ -9,8 +9,17 @@ bool isSpaces(const std::string& s) {
     return stripString(s).empty();
 }
 
+bool isSpaces(const char& c) {
+    std::string s(1, c);
+    return stripString(s).empty();
+}
+
 bool doesStringExist(const std::string& s, const std::string& substring) {
     return s.find(substring) != std::string::npos;
+}
+
+bool checkLastCharIsSemiColon(const std::string& s) {
+    return extractLastChar(s) == ";";
 }
 
 /**
@@ -126,9 +135,9 @@ bool existSuchThat(const std::string& s) {
     return suchPosition != std::string::npos || thatPosition != std::string::npos;
 }
 
-bool checkListIsIdent(std::vector<std::string> *sArr){
+bool checkListIsIdent(std::vector<std::string>* sArr) {
     for (int i = 1; i < (*sArr).size(); i++) {
-        if (!isIdent((*sArr)[i])){
+        if (!isIdent((*sArr)[i])) {
             return false;
         }
     }
@@ -140,25 +149,29 @@ bool checkListIsIdent(std::vector<std::string> *sArr){
  * @param sArr List where the first element is a designEntity, and the rest are synonyms
  * @return returns true if the Entity Declaration STATEMENT is valid. else, return false
  */
-bool checkDesignEntitySynonymsList(std::vector<std::string> sArr, std::unordered_map<std::string, Entity> *entityMap) {
+bool checkDesignEntitySynonymsList(std::vector<std::string>* sArr, std::unordered_map<std::string, Entity>* entityMap) {
     std::vector<std::string>
             designEntity{"stmt", "read", "print", "call", "while", "if", "assign", "variable", "constant", "procedure"};
-    if (sArr.size() <= 1) {
+    if ((*sArr).size() <= 1) {
         return false;
     }
-    std::string designStr = sArr[0];
-    for (int i = 1; i < sArr.size(); i++){
-        if (entityMapContains(sArr[i], entityMap)){
-            return false;
-        }
-    }
+    std::string designStr = (*sArr)[0];
     if (std::find(std::begin(designEntity), std::end(designEntity), designStr) != std::end(designEntity)) {
         //designStr contains one of the design entity keywords
-        return checkListIsIdent(&sArr);
+        return checkListIsIdent(sArr);
     } else {
         return false;
     }
+}
 
+bool checkDeclarationSemanticallyValid(std::vector<std::string>* sArr,
+                                       std::unordered_map<std::string, Entity>* entityMap) {
+    for (int i = 1; i < (*sArr).size(); i++) {
+        if (entityMapContains((*sArr)[i], entityMap)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 /**
@@ -166,17 +179,18 @@ bool checkDesignEntitySynonymsList(std::vector<std::string> sArr, std::unordered
  * @param sArr a list where the first element is a relRef and the rest are entity names
  * @return returns true if rel ref list is valid
  */
-bool checkRelRefList(std::vector<std::string> sArr) {
-    if (sArr.size() != 3) {
+bool checkRelRefList(std::vector<std::string>* sArr) {
+    if ((*sArr).size() != 3) {
         return false;
     } else {
-        if (sArr[0] == "Follows" || sArr[0] == "Follows*" || sArr[0] == "Parent" || sArr[0] == "Parent*"
-                || sArr[0] == "Next" || sArr[0] == "Next*" || sArr[0] == "Affects" || sArr[0] == "Affects*") {
-            return isStmtRef(sArr[1]) && isStmtRef(sArr[2]);
-        } else if (sArr[0] == "Uses" || sArr[0] == "Modifies") {
-            return (isEntRef(sArr[1]) && isEntRef(sArr[2])) || (isStmtRef(sArr[1]) && isEntRef(sArr[2]));
-        } else if (sArr[0] == "Calls" || sArr[0] == "Calls*") {
-            return (isEntRef(sArr[1]) && isEntRef(sArr[2]));
+        if ((*sArr)[0] == "Follows" || (*sArr)[0] == "Follows*" || (*sArr)[0] == "Parent" || (*sArr)[0] == "Parent*"
+                || (*sArr)[0] == "Next" || (*sArr)[0] == "Next*" || (*sArr)[0] == "Affects"
+                || (*sArr)[0] == "Affects*") {
+            return isStmtRef((*sArr)[1]) && isStmtRef((*sArr)[2]);
+        } else if ((*sArr)[0] == "Uses" || (*sArr)[0] == "Modifies") {
+            return (isEntRef((*sArr)[1]) && isEntRef((*sArr)[2])) || (isStmtRef((*sArr)[1]) && isEntRef((*sArr)[2]));
+        } else if ((*sArr)[0] == "Calls" || (*sArr)[0] == "Calls*") {
+            return (isEntRef((*sArr)[1]) && isEntRef((*sArr)[2]));
         } else {
             return false;
         }
@@ -189,15 +203,22 @@ bool checkRelRefList(std::vector<std::string> sArr) {
  * @param entityMap entity map to reference to
  * @return
  */
-bool checkPatternList(std::vector<std::string> patternList, std::unordered_map<std::string, Entity>* entityMap) {
-    if (patternList.size() == 3 && isEntRef(patternList[1]) && entityMapContains(patternList[0], entityMap)) {
-        Entity e = (*entityMap)[patternList[0]];
-        return e.eType == EntityType::ASSIGNMENT || (e.eType == EntityType::WHILE && isWildCard(patternList[2]));
-    } else if (patternList.size() == 4 && isEntRef(patternList[1]) && entityMapContains(patternList[0], entityMap)) {
-        Entity e = (*entityMap)[patternList[0]];
-        return e.eType == EntityType::IF && isWildCard(patternList[2]) && isWildCard(patternList[3]);
+bool checkPatternList(std::vector<std::string>* patternList) {
+    return ((*patternList).size() == 3 || (*patternList).size() == 4) && isEntRef((*patternList)[1]);
+}
+
+bool checkPatternSyntax(std::vector<std::string>* patternList,
+                        std::unordered_map<std::string, Entity>* entityMap,
+                        const RelationshipRef& newRef) {
+    if (newRef.AssignmentEntity.eType == EntityType::ASSIGNMENT) {
+        return (*patternList).size() == 3;
+    } else if (newRef.AssignmentEntity.eType == EntityType::WHILE) {
+        return (*patternList).size() == 3 && isWildCard((*patternList)[2]);
+    } else if (newRef.AssignmentEntity.eType == EntityType::IF) {
+        return (*patternList).size() == 4 && isWildCard((*patternList)[2]) && isWildCard((*patternList)[3]);
+    } else {
+        return true; //pass to semantic error
     }
-    return false;
 }
 
 std::string extractFirstChar(const std::string& s) {
@@ -235,17 +256,12 @@ std::string stripString(std::string s) {
     return s;
 }
 
-std::string removeSelect(const std::string& s) {
-    int selectLength = 6;
-    return stripString(s.substr(selectLength, s.length() - selectLength));
-}
-
 std::string removeSuchThat(const std::string& s) {
     std::vector<long> myList = findSuchThatClause(s);
     long suchPosition = myList[0];
     long thatPosition = myList[1];
     long suchLength = 4;
-    if (suchPosition != std::string::npos) {
+    if (suchPosition != std::string::npos && isSpaces(s[thatPosition + suchLength])) {
         // remove such that
         return stripString(s.substr(0, suchPosition)
                                    + s.substr(thatPosition + suchLength, s.length() - thatPosition - suchLength));
@@ -254,36 +270,45 @@ std::string removeSuchThat(const std::string& s) {
     }
 }
 
+std::string removeCommandWordIfExists(const std::string& s,
+                                      const std::string& commandWord,
+                                      bool(* existCommandWordFunction)(const std::string& s)) {
+    int commandWordLength = commandWord.length();
+
+    if (existCommandWordFunction(s)) {
+        if (isSpaces(s[commandWordLength])) {
+            return stripString(s.substr(commandWordLength, s.length() - commandWordLength));
+        } else {
+            return "";
+        }
+    }
+    return s;
+}
+
+std::string removeSelect(const std::string& s) {
+    return removeCommandWordIfExists(s, "Select", isSelect);
+}
+
 /**
  * Remove pattern word from front of the string if it exists
  * @param s some string
  * @return string without pattern in front
  */
 std::string removePattern(const std::string& s) {
-    int patternLength = 7;
-    if (isPattern(s)) {
-        return stripString(s.substr(patternLength, s.length() - patternLength));
-    } else {
-        return s;
-    }
+    return removeCommandWordIfExists(s, "pattern", isPattern);
 }
 
 std::string removeWith(const std::string& s) {
-    int withLength = 4;
-    if (isWith(s)) {
-        return stripString(s.substr(withLength, s.length() - withLength));
-    } else {
-        return s;
-    }
+    return removeCommandWordIfExists(s, "With", isWith);
 }
 
-long newPatternPosition(long temp, long patternPosition, long commandWordLength){
+long findNewPosition(long temp, long commandWordPosition, long commandWordLength) {
     if (temp != std::string::npos) {
-        patternPosition = temp + patternPosition + commandWordLength;
+        commandWordPosition = temp + commandWordPosition + commandWordLength;
     } else {
-        patternPosition = std::string::npos;
+        commandWordPosition = std::string::npos;
     }
-    return patternPosition;
+    return commandWordPosition;
 }
 
 long findClauseStartPosition(const std::string& s, const std::string& commandWord, const std::string& original) {
@@ -295,10 +320,11 @@ long findClauseStartPosition(const std::string& s, const std::string& commandWor
     if (commandWordPosition != std::string::npos) {
         if (doesStringExist(s.substr(commandWordPosition, s.length() - commandWordPosition), ">")
                 || isSpaces(original.substr(selectLength, commandWordPosition - selectLength))) {
-            temp = findClauseStartPosition(s.substr(commandWordPosition + commandWordLength, s.size() - commandWordPosition),
+            temp = findClauseStartPosition(s.substr(commandWordPosition + commandWordLength,
+                                                    s.size() - commandWordPosition),
                                            commandWord,
                                            original);
-            commandWordPosition = newPatternPosition(temp, commandWordPosition, commandWordLength);
+            commandWordPosition = findNewPosition(temp, commandWordPosition, commandWordLength);
         }
         return commandWordPosition;
     } else {
@@ -319,7 +345,7 @@ long findWithClause(const std::string& s) {
     return findClauseStartPosition(s, "with", s);
 }
 
-long recursiveFindPatternClauseInSubstring(const std::string& s, std::string original){
+long recursiveFindPatternClauseInSubstring(const std::string& s, std::string original) {
     long commaPosition = original.rfind(',');
     if (commaPosition != std::string::npos) {
         original = original.substr(0, commaPosition);
@@ -362,7 +388,7 @@ std::vector<long> findSuchThatClause(const std::string& s) {
         return returnList;
     } else if (isSpaces(stripString(s.substr(suchPosition + suchLength, thatPosition - suchPosition - suchLength)))
             && suchPosition < thatPosition
-            && thatPosition - suchPosition > suchLength){
+            && thatPosition - suchPosition > suchLength) {
         returnList.push_back(suchPosition);
         returnList.push_back(thatPosition);
         return returnList;
@@ -379,18 +405,18 @@ std::vector<long> findSuchThatClause(const std::string& s) {
         returnList.push_back(std::string::npos);
         returnList.push_back(std::string::npos);
         return returnList;
-    }else{
+    } else {
         returnList[0] = returnList[0] + temp + suchLength;
         returnList[1] = returnList[1] + temp + suchLength;
         return returnList;
     }
 }
 
-long smallestNumber(std::vector<long> positionList) {
+long findSmallestNumber(std::vector<long>* positionList) {
     long toReturn = INT32_MAX;
     long temp;
-    for (int i = 0; i < positionList.size(); i++) {
-        temp = positionList[i];
+    for (int i = 0; i < (*positionList).size(); i++) {
+        temp = (*positionList)[i];
         if (std::string::npos != temp && temp < toReturn && temp >= 0) {
             toReturn = temp;
         }
@@ -562,7 +588,7 @@ std::vector<std::string> splitVariablesAndClauses(const std::string& s) {
     long withPosition = findWithClause(s);
 
     std::vector<long> positionList = {suchThatPosition, patternPosition, withPosition};
-    long selected = smallestNumber(positionList);
+    long selected = findSmallestNumber(&positionList);
 
     if ((suchThatPosition == std::string::npos) && (patternPosition == std::string::npos)
             && (withPosition == std::string::npos)) {
@@ -599,22 +625,23 @@ std::vector<std::string> extractWithClauses(const std::string& s) {
     while (i < tempList.size()) {
         if (tempList[i] == ".") {
             afterDot = true;
-        }else if (extractFirstChar(tempList[i]) == "\"" && extractLastChar(tempList[i]) == "\"" && tempList[i].size() > 1){
+        } else if (extractFirstChar(tempList[i]) == "\"" && extractLastChar(tempList[i]) == "\""
+                && tempList[i].size() > 1) {
             tokenList.push_back(tempList[i]);
             j = j + 1;
-        }else if (extractFirstChar(tempList[i]) == "\"" && quotationCount == 0){
+        } else if (extractFirstChar(tempList[i]) == "\"" && quotationCount == 0) {
             tokenList.push_back(tempList[i]);
             j = j + 1;
             quotationCount = 1;
-        }else if (extractLastChar(tempList[i]) == "\"" && quotationCount == 1){
+        } else if (extractLastChar(tempList[i]) == "\"" && quotationCount == 1) {
             tokenList[j - 1] = tokenList[j - 1] + tempList[i];
             quotationCount = 0;
-        }else if (quotationCount == 1){
+        } else if (quotationCount == 1) {
             tokenList[j - 1] = tokenList[j - 1] + tempList[i];
-        }else if (afterDot) {
+        } else if (afterDot) {
             tokenList[j - 1] = tokenList[j - 1] + "." + tempList[i];
             afterDot = false;
-        }else {
+        } else {
             tokenList.push_back(tempList[i]);
             j = j + 1;
         }
@@ -632,7 +659,7 @@ std::vector<std::string> extractWithClauses(const std::string& s) {
     return toReturn;
 }
 
-void reconstructWordsToPhrases(const std::string& stmt, std::vector<std::string> *phraseList, int* count){
+void reconstructWordsToPhrases(const std::string& stmt, std::vector<std::string>* phraseList, int* count) {
     if (!stmt.empty()) {
         if (firstWordChecker(stmt, "and") || isWith(stmt) ||
                 firstWordChecker(stmt, "such") || isPattern(stmt)) {
@@ -646,7 +673,7 @@ void reconstructWordsToPhrases(const std::string& stmt, std::vector<std::string>
     }
 }
 
-void insertWithListAndOtherClause(const std::string& stmt, long x, std::vector<std::string> *returnList){
+void insertWithListAndOtherClause(const std::string& stmt, long x, std::vector<std::string>* returnList) {
     std::vector<std::string> temp;
     std::string first = stmt.substr(0, x);
     std::string second = stmt.substr(x, stmt.length() - x);
@@ -695,7 +722,7 @@ std::vector<std::string> extractVariablesToSelect(const std::string& s) {
     std::vector<std::string> returnList;
     std::string variableString = splitVariablesAndClauses(s)[0];
 
-    if (!isSelect(variableString)){
+    if (!isSelect(variableString)) {
         return returnList;
     }
     variableString = removeSelect(variableString);
@@ -710,10 +737,10 @@ std::vector<std::string> extractVariablesToSelect(const std::string& s) {
     return returnList;
 }
 
-void decideWhichListToAddRelationshipTo(const std::string& stmt, lastClauseType *lastType,
-                                        std::vector<std::string> *suchThatList,
-                                        std::vector<std::string> *patternList,
-                                        std::vector<std::string> *withList){
+void decideWhichListToAddRelationshipTo(const std::string& stmt, lastClauseType* lastType,
+                                        std::vector<std::string>* suchThatList,
+                                        std::vector<std::string>* patternList,
+                                        std::vector<std::string>* withList) {
     if (isWith(stmt)) {
         (*withList).push_back(stmt);
         (*lastType) = lastClauseType::With;
@@ -807,7 +834,7 @@ bool checkRelationshipRef(const RelationshipRef& r) {
                 r.rType == RelationshipType::PARENT || r.rType == RelationshipType::PARENT_T ||
                 r.rType == RelationshipType::NEXT || r.rType == RelationshipType::NEXT_T) {
             returnBool = checkFollowsOrParentsOrNext(r);
-        }else if(r.rType == RelationshipType::AFFECTS || r.rType == RelationshipType::AFFECTS_T){
+        } else if (r.rType == RelationshipType::AFFECTS || r.rType == RelationshipType::AFFECTS_T) {
             returnBool = checkAffects(r);
         } else if (r.rType == RelationshipType::USES) {
             returnBool = checkUses(r);
@@ -838,7 +865,7 @@ bool checkEntityIsStmtRef(const Entity& e) {
             || e.eType == EntityType::WILDCARD;
 }
 
-bool checkVariable(const Entity& e){
+bool checkVariable(const Entity& e) {
     return e.eType == EntityType::FIXED_STRING
             || e.eType == EntityType::VARIABLE
             || e.eType == EntityType::WILDCARD;
@@ -874,11 +901,11 @@ bool checkCallsEntity(const Entity& e) {
             || e.eType == EntityType::WILDCARD;
 }
 
-bool checkAssignEntity(const Entity& e){
+bool checkAssignEntity(const Entity& e) {
     return e.eType == EntityType::FIXED_INTEGER
-        || e.eType == EntityType::WILDCARD
-        || e.eType == EntityType::ASSIGNMENT
-        || e.eType == EntityType::STATEMENT;
+            || e.eType == EntityType::WILDCARD
+            || e.eType == EntityType::ASSIGNMENT
+            || e.eType == EntityType::STATEMENT;
 }
 
 bool checkFollowsOrParentsOrNext(const RelationshipRef& r) {
@@ -889,7 +916,7 @@ bool checkFollowsOrParentsOrNext(const RelationshipRef& r) {
 
 bool checkUses(const RelationshipRef& r) {
     bool leftSideBool = checkUsesLeftSide(r.leftEntity);
-    bool rightSideBool = checkVariable(r.rightEntity) ;
+    bool rightSideBool = checkVariable(r.rightEntity);
     return leftSideBool && rightSideBool;
 }
 
@@ -905,7 +932,7 @@ bool checkCalls(const RelationshipRef& r) {
     return leftSideBool && rightSideBool;
 }
 
-bool checkAffects(const RelationshipRef& r){
+bool checkAffects(const RelationshipRef& r) {
     bool leftSideBool = checkAssignEntity(r.leftEntity);
     bool rightSideBool = checkAssignEntity(r.rightEntity);
     return leftSideBool && rightSideBool;
@@ -932,17 +959,17 @@ bool checkWith(const RelationshipRef& r) {
 }
 
 bool checkWithEntity(const Entity& e) {
-    if (e.aType == EntityAttributeType::PROCNAME){
+    if (e.aType == EntityAttributeType::PROCNAME) {
         return e.eType == EntityType::PROCEDURE || e.eType == EntityType::CALL;
-    }else if (e.aType == EntityAttributeType::VARNAME){
+    } else if (e.aType == EntityAttributeType::VARNAME) {
         return e.eType == EntityType::VARIABLE || e.eType == EntityType::READ || e.eType == EntityType::PRINT;
-    }else if (e.aType == EntityAttributeType::VALUE){
+    } else if (e.aType == EntityAttributeType::VALUE) {
         return e.eType == EntityType::CONSTANT;
-    }else if (e.aType == EntityAttributeType::STMT) {
+    } else if (e.aType == EntityAttributeType::STMT) {
         return e.eType == EntityType::STATEMENT || e.eType == EntityType::READ || e.eType == EntityType::PRINT ||
                 e.eType == EntityType::CALL || e.eType == EntityType::WHILE || e.eType == EntityType::IF ||
                 e.eType == EntityType::ASSIGNMENT;
-    }else{
+    } else {
         return e.eType == EntityType::FIXED_STRING || e.eType == EntityType::FIXED_INTEGER;
     }
 }
@@ -959,17 +986,17 @@ bool checkVariableToSelect(const Entity& e) {
             return e.aType == EntityAttributeType::NULL_ATTRIBUTE;
         }
 
-        if (e.aType != EntityAttributeType::NULL_ATTRIBUTE){
+        if (e.aType != EntityAttributeType::NULL_ATTRIBUTE) {
             return checkWithEntity(e);
-        }else{
+        } else {
             return true;
         }
     }
 }
 
-bool checkAlreadyInClause(const std::vector<RelationshipRef>& relationshipList, RelationshipRef newRelationship){
+bool checkAlreadyInClause(const std::vector<RelationshipRef>& relationshipList, RelationshipRef newRelationship) {
     bool toReturn = false;
-    for (const RelationshipRef& rel: relationshipList){
+    for (const RelationshipRef& rel : relationshipList) {
         toReturn = toReturn || newRelationship.equals(rel);
     }
     return toReturn;

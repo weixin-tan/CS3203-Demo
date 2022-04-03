@@ -31,9 +31,13 @@ private:
 
     static int notVisitedYet(std::vector<int> visited, const std::vector<RelationshipRef>& relationships);
 
-    static void traverseNeighbours(std::unordered_map<int, std::deque<int>>* adjacencyList, int currentNode, std::vector<int> *visited, std::queue<int> *myQueue);
+    static void traverseNeighbours(std::unordered_map<int, std::deque<int>>* adjacencyList,
+                                   int currentNode,
+                                   std::vector<int>* visited,
+                                   std::queue<int>* myQueue);
 
-    static RelationshipRefGroup traverseGraph(std::vector<int> *visited, const std::vector<RelationshipRef>& relationships,
+    static RelationshipRefGroup traverseGraph(std::vector<int>* visited,
+                                              const std::vector<RelationshipRef>& relationships,
                                               std::unordered_map<int, std::deque<int>>* adjacencyList);
 
     static std::string listToString(const std::vector<int>& ls);

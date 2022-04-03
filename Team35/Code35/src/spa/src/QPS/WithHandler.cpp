@@ -50,7 +50,6 @@ std::set<ProgramElement> WithHandler::getProgramElements(const EntityType& eType
     return pg->getEntity(elementType);
 }
 
-
 std::set<ProgramElement> WithHandler::matchProgramElements(const std::set<ProgramElement>& setA,
                                                            const Entity& fixedEntity,
                                                            EntityAttributeType aType) {
@@ -68,7 +67,7 @@ std::set<ProgramElement> WithHandler::matchProgramElements(const std::set<Progra
 
 void WithHandler::insertIfSameAttributeString(const std::string& stringA, const std::string& stringB,
                                               const ProgramElement& elementA, const ProgramElement& elementB,
-                                 std::set<std::pair<ProgramElement, ProgramElement>> *toReturn){
+                                              std::set<std::pair<ProgramElement, ProgramElement>>* toReturn) {
     if (stringA == stringB) {
         std::pair<ProgramElement, ProgramElement> tempPair(elementA, elementB);
         (*toReturn).insert(tempPair);
