@@ -210,6 +210,9 @@ bool checkPatternList(std::vector<std::string>* patternList) {
 bool checkPatternSyntax(std::vector<std::string>* patternList,
                         std::unordered_map<std::string, Entity>* entityMap,
                         const RelationshipRef& newRef) {
+    if (newRef.rType == RelationshipType::NULL_RELATIONSHIP){
+        return false;
+    }
     if (newRef.AssignmentEntity.eType == EntityType::ASSIGNMENT) {
         return (*patternList).size() == 3;
     } else if (newRef.AssignmentEntity.eType == EntityType::WHILE) {
