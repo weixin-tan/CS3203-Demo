@@ -4,7 +4,6 @@
 #include <vector>
 #include "RelationshipRef.h"
 
-
 class RelationshipRefGroup {
 public:
     std::vector<RelationshipRef> relRefGroup;

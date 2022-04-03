@@ -24,7 +24,7 @@ RelationshipRef::RelationshipRef(RelationshipType rType,
     RelationshipRef::AssignmentEntity = std::move(AssignmentEntity);
 }
 
-std::string RelationshipRef::toString() {
+std::string RelationshipRef::toString() const {
     std::ostringstream buffer;
     buffer << "Relationship Type: " << Type::relationshipTypeToString(rType) << " leftEntity: "
            << leftEntity.toString() << " rightEntity " << rightEntity.toString();
@@ -36,20 +36,20 @@ std::string RelationshipRef::toString() {
 }
 bool RelationshipRef::operator==(const RelationshipRef& r1) const {
     return rType == r1.rType
-    && leftEntity == r1.leftEntity
-    && rightEntity == r1.rightEntity
-    && AssignmentEntity == r1.AssignmentEntity;
+            && leftEntity == r1.leftEntity
+            && rightEntity == r1.rightEntity
+            && AssignmentEntity == r1.AssignmentEntity;
 }
-bool RelationshipRef::equals(const RelationshipRef& r1) {
-    if (rType == RelationshipType::WITH && r1.rType == RelationshipType::WITH){
+bool RelationshipRef::equals(const RelationshipRef& r1) const {
+    if (rType == RelationshipType::WITH && r1.rType == RelationshipType::WITH) {
         return (leftEntity.equals(r1.leftEntity)
-                    && rightEntity.equals(r1.rightEntity)) ||
+                && rightEntity.equals(r1.rightEntity)) ||
                 (leftEntity.equals(r1.rightEntity)
-                    && rightEntity.equals(r1.leftEntity));
-    }else{
+                        && rightEntity.equals(r1.leftEntity));
+    } else {
         return rType == r1.rType
-        && leftEntity.equals(r1.leftEntity)
-        && rightEntity.equals(r1.rightEntity)
-        && AssignmentEntity.equals(r1.AssignmentEntity);
+                && leftEntity.equals(r1.leftEntity)
+                && rightEntity.equals(r1.rightEntity)
+                && AssignmentEntity.equals(r1.AssignmentEntity);
     }
 }
