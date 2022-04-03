@@ -261,6 +261,7 @@ void QueryProcessor::handleWith(std::vector<std::string>* WithClauses, Clause* n
         (*isValid) = (*isValid) && clausesList.size() == 2;
         if ((*isValid)) {
             RelationshipRef newRef = createWithObject(&clausesList, entityMap);
+            (*isValid) = (*isValid) && checkWithSyntax(&clausesList, entityMap, newRef);
             (*isSemanticallyValid) = (*isSemanticallyValid) && checkRelationshipRef(newRef);
             addIfNotDuplicate(newClause, newRef);
         }

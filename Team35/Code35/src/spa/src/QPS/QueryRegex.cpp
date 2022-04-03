@@ -221,6 +221,28 @@ bool checkPatternSyntax(std::vector<std::string>* patternList,
     }
 }
 
+bool checkWithSyntax(std::vector<std::string>* withList,
+                     std::unordered_map<std::string, Entity>* entityMap,
+                     const RelationshipRef& newRef) {
+    if (newRef.leftEntity.eType == EntityType::NULL_ENTITY || newRef.rightEntity.eType == EntityType::NULL_ENTITY ) {
+        return false;
+    }
+    bool returnBool = true;
+    if (newRef.leftEntity.eType != EntityType::FIXED_STRING && newRef.leftEntity.eType != EntityType::FIXED_INTEGER){
+        if (newRef.leftEntity.aType == EntityAttributeType::NULL_ATTRIBUTE){
+            return false;
+        }
+        returnBool = returnBool && isIdent(newRef.leftEntity.name);
+    }
+    if (newRef.rightEntity.eType != EntityType::FIXED_STRING && newRef.rightEntity.eType != EntityType::FIXED_INTEGER) {
+        if (newRef.rightEntity.aType == EntityAttributeType::NULL_ATTRIBUTE) {
+            return false;
+        }
+        returnBool = returnBool && isIdent(newRef.rightEntity.name);
+    }
+    return returnBool;
+}
+
 std::string extractFirstChar(const std::string& s) {
     return s.substr(0, 1);
 }
