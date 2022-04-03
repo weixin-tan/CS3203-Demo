@@ -759,6 +759,11 @@ TEST_CASE("edge cases") {
     string in4 = "variable v; Select BOOLEAN such that Uses(_, v)";
     string in5 = "variable v; Select BOOLEAN such that Modifies(_, v)";
     string in6 = "while w; Select w;";
+    string in7 = "Select BOOLEAN with 3 = \"3\"";
+    string in8 = "Select BOOLEAN with \"3\" = 3";
+    string in9 = "assign a; Select BOOLEAN with a.stmt# = a";
+    string in10 = "stmt s; Select BOOLEAN with \"First\" = s.procName";
+
     SECTION("invalid") {
         REQUIRE(qp.parsePQL(in1).empty());
         REQUIRE(qp.parsePQL(in2).empty());
@@ -766,6 +771,10 @@ TEST_CASE("edge cases") {
         REQUIRE(qp.parsePQL(in4)[0].entityToFindList[0].name == "FALSE");
         REQUIRE(qp.parsePQL(in5)[0].entityToFindList[0].name == "FALSE");
         REQUIRE(qp.parsePQL(in6).empty());
+        REQUIRE(qp.parsePQL(in7).empty());
+        REQUIRE(qp.parsePQL(in8).empty());
+        REQUIRE(qp.parsePQL(in9).empty());
+        REQUIRE(qp.parsePQL(in10)[0].entityToFindList[0].name == "FALSE");
     }
 
     string pat1 = " variable v; assign a; stmt s; if ifs; while w; Select BOOLEAN pattern ifs (v, _)";
@@ -793,14 +802,12 @@ TEST_CASE("edge cases") {
         REQUIRE(qp.parsePQL(space2).empty());
         REQUIRE(qp.parsePQL(space3).empty());
         REQUIRE(qp.parsePQL(space4).empty());
-
     }
 }
 
 TEST_CASE("debugging") {
     QueryProcessor qp = QueryProcessor();
-    string s1 = "assign a; Select BOOLEAN patterna (_,_)";
-
+    string s1 = "stmt s; Select BOOLEAN with \"First\" = s.procName";
     vector<Clause> c = qp.parsePQL(s1);
     /*
     if (c.empty()) {

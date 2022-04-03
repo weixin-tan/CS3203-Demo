@@ -36,6 +36,9 @@ bool checkPatternList(std::vector<std::string>* patternList);
 bool checkPatternSyntax(std::vector<std::string>* patternList,
                         std::unordered_map<std::string, Entity>* entityMap,
                         const RelationshipRef& newRef);
+bool checkWithSyntax(std::vector<std::string>* withList,
+                     std::unordered_map<std::string, Entity>* entityMap,
+                     const RelationshipRef& newRef);
 
 std::string extractFirstChar(const std::string& s);
 std::string extractLastChar(const std::string& s);
