@@ -763,6 +763,7 @@ TEST_CASE("edge cases") {
     string in8 = "Select BOOLEAN with \"3\" = 3";
     string in9 = "assign a; Select BOOLEAN with a.stmt# = a";
     string in10 = "stmt s; Select BOOLEAN with \"First\" = s.procName";
+    string in11 = "assign a; Select BOOLEAN pattern a (_,\"y\") and pattern a (_, \"x\")";
 
     SECTION("invalid") {
         REQUIRE(qp.parsePQL(in1).empty());
@@ -775,6 +776,7 @@ TEST_CASE("edge cases") {
         REQUIRE(qp.parsePQL(in8).empty());
         REQUIRE(qp.parsePQL(in9).empty());
         REQUIRE(qp.parsePQL(in10)[0].entityToFindList[0].name == "FALSE");
+        REQUIRE(qp.parsePQL(in11).empty());
     }
 
     string pat1 = " variable v; assign a; stmt s; if ifs; while w; Select BOOLEAN pattern ifs (v, _)";
@@ -807,13 +809,13 @@ TEST_CASE("edge cases") {
 
 TEST_CASE("debugging") {
     QueryProcessor qp = QueryProcessor();
-    string s1 = "stmt s; Select BOOLEAN with \"First\" = s.procName";
+    string s1 = "assign a; Select BOOLEAN pattern a (_,\"y\") and pattern a (_, \"x\")" ;
     vector<Clause> c = qp.parsePQL(s1);
-    /*
+
     if (c.empty()) {
         cout << "invalid!" << "\n";
     } else {
         cout << c[0].toString() << "\n";
     }
-    */
+
 }
