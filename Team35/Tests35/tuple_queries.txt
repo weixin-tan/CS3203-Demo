@@ -98,3 +98,23 @@ stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, i
 Select <a, ifs, ifs1, ifs2> such that Uses (a, "g") and Modifies (a, "x") pattern a (_, _"a+b+c+d"_) such that Parent (ifs, a) and Uses (ifs, "eee") and Parent (ifs1, ifs) and Uses (ifs1, "ee") and Parent (ifs2, ifs1)
 28 25 22 18
 5000
+21 - duplicate synonyms only
+stmt s;
+Select <s, s, s, s> such that Uses (s, "f")
+
+5000
+22 - duplicate synonym and attr
+call c;
+Select <c, c.procName, c, c.stmt#, c.procName, c.stmt#>
+
+5000
+23 - duplicate attr only
+variable v;
+Select <v.varName, v.varName, v.varName, v.varName, v.varName>
+
+5000
+24 - duplicate synonym and attr
+stmt s, s1, s2; assign a, a1, a2; variable v, v1, v2; while w, w1, w2; if ifs, ifs1, ifs2; call c, c1, c2; read r, r1, r2; print pn, pn1, pn2; procedure p, q; constant cn, cn1;
+Select <s, s.stmt#, s, a, a.stmt#, a.stmt#, a.stmt#, v.varName, v, v, w.stmt#, w.stmt#, w, w, w, ifs, ifs, ifs, ifs.stmt#, c.procName, c.procName, c, c.stmt#, c, c.stmt#, r.varName, r.varName, r, r.stmt#, r, r.stmt#, r.varName, pn, pn, pn.stmt#, pn.varName, pn.varName, p.procName, q.procName, p.procName, p, p, cn, cn, cn.value, cn.value>
+
+5000
