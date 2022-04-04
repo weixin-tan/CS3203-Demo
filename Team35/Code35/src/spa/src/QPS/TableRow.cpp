@@ -1,4 +1,5 @@
 #include "TableRow.h"
+#include <vector>
 
 // this is required to label all the tablerows present. 
 unsigned int TableRow::counter = 0; 
