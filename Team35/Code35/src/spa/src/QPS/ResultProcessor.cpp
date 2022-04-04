@@ -41,7 +41,7 @@ FormattedResult ResultProcessor::processResults(const ResultGroup& resultGroup) 
         std::set<Entity> missingEntities = findMissingEntities(tableEntities, finalTableEntities);
         std::vector<Result> resultsOfMissingEntities = findMissingResults(missingEntities, noClauseResults);
         for (const auto& r : resultsOfMissingEntities) {
-            finalTable = Table(finalTable, Table(&r));
+            finalTable = Table(&finalTable, &Table(&r));
         }
     }
     emptyFormattedResult.setValid(true);
@@ -64,7 +64,7 @@ FormattedResult ResultProcessor::handleZeroClause(const std::vector<Entity>& ent
     Table table = Table(&scrubbedResultList[0]);
     if (scrubbedResultList.size() != 1) {
         for (int i = 1; i < entities.size(); i++) {
-            table = Table(table, Table(&scrubbedResultList[i]));
+            table = Table(&table, &Table(&scrubbedResultList[i]));
         }
     }
     formattedResult.setFinalTable(table);
@@ -91,7 +91,7 @@ Table ResultProcessor::buildIntermediateTable(const std::vector<Result>& results
     }
 
     for (int i = 1; i < results.size(); i++) {
-        intermediateTable = Table(intermediateTable, Table(&results[i]));
+        intermediateTable = Table(&intermediateTable, &Table(&results[i]));
         if (intermediateTable.rows.empty()) {
             break;
         }
@@ -149,7 +149,7 @@ Table ResultProcessor::buildFinalTable(const std::vector<Table>& tables) {
 
     if (tables.size() != 1) {
         for (int i = 1; i < tables.size(); i++) {
-            finalTable = Table(finalTable, tables[i]);
+            finalTable = Table(&finalTable, &tables[i]);
         }
     }
     return finalTable;

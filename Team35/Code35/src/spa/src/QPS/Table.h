@@ -16,7 +16,7 @@ public:
     Table();
     explicit Table(const Result *r);
     Table(std::unordered_set<TableRow, TableRowHash> rows);
-    Table(Table t1, Table t2);
+    Table(const Table *t1, const Table *t2);
     Table extractColumns(const std::vector<Entity> *entites);
 };
 
