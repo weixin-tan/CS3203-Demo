@@ -1,5 +1,7 @@
 #include "Table.h"
 
+Table::Table() = default;
+
 Table::Table(Result r) {
     // Check if the result is valid. If not no table is created.
     if (!r.getValid()) return;

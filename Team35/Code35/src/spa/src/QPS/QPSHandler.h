@@ -19,11 +19,13 @@ private:
     PatternHandler* patternHandler;
     WithHandler* withHandler;
 
-    Result getNoClauseResult(const Entity& entityToFind) const;
+    std::vector<Result> getNoClauseResults(const std::vector<Entity>& entitiesToFind) const;
+    std::vector<Result> handleRelRefGroups(const RelationshipRefGroup &relRefGroup) const;
 
 public:
     explicit QPSHandler(PkbGetter* pg);
-    std::vector<ResultGroup> processClause(const GroupedClause& groupedClause) const;
+    ResultGroup processClause(const GroupedClause& groupedClause) const;
+
 };
 
 #endif //SPA_QPSHANDLER_H

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <deque>
 #include "Clause.h"
 #include "RelationshipRef.h"
 #include "RelationshipRefGroup.h"
@@ -18,19 +19,30 @@ private:
     static bool isFixedEntity(const Entity& e);
     static bool isFixedEntityOrWildcard(const Entity& e);
     static bool entityMatchRelRef(const Entity& e, const RelationshipRef& r);
-    static bool checkRelationshipsConnected(const RelationshipRef& r1, const RelationshipRef& r2);
-    static int notVisitedYet(std::vector<int> visited);
-    static void addRelationshipIfConnected(int index1, int index2, const std::vector<RelationshipRef>& relationships,
-                                           std::unordered_map<int, std::vector<int>>* adjacencyList);
 
     static void findConnectedRelationshipsAndAdd(int index1,
-                                                 std::unordered_map<int, std::vector<int>>* adjacencyList,
+                                                 std::unordered_map<int, std::deque<int>>* adjacencyList,
                                                  const std::vector<RelationshipRef>& relationships);
-    static RelationshipRefGroup traverseGraph(std::vector<int> *visited, const std::vector<RelationshipRef>& relationships,
-                              std::unordered_map<int, std::vector<int>> *adjacencyList);
-    void sortGroup(RelationshipRefGroup* tempGroup);
+    static void addRelationshipIfConnected(int index1, int index2, const std::vector<RelationshipRef>& relationships,
+                                           std::unordered_map<int, std::deque<int>>* adjacencyList);
+    static int checkRelationshipsConnected(const RelationshipRef& r1, const RelationshipRef& r2);
+
+    static int countNumberOfNonFixedEntity(const RelationshipRef& relationship);
+
+    static int notVisitedYet(std::vector<int> visited, const std::vector<RelationshipRef>& relationships);
+
+    static void traverseNeighbours(std::unordered_map<int, std::deque<int>>* adjacencyList,
+                                   int currentNode,
+                                   std::vector<int>* visited,
+                                   std::queue<int>* myQueue);
+
+    static RelationshipRefGroup traverseGraph(std::vector<int>* visited,
+                                              const std::vector<RelationshipRef>& relationships,
+                                              std::unordered_map<int, std::deque<int>>* adjacencyList);
+
     static std::string listToString(const std::vector<int>& ls);
-    static void printAdjacencyList(const std::unordered_map<int, std::vector<int>>& adjacencyList);
+    static std::string dequeToString(const std::deque<int>& ls);
+    static void printAdjacencyList(const std::unordered_map<int, std::deque<int>>& adjacencyList);
 };
 
 #endif //SPA_SRC_SPA_SRC_QPS_PREOPTIMISER_H_

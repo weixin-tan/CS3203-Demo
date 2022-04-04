@@ -2,39 +2,39 @@
 
 FormattedResult::FormattedResult() {
     valid = false;
-    resultType = FormattedResultType::NULL_RESULT;
+    isBoolReturn = false;
     entityList = {};
-    programElementLists = {};
+    finalTable = Table(Result());
 }
 
-bool FormattedResult::getValid() {
+bool FormattedResult::getValid() const {
     return FormattedResult::valid;
 }
 
-FormattedResultType FormattedResult::getResultType() {
-    return FormattedResult::resultType;
+bool FormattedResult::getBoolReturn() const {
+    return FormattedResult::isBoolReturn;
 }
 
-std::vector<Entity> FormattedResult::getEntityList() {
+std::vector<Entity> FormattedResult::getEntityList() const {
     return FormattedResult::entityList;
 }
 
-std::vector<std::vector<ProgramElement>> FormattedResult::getProgramElementLists() {
-    return FormattedResult::programElementLists;
+Table FormattedResult::getFinalTable() const {
+    return FormattedResult::finalTable;
 }
 
 void FormattedResult::setValid(bool b) {
     FormattedResult::valid = b;
 }
 
-void FormattedResult::setResultType(FormattedResultType f) {
-    FormattedResult::resultType = f;
+void FormattedResult::setBoolReturn(bool b) {
+    FormattedResult::isBoolReturn = b;
 }
 
 void FormattedResult::setEntityList(std::vector<Entity> entities) {
     FormattedResult::entityList = entities;
 }
 
-void FormattedResult::setProgramElementsLists(std::vector<std::vector<ProgramElement>> lists) {
-    FormattedResult::programElementLists = lists;
+void FormattedResult::setFinalTable(Table table) {
+    FormattedResult::finalTable = table;
 }

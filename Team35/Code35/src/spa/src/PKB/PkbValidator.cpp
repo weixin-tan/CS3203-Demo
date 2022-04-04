@@ -29,3 +29,17 @@ void PkbValidator::validateNoDuplicateProcedure(const std::vector<std::vector<Pa
         definedProcs.insert(proc);
     }
 }
+
+void PkbValidator::validate(const std::vector<std::vector<ParsedStatement>>& procedures, bool testing) {
+    try {
+        validateNoCyclicCall();
+        validateCallsExists();
+        PkbValidator::validateNoDuplicateProcedure(procedures);
+    } catch (const std::exception& e) {
+        if (testing) throw e;  // testing purpose
+        std::cout <<
+                  "SIMPLE source semantic error detected. Details following:\n" <<
+                  e.what() << '\n';
+        exit(1);
+    }
+}

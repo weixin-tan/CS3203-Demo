@@ -4,7 +4,6 @@
 #include <string>
 
 #include "FormattedResult.h"
-#include "PostOptimiser.h"
 #include "QPSHandler.h"
 #include "QueryProcessor.h"
 #include "Result.h"
@@ -21,16 +20,15 @@ private:
     QueryProcessor* queryProcessor;
     PreOptimiser* preOptimiser;
     QPSHandler* qpsHandler;
-    PostOptimiser* postOptimiser;
     ResultProcessor* resultProcessor;
     ResultFormatter* resultFormatter;
 
     std::vector<Clause> callParser(const std::string& query);
     GroupedClause callPreOptimiser(const std::vector<Clause>& clauses);
-    std::vector<ResultGroup> callHandler(const GroupedClause& groupedClause);
-    std::vector<ResultGroup> callPostOptimiser(const std::vector<ResultGroup>& resultsGroups) ;
-    FormattedResult callProcessor(const std::vector<ResultGroup>& groups);
-    std::list<std::string> callFormatter(FormattedResult result);
+    ResultGroup callHandler(const GroupedClause& groupedClause);
+    FormattedResult callProcessor(const ResultGroup& resultGroup);
+    std::list<std::string> callFormatter(const FormattedResult& processedResults);
+    bool checkSemanticBoolError(Entity e);
 };
 
 #endif //SPA_QPSMAINLOGIC_H

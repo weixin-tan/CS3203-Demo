@@ -2,13 +2,12 @@
 #define SPA_TEAM35_CODE35_SRC_SPA_SRC_PKB_AFFECTSGETTER_H_
 
 #include "RelationshipGetter.h"
+#include "../DesignExtractor/DesignExtractor.h"
 
 class AffectsGetter : public RelationshipGetter {
 private:
     DB* db;
-    void dfsAffects(int src, const std::map<int, std::set<int>>& nextGraph, std::map<int, std::set<int>>& affectsGraph, const std::string& var);
-    void computeAndCacheAffects(int src);
-    void computeAndCacheAffectsR(int src);
+    DesignExtractor de;
 
 public:
     explicit AffectsGetter(DB* db);

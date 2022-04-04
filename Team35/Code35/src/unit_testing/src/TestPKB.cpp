@@ -3,7 +3,7 @@
 #include "PKB.h"
 #include "PkbRelationshipType.h"
 #include "PkbUtil.h"
-#include "DesignExtractor.h"
+#include "DesignExtractor/DesignExtractor.h"
 
 #include "catch.hpp"
 
@@ -1568,6 +1568,84 @@ TEST_CASE("PKB AFFECTS 2") {
         expectedElementSet = {
                 tcData.stmt.at(4),
                 tcData.stmt.at(6),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+    }
+}
+
+TEST_CASE("PKB AFFECTS_T 1") {
+    PKB pkb;
+    PkbSetter* pkbSetter = pkb.getSetter();
+    PkbGetter* pkbGetter = pkb.getGetter();
+    std::set<ProgramElement> resultElementSet, expectedElementSet;
+
+    PKB_AFFECTS_TEST_CASE_1 tcData;
+    pkbSetter->insertStmts(tcData.stmtLists);
+    SECTION("isRelationship") {
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::AFFECTS_T, ProgramElement::createStatement(ElementType::STATEMENT, 2), ProgramElement::createStatement(ElementType::STATEMENT, 6)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::AFFECTS_T, ProgramElement::createStatement(ElementType::STATEMENT, 4), ProgramElement::createStatement(ElementType::ASSIGNMENT, 8)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::AFFECTS_T, ProgramElement::createStatement(ElementType::ASSIGNMENT, 4), ProgramElement::createStatement(ElementType::STATEMENT, 10)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::AFFECTS_T, ProgramElement::createStatement(ElementType::ASSIGNMENT, 6), ProgramElement::createStatement(ElementType::ASSIGNMENT, 6)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::AFFECTS_T, ProgramElement::createStatement(ElementType::STATEMENT, 1), ProgramElement::createStatement(ElementType::STATEMENT, 4)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::AFFECTS_T, ProgramElement::createStatement(ElementType::STATEMENT, 1), ProgramElement::createStatement(ElementType::ASSIGNMENT, 8)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::AFFECTS_T, ProgramElement::createStatement(ElementType::ASSIGNMENT, 1), ProgramElement::createStatement(ElementType::STATEMENT, 10)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::AFFECTS_T, ProgramElement::createStatement(ElementType::ASSIGNMENT, 1), ProgramElement::createStatement(ElementType::ASSIGNMENT, 12)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::AFFECTS_T, ProgramElement::createStatement(ElementType::STATEMENT, 2), ProgramElement::createStatement(ElementType::STATEMENT, 10)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::AFFECTS_T, ProgramElement::createStatement(ElementType::STATEMENT, 9), ProgramElement::createStatement(ElementType::ASSIGNMENT, 10)));
+        REQUIRE(!pkbGetter->isRelationship(PkbRelationshipType::AFFECTS_T, ProgramElement::createStatement(ElementType::STATEMENT, 2), ProgramElement::createStatement(ElementType::STATEMENT, 3)));
+        REQUIRE(!pkbGetter->isRelationship(PkbRelationshipType::AFFECTS_T, ProgramElement::createStatement(ElementType::STATEMENT, 9), ProgramElement::createStatement(ElementType::ASSIGNMENT, 6)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::AFFECTS_T, ProgramElement::createStatement(ElementType::ASSIGNMENT, 1), ProgramElement::createStatement(ElementType::STATEMENT, 4)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::AFFECTS_T, ProgramElement::createStatement(ElementType::ASSIGNMENT, 1), ProgramElement::createStatement(ElementType::ASSIGNMENT, 10)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::AFFECTS_T, ProgramElement::createStatement(ElementType::STATEMENT, 1), ProgramElement::createStatement(ElementType::STATEMENT, 11)));
+        REQUIRE(pkbGetter->isRelationship(PkbRelationshipType::AFFECTS_T, ProgramElement::createStatement(ElementType::STATEMENT, 1), ProgramElement::createStatement(ElementType::ASSIGNMENT, 12)));
+    }
+    SECTION("getRightSide") {
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::AFFECTS_T, ProgramElement::createStatement(ElementType::STATEMENT, 1), ElementType::ASSIGNMENT);
+        expectedElementSet = {
+                tcData.stmt.at(4),
+                tcData.stmt.at(8),
+                tcData.stmt.at(10),
+                tcData.stmt.at(11),
+                tcData.stmt.at(12),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::AFFECTS_T, ProgramElement::createStatement(ElementType::STATEMENT, 3), ElementType::STATEMENT);
+        expectedElementSet = {
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getRightSide(PkbRelationshipType::AFFECTS_T, ProgramElement::createStatement(ElementType::ASSIGNMENT, 6), ElementType::ASSIGNMENT);
+        expectedElementSet = {
+                tcData.stmt.at(6),
+                tcData.stmt.at(10),
+                tcData.stmt.at(11),
+                tcData.stmt.at(12),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+    }
+    SECTION("getLeftSide") {
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::AFFECTS_T, ProgramElement::createStatement(ElementType::ASSIGNMENT, 12), ElementType::STATEMENT);
+        expectedElementSet = {
+                tcData.stmt.at(11),
+                tcData.stmt.at(10),
+                tcData.stmt.at(9),
+                tcData.stmt.at(8),
+                tcData.stmt.at(6),
+                tcData.stmt.at(4),
+                tcData.stmt.at(2),
+                tcData.stmt.at(1),
+        };
+        REQUIRE(resultElementSet == expectedElementSet);
+
+        resultElementSet = pkbGetter->getLeftSide(PkbRelationshipType::AFFECTS_T, ProgramElement::createStatement(ElementType::ASSIGNMENT, 10), ElementType::ASSIGNMENT);
+        expectedElementSet = {
+                tcData.stmt.at(9),
+                tcData.stmt.at(8),
+                tcData.stmt.at(6),
+                tcData.stmt.at(4),
+                tcData.stmt.at(2),
+                tcData.stmt.at(1),
         };
         REQUIRE(resultElementSet == expectedElementSet);
     }

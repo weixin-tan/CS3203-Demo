@@ -15,8 +15,8 @@ public:
     RelationshipRef();
     RelationshipRef(RelationshipType rType, Entity leftEntity, Entity rightEntity);
     RelationshipRef(RelationshipType rType, Entity leftEntity, Entity rightEntity, Entity AssignmentEntity);
-    std::string toString();
-    bool equals(const RelationshipRef& r1);
+    std::string toString() const;
+    bool equals(const RelationshipRef& r1) const;
     bool operator==(const RelationshipRef& r1) const;
 };
 

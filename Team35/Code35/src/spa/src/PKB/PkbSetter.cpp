@@ -63,45 +63,6 @@ void PkbSetter::insertStmts(const std::vector<std::vector<ParsedStatement>>& pro
         for (const auto& parsedStatement : procedure)
             insertStmt(parsedStatement);
 
-    std::set<int> stmtNos;
-    for (const auto& [stmtNo, _] : db->stmtTable) stmtNos.insert(stmtNo);
-
-    // extract design abstractions
-    designExtractor.extractCalls(db->callsTable);
-    DesignExtractor::computeReverse(db->callsTable, db->callsTableR, db->procedures);
-    designExtractor.extractCallsT(db->callsTTable);
-    DesignExtractor::computeReverse(db->callsTTable, db->callsTTableR, db->procedures);
-
-    // validate design abstractions
-    try {
-        pkbValidator.validateNoCyclicCall();
-        pkbValidator.validateCallsExists();
-        PkbValidator::validateNoDuplicateProcedure(procedures);
-    } catch (const std::exception& e) {
-        if (testing) throw e;  // testing purpose
-        std::cout <<
-            "SIMPLE source semantic error detected. Details following:\n" <<
-            e.what() << '\n';
-        exit(1);
-    }
-
-    // extract design abstractions (these assume that data is clean)
-    designExtractor.extractFollows(db->followsTable);
-    DesignExtractor::computeReverse(db->followsTable, db->followsTableR, stmtNos);
-    designExtractor.extractFollowsT(db->followsTTable);
-    DesignExtractor::computeReverse(db->followsTTable, db->followsTTableR, stmtNos);
-    designExtractor.extractParent(db->parentTable);
-    DesignExtractor::computeReverse(db->parentTable, db->parentTableR, stmtNos);
-    designExtractor.extractParentT(db->parentTTable);
-    DesignExtractor::computeReverse(db->parentTTable, db->parentTTableR, stmtNos);
-    designExtractor.extractModifiesP(db->modifiesPTable);
-    DesignExtractor::computeReverse(db->modifiesPTable, db->modifiesPTableR, db->variables);
-    designExtractor.extractModifiesS(db->modifiesSTable);
-    DesignExtractor::computeReverse(db->modifiesSTable, db->modifiesSTableR, db->variables);
-    designExtractor.extractUsesP(db->usesPTable);
-    DesignExtractor::computeReverse(db->usesPTable, db->usesPTableR, db->variables);
-    designExtractor.extractUsesS(db->usesSTable);
-    DesignExtractor::computeReverse(db->usesSTable, db->usesSTableR, db->variables);
-    designExtractor.extractNext(db->nextTable);
-    DesignExtractor::computeReverse(db->nextTable, db->nextTableR, stmtNos);
+    designExtractor.precompute();
+    pkbValidator.validate(procedures, testing);
 }

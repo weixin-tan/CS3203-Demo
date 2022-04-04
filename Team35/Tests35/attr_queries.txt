@@ -1,0 +1,315 @@
+1 - procedure.procName
+procedure p;
+Select p.procName
+main, helper
+5000
+2 - call.procName
+call c;
+Select c.procName such that Calls("main", "helper")
+helper
+5000
+3 - variable.varName
+variable v;
+Select v.varName with v.varName = "a"
+a
+5000
+4 - variable.varName
+variable v; stmt s;
+Select s.stmt# such that Modifies (s, v) with v.varName = "a"
+1
+5000
+5 - read.varName
+read r;
+Select r.varName with r.varName = "input"
+input
+5000
+6 - print.varName
+print pn;
+Select pn.stmt# with pn.varName = "output"
+6
+5000
+7 - constant.value
+constant c;
+Select c.value with c.value = 3
+3
+5000
+8 - constant.value
+constant c; stmt s;
+Select s.stmt# such that Uses (s, c) with c.value = 3
+
+5000
+9 - stmt.stmt#
+stmt s;
+Select s.stmt# with s.stmt# = 2
+2
+5000
+10 - stmt.stmt# negative
+stmt s;
+Select s.stmt# with s.stmt# = 25
+
+5000
+11 - read.stmt#
+read r;
+Select r.varName with r.stmt# = 5
+input
+5000
+12 - print.stmt#
+print pn; variable v;
+Select v.varName such that Uses (pn, v) with pn.stmt# = 6
+output
+5000
+13 - call.stmt#
+call c;
+Select c.procName with c.stmt# = 2
+helper
+5000
+14 - while.stmt#
+while w; variable v;
+Select v.varName such that Uses (w, v) with w.stmt# = 9
+length
+5000
+15 - if.stmt#
+if ifs; variable v;
+Select v.varName such that Uses (ifs, v) with ifs.stmt# = 16
+order
+5000
+16 - assign.stmt#
+assign a;
+Select a.stmt# such that Uses (a, "g") with a.stmt# = 7
+7
+5000
+17 - assign.stmt# negative
+assign a;
+Select a.stmt# such that Uses (a, "g") with a.stmt# = 10
+
+5000
+18 - diagnostic
+constant c;
+Select c.value
+0, 1, 3
+5000
+19 - diagnostic
+read r;
+Select r.stmt#
+5, 8
+5000
+20 - diagnostic
+read r;
+Select r.varName
+input, book
+5000
+21 - diagnostic
+print pn;
+Select pn.stmt#
+6, 12, 14, 15, 17, 18
+5000
+22 - diagnostic
+print pn;
+Select pn.varName
+output, radius, rank, order
+5000
+23 - diagnostic
+call c;
+Select c.stmt#
+2
+5000
+24 - diagnostic
+call c;
+Select c.procName
+helper
+5000
+25 - 
+while w;
+Select w.stmt#
+9, 11
+5000
+26 - 
+if ifs;
+Select ifs.stmt#
+13, 16
+5000
+1 - procedure.varName negative
+procedure p;
+Select p.procName with p.varName = "main"
+
+5000
+1 - procedure.stmt# negative
+procedure p;
+Select p.procName with p.stmt# = 3
+
+5000
+1 - procedure.value negative
+procedure p;
+Select p.procName with p.value = 2
+
+5000
+1 - procedure.procName
+procedure p;
+Select p with p.procName = "banana"
+
+5000
+2 - call.varName negative
+call c;
+Select c.procName with c.varName = "helper"
+
+5000
+2 - call.value negative
+call c;
+Select c.procName with c.value = "helper"
+
+5000
+2 - call.procName
+call c;
+Select c.procName with c.procName = "pineapple"
+
+5000
+3 - variable.procName negative
+variable v;
+Select v.varName with v.procName = "main"
+
+5000
+4 - variable.value negative
+variable v; stmt s;
+Select s such that Modifies (s, v) with v.value = "a"
+
+5000
+3 - variable.varName
+variable v;
+Select v.varName with v.varName = "spaceship"
+
+5000
+4 - variable.stmt# negative
+variable v; stmt s;
+Select s.stmt# such that Modifies (s, v) with v.stmt# = 1
+
+5000
+5 - read.procName negative
+read r;
+Select r.varName with r.procName = "helper"
+
+5000
+5 - read.value negative
+read r;
+Select r.varName with r.value = "input"
+
+5000
+5 - read.varName
+read r;
+Select r.varName with r.varName = "elephant"
+
+5000
+6 - print.procName negative
+print pn;
+Select pn.varName with pn.procName = "helper"
+
+5000
+6 - print.value negative
+print pn;
+Select pn.varName with pn.value = "output"
+
+5000
+6 - print.varName
+print pn;
+Select pn.varName with pn.varName = "alligator"
+
+5000
+7 - constant.procName negative
+constant c;
+Select c.value with c.procName = "main"
+
+5000
+7 - constant.varName negative
+constant c;
+Select c.value with c.varName = "e"
+
+5000
+7 - constant.varName negative
+constant c;
+Select c.value with c.stmt# = 3
+
+5000
+7 - constant.value
+constant c;
+Select c.value with c.value = 3000
+
+5000
+9 - stmt.procName negative
+stmt s;
+Select s.stmt# with s.procName = "main"
+
+5000
+9 - stmt.varName negative
+stmt s;
+Select s.stmt# with s.varName = "a"
+
+5000
+9 - stmt.value negative
+stmt s;
+Select s.stmt# with s.value = 1
+
+5000
+9 - stmt.stmt#
+stmt s;
+Select s.stmt# with s.stmt# = 2000
+
+5000
+14 - while.procName negative
+while w; variable v;
+Select w.stmt# such that Uses (w, v) with w.procName = "helper"
+
+5000
+14 - while.varName negative
+while w; variable v;
+Select w.stmt# such that Uses (w, v) with w.varName = "length"
+
+5000
+14 - while.value negative
+while w; variable v;
+Select w.stmt# such that Uses (w, v) with w.value = 0
+
+5000
+14 - while.value negative
+while w; variable v;
+Select w.stmt# with w.stmt# = 3
+
+5000
+15 - if.procName negative
+if ifs; variable v;
+Select ifs.stmt# such that Uses (ifs, v) with ifs.procName = "helper"
+
+5000
+15 - if.varName negative
+if ifs; variable v;
+Select ifs.stmt# such that Uses (ifs, v) with ifs.varName = "rank"
+
+5000
+15 - if.value negative
+if ifs; variable v;
+Select ifs.stmt# such that Uses (ifs, v) with ifs.value = 0
+
+5000
+15 - if.value negative
+if ifs; variable v;
+Select ifs.stmt# with ifs.stmt# = 2
+
+5000
+16 - assign.procName negative
+assign a;
+Select a.stmt# such that Uses (a, "g") with a.procName = "main"
+
+5000
+16 - assign.varName negative
+assign a;
+Select a.stmt# such that Uses (a, "g") with a.varName = "b"
+
+5000
+16 - assign.value negative
+assign a;
+Select a.stmt# such that Uses (a, "g") with a.value = 3
+
+5000
+16 - assign.value negative
+assign a;
+Select a.stmt# with a.stmt# = 2
+
+5000

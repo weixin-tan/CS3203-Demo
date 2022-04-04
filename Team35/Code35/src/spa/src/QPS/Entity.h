@@ -16,8 +16,8 @@ public:
     EntityAttributeType aType;
     std::string name;
 
-    std::string toString();
-    bool equals(const Entity& e1);
+    std::string toString() const;
+    bool equals(const Entity& e1) const;
 
     void clear_aType();
     bool operator==(const Entity& e1) const;
