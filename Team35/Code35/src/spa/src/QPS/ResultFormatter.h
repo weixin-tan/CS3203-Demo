@@ -16,7 +16,7 @@ public:
 private:
     std::list<std::string> handleSingle(Entity entity, std::vector<ProgramElement> elements);
 
-    //std:: list <std:: string> handleSingle(Entity entity, std:: vector <ProgramElement> elements);
+    std:: list <std:: string> handleSingle(Entity entity, std:: vector <ProgramElement> elements);
 
     std::list<std::string> handleTuple(std::vector<Entity> entities, std::vector<std::vector<ProgramElement>> lists);
 
