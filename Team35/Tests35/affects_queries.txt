@@ -748,3 +748,88 @@ assign a;
 Select a such that Affects (165, a)
 168
 5000
+31 - affects 
+assign a;
+Select a such that Affects (46, a)
+61
+5000
+32 - affects* stress one
+assign a, a1;
+Select <a, a1> such that Affects* (a, a1)
+
+5000
+33 - affects* stress two
+assign a, a1, a2;
+Select <a, a1> such that Affects* (a, a1) and Affects* (a1, a2)
+
+5000
+34 - affects* stress two
+assign a, a1, a2;
+Select <a, a1, a2> such that Affects* (a, a1) and Affects* (a1, a2)
+
+5000
+35 - affects* stress two
+assign a, a1;
+Select <a, a1> such that Affects* (a, a1) and Affects* (a1, a)
+
+5000
+36 - affects* stress two
+assign a, a1;
+Select <a, a1> such that Affects* (a, a1) and Affects* (a, a1)
+
+5000
+37 - affects* stress unconnected two
+assign a, a1, a2, a3;
+Select <a, a1, a2, a3> such that Affects* (a, a1) and Affects* (a2, a3)
+
+5000
+38 - affects* stress chain connected three
+assign a, a1, a2, a3;
+Select <a, a1, a2, a3> such that Affects* (a, a1) and Affects* (a2, a3) and Affects* (a, a2)
+
+5000
+39 - affects* stress chain connected three
+assign a, a1, a2, a3;
+Select <a, a1, a2, a3> such that Affects* (a, a1) and Affects* (a1, a2) and Affects* (a2, a3)
+
+5000
+40 - long gap affect
+
+Select BOOLEAN such that Affects (169, 243)
+TRUE
+5000
+41 - affects* stress 
+assign a, a1, a2;
+Select <a, a1> such that Affects* (a, a1) and Affects* (a1, a2) and Affects* (1, a)
+
+5000
+42 - affects* stress 
+assign a, a1, a2;
+Select a such that Affects* (a, a1) and Affects* (a1, a2) and Affects* (1, a)
+
+5000
+43 - affects* stress 
+assign a, a1, a2;
+Select <a, a1> such that Affects* (1, a) and Affects* (a, a1) and Affects* (a1, a2)
+
+5000
+44 - affects* stress 
+assign a, a1, a2;
+Select a such that Affects* (1, a) and Affects* (a, a1) and Affects* (a1, a2)
+
+5000
+45 - affects* stress unconnected
+assign a, a1, a2, a3;
+Select <a, a1, a2, a3> such that Affects* (a, a1) and Affects* (a2, a3) and Affects* (169, a)
+
+5000
+46 - affects* stress unconnected
+assign a, a1, a2, a3;
+Select <a, a1, a2, a3> such that Affects* (169, a) and Affects* (a, a1) and Affects* (a2, a3)
+
+5000
+47 - affects* stress unconnected
+assign a, a1, a2, a3;
+Select a such that Affects* (a, a1) and Affects* (141, a) and Affects* (a2, a3)
+
+5000
