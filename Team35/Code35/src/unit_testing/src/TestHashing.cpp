@@ -128,33 +128,63 @@ TEST_CASE("basic methods"){
         REQUIRE(hashing.hashFunction(callSyn) > 0);
 
         REQUIRE(hashing.hashFunction(whileSyn) > 0);
+        REQUIRE(hashing.hashFunction(whileSyn) > 0);
+        REQUIRE(hashing.hashFunction(whileSyn) > 0);
 
+        REQUIRE(hashing.hashFunction(ifSyn) > 0);
+        REQUIRE(hashing.hashFunction(ifSyn) > 0);
         REQUIRE(hashing.hashFunction(ifSyn) > 0);
 
         REQUIRE(hashing.hashFunction(fixedStrVarX) > 0);
+        REQUIRE(hashing.hashFunction(fixedStrVarX) > 0);
+        REQUIRE(hashing.hashFunction(fixedStrVarX) > 0);
 
+        REQUIRE(hashing.hashFunction(fixedStrVarY) > 0);
+        REQUIRE(hashing.hashFunction(fixedStrVarY) > 0);
         REQUIRE(hashing.hashFunction(fixedStrVarY) > 0);
 
         REQUIRE(hashing.hashFunction(fixedStrVarZ) > 0);
+        REQUIRE(hashing.hashFunction(fixedStrVarZ) > 0);
+        REQUIRE(hashing.hashFunction(fixedStrVarZ) > 0);
 
+        REQUIRE(hashing.hashFunction(fixedStrProcF) > 0);
+        REQUIRE(hashing.hashFunction(fixedStrProcF) > 0);
         REQUIRE(hashing.hashFunction(fixedStrProcF) > 0);
 
         REQUIRE(hashing.hashFunction(fixedStrProcG) > 0);
+        REQUIRE(hashing.hashFunction(fixedStrProcG) > 0);
+        REQUIRE(hashing.hashFunction(fixedStrProcG) > 0);
 
+        REQUIRE(hashing.hashFunction(fixedIntStmt) > 0);
+        REQUIRE(hashing.hashFunction(fixedIntStmt) > 0);
         REQUIRE(hashing.hashFunction(fixedIntStmt) > 0);
 
         REQUIRE(hashing.hashFunction(fixedIntPrint) > 0);
+        REQUIRE(hashing.hashFunction(fixedIntPrint) > 0);
+        REQUIRE(hashing.hashFunction(fixedIntPrint) > 0);
 
+        REQUIRE(hashing.hashFunction(fixedIntRead) > 0);
+        REQUIRE(hashing.hashFunction(fixedIntRead) > 0);
         REQUIRE(hashing.hashFunction(fixedIntRead) > 0);
 
         REQUIRE(hashing.hashFunction(fixedIntAssign) > 0);
+        REQUIRE(hashing.hashFunction(fixedIntAssign) > 0);
+        REQUIRE(hashing.hashFunction(fixedIntAssign) > 0);
 
+        REQUIRE(hashing.hashFunction(fixedIntWhile) > 0);
+        REQUIRE(hashing.hashFunction(fixedIntWhile) > 0);
         REQUIRE(hashing.hashFunction(fixedIntWhile) > 0);
 
         REQUIRE(hashing.hashFunction(fixedIntCall) > 0);
+        REQUIRE(hashing.hashFunction(fixedIntCall) > 0);
+        REQUIRE(hashing.hashFunction(fixedIntCall) > 0);
 
         REQUIRE(hashing.hashFunction(fixedIntIf) > 0);
+        REQUIRE(hashing.hashFunction(fixedIntIf) > 0);
+        REQUIRE(hashing.hashFunction(fixedIntIf) > 0);
 
+        REQUIRE(hashing.hashFunction(wc) > 0);
+        REQUIRE(hashing.hashFunction(wc) > 0);
         REQUIRE(hashing.hashFunction(wc) > 0);
 
     }
