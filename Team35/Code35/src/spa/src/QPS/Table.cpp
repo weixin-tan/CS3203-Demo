@@ -33,13 +33,14 @@ Table::Table(Result r) {
 Table::Table(std::unordered_set<TableRow, TableRowHash> rows) : rows(rows) {};
 
 
-// Combining tables together. 
+// Combining tables together.
+// Optimises by merging on the one with fewer columns. 
 Table::Table(Table t1, Table t2) {
     std::unordered_set<TableRow, TableRowHash> result;
     for (const auto row1 : t1.rows) {
         for (const auto row2 : t2.rows) {
-            std::pair<bool, TableRow> newRow = TableRow::combineRow(row1, row2);
-            // if it is valid, then we will insert inot the result. 
+            std::pair<bool, TableRow> newRow = TableRow::combineRow(&row1, &row2);
+            // if it is valid, then we will insert into the result. 
             if (newRow.first) result.insert(newRow.second);
         }
     }
@@ -50,7 +51,7 @@ Table::Table(Table t1, Table t2) {
 Table Table::extractColumns(std::vector<Entity> entities) {
     std::unordered_set<TableRow, TableRowHash> result;
     for (const auto row : rows) {
-        TableRow newRow = TableRow::filterRow(row, entities);
+        TableRow newRow = TableRow::filterRow(&row, entities);
         // Note that this will only happen at the VERY first iteration. 
         // The result will always be empty. 
         if (newRow.row.size() == 0) {
