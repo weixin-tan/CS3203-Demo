@@ -41,7 +41,7 @@ FormattedResult ResultProcessor::processResults(const ResultGroup& resultGroup) 
         std::set<Entity> missingEntities = findMissingEntities(tableEntities, finalTableEntities);
         std::vector<Result> resultsOfMissingEntities = findMissingResults(missingEntities, noClauseResults);
         for (const auto& r : resultsOfMissingEntities) {
-            finalTable = Table(finalTable, Table(r));
+            finalTable = Table(finalTable, Table(&r));
         }
     }
     emptyFormattedResult.setValid(true);
@@ -61,10 +61,10 @@ FormattedResult ResultProcessor::handleZeroClause(const std::vector<Entity>& ent
     }
 
     formattedResult.setEntityList(entities);
-    Table table = Table(scrubbedResultList[0]);
+    Table table = Table(&scrubbedResultList[0]);
     if (scrubbedResultList.size() != 1) {
         for (int i = 1; i < entities.size(); i++) {
-            table = Table(table, Table(scrubbedResultList[i]));
+            table = Table(table, Table(&scrubbedResultList[i]));
         }
     }
     formattedResult.setFinalTable(table);
@@ -84,14 +84,14 @@ std::vector<Result> ResultProcessor::scrubResultList(const std::vector<Result>& 
 }
 
 Table ResultProcessor::buildIntermediateTable(const std::vector<Result>& results) {
-    Table intermediateTable = Table(results[0]);
+    Table intermediateTable = Table(&results[0]);
 
     if (results.size() == 1) {
         return intermediateTable;
     }
 
     for (int i = 1; i < results.size(); i++) {
-        intermediateTable = Table(intermediateTable, Table(results[i]));
+        intermediateTable = Table(intermediateTable, Table(&results[i]));
         if (intermediateTable.rows.empty()) {
             break;
         }
@@ -138,7 +138,7 @@ std::vector<Table> ResultProcessor::extractNecessaryTables(const std::vector<Tab
         TableRow firstRow = *table.rows.begin();
         std::vector<Entity> entities = getNecessaryEntities(tableEntities, firstRow);
         if (!entities.empty()) {
-            necessaryTables.push_back(table.extractColumns(entities));
+            necessaryTables.push_back(table.extractColumns(&entities));
         }
     }
     return necessaryTables;

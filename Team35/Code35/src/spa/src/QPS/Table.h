@@ -14,10 +14,10 @@ public:
 
 public:
     Table();
-    explicit Table(Result r);
+    explicit Table(const Result *r);
     Table(std::unordered_set<TableRow, TableRowHash> rows);
     Table(Table t1, Table t2);
-    Table extractColumns(std::vector<Entity>);
+    Table extractColumns(const std::vector<Entity> *entites);
 };
 
 #endif //SPA_TABLE_H

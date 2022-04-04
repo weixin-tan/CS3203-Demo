@@ -37,9 +37,9 @@ std::pair<bool, TableRow> TableRow::combineRow(TableRow const *row1, TableRow co
 }
 
 // Filters the entities to get only the tableRow with the following entites. 
-TableRow TableRow::filterRow(TableRow const *row, std::vector<Entity> entities) {
+TableRow TableRow::filterRow(TableRow const *row, const std::vector<Entity> &entities) {
     std::unordered_map<Entity, ProgramElement, EntityHashFunction> newRow;
-    for (Entity entity : entities) {
+    for (const auto& entity : entities) {
         if (row->row.find(entity) != row->row.end()) {
             newRow.emplace(entity, row->row.at(entity));
         }

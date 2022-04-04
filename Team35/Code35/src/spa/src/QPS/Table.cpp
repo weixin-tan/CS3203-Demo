@@ -2,30 +2,30 @@
 
 Table::Table() = default;
 
-Table::Table(Result r) {
+Table::Table(const Result *r) {
     // Check if the result is valid. If not no table is created.
-    if (!r.getValid()) return;
+    if (!r->getValid()) return;
 
     // Get the One Synonym Set/ Two Synonym sets for program elements
     // in the result. 
-    std::set<ProgramElement> oneSynSet = r.getOneSynSet();
-    std::set<std::pair<ProgramElement, ProgramElement>> twoSynSet = r.getTwoSynSet();
+    std::set<ProgramElement> oneSynSet = r->getOneSynSet();
+    std::set<std::pair<ProgramElement, ProgramElement>> twoSynSet = r->getTwoSynSet();
     // Else, we will just add them individually into the table. 
     // The set will have pair indicating the entity and the element itself
     if (!oneSynSet.empty())
         for (const ProgramElement& elem : oneSynSet) {
-            r.getOneSynEntity().clear_aType();
-            rows.insert({ {std::make_pair(r.getOneSynEntity(), elem)} });
+            r->getOneSynEntity().clear_aType();
+            rows.insert({ {std::make_pair(r->getOneSynEntity(), elem)} });
         }
 
 
     if (!twoSynSet.empty())
         for (const auto& [elem1, elem2] : twoSynSet) {
-            r.getTwoSynEntities().first.clear_aType();
-            r.getTwoSynEntities().second.clear_aType(); 
+            r->getTwoSynEntities().first.clear_aType();
+            r->getTwoSynEntities().second.clear_aType(); 
             rows.insert({ {
-                std::make_pair(r.getTwoSynEntities().first, elem1),
-                std::make_pair(r.getTwoSynEntities().second, elem2),
+                std::make_pair(r->getTwoSynEntities().first, elem1),
+                std::make_pair(r->getTwoSynEntities().second, elem2),
                 } });
         }
 }
@@ -48,10 +48,10 @@ Table::Table(Table t1, Table t2) {
 }
 
 // Getting specific columns out of table
-Table Table::extractColumns(std::vector<Entity> entities) {
+Table Table::extractColumns(const std::vector<Entity> *entities) {
     std::unordered_set<TableRow, TableRowHash> result;
     for (const auto row : rows) {
-        TableRow newRow = TableRow::filterRow(&row, entities);
+        TableRow newRow = TableRow::filterRow(&row, *entities);
         // Note that this will only happen at the VERY first iteration. 
         // The result will always be empty. 
         if (newRow.row.size() == 0) {

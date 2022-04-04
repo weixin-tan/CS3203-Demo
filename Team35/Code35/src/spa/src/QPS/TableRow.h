@@ -19,7 +19,7 @@ public:
 
 public:
     static std::pair<bool, TableRow> combineRow(TableRow const *row1, TableRow const *row2);
-    static TableRow filterRow(TableRow const * row, std::vector<Entity> entities);
+    static TableRow filterRow(TableRow const * row, const std::vector<Entity> &entities);
     bool operator<(TableRow row1) const;
     bool operator==(TableRow row1) const;
 };
