@@ -41,3 +41,10 @@ void FormattedResult::setEntityList(std::vector<Entity> entities) {
 void FormattedResult::setFinalTable(Table table) {
     FormattedResult::finalTable = std::move(table);
 }
+
+bool FormattedResult::operator==(const FormattedResult &f1) const {
+    return FormattedResult::isBoolReturn == f1.isBoolReturn &&
+           FormattedResult::valid == f1.valid &&
+           FormattedResult::entityList == f1.entityList &&
+           FormattedResult::finalTable.rows.size() == f1.finalTable.rows.size();
+}

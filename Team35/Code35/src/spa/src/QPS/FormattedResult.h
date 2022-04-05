@@ -25,6 +25,7 @@ public:
     void setBoolReturn(bool b);
     void setEntityList(std::vector<Entity> entities);
     void setFinalTable(Table table);
+    bool operator==(const FormattedResult& f1) const;
 };
 
 

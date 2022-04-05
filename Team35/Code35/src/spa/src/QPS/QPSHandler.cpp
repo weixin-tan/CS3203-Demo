@@ -18,6 +18,7 @@ ResultGroup QPSHandler::processClause(const GroupedClause& groupedClause) const 
         resultGroup.setBoolReturn(true);
         Result boolResult;
         boolResult.setValid(true);
+        boolResult.setResultType(ResultType::NO_CLAUSE);
         boolResult.setOneSynEntity(groupedClause.entityToFindList[0]);
         selectResultList.push_back(boolResult);
     } else {
