@@ -748,3 +748,8 @@ assign a;
 Select a such that Affects (165, a)
 168
 5000
+31 - affects 
+assign a;
+Select a such that Affects (46, a)
+61
+5000

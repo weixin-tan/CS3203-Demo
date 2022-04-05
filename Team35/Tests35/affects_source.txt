@@ -82,7 +82,7 @@ procedure main {
     t = u;
     v = w;
     x = y;
-    aa = z;
+    z = aa;
 
     c = a;
 }
@@ -221,4 +221,109 @@ procedure distraction {
         b = 2;
     }
     c = b;
+}
+
+procedure longgap {
+    a = b + 169;
+
+    d = b;
+    x = c;
+
+    e = f;
+    e = f;
+    read e;
+    e = f;
+    print e;
+
+    if (g == 9) then {
+        g = h;
+    } else {
+        g = h;
+    }
+
+    while (g == 0) {
+        g = h;
+    }
+    f = ((5 * g) % ((h + 6) / i)) - x;
+    if (e > 0) then {
+        f = g - 1;
+        x = b + c;
+        if (ee > 10) then {
+            ff = gg - 11;
+        } else {
+            if (eee > 100) then {
+                print x;
+            } else {
+                fff = ggg - 111;
+                x = a + b + c + d + e + f + g + h;
+            }
+        }
+        print aa;
+        b = b + (x - 1) * 2;
+        b = b + b * c - 3;
+        read bb;
+        print cc;
+        c = b + c;
+        while ((d >= 3) || (e == 4)) {
+            read e;
+            f = ((5 * g) % ((h + 6) / i)) - x;
+            print j;
+        }
+    } else {
+        h = i * 2;
+        read j;
+        if (k != 7) then {
+            m = n + 8 * 9 / p - q % 10 + r;
+            s = t / u / v / 11 - w * 12 % x + y;
+        } else {
+            e = b + c;
+            while (z < 13) {
+                x = 3 * (5 + y / (z - w));
+            }
+        }
+        while (jj <= 7) {
+            if (jjj != 12) then {
+                j = b + c;
+                while (jjjj == 13) {
+                    f = ((5 * g) % ((h + 6) / i)) - x;
+                }
+                jjjj = kkkk % 8;
+            } else {
+                while (hhhh == 9) {
+                    hj = jh * 2;
+                }
+                print hjh;
+                x = a + b + c + d + e + f + g + h;
+                read jhj;
+            }
+        }
+    }
+    while (k == 3) {
+        read m;
+        n = p / 7;
+        while (nn > 3) {
+            nnn = ppp * 76;
+            x = a + b + c + d + e + f + g + h;
+            while (npp < 56) {
+                print ppn;
+                read nnp;
+                nnnn = pppp / 5;
+            }
+        }
+    }
+    k = b;
+    c = e;
+    m = b;
+    n = b + c;
+    print message;
+    q = b;
+    c = d;
+    while (index == 0) {
+        c = d;
+    }
+    x = a + b + c + d + e + f + g + h;
+    print message;
+    read input;
+
+    end = a + 243;
 }

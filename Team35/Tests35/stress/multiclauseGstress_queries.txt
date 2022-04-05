@@ -203,3 +203,13 @@ stmt s, s1, s2, ct; variable v, v1, v2, v3, v4, v5; call c; read r; print pn;
 Select s such that Uses (s, v) and Modifies (s, v1) and Parent (ct, s) and Next* (s, c) and Next* (s, s1) and Next* (s1, r)
 
 5000
+1005
+stmt s, s1, s2, s3; variable v, v1, v2, v3;
+Select s such that Uses (s, v) and Uses (s1, v1) and Uses (s2, v2) and Uses (s3, v3) with s.stmt# = 1
+
+5000
+1006
+stmt s, s1, s2, s3; variable v, v1, v2, v3;
+Select s with s.stmt# = 1 such that Uses (s, v) and Uses (s1, v1) and Uses (s2, v2) and Uses (s3, v3)
+
+5000
