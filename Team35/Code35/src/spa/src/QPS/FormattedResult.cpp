@@ -4,7 +4,8 @@ FormattedResult::FormattedResult() {
     valid = false;
     isBoolReturn = false;
     entityList = {};
-    finalTable = Table(&Result());
+    const Result result = Result();
+    finalTable = Table(&result);
 }
 
 bool FormattedResult::getValid() const {
