@@ -75,11 +75,12 @@ TEST_CASE("Testing Linear Graphs") {
     RelationshipRefGroup group2;
 
     group0.setRelRefGroup({r8});
-    group1.setRelRefGroup({r1, r2, r3, r4});
+    group1.setRelRefGroup({r4, r3, r1, r2});
     group2.setRelRefGroup({r7, r6, r5});
     std::vector<RelationshipRefGroup> expected1 = {group0, group1, group2};
     std::vector<RelationshipRefGroup> output1 = preOp.groupRelationships(relationshipList1);
 
+    preOp.groupRelationships({});
     SECTION("testing 2 linear graphs") {
         REQUIRE(compareTwoGroupsLists(expected1, output1));
     }
@@ -123,7 +124,7 @@ TEST_CASE("testing more complicate graphs") {
     RelationshipRefGroup group0;
     RelationshipRefGroup group1;
     group0.setRelRefGroup({r7, r8, r9});
-    group1.setRelRefGroup({r1, r2, r3, r4, r5, r6});
+    group1.setRelRefGroup({r4, r6, r5, r2, r3, r1});
 
     std::vector<RelationshipRefGroup> expected1 = {group0, group1};
     std::vector<RelationshipRefGroup> output1 = preOp.groupRelationships(relationshipList1);
@@ -140,6 +141,7 @@ TEST_CASE("test new heuristics") {
     Entity a = Entity(EntityType::ASSIGNMENT, "a");
     Entity a1 = Entity(EntityType::ASSIGNMENT, "a1");
     Entity a2 = Entity(EntityType::ASSIGNMENT, "a2");
+    Entity a3 = Entity(EntityType::ASSIGNMENT, "a3");
     Entity s = Entity(EntityType::STATEMENT, "s");
     Entity e1 = Entity(EntityType::FIXED_INTEGER, "1");
 
@@ -147,18 +149,18 @@ TEST_CASE("test new heuristics") {
     RelationshipRef r2 = RelationshipRef(RelationshipType::MODIFIES, e1, v);
 
     RelationshipRef r3 = RelationshipRef(RelationshipType::FOLLOWS, s, a1);
-    RelationshipRef r4 = RelationshipRef(RelationshipType::FOLLOWS_T, a2, s);
-    RelationshipRef r5 = RelationshipRef(RelationshipType::AFFECTS, a1, s);
+    RelationshipRef r4 = RelationshipRef(RelationshipType::PARENT_T, a2, s);
+    RelationshipRef r5 = RelationshipRef(RelationshipType::FOLLOWS_T, a2, a3);
+    RelationshipRef r6 = RelationshipRef(RelationshipType::AFFECTS, a1, a2);
 
     RelationshipRefGroup group0;
     RelationshipRefGroup group1;
     group0.setRelRefGroup({r2, r1});
-    group1.setRelRefGroup({r3, r5, r4});
+    group1.setRelRefGroup({r3, r4, r6, r5});
     std::vector<RelationshipRefGroup> expected1 = {group0, group1};
 
-    vector<RelationshipRef> relationshipList1 = {r1, r2, r3, r4, r5};
+    vector<RelationshipRef> relationshipList1 = {r1, r2, r3, r4, r5, r6};
     std::vector<RelationshipRefGroup> output1 = preOp.groupRelationships(relationshipList1);
-
     SECTION("relationships with 1 fixed entity go first, relationships with 2 matching entities go first") {
         REQUIRE(compareTwoGroupsLists(expected1, output1));
     }
