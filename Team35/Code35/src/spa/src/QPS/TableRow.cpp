@@ -19,27 +19,29 @@ TableRow::TableRow() {
 }
 
 // Combining a row together. We use the boolean to see if it is correct. 
-std::pair<bool, TableRow> TableRow::combineRow(TableRow row1, TableRow row2) {
-    for (const auto&[entity, element] : row1.row) {
+// optimises by merging the rows that are the shortest together. 
+std::pair<bool, TableRow> TableRow::combineRow(TableRow const *row1, TableRow const *row2) {
+    for (const auto&[entity, element] : row2->row) {
         // If there are no entities in the row, we continue. 
-        if (row2.row.count(entity) == 0) continue;
+        if (row1->row.count(entity) == 0) continue;
         // If there the row does not match, we just return false (to indicate its invalid)
-        if (!(element == row2.row.at(entity))) return {false, TableRow()};
+        if (!(element == row1->row.at(entity))) return {false, TableRow()};
     }
     // just combine using a map! This will form a larger table. 
     std::unordered_map<Entity, ProgramElement, EntityHashFunction> newRow;
-    for (const auto& entityElemPair : row1.row)
+    for (const auto& entityElemPair : row1->row)
         newRow.insert(entityElemPair);
-    for (const auto& entityElemPair : row2.row)
+    for (const auto& entityElemPair : row2->row)
         newRow.insert(entityElemPair);
     return {true, {newRow}};
 }
 
-TableRow TableRow::filterRow(TableRow row, std::vector<Entity> entities) {
+// Filters the entities to get only the tableRow with the following entites. 
+TableRow TableRow::filterRow(TableRow const *row, const std::vector<Entity> &entities) {
     std::unordered_map<Entity, ProgramElement, EntityHashFunction> newRow;
-    for (Entity entity : entities) {
-        if (row.row.find(entity) != row.row.end()) {
-            newRow.emplace(entity, row.row.at(entity));
+    for (const auto& entity : entities) {
+        if (row->row.find(entity) != row->row.end()) {
+            newRow.emplace(entity, row->row.at(entity));
         }
         else {
             return TableRow();
