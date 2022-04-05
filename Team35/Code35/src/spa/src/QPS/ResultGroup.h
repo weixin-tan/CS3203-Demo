@@ -16,7 +16,7 @@ public:
     void setBoolReturn(bool b);
     void setValid(bool b);
     void setEntitiesToReturn(std::vector<Entity> e);
-    void addResultList(std::vector<Result> r);
+    void addResultList(const std::vector<Result>& r);
     bool getIsBoolReturn() const;
     bool getIsValid() const;
     std::vector<Entity> getEntitiesToReturn() const;

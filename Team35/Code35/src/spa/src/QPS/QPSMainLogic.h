@@ -28,7 +28,7 @@ private:
     ResultGroup callHandler(const GroupedClause& groupedClause);
     FormattedResult callProcessor(const ResultGroup& resultGroup);
     std::list<std::string> callFormatter(const FormattedResult& processedResults);
-    bool checkSemanticBoolError(Entity e);
+    bool checkSemanticBoolError(const Entity& e);
 };
 
 #endif //SPA_QPSMAINLOGIC_H

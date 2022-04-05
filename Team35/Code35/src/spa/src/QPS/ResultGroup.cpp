@@ -1,5 +1,7 @@
 #include "ResultGroup.h"
 
+#include <utility>
+
 ResultGroup::ResultGroup() {
     ResultGroup::isBoolReturn = false;
     ResultGroup::isValid = false;
@@ -17,10 +19,10 @@ void ResultGroup::setValid(bool b) {
 
 
 void ResultGroup::setEntitiesToReturn(std::vector<Entity> entities) {
-    ResultGroup::entitiesToReturn = entities;
+    ResultGroup::entitiesToReturn = std::move(entities);
 }
 
-void ResultGroup::addResultList(std::vector<Result> r) {
+void ResultGroup::addResultList(const std::vector<Result>& r) {
     ResultGroup::resultLists.push_back(r);
 }
 

@@ -46,6 +46,6 @@ std::list<std::string> QPSMainLogic::callFormatter(const FormattedResult& proces
     return resultFormatter->formatResult(processedResults);
 }
 
-bool QPSMainLogic::checkSemanticBoolError(Entity e) {
+bool QPSMainLogic::checkSemanticBoolError(const Entity& e) {
     return e.eType == EntityType::BOOLEAN && e.name == "FALSE";
 }

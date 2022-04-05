@@ -1,5 +1,7 @@
 #include "FormattedResult.h"
 
+#include <utility>
+
 FormattedResult::FormattedResult() {
     valid = false;
     isBoolReturn = false;
@@ -33,9 +35,9 @@ void FormattedResult::setBoolReturn(bool b) {
 }
 
 void FormattedResult::setEntityList(std::vector<Entity> entities) {
-    FormattedResult::entityList = entities;
+    FormattedResult::entityList = std::move(entities);
 }
 
 void FormattedResult::setFinalTable(Table table) {
-    FormattedResult::finalTable = table;
+    FormattedResult::finalTable = std::move(table);
 }

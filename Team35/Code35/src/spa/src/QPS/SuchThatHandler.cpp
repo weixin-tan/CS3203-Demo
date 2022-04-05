@@ -6,7 +6,7 @@ SuchThatHandler::SuchThatHandler(PkbGetter* pg) {
     SuchThatHandler::pg = pg;
 }
 
-//Handles Such That relationships
+//Handle Such That relationships
 Result SuchThatHandler::handleSuchThat(const RelationshipRef& relRef) {
     Result result;
     std::set<ProgramElement> oneSynSet;
@@ -50,7 +50,7 @@ bool SuchThatHandler::isNonSynonymEntity(EntityType e) {
 }
 
 // Handles cases where there are no synonyms on either side.
-bool SuchThatHandler::handleNoSynonyms(PkbRelationshipType r, Entity left, Entity right) {
+bool SuchThatHandler::handleNoSynonyms(PkbRelationshipType r, const Entity& left, const Entity& right) {
     // IF there are wildcards present, then move to wildcard handlers based on relationship type
     if (left.eType == EntityType::WILDCARD || right.eType == EntityType::WILDCARD) {
         if (r == PkbRelationshipType::CALLS || r == PkbRelationshipType::CALLS_T) {
@@ -89,7 +89,7 @@ bool SuchThatHandler::handleNoSynonyms(PkbRelationshipType r, Entity left, Entit
 }
 
 // Handles cases where there are wildcards in Calls/CALLS_T
-bool SuchThatHandler::handleNoSynProcWildcard(PkbRelationshipType r, Entity left, Entity right) {
+bool SuchThatHandler::handleNoSynProcWildcard(PkbRelationshipType r, const Entity& left, const Entity& right) {
     bool valid = false;
 
     if (left.eType == EntityType::WILDCARD && right.eType == EntityType::WILDCARD) {
@@ -119,7 +119,7 @@ bool SuchThatHandler::handleNoSynProcWildcard(PkbRelationshipType r, Entity left
 }
 
 // Handles cases where there are wildcards in Follows/FOLLOWS_T/Parent/PARENT_T/Next/NEXT_T/Affects/AFFECTS_T
-bool SuchThatHandler::handleNoSynStmtWildcard(PkbRelationshipType r, Entity left, Entity right) {
+bool SuchThatHandler::handleNoSynStmtWildcard(PkbRelationshipType r, const Entity& left, const Entity& right) {
     bool valid = false;
 
     if (left.eType == EntityType::WILDCARD && right.eType == EntityType::WILDCARD) {
@@ -174,7 +174,7 @@ bool SuchThatHandler::handleNoSynStmtWildcard(PkbRelationshipType r, Entity left
 }
 
 // Handles cases where there are wildcards in Modifies/Uses
-bool SuchThatHandler::handleNoSynVarWildcard(PkbRelationshipType r, Entity left) {
+bool SuchThatHandler::handleNoSynVarWildcard(PkbRelationshipType r, const Entity& left) {
     bool valid = false;
 
     if (left.eType == EntityType::FIXED_STRING) {
@@ -199,7 +199,7 @@ bool SuchThatHandler::handleNoSynVarWildcard(PkbRelationshipType r, Entity left)
 }
 
 // Handles cases where there is a synonym on right side
-std::set<ProgramElement> SuchThatHandler::handleRightSyn(PkbRelationshipType r, Entity left, Entity right) {
+std::set<ProgramElement> SuchThatHandler::handleRightSyn(PkbRelationshipType r, const Entity& left, const Entity& right) {
     std::set<ProgramElement> oneSynSet;
     ElementType rightElemType = QpsTypeToPkbTypeConvertor::convertToPkbElement(right.eType);
 
@@ -229,7 +229,7 @@ std::set<ProgramElement> SuchThatHandler::handleRightSyn(PkbRelationshipType r, 
 }
 
 // Handles cases where there is a synonym on left side
-std::set<ProgramElement> SuchThatHandler::handleLeftSyn(PkbRelationshipType r, Entity left, Entity right) {
+std::set<ProgramElement> SuchThatHandler::handleLeftSyn(PkbRelationshipType r, const Entity& left, const Entity& right) {
     std::set<ProgramElement> oneSynSet;
     ElementType leftElemType = QpsTypeToPkbTypeConvertor::convertToPkbElement(left.eType);
 
@@ -264,7 +264,7 @@ std::set<ProgramElement> SuchThatHandler::handleLeftSyn(PkbRelationshipType r, E
 
 // Handles cases where there are synonyms on both sides
 std::set<std::pair<ProgramElement, ProgramElement>>
-SuchThatHandler::handleTwoSyn(PkbRelationshipType r, Entity left, Entity right) {
+SuchThatHandler::handleTwoSyn(PkbRelationshipType r, const Entity& left, const Entity& right) {
     ElementType leftElemType = QpsTypeToPkbTypeConvertor::convertToPkbElement(left.eType);
     ElementType rightElemType = QpsTypeToPkbTypeConvertor::convertToPkbElement(right.eType);
     std::set<std::pair<ProgramElement, ProgramElement>> allPairs = pg->getRelationshipPairs(r,leftElemType,

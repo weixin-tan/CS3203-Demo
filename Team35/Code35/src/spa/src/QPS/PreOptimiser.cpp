@@ -17,6 +17,7 @@ std::vector<RelationshipRefGroup> PreOptimiser::groupRelationships(const std::ve
     std::unordered_map<int, std::deque<int>> adjacencyList;
 
     std::vector<int> visited;
+    visited.reserve(relationships.size());
     for (int i = 0; i < relationships.size(); i++) {
         visited.push_back(0);
     }
@@ -176,7 +177,7 @@ std::string PreOptimiser::listToString(const std::vector<int>& ls) {
 std::string PreOptimiser::dequeToString(const std::deque<int>& ls) {
     std::string s = "[";
     for (int i : ls) {
-        s = s + std::to_string(i) + " ";
+        s.append(std::to_string(i)).append(" ");
     }
     return s + "]";
 }
