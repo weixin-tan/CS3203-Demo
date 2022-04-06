@@ -15,8 +15,6 @@ public:
     // relationship tables
     std::map<int, ParsedStatement> stmtTable;
     std::map<int, ProgramElement> elementStmtTable;
-    std::map<std::string, std::set<int>> constantToStmtTable;
-    std::map<int, std::set<std::string>> usesStmtToConstantTable;
     std::map<int, std::set<int>> parentTable;
     std::map<int, std::set<int>> parentTableR;
     std::map<int, std::set<int>> parentTTable;
@@ -46,6 +44,14 @@ public:
     std::map<int, std::set<int>> nextTTableR;
     std::set<int> computedNextTSrc;
     std::set<int> computedNextTRSrc;
+    std::map<int, std::set<int>> affectsTable;
+    std::map<int, std::set<int>> affectsTableR;
+    std::set<int> computedAffectsSrc;
+    std::set<int> computedAffectsRSrc;
+    std::map<int, std::set<int>> affectsTTable;
+    std::map<int, std::set<int>> affectsTTableR;
+    std::set<int> computedAffectsTSrc;
+    std::set<int> computedAffectsTRSrc;
 
     // entity tables
     std::set<std::string> variables;

@@ -21,42 +21,42 @@ void Result::setValid(bool b) {
 }
 
 void Result::setOneSynEntity(Entity e) {
-    Result::oneSynEntity = e;
+    Result::oneSynEntity = std::move(e);
 }
 
 void Result::setOneSynSet(std::set<ProgramElement> s) {
-    Result::oneSynSet = s;
+    Result::oneSynSet = std::move(s);
 }
 
 void Result::setTwoSynEntities(std::pair<Entity, Entity> p) {
-    Result::twoSynEntities = p;
+    Result::twoSynEntities = std::move(p);
 }
 
 void Result::setTwoSynSet(std::set<std::pair<ProgramElement, ProgramElement>> t) {
-    Result::twoSynSet = t;
+    Result::twoSynSet = std::move(t);
 }
 
 ResultType Result::getResultType() {
     return Result::type;
 }
 
-bool Result::getValid() {
+bool Result::getValid() const {
     return Result::valid;
 }
 
-Entity Result::getOneSynEntity() {
+Entity Result::getOneSynEntity() const {
     return Result::oneSynEntity;
 }
 
-std::set<ProgramElement> Result::getOneSynSet() {
+std::set<ProgramElement> Result::getOneSynSet() const {
     return Result::oneSynSet;
 }
 
-std::pair<Entity, Entity> Result::getTwoSynEntities() {
+std::pair<Entity, Entity> Result::getTwoSynEntities() const {
     return Result::twoSynEntities;
 }
 
-std::set<std::pair<ProgramElement, ProgramElement>> Result::getTwoSynSet() {
+std::set<std::pair<ProgramElement, ProgramElement>> Result::getTwoSynSet() const {
     return Result::twoSynSet;
 }
 

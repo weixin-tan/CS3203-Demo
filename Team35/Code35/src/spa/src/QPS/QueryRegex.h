@@ -11,6 +11,7 @@ bool firstWordChecker(const std::string& s, const std::string& targetWord);
 bool isSpaces(const std::string& s);
 bool doesStringExist(const std::string& s, const std::string& substring);
 bool entityMapContains(const std::string& s, std::unordered_map<std::string, Entity>* entityMap);
+bool checkLastCharIsSemiColon(const std::string& s);
 
 bool isIdent(const std::string& s);
 bool isInteger(const std::string& s);
@@ -25,10 +26,19 @@ bool isSelect(const std::string& s);
 bool isPattern(const std::string& s);
 bool isWith(const std::string& s);
 bool existSuchThat(const std::string& s);
+bool checkListIsIdent(std::vector<std::string>* sArr);
 
-bool checkDesignEntitySynonymsList(std::vector<std::string> sArr);
-bool checkRelRefList(std::vector<std::string> s);
-bool checkPatternList(std::vector<std::string> patternList, std::unordered_map<std::string, Entity>* entityMap);
+bool checkDesignEntitySynonymsList(std::vector<std::string>* sArr, std::unordered_map<std::string, Entity>* entityMap);
+bool checkDeclarationSemanticallyValid(std::vector<std::string>* sArr,
+                                       std::unordered_map<std::string, Entity>* entityMap);
+bool checkRelRefList(std::vector<std::string>* sArr);
+bool checkPatternList(std::vector<std::string>* patternList);
+bool checkPatternSyntax(std::vector<std::string>* patternList,
+                        std::unordered_map<std::string, Entity>* entityMap,
+                        const RelationshipRef& newRef);
+bool checkWithSyntax(std::vector<std::string>* withList,
+                     std::unordered_map<std::string, Entity>* entityMap,
+                     const RelationshipRef& newRef);
 
 std::string extractFirstChar(const std::string& s);
 std::string extractLastChar(const std::string& s);
@@ -37,17 +47,22 @@ std::string extractStringFromQuotation(const std::string& s);
 std::string extractStringFromWildCard(const std::string& s);
 std::string stripString(std::string s);
 
-std::string removeSelect(const std::string& s);
 std::string removeSuchThat(const std::string& s);
+std::string removeSelect(const std::string& s);
 std::string removePattern(const std::string& s);
 std::string removeWith(const std::string& s);
+std::string removeCommandWordIfExists(const std::string& s,
+                                      const std::string& commandWord,
+                                      bool(* existCommandWordFunction)(const std::string& s));
 
+long findNewPosition(long temp, long commandWordPosition, long commandWordLength);
 long findClauseStartPosition(const std::string& s, const std::string& commandWord, const std::string& original);
 long findPatternClause(const std::string& s);
 long findWithClause(const std::string& s);
-long findPatternClauseInSubstring(const std::string& s, std::string original);
+long recursiveFindPatternClauseInSubstring(const std::string& s, std::string original);
+long findPatternClauseInSubstring(const std::string& s);
 std::vector<long> findSuchThatClause(const std::string& s);
-long smallestNumber(const long positionList[3]);
+long findSmallestNumber(std::vector<long>* positionList);
 
 std::vector<std::string> splitString(const std::string& s, const std::string& delimiter);
 std::vector<std::string> splitStringBySpaces(const std::string& s);
@@ -69,10 +84,23 @@ std::vector<std::string> splitDeclarationAndSelect(const std::string& s);
 std::vector<std::vector<std::string>> extractSelectAndDeclarationStatements(const std::string& s);
 std::vector<std::string> extractDesignEntityAndSynonyms(const std::string& s);
 
+enum class lastClauseType {
+    None,
+    SuchThat,
+    Pattern,
+    With
+};
+
 std::vector<std::string> splitVariablesAndClauses(const std::string& s);
 std::vector<std::string> extractWithClauses(const std::string& s);
+void reconstructWordsToPhrases(const std::string& stmt, std::vector<std::string>* phraseList, int* count);
+void insertWithListAndOtherClause(const std::string& stmt, long x, std::vector<std::string>* returnList);
 std::vector<std::string> splitSuchThatPatternWithClauses(const std::string& s);
 std::vector<std::string> extractVariablesToSelect(const std::string& s);
+void decideWhichListToAddRelationshipTo(const std::string& stmt, lastClauseType* lastType,
+                                        std::vector<std::string>* suchThatList,
+                                        std::vector<std::string>* patternList,
+                                        std::vector<std::string>* withList);
 std::vector<std::vector<std::string>> extractClauses(const std::string& s);
 
 std::vector<std::string> extractItemsInBrackets(const std::string& s);
@@ -80,16 +108,23 @@ std::vector<std::string> extractPatternBrackets(const std::string& s);
 
 bool checkRelationshipRef(const RelationshipRef& r);
 bool checkEntityIsStmtRef(const Entity& e);
-bool checkFollowsOrParentsOrNextOrAffects(const RelationshipRef& r);
+bool checkVariable(const Entity& e);
 bool checkUsesLeftSide(const Entity& e);
-bool checkUses(const RelationshipRef& r);
 bool checkModifiesLeftSide(const Entity& e);
-bool checkModifies(const RelationshipRef& r);
 bool checkCallsEntity(const Entity& e);
+bool checkAssignEntity(const Entity& e);
+
+bool checkFollowsOrParentsOrNext(const RelationshipRef& r);
+bool checkUses(const RelationshipRef& r);
+bool checkModifies(const RelationshipRef& r);
 bool checkCalls(const RelationshipRef& r);
+bool checkAffects(const RelationshipRef& r);
+
 bool checkPattern(const RelationshipRef& r);
 bool checkWith(const RelationshipRef& r);
 bool checkWithEntity(const Entity& e);
 bool checkVariableToSelect(const Entity& e);
+
+bool checkAlreadyInClause(const std::vector<RelationshipRef>& relationshipList, const RelationshipRef& newRelationship);
 
 #endif //SPA_SRC_SPA_SRC_QUERYREGEX_H_

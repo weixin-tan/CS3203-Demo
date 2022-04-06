@@ -40,7 +40,7 @@ Result PatternHandler::handlePattern(const RelationshipRef& relRef) {
 }
 
 // Handles cases where there is a wildcard on the left-hand side
-std::set<ProgramElement> PatternHandler::handleLeftWildcard(Entity right, Entity patternType) {
+std::set<ProgramElement> PatternHandler::handleLeftWildcard(const Entity& right, const Entity& patternType) {
     ElementType patternElem = QpsTypeToPkbTypeConvertor::convertToPkbElement(patternType.eType);
     if (patternElem == ElementType::IF || patternElem == ElementType::WHILE ||
             (patternElem == ElementType::ASSIGNMENT && right.eType == EntityType::WILDCARD)) {
@@ -57,7 +57,7 @@ std::set<ProgramElement> PatternHandler::handleLeftWildcard(Entity right, Entity
 }
 
 // Handles cases where there is a fixed string on the left-hand side
-std::set<ProgramElement> PatternHandler::handleLeftFixed(Entity left, Entity right, Entity patternType) {
+std::set<ProgramElement> PatternHandler::handleLeftFixed(const Entity& left, const Entity& right, const Entity& patternType) {
     ElementType patternElem = QpsTypeToPkbTypeConvertor::convertToPkbElement(patternType.eType);
     if (right.eType == EntityType::WILDCARD) {
         if (patternElem == ElementType::IF) {
@@ -88,7 +88,7 @@ std::set<ProgramElement> PatternHandler::handleLeftFixed(Entity left, Entity rig
 
 // Handles cases where there is a variable synonym on the left-hand side
 std::set<std::pair<ProgramElement, ProgramElement>>
-PatternHandler::handleLeftVariable(Entity left, Entity right, Entity patternType) {
+PatternHandler::handleLeftVariable(const Entity& left, const Entity& right, const Entity& patternType) {
     ElementType patternElem = QpsTypeToPkbTypeConvertor::convertToPkbElement(patternType.eType);
     if (right.eType == EntityType::WILDCARD) {
         if (patternElem == ElementType::IF) {

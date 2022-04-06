@@ -4,10 +4,13 @@
 #include "Clause.h"
 #include "PatternHandler.h"
 #include "../PKB/PkbGetter.h"
-#include "../QpsTypeToPkbTypeConvertor.h"
+#include "QpsTypeToPkbTypeConvertor.h"
 #include "Result.h"
+#include "ResultGroup.h"
 #include "SuchThatHandler.h"
 #include "WithHandler.h"
+#include "RelationshipRefGroup.h"
+#include "GroupedClause.h"
 
 class QPSHandler {
 private:
@@ -16,11 +19,12 @@ private:
     PatternHandler* patternHandler;
     WithHandler* withHandler;
 
-    Result getNoClauseResult(const Entity& entityToFind) const;
+    std::vector<Result> getNoClauseResults(const std::vector<Entity>& entitiesToFind) const;
+    std::vector<Result> handleRelRefGroups(const RelationshipRefGroup &relRefGroup) const;
 
 public:
     explicit QPSHandler(PkbGetter* pg);
-    std::vector<Result> processClause(const std::vector<Clause>& clauses) const;
+    ResultGroup processClause(const GroupedClause& groupedClause) const;
 
 };
 

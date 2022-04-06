@@ -1,0 +1,425 @@
+1 - variables used by call quicksort
+variable v;
+Select v such that Uses (5, v)
+quickindex,quickinitial
+5000
+2 - variables used by call bubblesort
+variable v;
+Select v such that Uses (8, v)
+bubbleindex,bubbleinitial,pants
+5000
+3 - variables used by call radixsort
+variable v;
+Select v such that Uses (10, v)
+radixresult
+5000
+4 - variables used by call insertionsort
+variable v;
+Select v such that Uses (15, v)
+init,init2,insertioninitial,insertionsecond,point
+5000
+5 - variables used by call selectionsort
+variable v;
+Select v such that Uses (17, v)
+selectionconstant,selectionindex
+5000
+6 - variables used by call heapsort
+variable v;
+Select v such that Uses (19, v)
+catch22,count,count22,count33,end,heapindex,heapindex2,heapindex3,heapindex4,start
+5000
+7 - variables used by call shellsort
+variable v;
+Select v such that Uses (26, v)
+shellhelpindex,shellindex
+5000
+8 - variables used by call bogosort
+variable v;
+Select v such that Uses (31, v)
+bogo,bogo2,bogohelpindex,bogoindex,bogomergeindex
+5000
+9 - variables used by call countingsort
+variable v;
+Select v such that Uses (33, v)
+countingindex
+5000
+10 - variables used by call mergesort
+variable v;
+Select v such that Uses (37, v)
+mergeindex
+5000
+11 - variables used by call shellsorthelper
+variable v;
+Select v such that Uses (62, v)
+shellhelpindex
+5000
+12 - variables used by call bogosorthelper
+variable v;
+Select v such that Uses (65, v)
+bogo2,bogohelpindex,bogoindex,bogomergeindex
+5000
+13 - variables used by call bogomerge
+variable v;
+Select v such that Uses (67, v)
+bogomergeindex
+5000
+14 - variables used by call bogofinal
+variable v;
+Select v such that Uses (69, v)
+bogoindex
+5000
+15 - variables modified by call quicksort
+variable v;
+Select v such that Modifies (5, v)
+quickresult
+5000
+16 - variables modified by call bubblesort
+variable v;
+Select v such that Modifies (8, v)
+bubbleresult,spongebob
+5000
+17 - variables modified by call radixsort
+variable v;
+Select v such that Modifies (10, v)
+radixindex
+5000
+18 - variables modified by call insertionsort
+variable v;
+Select v such that Modifies (15, v)
+count,count2,ins
+5000
+19 - variables modified by call selectionsort
+variable v;
+Select v such that Modifies (17, v)
+selectionresult
+5000
+20 - variables modified by call heapsort
+variable v;
+Select v such that Modifies (19, v)
+count2,count3,heapconstant,heapresult,heapresult2,heapresult3,heapresult4
+5000
+21 - variables modified by call shellsort
+variable v;
+Select v such that Modifies (26, v)
+shellhelpresult,shellresult
+5000
+22 - variables modified by call bogosort
+variable v;
+Select v such that Modifies (31, v)
+bogohelpresult,bogomergeresult,bogoresult
+5000
+23 - variables modified by call countingsort
+variable v;
+Select v such that Modifies (33, v)
+countingresult
+5000
+24 - variables modified by call mergesort
+variable v;
+Select v such that Modifies (37, v)
+mergeresult
+5000
+25 - variables modified by call shellsorthelper
+variable v;
+Select v such that Modifies (62, v)
+shellhelpresult
+5000
+26 - variables modified by call bogosorthelper
+variable v;
+Select v such that Modifies (65, v)
+bogohelpresult,bogomergeresult,bogoresult
+5000
+27 - variables modified by call bogomerge
+variable v;
+Select v such that Modifies (67, v)
+bogomergeresult
+5000
+28 - variables modified by call bogofinal
+variable v;
+Select v such that Modifies (69, v)
+bogoresult
+5000
+29 - variables used by container stmt
+variable v;
+Select v such that Uses (3, v)
+bubbleindex,bubbleinitial,catch22,count,count22,count33,e,ee,eee,end,g,gg,ggg,heapindex,heapindex2,heapindex3,heapindex4,hhhh,hjh,i,init,init2,insertioninitial,insertionsecond,jh,jj,jjj,jjjj,kkkk,pants,point,quickindex,quickinitial,radixresult,selectionconstant,selectionindex,start
+5000
+30 - variables used by container stmt
+variable v;
+Select v such that Uses (6, v)
+bubbleindex,bubbleinitial,ee,eee,gg,ggg,pants,radixresult
+5000
+31 - variables used by container stmt
+variable v;
+Select v such that Uses (9, v)
+eee,ggg,radixresult
+5000
+32 - variables used by container stmt
+variable v;
+Select v such that Uses (14, v)
+catch22,count,count22,count33,end,heapindex,heapindex2,heapindex3,heapindex4,hhhh,hjh,init,init2,insertioninitial,insertionsecond,jh,jj,jjj,jjjj,kkkk,point,selectionconstant,selectionindex,start
+5000
+33 - variables used by container stmt
+variable v;
+Select v such that Uses (16, v)
+catch22,count,count22,count33,end,heapindex,heapindex2,heapindex3,heapindex4,hhhh,hjh,jh,jjj,jjjj,kkkk,selectionconstant,selectionindex,start
+5000
+34 - variables used by container stmt
+variable v;
+Select v such that Uses (18, v)
+catch22,count,count22,count33,end,heapindex,heapindex2,heapindex3,heapindex4,jjjj,start
+5000
+35 - variables used by container stmt
+variable v;
+Select v such that Uses (21, v)
+hhhh,jh
+5000
+36 - variables used by container stmt
+variable v;
+Select v such that Uses (25, v)
+bogo,bogo2,bogohelpindex,bogoindex,bogomergeindex,countingindex,k,nn,npp,p,ppn,ppp,pppp,shellhelpindex,shellindex
+5000
+37 - variables used by container stmt
+variable v;
+Select v such that Uses (29, v)
+bogo,bogo2,bogohelpindex,bogoindex,bogomergeindex,countingindex,nn,npp,ppn,ppp,pppp
+5000
+38 - variables used by container stmt
+variable v;
+Select v such that Uses (32, v)
+countingindex,npp,ppn,pppp
+5000
+39 - variables used by container stmt
+variable v;
+Select v such that Uses (64, v)
+bogo,bogo2,bogohelpindex,bogoindex,bogomergeindex
+5000
+40 - variables used by container stmt
+variable v;
+Select v such that Uses (66, v)
+bogo2,bogohelpindex,bogoindex,bogomergeindex
+5000
+41 - variables modified by container stmt
+variable v;
+Select v such that Modifies (3, v)
+bubbleresult,count,count2,count3,f,ff,fff,h,heapconstant,heapresult,heapresult2,heapresult3,heapresult4,hj,ins,j,jhj,jjjj,quickresult,radixindex,selectionresult,spongebob
+5000
+42 - variables modified by container stmt
+variable v;
+Select v such that Modifies (6, v)
+bubbleresult,ff,fff,radixindex,spongebob
+5000
+43 - variables modified by container stmt
+variable v;
+Select v such that Modifies (9, v)
+fff,radixindex
+5000
+44 - variables modified by container stmt
+variable v;
+Select v such that Modifies (14, v)
+count,count2,count3,heapconstant,heapresult,heapresult2,heapresult3,heapresult4,hj,ins,jhj,jjjj,selectionresult
+5000
+45 - variables modified by container stmt
+variable v;
+Select v such that Modifies (16, v)
+count2,count3,heapconstant,heapresult,heapresult2,heapresult3,heapresult4,hj,jhj,jjjj,selectionresult
+5000
+46 - variables modified by container stmt
+variable v;
+Select v such that Modifies (18, v)
+count2,count3,heapconstant,heapresult,heapresult2,heapresult3,heapresult4
+5000
+47 - variables modified by container stmt
+variable v;
+Select v such that Modifies (21, v)
+hj
+5000
+48 - variables modified by container stmt
+variable v;
+Select v such that Modifies (25, v)
+bogohelpresult,bogomergeresult,bogoresult,countingresult,m,n,nnn,nnnn,nnp,shellhelpresult,shellresult
+5000
+47 - variables modified by container stmt
+variable v;
+Select v such that Modifies (29, v)
+bogohelpresult,bogomergeresult,bogoresult,countingresult,nnn,nnnn,nnp
+5000
+48 - variables modified by container stmt
+variable v;
+Select v such that Modifies (32, v)
+countingresult,nnnn,nnp
+5000
+49 - variables modified by container stmt
+variable v;
+Select v such that Modifies (64, v)
+bogohelpresult,bogomergeresult,bogoresult
+5000
+50 - variables modified by container stmt
+variable v;
+Select v such that Modifies (66, v)
+bogohelpresult,bogomergeresult,bogoresult
+5000
+51 - stmts that use quickindex
+stmt s;
+Select s such that Uses (s, "quickindex")
+3,38,39,5
+5000
+52 - stmts that use bubbleindex
+stmt s;
+Select s such that Uses (s, "bubbleindex")
+3,40,41,6,8
+5000
+53 - stmts that use pants
+stmt s;
+Select s such that Uses (s, "pants")
+3,40,42,6,8
+5000
+54 - stmts that use radixresult
+stmt s;
+Select s such that Uses (s, "radixresult")
+10,3,44,6,9
+5000
+55 - stmts that use init
+stmt s;
+Select s such that Uses (s, "init")
+14,15,3,46,47
+5000
+56 - stmts that use init2
+stmt s;
+Select s such that Uses (s, "init2")
+14,15,3,46,48,49
+5000
+57 - stmts that use selectionindex
+stmt s;
+Select s such that Uses (s, "selectionindex")
+14,16,17,3,50
+5000
+58 - stmts that use heapindex
+stmt s;
+Select s such that Uses (s, "heapindex")
+14,16,18,19,3,52,54,55
+5000
+59 - stmts that use shellindex
+stmt s;
+Select s such that Uses (s, "shellindex")
+25,26,61
+5000
+60 - stmts that use shellhelpindex
+stmt s;
+Select s such that Uses (s, "shellhelpindex")
+25,26,62,63
+5000
+61 - stmts that use bogo
+stmt s;
+Select s such that Uses (s, "bogo")
+25,29,31,64
+5000
+62 - stmts that use bogo2
+stmt s;
+Select s such that Uses (s, "bogo2")
+25,29,31,64,65,66
+5000
+63 - stmts that use bogohelpindex
+stmt s;
+Select s such that Uses (s, "bogohelpindex")
+25,29,31,64,65,66,68
+5000
+64 - stmts that use bogomergeindex
+stmt s;
+Select s such that Uses (s, "bogomergeindex")
+25,29,31,64,65,66,67,70
+5000
+65 - stmts that use bogoindex
+stmt s;
+Select s such that Uses (s, "bogoindex")
+25,29,31,64,65,66,69,71
+5000
+66 - stmts that use countingindex
+stmt s;
+Select s such that Uses (s, "countingindex")
+25,29,32,33,72
+5000
+67 - stmts that use mergeindex
+stmt s;
+Select s such that Uses (s, "mergeindex")
+37,73
+5000
+68 - stmts that modify quickresult
+stmt s;
+Select s such that Modifies (s, "quickresult")
+3,38,39,5
+5000
+69 - stmts that modify bubbleresult
+stmt s;
+Select s such that Modifies (s, "bubbleresult")
+3,40,41,6,8
+5000
+70 - stmts that modify radixindex
+stmt s;
+Select s such that Modifies (s, "radixindex")
+10,3,43,6,9
+5000
+71 - stmts that modify ins
+stmt s;
+Select s such that Modifies (s, "ins")
+14,15,3,45
+5000
+72 - stmts that modify count
+stmt s;
+Select s such that Modifies (s, "count")
+14,15,3,46,47
+5000
+73 - stmts that modify selectionresult
+stmt s;
+Select s such that Modifies (s, "selectionresult")
+14,16,17,3,50
+5000
+74 - stmts that modify heapconstant
+stmt s;
+Select s such that Modifies (s, "heapconstant")
+14,16,18,19,3,51
+5000
+75 - stmts that modify heapresult2
+stmt s;
+Select s such that Modifies (s, "heapresult2")
+14,16,18,19,3,52,54,56
+5000
+76 - stmts that modify count3
+stmt s;
+Select s such that Modifies (s, "count3")
+14,16,18,19,3,52,60
+5000
+77 - stmts that modify shellresult
+stmt s;
+Select s such that Modifies (s, "shellresult")
+25,26,61
+5000
+78 - stmts that modify shellhelpresult
+stmt s;
+Select s such that Modifies (s, "shellhelpresult")
+25,26,62,63
+5000
+79 - stmts that modify bogohelpresult
+stmt s;
+Select s such that Modifies (s, "bogohelpresult")
+25,29,31,64,65,66,68
+5000
+80 - stmts that modify bogomergeresult
+stmt s;
+Select s such that Modifies (s, "bogomergeresult")
+25,29,31,64,65,66,67,70
+5000
+81 - stmts that modify bogoresult
+stmt s;
+Select s such that Modifies (s, "bogoresult")
+25,29,31,64,65,66,69,71
+5000
+82 - stmts that modify countingresult
+stmt s;
+Select s such that Modifies (s, "countingresult")
+25,29,32,33,72
+5000
+83 - stmts that modify mergeresult
+stmt s;
+Select s such that Modifies (s, "mergeresult")
+37,73
+5000

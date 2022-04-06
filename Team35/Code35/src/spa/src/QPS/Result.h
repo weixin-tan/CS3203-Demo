@@ -27,11 +27,11 @@ public:
     void setTwoSynSet(std::set<std::pair<ProgramElement, ProgramElement>> t);
 
     ResultType getResultType();
-    bool getValid();
-    Entity getOneSynEntity();
-    std::set<ProgramElement> getOneSynSet();
-    std::pair<Entity, Entity> getTwoSynEntities();
-    std::set<std::pair<ProgramElement, ProgramElement>> getTwoSynSet();
+    bool getValid() const;
+    Entity getOneSynEntity() const;
+    std::set<ProgramElement> getOneSynSet() const;
+    std::pair<Entity, Entity> getTwoSynEntities() const;
+    std::set<std::pair<ProgramElement, ProgramElement>> getTwoSynSet() const;
     bool operator==(const Result& r1) const;
 };
 

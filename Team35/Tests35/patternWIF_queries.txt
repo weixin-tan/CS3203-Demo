@@ -1,0 +1,100 @@
+1 - pattern while variable
+variable v; while w;
+Select w pattern w (v, _)
+3, 5
+5000
+2 - pattern while wildcard
+while w;
+Select w pattern w (_, _)
+1, 3, 5
+5000
+3 - pattern while varname
+while w;
+Select w pattern w ("d", _)
+3
+5000
+4 - pattern while varname
+while w;
+Select w pattern w ("g", _)
+3
+5000
+5 - pattern while varname
+while w;
+Select w pattern w ("breadth", _)
+5
+5000
+6 - pattern while varname
+while w;
+Select w pattern w ("modulus", _)
+5
+5000
+7 - pattern while varname
+while w;
+Select w pattern w ("height", _)
+5
+5000
+8 - pattern while varname negative
+while w;
+Select w pattern w ("", _)
+
+5000
+9 - pattern while varname negative
+while w;
+Select w pattern w (" ", _)
+
+5000
+10 - pattern while varname negative
+while w;
+Select w pattern w ("notexist", _)
+
+5000
+11 - pattern if variable
+variable v; if ifs;
+Select ifs pattern ifs (v, _, _)
+10, 13
+5000
+12 - pattern if wildcard
+if ifs;
+Select ifs pattern ifs (_, _, _)
+7, 10, 13
+5000
+13 - pattern if varname
+if ifs;
+Select ifs pattern ifs ("p", _, _)
+10
+5000
+14 - pattern if varname
+if ifs;
+Select ifs pattern ifs ("u", _, _)
+10
+5000
+15 - pattern if varname
+if ifs;
+Select ifs pattern ifs ("rank", _, _)
+13
+5000
+16 - pattern if varname
+if ifs;
+Select ifs pattern ifs ("volume", _, _)
+13
+5000
+17 - pattern if varname
+if ifs;
+Select ifs pattern ifs ("width", _, _)
+13
+5000
+18 - pattern if varname negative
+if ifs;
+Select ifs pattern ifs ("", _, _)
+
+5000
+19 - pattern if varname negative
+if ifs;
+Select ifs pattern ifs (" ", _, _)
+
+5000
+20 - pattern if varname negative
+if ifs;
+Select ifs pattern ifs ("notexist", _, _)
+
+5000

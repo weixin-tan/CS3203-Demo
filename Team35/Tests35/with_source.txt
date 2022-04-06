@@ -1,0 +1,29 @@
+procedure main {
+	a = b + c;
+	call helper;
+	d = 3 + e;
+}
+
+procedure helper {
+	x = y + z;
+	read input;
+	print output;
+	f = 1 + g;
+	read book;
+	while (length == 0) {
+		breadth = length;
+	}
+	while (radius == 0) {
+		print radius;
+	}
+	if (rank > 0) then {
+		print rank;
+	} else {
+		print rank;
+	}
+	if (order < 0) then {
+		print order;
+	} else {
+		print order;
+	}
+}

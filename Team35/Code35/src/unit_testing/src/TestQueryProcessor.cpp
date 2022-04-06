@@ -1,4 +1,3 @@
-#include <string>
 #include <vector>
 #include <iostream>
 
@@ -368,11 +367,11 @@ TEST_CASE("trippy queries") {
     string s4 = "read read; while while; if if; variable variable; Select read such that Follows(while, if)";
     string s5 = "assign Uses; variable Modifies; Select Uses pattern Uses (Modifies, _)";
     string s6 = "stmt procName; constant value; Select procName with procName.stmt# = value.value";
-    string s7 = "variable Select; Select Select such that Uses(_, Select)";
+    string s7 = "assign a; variable Select; Select Select such that Uses(a, Select)";
     string s8 = "stmt Next; Select Next such that Next (5, Next) and Next (Next, 12)";
 
-    string s9 = "variable such; Select such such that Uses(_, such)";
-    string s10 = "variable that; Select that such that Uses(_, that)";
+    string s9 = "assign a; variable such; Select such such that Uses(a, such)";
+    string s10 = "assign a; variable that; Select that such that Uses(a, that)";
     string s11 = "assign such; Select such pattern such(\"x\", _)";
     string s12 = "assign that; Select that pattern that(\"x\", _)";
     string s13 = "assign such, that; Select such with such.stmt# = that.stmt#";
@@ -383,7 +382,7 @@ TEST_CASE("trippy queries") {
     string s17 = "assign pattern; Select pattern pattern pattern (\"x\", _) and pattern(\"y\", _)";
     string s18 = "procedure with; Select with with with.procName = \"Third\"";
 
-    string s19 = "variable and; Select and such that Uses(_,and) and Modifies(1,and)";
+    string s19 = "variable and; Select and such that Uses(1,and) and Modifies(1,and)";
     string s20 = "stmt and; Select and such that Parent(and, 1) and Parent(and, 2)";
     string s21 = "assign and; Select and pattern and (\"x\", _) and and (\"y\", _)";
     string s22 = "assign and; Select and pattern and (_,\"x\") and and (_, \"y\")";
@@ -478,7 +477,7 @@ TEST_CASE("test advanced queries") {
     Entity pProcname = Entity(EntityType::PROCEDURE, "p", EntityAttributeType::PROCNAME);
 
     string s1 = "\nSelect       BOOLEAN\t\t\t\tsuch\n\n\n\nthat     Next* (\t1\t,\t2\t)\n\n";
-    string s2 = "assign a1, a2;Select <a1, a2\n.\nstmt#, BOOLEAN> such that Affects (a1, a2)";
+    string s2 = "assign a1, a2;Select <a1, a2\n.\nstmt#> such that Affects (a1, a2)";
     string s3 = "procedure p; call c; Select c.procName with c\t.\tprocName = p    .    procName";
     string s4 = "while w; if ifs; Select w pattern w (\"x\", _) and ifs (\"x\", _, _)";
     string s5 =
@@ -544,6 +543,7 @@ TEST_CASE("test advanced queries") {
     RelationshipRef r11_b = RelationshipRef(RelationshipType::WITH, a1stmt, int3);
     RelationshipRef r11_c = RelationshipRef(RelationshipType::WITH, int1, int3);
 
+
     SECTION("no mixed clauses query") {
         c1.appendEntityToFind(boolean);
         c1.appendRef(r1);
@@ -551,7 +551,6 @@ TEST_CASE("test advanced queries") {
 
         c2.appendEntityToFind(a1);
         c2.appendEntityToFind(a2stmt);
-        c2.appendEntityToFind(boolean);
         c2.appendRef(r2);
         REQUIRE(s2_output.equals(c2));
 
@@ -591,9 +590,7 @@ TEST_CASE("test advanced queries") {
         REQUIRE(s11_output.equals(c11));
         REQUIRE(s12_output.equals(c11));
         REQUIRE(s13_output.equals(c11));
-    }
-
-    SECTION("mixed queries") {
+    }SECTION("mixed queries") {
         c14.appendEntityToFind(a);
         c14.appendRef(r11_a);
         c14.appendRef(r11_b);
@@ -649,7 +646,7 @@ TEST_CASE("advanced trippy queries") {
 
     //interleave
     string s5 = "assign pattern, with; variable and;\n"
-                "Select <pattern.stmt#, with.stmt#, and.varName, BOOLEAN>\n"
+                "Select <pattern.stmt#, with.stmt#, and.varName>\n"
                 "with pattern.stmt# = with.stmt# pattern pattern (and, \"Modifies\") such that Next(pattern, with)\n"
                 "such that Next(with, pattern) with and.varName = pattern.stmt# pattern with (and, \"Follows\")";
 
@@ -705,15 +702,120 @@ TEST_CASE("advanced trippy queries") {
     }
 }
 
+TEST_CASE("remove duplicate relationships") {
+    QueryProcessor qp = QueryProcessor();
+    string s1 = "procedure p, q; Select p.procName such that Calls (p, q)  and Calls (p, q)"; // 1
+    string s2 =
+            "procedure p, q; Select p.procName such that Calls (p, q) and Modifies (p, \"i\") and Calls (p, q)"; // 2
+    string s3 = "assign a, a1; variable v; Select a pattern a (v, _) and a1 (v, _) and a (v, _)"; // 2
+    string s4 = "assign a; Select a pattern a (\"x\", _) and a (\"x\", _) and a (\"y\", _)"; // 2
+    string s5 =
+            "assign a, a1; variable v, v1; Select a pattern a (v, \"x+1\") and a (v, \"x+1\") and a (v, \"y+1\")"; // 2
+    string s6 =
+            "procedure p, q; Select p with p.procName = \"Third\" with q.procName = \"Third\" and \"Third\" = q.procName"; //2
+    string s7 =
+            "procedure p, q; Select p with p.procName = \"Third\" with q.procName = \"Third\" and q.procName = \"Third\""; //2
+
+    vector<RelationshipRef> r1 = qp.parsePQL(s1)[0].refList;
+    vector<RelationshipRef> r2 = qp.parsePQL(s2)[0].refList;
+    vector<RelationshipRef> r3 = qp.parsePQL(s3)[0].refList;
+    vector<RelationshipRef> r4 = qp.parsePQL(s4)[0].refList;
+    vector<RelationshipRef> r5 = qp.parsePQL(s5)[0].refList;
+    vector<RelationshipRef> r6 = qp.parsePQL(s6)[0].refList;
+    vector<RelationshipRef> r7 = qp.parsePQL(s7)[0].refList;
+
+    SECTION("test number of relationships") {
+        REQUIRE(r1.size() == 1);
+        REQUIRE(r2.size() == 2);
+        REQUIRE(r3.size() == 2);
+        REQUIRE(r4.size() == 2);
+        REQUIRE(r5.size() == 2);
+        REQUIRE(r6.size() == 2);
+        REQUIRE(r7.size() == 2);
+    }
+}
+
+TEST_CASE("edge cases") {
+    QueryProcessor qp = QueryProcessor();
+    string s1 = "variable v; Select v with v   .   varName = \"   x   \"";
+    string s2 = "variable v; Select v with v\n.\tvarName = \"x   \"";
+    string s3 = "variable v; Select v with v.varName = \"   x\"";
+    string s4 = "variable v; Select v with v.varName = \"\tx\n\"";
+    string s5 = "variable v; Select v with v.varName = \"x\"";
+    string s6 = "stmt s1, s2; Select s1 such that Affects(s1, s2)";
+
+    SECTION("valid") {
+        REQUIRE(!qp.parsePQL(s1).empty());
+        REQUIRE(!qp.parsePQL(s2).empty());
+        REQUIRE(!qp.parsePQL(s3).empty());
+        REQUIRE(!qp.parsePQL(s4).empty());
+        REQUIRE(!qp.parsePQL(s5).empty());
+        REQUIRE(!qp.parsePQL(s6).empty());
+    }
+
+    string in1 = "variable v; assign v; Select v";
+    string in2 = "stmt s; Select s.procName with s.stmt# = 5";
+    string in3 = "procedure p; Select p.varName with p.procName = 3";
+    string in4 = "variable v; Select BOOLEAN such that Uses(_, v)";
+    string in5 = "variable v; Select BOOLEAN such that Modifies(_, v)";
+    string in6 = "while w; Select w;";
+    string in7 = "Select BOOLEAN with 3 = \"3\"";
+    string in8 = "Select BOOLEAN with \"3\" = 3";
+    string in9 = "assign a; Select BOOLEAN with a.stmt# = a";
+    string in10 = "stmt s; Select BOOLEAN with \"First\" = s.procName";
+    string in11 = "assign a; Select BOOLEAN pattern a (_,\"y\") and pattern a (_, \"x\")";
+
+    SECTION("invalid") {
+        REQUIRE(qp.parsePQL(in1).empty());
+        REQUIRE(qp.parsePQL(in2).empty());
+        REQUIRE(qp.parsePQL(in3).empty());
+        REQUIRE(qp.parsePQL(in4)[0].entityToFindList[0].name == "FALSE");
+        REQUIRE(qp.parsePQL(in5)[0].entityToFindList[0].name == "FALSE");
+        REQUIRE(qp.parsePQL(in6).empty());
+        REQUIRE(qp.parsePQL(in7).empty());
+        REQUIRE(qp.parsePQL(in8).empty());
+        REQUIRE(qp.parsePQL(in9).empty());
+        REQUIRE(qp.parsePQL(in10)[0].entityToFindList[0].name == "FALSE");
+        REQUIRE(qp.parsePQL(in11).empty());
+    }
+
+    string pat1 = " variable v; assign a; stmt s; if ifs; while w; Select BOOLEAN pattern ifs (v, _)";
+    string pat2 = " variable v; assign a; stmt s; if ifs; while w; Select BOOLEAN pattern a (v, _, _)";
+    string pat3 = " variable v; assign a; stmt s; if ifs; while w; Select BOOLEAN pattern w (v, _, _)";
+    string pat4 = " variable v; assign a; stmt s; if ifs; while w; Select BOOLEAN pattern s (v, _)";
+    string pat5 = " variable v; assign a; stmt s; if ifs; while w; Select BOOLEAN pattern s (v, _, _)";
+    string pat6 = " variable v; assign a; stmt s; if ifs; while w; Select BOOLEAN pattern s (v, _, _)";
+    SECTION("pattern edge cases") {
+        REQUIRE(qp.parsePQL(pat1).empty());
+        REQUIRE(qp.parsePQL(pat2).empty());
+        REQUIRE(qp.parsePQL(pat3).empty());
+        REQUIRE(qp.parsePQL(pat4)[0].entityToFindList[0].name == "FALSE");
+        REQUIRE(qp.parsePQL(pat5)[0].entityToFindList[0].name == "FALSE");
+        REQUIRE(qp.parsePQL(pat6)[0].entityToFindList[0].name == "FALSE");
+    }
+
+    string space1 = "while w; Selectw";
+    string space2 = "if i; variable v; Select BOOLEAN such thatModifies(i,v)";
+    string space3 = "assign a; Select BOOLEAN patterna (_,_)";
+    string space4 = "Select BOOLEAN with1=1";
+
+    SECTION("no space edge cases") {
+        REQUIRE(qp.parsePQL(space1).empty());
+        REQUIRE(qp.parsePQL(space2).empty());
+        REQUIRE(qp.parsePQL(space3).empty());
+        REQUIRE(qp.parsePQL(space4).empty());
+    }
+}
+
 TEST_CASE("debugging") {
     QueryProcessor qp = QueryProcessor();
-    string s1 = "assign a; Select a pattern a(_, _\"5\"_)";
+    string s1 = "assign a; Select BOOLEAN pattern a (_,\"y\") and pattern a (_, \"x\")" ;
     vector<Clause> c = qp.parsePQL(s1);
-    /*
+
     if (c.empty()) {
         cout << "invalid!" << "\n";
     } else {
         cout << c[0].toString() << "\n";
     }
-    */
+
 }

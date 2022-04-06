@@ -7,44 +7,87 @@ QPSHandler::QPSHandler(PkbGetter* pg) {
     QPSHandler::withHandler = new WithHandler(pg);
 }
 
-std::vector<Result> QPSHandler::processClause(const std::vector<Clause>& clauses) const {
-    std::vector<Result> results;
+ResultGroup QPSHandler::processClause(const GroupedClause& groupedClause) const {
+    ResultGroup emptyGroup;
+    ResultGroup resultGroup;
+    resultGroup.setValid(true);
 
-    Clause c = clauses[0];
-    Entity entityToFind = c.entityToFindList.front(); // Only returning 1 entity is supported
-
-    Result noClauseResult = getNoClauseResult(entityToFind);
-    results.push_back(noClauseResult);
-
-    for (const auto& r : c.refList) {
-        Result result;
-        if (r.rType == RelationshipType::PATTERN) {
-            result = patternHandler->handlePattern(r);
-        } else if (r.rType == RelationshipType::WITH) {
-            result = withHandler->handleWith(r);
-        } else {
-            result = suchThatHandler->handleSuchThat(r);
+    std::vector<Result> selectResultList;
+    if (groupedClause.entityToFindList[0].eType == EntityType::BOOLEAN) {
+        emptyGroup.setBoolReturn(true);
+        resultGroup.setBoolReturn(true);
+        Result boolResult;
+        boolResult.setValid(true);
+        boolResult.setResultType(ResultType::NO_CLAUSE);
+        boolResult.setOneSynEntity(groupedClause.entityToFindList[0]);
+        selectResultList.push_back(boolResult);
+    } else {
+        selectResultList = getNoClauseResults(groupedClause.entityToFindList);
+        if (selectResultList.empty()) {
+            return emptyGroup;
         }
-        results.push_back(result);
     }
+    resultGroup.addResultList(selectResultList);
 
-    return results;
+    if (groupedClause.relRefGroups.empty()) {
+        resultGroup.setEntitiesToReturn(groupedClause.entityToFindList);
+        return resultGroup;
+    }
+    for (const auto& group: groupedClause.relRefGroups){
+        std::vector<Result> results = handleRelRefGroups(group);
+        if (results.empty()) {
+            return emptyGroup;
+        }
+        if (results[0].getOneSynSet().empty() && results[0].getTwoSynSet().empty()) {
+            continue;
+        }
+        resultGroup.addResultList(results);
+    }
+    resultGroup.setEntitiesToReturn(groupedClause.entityToFindList);
+    return resultGroup;
 }
 
-Result QPSHandler::getNoClauseResult(const Entity& entityToFind) const {
-    Result result;
-    result.setResultType(ResultType::NO_CLAUSE);
-
-    ElementType elementTypeToGet = QpsTypeToPkbTypeConvertor::convertToPkbElement(entityToFind.eType);
-    std::set<ProgramElement> oneSyn = pg->getEntity(elementTypeToGet);
-
-    if (oneSyn.empty()) {
-        result.setValid(false);
-    } else {
+std::vector<Result> QPSHandler::getNoClauseResults(const std::vector<Entity>& entitiesToFind) const {
+    std::vector<Result> results;
+    std::set<Entity> scrubbedEntities;
+    for (const auto& entityToFind : entitiesToFind) {
+        Entity scrubbedEntity = entityToFind;
+        scrubbedEntity.aType = EntityAttributeType::NULL_ATTRIBUTE;
+        if (scrubbedEntities.find(scrubbedEntity) != scrubbedEntities.end()) {
+            continue;
+        } else {
+            scrubbedEntities.insert(scrubbedEntity);
+        }
+        Result result;
+        result.setResultType(ResultType::NO_CLAUSE);
+        ElementType elementTypeToGet = QpsTypeToPkbTypeConvertor::convertToPkbElement(entityToFind.eType);
+        std::set<ProgramElement> oneSyn = pg->getEntity(elementTypeToGet);
+        if (oneSyn.empty()) {
+            return {};
+        }
         result.setValid(true);
         result.setOneSynEntity(entityToFind);
         result.setOneSynSet(oneSyn);
+        results.push_back(result);
     }
+    return results;
+}
 
-    return result;
+std::vector<Result> QPSHandler::handleRelRefGroups(const RelationshipRefGroup& relRefGroup) const {
+    std::vector<Result> results;
+    for (const auto& r : relRefGroup.relRefGroup) {
+        Result tempResult;
+        if (r.rType == RelationshipType::PATTERN) {
+            tempResult = patternHandler->handlePattern(r);
+        } else if (r.rType == RelationshipType::WITH) {
+            tempResult = withHandler->handleWith(r);
+        } else {
+            tempResult = suchThatHandler->handleSuchThat(r);
+        }
+        if (!tempResult.getValid()) {
+            return {};
+        }
+        results.push_back(tempResult);
+    }
+    return results;
 }

@@ -1,0 +1,27 @@
+procedure a {
+call b;
+call c;
+}
+
+procedure b {
+call c;
+call d;
+}
+
+procedure c {
+call d;
+call e;
+}
+
+procedure d {
+call e;
+call f;
+}
+
+procedure e {
+	call f;
+}
+
+procedure f {
+	print nothing;
+}

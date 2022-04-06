@@ -6,8 +6,6 @@
 #include "RelationshipGetter.h"
 #include "DB.h"
 
-// TODO: rename
-
 bool PkbGetter::isExists(const ProgramElement& elementToCheck) const {
     switch (elementToCheck.elementType) {
         case ElementType::STATEMENT:
@@ -46,6 +44,8 @@ PkbGetter::PkbGetter(DB* db) :
         callsTGetter(db),
         nextGetter(db),
         nextTGetter(db),
+        affectsGetter(db),
+        affectsTGetter(db),
         relationshipGetterMap({
                                       {PkbRelationshipType::MODIFIES, &modifiesGetter},
                                       {PkbRelationshipType::USES, &usesGetter},
@@ -57,6 +57,8 @@ PkbGetter::PkbGetter(DB* db) :
                                       {PkbRelationshipType::CALLS_T, &callsTGetter},
                                       {PkbRelationshipType::NEXT, &nextGetter},
                                       {PkbRelationshipType::NEXT_T, &nextTGetter},
+                                      {PkbRelationshipType::AFFECTS, &affectsGetter},
+                                      {PkbRelationshipType::AFFECTS_T, &affectsTGetter}
                               })
 {
 }

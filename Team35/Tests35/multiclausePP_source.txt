@@ -1,0 +1,9 @@
+procedure main {
+	x = v + x * y + z * t;
+	x = a / y + b - c * x;
+	x = a+b+c/d-e*f*g/h+i/j-k*m;
+	twenty = a*(b/(c+d-e)-f/g)/h*((i+j*k)-m+n);
+	one = a+b+c+d+e+f+g+h+i+j+k+m+n;
+	two = a*b*c*d*e*f*g*h*i*j*k*m*n;
+	another = a/(b*c)+d*(e-f)-g/(h-i*(j+k)-m/n);
+}

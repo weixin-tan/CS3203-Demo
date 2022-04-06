@@ -1,0 +1,250 @@
+1 - one large
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v)
+
+5000
+2 - two large, connected
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Modifies (s, v1)
+
+50000
+3 - two large, connected, tuple
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select <s, v> such that Uses (s, v) and Modifies (s, v1)
+
+50000
+4 - two large, connected
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Modifies (s1, v)
+
+50000
+5 - two large, connected, tuple
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select <s, s1> such that Uses (s, v) and Modifies (s1, v)
+
+50000
+6 - two large, connected
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Uses (s1, v)
+
+50000
+7 - two large, connected, tuple
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select <s, s1> such that Uses (s, v) and Uses (s1, v)
+
+50000
+8 - two large, connected, tuple
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select <s, s1, v> such that Uses (s, v) and Uses (s1, v)
+
+50000
+9 - two large, unconnected
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Uses (s1, v1)
+
+50000
+10 - two large, unconnected, tuple
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select <s, s1> such that Uses (s, v) and Uses (s1, v1)
+
+50000
+11 - three large, connected
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Modifies (s, v1) and Uses (s1, v)
+
+50000
+12 - three large, connected
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Modifies (s1, v) and Uses (s, v1)
+
+50000
+13 - three large, connected
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Modifies (s1, v) and Uses (s1, v2)
+
+50000
+14 - three large, connected
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Uses (s1, v) and Uses (s2, v)
+
+50000
+15 - three large, connected, tuple
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select <s, s1> such that Uses (s, v) and Uses (s1, v) and Uses (s2, v)
+
+50000
+16 - three large, connected, tuple
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select <s, s1, s2> such that Uses (s, v) and Uses (s1, v) and Uses (s2, v)
+
+50000
+17 - three large, connected, tuple
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select <s, s1, s2, v> such that Uses (s, v) and Uses (s1, v) and Uses (s2, v)
+
+50000
+18 - three large, unconnected
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Uses (s1, v1) and Uses (s2, v2)
+
+50000
+19 - three large, unconnected, tuple
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select <s, s1> such that Uses (s, v) and Uses (s1, v1) and Uses (s2, v2)
+
+50000
+20 - three large, unconnected, tuple
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select <s, s1, s2> such that Uses (s, v) and Uses (s1, v1) and Uses (s2, v2)
+
+50000
+21 - three large, unconnected, tuple
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select <s, v, s1, v1, s2, v2> such that Uses (s, v) and Uses (s1, v1) and Uses (s2, v2)
+
+50000
+22 - three large, select only, tuple
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select <s, v, s1, v1, s2, v2>
+
+50000
+23 - three large, unconnected, tuple
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select <s, v, s1, v1, s2, v2> such that Uses (s, v) and Uses (s1, v1) and Uses (s2, v2)
+
+50000
+24 - three large, connected, tuple
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select <s, v, v1, v2> such that Uses (s, v) and Uses (s, v1) and Uses (s, v2)
+
+50000
+25 - four large, connected, tuple
+stmt s, s1, s2, s3; variable v, v1, v2, v3, v4, v5;
+Select <s, v, s1, v1, s2, v2, s3, v3> such that Uses (s, v) and Uses (s, v1) and Uses (s, v2) and Uses (s, v3)
+
+50000
+26 - four large, connected, tuple
+stmt s, s1, s2, s3; variable v, v1, v2, v3, v4, v5;
+Select <s, v, s1, v1, s2, v2, s3, v3> such that Uses (s, v) and Uses (s1, v) and Uses (s2, v) and Uses (s3, v)
+
+50000
+27 - four large, connected, tuple
+stmt s, s1, s2, s3; variable v, v1, v2, v3, v4, v5;
+Select <s, v, s1, v1, s2, v2, s3, v3> such that Uses (s, v) and Uses (s1, v) and Uses (s2, v2) and Uses (s3, v2)
+
+50000
+28 - four large, unconnected, tuple
+stmt s, s1, s2, s3; variable v, v1, v2, v3, v4, v5;
+Select <s, v, s1, v1, s2, v2, s3, v3> such that Uses (s, v) and Uses (s1, v1) and Uses (s2, v2) and Uses (s3, v3)
+
+50000
+29 - four large, unconnected
+stmt s, s1, s2, s3; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Uses (s1, v1) and Uses (s2, v2) and Uses (s3, v3)
+
+50000
+30 - four large, unconnected, final single
+stmt s, s1, s2, s3; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Uses (s1, v1) and Uses (s2, v2) and Uses (s3, v3) with s.stmt# = 76
+
+50000
+31 - five large, unconnected
+stmt s, s1, s2, s3, s4; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Uses (s1, v1) and Uses (s2, v2) and Uses (s3, v3) and Uses (s4, v4)
+
+50000
+32 - five large, unconnected, final single
+stmt s, s1, s2, s3, s4; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Uses (s1, v1) and Uses (s2, v2) and Uses (s3, v3) and Uses (s4, v4) with s.stmt# = 76
+
+50000
+33 - five large, unconnected, tuple
+stmt s, s1, s2, s3, s4; variable v, v1, v2, v3, v4, v5;
+Select <s, v, s1, v1, s2, v2, s3, v3, s4, v4> such that Uses (s, v) and Uses (s1, v1) and Uses (s2, v2) and Uses (s3, v3) and Uses (s4, v4)
+
+50000
+34 - five large 1111
+stmt s, s1, s2, s3, s4; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Uses (s, v1) and Uses (s, v2) and Uses (s, v3) and Uses (s, v4)
+
+50000
+35 - five large 2222
+stmt s, s1, s2, s3, s4; variable v, v1, v2, v3, v4, v5;
+Select v such that Uses (s, v) and Uses (s1, v) and Uses (s2, v) and Uses (s3, v) and Uses (s4, v)
+
+50000
+36 - five large 1212
+stmt s, s1, s2, s3, s4; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Uses (s, v1) and Uses (s1, v1) and Uses (s1, v2) and Uses (s2, v2)
+
+50000
+37 - five large 2121
+stmt s, s1, s2, s3, s4; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Uses (s1, v) and Uses (s1, v1) and Uses (s2, v1) and Uses (s2, v2)
+
+50000
+38 - six large 12021
+stmt s, s1, s2, s3, s4; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Uses (s, v1) and Uses (s1, v1) and Uses (s2, v2) and Uses (s3, v2) and Uses (s3, v3)
+
+50000
+39 - seven large 210102
+stmt s, s1, s2, s3, s4; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Uses (s1, v) and Uses (s1, v1) and Uses (s2, v2) and Uses (s2, v3) and Uses (s3, v4) and Uses (s4, v4)
+
+50000
+1001 - default
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, "b") and Follows (s, s1) and Uses (s1, "f")
+
+5000
+1002 - default
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5; if ifs;
+Select s such that Parent (ifs, s) and Uses (s, "b") and Follows (s, s1) and Uses (s1, "g")
+
+5000
+1005 - small -> single
+stmt s, s1, s2, ct; variable v, v1, v2, v3, v4, v5; call c; read r; assign a; while w;
+Select a such that Parent (ct, a) and Next (a, ct)
+
+5000
+1006 - two
+stmt s, s1, s2, ct, ct2; variable v, v1, v2, v3, v4, v5; call c; read r; assign a; while w; if ifs;
+Select a such that Parent (w, ifs) and Parent (ifs, a)
+
+5000
+1007 - one large
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v)
+
+5000
+1008 - two large
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Modifies (s, v1)
+
+5000
+1009 - three large, timeout
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Modifies (s, v1) and Uses (s1, v2)
+
+5000
+1003 - eight large, timeout
+stmt s, s1, s2; variable v, v1, v2, v3, v4, v5;
+Select s such that Uses (s, v) and Modifies (s, v1) and Next* (s, s1) and Uses (s1, v2) and Modifies (s1, v3) and Next* (s1, s2) and Uses (s2, v4) and Modifies (s2, v5)
+
+5000
+1004 - narrowing, timeout
+stmt s, s1, s2, ct; variable v, v1, v2, v3, v4, v5; call c; read r; print pn;
+Select s such that Uses (s, v) and Modifies (s, v1) and Parent (ct, s) and Next* (s, c) and Next* (s, s1) and Next* (s1, r)
+
+5000
+1005
+stmt s, s1, s2, s3; variable v, v1, v2, v3;
+Select s such that Uses (s, v) and Uses (s1, v1) and Uses (s2, v2) and Uses (s3, v3) with s.stmt# = 1
+
+5000
+1006
+stmt s, s1, s2, s3; variable v, v1, v2, v3;
+Select s with s.stmt# = 1 such that Uses (s, v) and Uses (s1, v1) and Uses (s2, v2) and Uses (s3, v3)
+
+5000
