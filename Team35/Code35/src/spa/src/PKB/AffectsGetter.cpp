@@ -14,8 +14,8 @@ bool AffectsGetter::isRelationship(const ProgramElement& leftSide, const Program
     return affects.count(rightSide.stmtNo) != 0;
 }
 
-std::set<ProgramElement> AffectsGetter::getLeftSide(const ProgramElement& rightSide, const ElementType& typeToGet) {
-    std::set<ProgramElement> result;
+std::set<ProgramElement*> AffectsGetter::getLeftSide(const ProgramElement& rightSide, const ElementType& typeToGet) {
+    std::set<ProgramElement*> result;
     if(!(isStatementType(rightSide.elementType) && isStatementType(typeToGet)))
         throw std::invalid_argument("Wrong element type for getLeftSide on Affects");
     if (db->elementStmtTable.at(rightSide.stmtNo).elementType != ElementType::ASSIGNMENT
@@ -23,12 +23,12 @@ std::set<ProgramElement> AffectsGetter::getLeftSide(const ProgramElement& rightS
         return {};
     de.extractAffectsR(rightSide.stmtNo);
     for (const int& affectsStmtNo : db->affectsTableR.at(rightSide.stmtNo))
-        RelationshipGetter::insertStmtElement(result, db->elementStmtTable.at(affectsStmtNo), typeToGet);
+        RelationshipGetter::insertStmtElement(result, &db->elementStmtTable.at(affectsStmtNo), typeToGet);
     return result;
 }
 
-std::set<ProgramElement> AffectsGetter::getRightSide(const ProgramElement& leftSide, const ElementType& typeToGet) {
-    std::set<ProgramElement> result;
+std::set<ProgramElement*> AffectsGetter::getRightSide(const ProgramElement& leftSide, const ElementType& typeToGet) {
+    std::set<ProgramElement*> result;
     if (!(isStatementType(leftSide.elementType) && isStatementType(typeToGet)))
         throw std::invalid_argument("Wrong element type for isAffects");
     if (db->elementStmtTable.at(leftSide.stmtNo).elementType != ElementType::ASSIGNMENT
@@ -37,6 +37,6 @@ std::set<ProgramElement> AffectsGetter::getRightSide(const ProgramElement& leftS
     const std::string var = *db->modifiesSTable.at(leftSide.stmtNo).begin();
     de.extractAffects(leftSide.stmtNo);
     for (const int& affectsStmtNo : db->affectsTable.at(leftSide.stmtNo))
-        RelationshipGetter::insertStmtElement(result, db->elementStmtTable.at(affectsStmtNo), typeToGet);
+        RelationshipGetter::insertStmtElement(result, &db->elementStmtTable.at(affectsStmtNo), typeToGet);
     return result;
 }
