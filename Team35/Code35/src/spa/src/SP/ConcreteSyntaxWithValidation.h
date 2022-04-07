@@ -3,6 +3,8 @@
 
 #include <queue>
 #include <stack>
+#include <map>
+#include <set>
 #include <stdexcept>
 #include <memory>
 #include "Program.h"
@@ -15,6 +17,8 @@
 class ConcreteSyntaxWithValidation {
 public:
     ConcreteSyntaxWithValidation();
+    std::map<TokenType, Statement(ConcreteSyntaxWithValidation::*)(std::queue<Token>& tokensQueue)> tokenStatementFunctionMap;
+    std::map<TokenType, Statement(ConcreteSyntaxWithValidation::*)(std::queue<Token>& tokensQueue)> initialiseTokenMap();
     Program parseProgram(std::queue<Token> tokensQueue);
     Procedure parseProcedure(std::queue<Token>& tokensQueue);
     StmtLst parseStmtLst(std::queue<Token>& tokensQueue);

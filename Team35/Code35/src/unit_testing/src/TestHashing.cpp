@@ -38,7 +38,7 @@ Entity wchash = Entity(EntityType::WILDCARD, "_");
 
 //24 entities, let n=30
 
-TEST_CASE("basic methods"){
+TEST_CASE("basic methods for hashing"){
 
 
     //create hashing object

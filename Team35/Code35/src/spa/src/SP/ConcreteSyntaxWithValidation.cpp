@@ -6,6 +6,20 @@ int stmt_count = 1;
 // Default constructor
 ConcreteSyntaxWithValidation::ConcreteSyntaxWithValidation() {
     stmt_count = 1;
+    this->tokenStatementFunctionMap = ConcreteSyntaxWithValidation::initialiseTokenMap();
+}
+
+std::map<TokenType, Statement(ConcreteSyntaxWithValidation::*)(std::queue<Token>& tokensQueue)> ConcreteSyntaxWithValidation::initialiseTokenMap() {
+    std::map<TokenType, Statement(ConcreteSyntaxWithValidation::*)(std::queue<Token>& tokensQueue)> tokenStatementFunctionMap; 
+
+    tokenStatementFunctionMap.emplace(TokenType::READ_KEYWORD, &ConcreteSyntaxWithValidation::parseRead);
+    tokenStatementFunctionMap.emplace(TokenType::PRINT_KEYWORD, &ConcreteSyntaxWithValidation::parsePrint);
+    tokenStatementFunctionMap.emplace(TokenType::CALL_KEYWORD, &ConcreteSyntaxWithValidation::parseCall);
+    tokenStatementFunctionMap.emplace(TokenType::WHILE_KEYWORD, &ConcreteSyntaxWithValidation::parseWhile);
+    tokenStatementFunctionMap.emplace(TokenType::IF_KEYWORD, &ConcreteSyntaxWithValidation::parseIf);
+    tokenStatementFunctionMap.emplace(TokenType::NAME, &ConcreteSyntaxWithValidation::parseAssign);
+
+    return tokenStatementFunctionMap;
 }
 
 // Returns a Program object containing a ProcedureLst object.
@@ -95,57 +109,16 @@ StmtLst ConcreteSyntaxWithValidation::parseStmtLst(std::queue<Token>& tokensQueu
 // Returns a STATEMENT object.
 // tokensQueue is a queue of Token objects.
 Statement ConcreteSyntaxWithValidation::parseStmt(std::queue<Token>& tokensQueue) {
-
-    // check statement type
-    if (isFrontQueueTokenType(tokensQueue, TokenType::READ_KEYWORD)) {
-        try {
-            return ConcreteSyntaxWithValidation::parseRead(tokensQueue);
+    TokenType frontTokenType = tokensQueue.front().getToken();
+    try {
+        if (frontTokenType != TokenType::READ_KEYWORD && frontTokenType != TokenType::PRINT_KEYWORD
+            && frontTokenType != TokenType::CALL_KEYWORD && frontTokenType != TokenType::WHILE_KEYWORD
+            && frontTokenType != TokenType::IF_KEYWORD && frontTokenType != TokenType::NAME) {
+            throw std::invalid_argument("Invalid statement declaration keyword.");
         }
-        catch (const std::invalid_argument& e) {
-            throw;
-        }
+        return (this->*tokenStatementFunctionMap.at(frontTokenType))(tokensQueue);
     }
-    else if (isFrontQueueTokenType(tokensQueue, TokenType::PRINT_KEYWORD)) {
-        try {
-            return ConcreteSyntaxWithValidation::parsePrint(tokensQueue);
-        }
-        catch (const std::invalid_argument& e) {
-            throw;
-        }
-    }
-    else if (isFrontQueueTokenType(tokensQueue, TokenType::CALL_KEYWORD)) {
-        try {
-            return ConcreteSyntaxWithValidation::parseCall(tokensQueue);
-        }
-        catch (const std::invalid_argument& e) {
-            throw;
-        }
-    }
-    else if (isFrontQueueTokenType(tokensQueue, TokenType::WHILE_KEYWORD)) {
-        try {
-            return ConcreteSyntaxWithValidation::parseWhile(tokensQueue);
-        }
-        catch (const std::invalid_argument& e) {
-            throw;
-        }
-    }
-    else if (isFrontQueueTokenType(tokensQueue, TokenType::IF_KEYWORD)) {
-        try {
-            return ConcreteSyntaxWithValidation::parseIf(tokensQueue);
-        }
-        catch (const std::invalid_argument& e) {
-            throw;
-        }
-    }
-    else if (isFrontQueueTokenType(tokensQueue, TokenType::NAME)) {
-        try {
-            return ConcreteSyntaxWithValidation::parseAssign(tokensQueue);
-        }
-        catch (const std::invalid_argument& e) {
-            throw;
-        }
-    }
-    else {
+    catch (const std::invalid_argument& e) {
         throw std::invalid_argument("Invalid statement declaration keyword.");
     }
 }
@@ -295,7 +268,7 @@ Statement ConcreteSyntaxWithValidation::parseWhile(std::queue<Token>& tokensQueu
 
 // Returns a vector of vector of strings.
 // tokensQueue is a queue of Token objects.
-// parse condExpr String for Iteration 1
+// parse condExpr String
 std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseCondExprString(std::queue<Token>& tokensQueue) {
     std::vector<std::vector<std::string>> result;
     std::vector<std::string> exprVector;
@@ -373,7 +346,6 @@ CondExpr ConcreteSyntaxWithValidation::parseCondExpr(std::queue<Token>& tokensQu
     return ConcreteSyntaxWithValidation::parseCondExprRecursion(condExprQueue);
 }
 
-// not used for Iteration 1.
 // Returns a CondExpr object.
 // condExprQueue is a queue of Token objects.
 // parse condExpr recursive
@@ -411,7 +383,6 @@ CondExpr ConcreteSyntaxWithValidation::parseCondExprRecursion(std::queue<Token>&
     return condExpr;
 }
 
-// not used for Iteration 1.
 // Returns a RelExpr object.
 // relExprQueue is a queue of Token objects.
 // parse rel_expr
@@ -668,7 +639,6 @@ Statement ConcreteSyntaxWithValidation::parseCall(std::queue<Token>& tokensQueue
 // end for parsing CALL
 
 // Helper functions
-
 bool ConcreteSyntaxWithValidation::isFrontQueueTokenType(std::queue<Token>& tokensQueue, TokenType tokenType) {
     return tokensQueue.front().getToken() == tokenType;
 }
