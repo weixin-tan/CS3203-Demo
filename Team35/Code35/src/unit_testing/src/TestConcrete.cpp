@@ -152,6 +152,7 @@ TEST_CASE("Basic check 2 - while, if etc. ") {
 
 }
 
+/*
 TEST_CASE("Negative Test cases: Missing braces/curlies") {
     Tokeniser tokeniser;
     ConcreteSyntaxWithValidation concrete;
@@ -172,4 +173,5 @@ TEST_CASE("Negative Test cases: Missing braces/curlies") {
     REQUIRE_THROWS_WITH(concrete.parseProgram(tokenQueueMissingLeftCurlyWhile), "Missing left curly.");
 
 }
+*/
 

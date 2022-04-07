@@ -109,9 +109,8 @@ StmtLst ConcreteSyntaxWithValidation::parseStmtLst(std::queue<Token>& tokensQueu
 // Returns a STATEMENT object.
 // tokensQueue is a queue of Token objects.
 Statement ConcreteSyntaxWithValidation::parseStmt(std::queue<Token>& tokensQueue) {
-    
+    TokenType frontTokenType = tokensQueue.front().getToken();
     try {
-        TokenType frontTokenType = tokensQueue.front().getToken();
         if (frontTokenType != TokenType::READ_KEYWORD && frontTokenType != TokenType::PRINT_KEYWORD
             && frontTokenType != TokenType::CALL_KEYWORD && frontTokenType != TokenType::WHILE_KEYWORD
             && frontTokenType != TokenType::IF_KEYWORD && frontTokenType != TokenType::NAME) {
@@ -120,7 +119,7 @@ Statement ConcreteSyntaxWithValidation::parseStmt(std::queue<Token>& tokensQueue
         return (this->*tokenStatementFunctionMap.at(frontTokenType))(tokensQueue);
     }
     catch (const std::invalid_argument& e) {
-        throw;
+        throw std::invalid_argument("Invalid statement declaration keyword.");
     }
 }
 
