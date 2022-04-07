@@ -348,23 +348,7 @@ std::string Tokeniser::trim(std::string s) {
 }
 
 std::string Tokeniser::addSpace(std::string s) {
-    std::vector<char> spaceList;
-    spaceList.push_back(';');
-    spaceList.push_back('(');
-    spaceList.push_back(')');
-    spaceList.push_back('{');
-    spaceList.push_back('}');
-    spaceList.push_back('/');
-    spaceList.push_back('*');
-    spaceList.push_back('%');
-    spaceList.push_back('-');
-    spaceList.push_back('+');
-    spaceList.push_back('!');
-    spaceList.push_back('=');
-    spaceList.push_back('>');
-    spaceList.push_back('<');
-    spaceList.push_back('&');
-    spaceList.push_back('|');
+    std::vector<char> spaceList = {';','(',')','{','}','/', '*' ,'%','-','+','!','=','>', '<', '&','|'};
 
     std::string returnString = "";
     for (int i = 0; i < s.length(); i++) {
@@ -372,30 +356,27 @@ std::string Tokeniser::addSpace(std::string s) {
         bool edit = false;
         for (const auto& spaceToken : spaceList) {
             if (s[i] == spaceToken && i <= s.length()) { //todo: check for last position
+                // TODO: RESOLVE PYRAMID OF DOOM!
                 char next = s[i + 1];
-                if (s[i] == '!' || s[i] == '=' || s[i] == '>' || s[i] == '<') {
-                    if (next == '=') {
-                        returnString = returnString + " " + check + next + " ";
-                        i++;
-                        edit = true;
-                        break;
-                    }
+                if ((s[i] == '!' || s[i] == '=' || s[i] == '>' || s[i] == '<') && next == '=') {
+                    returnString = returnString + " " + check + next + " ";
+                    i++;
+                    edit = true;
+                    break;
+
                 }
-                if (s[i] == '&') {
-                    if (next == '&') {
-                        returnString = returnString + " " + check + next + " ";
-                        i++;
-                        edit = true;
-                        break;
-                    }
+                if (s[i] == '&' && next == '&') {
+                    returnString = returnString + " " + check + next + " ";
+                    i++;
+                    edit = true;
+                    break;
+
                 }
-                if (s[i] == '|') {
-                    if (next == '|') {
-                        returnString = returnString + " " + check + next + " ";
-                        i++;
-                        edit = true;
-                        break;
-                    }
+                if (s[i] == '|' && next == '|') {
+                    returnString = returnString + " " + check + next + " ";
+                    i++;
+                    edit = true;
+                    break;
                 }
                 returnString = returnString + " " + check + " ";
                 edit = true;
