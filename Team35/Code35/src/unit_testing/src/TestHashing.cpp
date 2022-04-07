@@ -6,39 +6,40 @@
 #include "Hashing.h"
 
 //create entities
-Entity procSyn1 = Entity(EntityType::PROCEDURE, "p1");
-Entity procSyn2 = Entity(EntityType::PROCEDURE, "p2");
+Entity procSyn1hash = Entity(EntityType::PROCEDURE, "p1");
+Entity procSyn2hash = Entity(EntityType::PROCEDURE, "p2");
 
-Entity varSyn = Entity(EntityType::VARIABLE, "v");
-Entity constSyn = Entity(EntityType::CONSTANT, "c");
+Entity varSynhash= Entity(EntityType::VARIABLE, "v");
+Entity constSynhash = Entity(EntityType::CONSTANT, "c");
 
-Entity stmtSyn = Entity(EntityType::STATEMENT, "s");
-Entity printSyn = Entity(EntityType::PRINT, "p");
-Entity readSyn = Entity(EntityType::READ, "r");
-Entity assignSyn = Entity(EntityType::ASSIGNMENT, "a");
-Entity callSyn = Entity(EntityType::CALL, "call");
-Entity whileSyn = Entity(EntityType::WHILE, "w");
-Entity ifSyn = Entity(EntityType::IF, "ifs");
+Entity stmtSynhash = Entity(EntityType::STATEMENT, "s");
+Entity printSynhash = Entity(EntityType::PRINT, "p");
+Entity readSynhash = Entity(EntityType::READ, "r");
+Entity assignSynhash = Entity(EntityType::ASSIGNMENT, "a");
+Entity callSynhash = Entity(EntityType::CALL, "call");
+Entity whileSynhash = Entity(EntityType::WHILE, "w");
+Entity ifSynhash = Entity(EntityType::IF, "ifs");
 
-Entity fixedStrVarX = Entity(EntityType::FIXED_STRING, "x");
-Entity fixedStrVarY = Entity(EntityType::FIXED_STRING, "y");
-Entity fixedStrVarZ = Entity(EntityType::FIXED_STRING, "z");
-Entity fixedStrProcF = Entity(EntityType::FIXED_STRING, "f");
-Entity fixedStrProcG = Entity(EntityType::FIXED_STRING, "g");
+Entity fixedStrVarXhash = Entity(EntityType::FIXED_STRING, "x");
+Entity fixedStrVarYhash = Entity(EntityType::FIXED_STRING, "y");
+Entity fixedStrVarZhash = Entity(EntityType::FIXED_STRING, "z");
+Entity fixedStrProcFhash = Entity(EntityType::FIXED_STRING, "f");
+Entity fixedStrProcGhash = Entity(EntityType::FIXED_STRING, "g");
 
-Entity fixedIntStmt = Entity(EntityType::FIXED_INTEGER, "1");
-Entity fixedIntPrint = Entity(EntityType::FIXED_INTEGER, "11");
-Entity fixedIntRead = Entity(EntityType::FIXED_INTEGER, "5");
-Entity fixedIntAssign = Entity(EntityType::FIXED_INTEGER, "2");
-Entity fixedIntWhile = Entity(EntityType::FIXED_INTEGER, "4");
-Entity fixedIntCall = Entity(EntityType::FIXED_INTEGER, "12");
-Entity fixedIntIf = Entity(EntityType::FIXED_INTEGER, "6");
+Entity fixedIntStmthash = Entity(EntityType::FIXED_INTEGER, "1");
+Entity fixedIntPrinthash = Entity(EntityType::FIXED_INTEGER, "11");
+Entity fixedIntReadhash = Entity(EntityType::FIXED_INTEGER, "5");
+Entity fixedIntAssignhash = Entity(EntityType::FIXED_INTEGER, "2");
+Entity fixedIntWhilehash = Entity(EntityType::FIXED_INTEGER, "4");
+Entity fixedIntCallhash = Entity(EntityType::FIXED_INTEGER, "12");
+Entity fixedIntIfhash = Entity(EntityType::FIXED_INTEGER, "6");
 
-Entity wc = Entity(EntityType::WILDCARD, "_");
+Entity wchash = Entity(EntityType::WILDCARD, "_");
 
 //24 entities, let n=30
 
 TEST_CASE("basic methods"){
+
 
     //create hashing object
     Hashing hashing;
@@ -91,101 +92,101 @@ TEST_CASE("basic methods"){
 
     SECTION("checking addSpace method"){
         hashing.setTotalEntitiesEstimate(30);
-        REQUIRE(hashing.hashFunctionForEntities(procSyn1) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(procSyn1) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(procSyn1) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(procSyn1hash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(procSyn1hash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(procSyn1hash) > 0);
 
-        REQUIRE(hashing.hashFunctionForEntities(procSyn2) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(procSyn2) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(procSyn2) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(procSyn2hash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(procSyn2hash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(procSyn2hash) > 0);
 
-        REQUIRE(hashing.hashFunctionForEntities(varSyn) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(varSyn) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(varSyn) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(varSynhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(varSynhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(varSynhash) > 0);
 
-        REQUIRE(hashing.hashFunctionForEntities(constSyn) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(constSyn) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(constSyn) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(constSynhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(constSynhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(constSynhash) > 0);
 
-        REQUIRE(hashing.hashFunctionForEntities(stmtSyn) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(stmtSyn) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(stmtSyn) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(stmtSynhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(stmtSynhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(stmtSynhash) > 0);
 
-        REQUIRE(hashing.hashFunctionForEntities(printSyn) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(printSyn) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(printSyn) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(printSynhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(printSynhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(printSynhash) > 0);
 
-        REQUIRE(hashing.hashFunctionForEntities(readSyn) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(readSyn) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(readSyn) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(readSynhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(readSynhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(readSynhash) > 0);
 
-        REQUIRE(hashing.hashFunctionForEntities(assignSyn) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(assignSyn) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(assignSyn) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(assignSynhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(assignSynhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(assignSynhash) > 0);
 
-        REQUIRE(hashing.hashFunctionForEntities(callSyn) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(callSyn) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(callSyn) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(callSynhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(callSynhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(callSynhash) > 0);
 
-        REQUIRE(hashing.hashFunctionForEntities(whileSyn) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(whileSyn) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(whileSyn) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(whileSynhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(whileSynhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(whileSynhash) > 0);
 
-        REQUIRE(hashing.hashFunctionForEntities(ifSyn) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(ifSyn) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(ifSyn) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(ifSynhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(ifSynhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(ifSynhash) > 0);
 
-        REQUIRE(hashing.hashFunctionForEntities(fixedStrVarX) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(fixedStrVarX) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(fixedStrVarX) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedStrVarXhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedStrVarXhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedStrVarXhash) > 0);
 
-        REQUIRE(hashing.hashFunctionForEntities(fixedStrVarY) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(fixedStrVarY) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(fixedStrVarY) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedStrVarYhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedStrVarYhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedStrVarYhash) > 0);
 
-        REQUIRE(hashing.hashFunctionForEntities(fixedStrVarZ) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(fixedStrVarZ) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(fixedStrVarZ) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedStrVarZhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedStrVarZhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedStrVarZhash) > 0);
 
-        REQUIRE(hashing.hashFunctionForEntities(fixedStrProcF) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(fixedStrProcF) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(fixedStrProcF) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedStrProcFhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedStrProcFhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedStrProcFhash) > 0);
 
-        REQUIRE(hashing.hashFunctionForEntities(fixedStrProcG) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(fixedStrProcG) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(fixedStrProcG) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedStrProcGhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedStrProcGhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedStrProcGhash) > 0);
 
-        REQUIRE(hashing.hashFunctionForEntities(fixedIntStmt) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(fixedIntStmt) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(fixedIntStmt) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedIntStmthash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedIntStmthash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedIntStmthash) > 0);
 
-        REQUIRE(hashing.hashFunctionForEntities(fixedIntPrint) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(fixedIntPrint) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(fixedIntPrint) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedIntPrinthash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedIntPrinthash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedIntPrinthash) > 0);
 
-        REQUIRE(hashing.hashFunctionForEntities(fixedIntRead) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(fixedIntRead) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(fixedIntRead) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedIntReadhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedIntReadhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedIntReadhash) > 0);
 
-        REQUIRE(hashing.hashFunctionForEntities(fixedIntAssign) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(fixedIntAssign) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(fixedIntAssign) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedIntAssignhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedIntAssignhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedIntAssignhash) > 0);
 
-        REQUIRE(hashing.hashFunctionForEntities(fixedIntWhile) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(fixedIntWhile) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(fixedIntWhile) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedIntWhilehash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedIntWhilehash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedIntWhilehash) > 0);
 
-        REQUIRE(hashing.hashFunctionForEntities(fixedIntCall) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(fixedIntCall) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(fixedIntCall) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedIntCallhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedIntCallhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedIntCallhash) > 0);
 
-        REQUIRE(hashing.hashFunctionForEntities(fixedIntIf) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(fixedIntIf) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(fixedIntIf) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedIntIfhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedIntIfhash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(fixedIntIfhash) > 0);
 
-        REQUIRE(hashing.hashFunctionForEntities(wc) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(wc) > 0);
-        REQUIRE(hashing.hashFunctionForEntities(wc) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(wchash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(wchash) > 0);
+        REQUIRE(hashing.hashFunctionForEntities(wchash) > 0);
 
     }
 
