@@ -14,20 +14,31 @@ const std::map<StatementType, ElementType> PkbSetter::spTypeToElementTypeTable =
 
 PkbSetter::PkbSetter(DB* db) : db(db), designExtractor(db), pkbValidator(db) {}
 
+void PkbSetter::handleStatement(const ParsedStatement& parsedStatement) {
+    db->stmtTable[parsedStatement.stmtNo] = parsedStatement;
+    db->elementStmtTable.insert({parsedStatement.stmtNo, convertParsedStatement(parsedStatement)});
+}
+
 void PkbSetter::handleVariables(const ParsedStatement& parsedStatement) {
-    for (const auto& var: parsedStatement.varModified)
+    for (const auto& var: parsedStatement.varModified) {
         db->variables.insert(var);
-    for (const auto& var: parsedStatement.varUsed)
+        db->elementVarTable.insert({var, ProgramElement::createVariable(var)});
+    }
+    for (const auto& var: parsedStatement.varUsed) {
         db->variables.insert(var);
+        db->elementVarTable.insert({var, ProgramElement::createVariable(var)});
+    }
 }
 
 void PkbSetter::handleProcedure(const ParsedStatement& parsedStatement) {
     db->procedures.insert(parsedStatement.procedureName);
+    db->elementProcTable.insert({parsedStatement.procedureName, ProgramElement::createProcedure(parsedStatement.procedureName)});
 }
 
 void PkbSetter::handleConstants(const ParsedStatement& statement) {
     for (const std::string& c : statement.constant) {
         db->constants.insert(c);
+        db->elementConstTable.insert({c, ProgramElement::createConstant(c)});
     }
 }
 
@@ -48,9 +59,8 @@ ProgramElement PkbSetter::convertParsedStatement(const ParsedStatement& statemen
 }
 
 void PkbSetter::insertStmt(const ParsedStatement& parsedStatement) {
-    db->stmtTable[parsedStatement.stmtNo] = parsedStatement;
-    db->elementStmtTable.insert({parsedStatement.stmtNo, convertParsedStatement(parsedStatement)});
     // handle entity
+    handleStatement(parsedStatement);
     handleVariables(parsedStatement);
     handleConstants(parsedStatement);
     handleProcedure(parsedStatement);

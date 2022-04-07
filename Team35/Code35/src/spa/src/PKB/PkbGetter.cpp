@@ -74,30 +74,23 @@ std::set<ProgramElement*> PkbGetter::getEntity(const ElementType& typeToGet) con
         case ElementType::WHILE:
         case ElementType::IF:
         case ElementType::ASSIGNMENT: {
-            for (const auto&[stmtNo, elementStmt] : db->elementStmtTable)
-                RelationshipGetter::insertStmtElement(result, stmtNo, typeToGet);
+            for (auto& p : db->elementStmtTable)
+                RelationshipGetter::insertStmtElement(result, &p.second, typeToGet);
             break;
         }
         case ElementType::VARIABLE: {
-            for (const std::string& var : db->variables) {
-                
-                db->elementVarTable.emplace(var, ProgramElement::createVariable(var));
-                result.insert(&db->elementVarTable.at(var));
-            }
+            for (auto& p : db->elementVarTable)
+                result.insert(&p.second);
             break;
         }
         case ElementType::PROCEDURE: {
-            for (const std::string& proc : db->procedures) {
-                db->elementProcTable.emplace(proc, ProgramElement::createVariable(proc));
-                result.insert(&db->elementProcTable.at(proc));
-            }
+            for (auto& p : db->elementProcTable)
+                result.insert(&p.second);
             break;
         }
         case ElementType::CONSTANT: {
-            for (const std::string& c : db->constants) {
-                db->elementConstTable.emplace(c, ProgramElement::createVariable(c));
-                result.insert(&db->elementConstTable.at(c));
-            }
+            for (auto& p : db->elementConstTable)
+                result.insert(&p.second);
             break;
         }
         default:
@@ -137,10 +130,10 @@ std::set<std::pair<ProgramElement*, ProgramElement*>> PkbGetter::getRelationship
 }
 
 // This would give the assignments that fulfills the following expression. 
-std::set<ProgramElement*> PkbGetter::getAssignmentGivenExpression(const Expr expr, const ExpressionIndicator indicator) const{
+std::set<ProgramElement*> PkbGetter::getAssignmentGivenExpression(const Expr& expr, const ExpressionIndicator& indicator) const{
     std::set<ProgramElement*> result;
     // Converting it to an expression first
-    Expr expr1 = expr;
+    const Expr& expr1 = expr;
 
     std::map<int, Expr>::iterator it;
     for (it = db->exprTable.begin(); it != db->exprTable.end(); it++) {
@@ -156,11 +149,11 @@ std::set<ProgramElement*> PkbGetter::getAssignmentGivenExpression(const Expr exp
 
 }
 
-std::set<ProgramElement*> PkbGetter::getAssignmentGivenVariableAndExpression(const ProgramElement& variable, const Expr expr, const ExpressionIndicator indicator) {
+std::set<ProgramElement*> PkbGetter::getAssignmentGivenVariableAndExpression(const ProgramElement& variable, const Expr& expr, const ExpressionIndicator& indicator) {
 
     std::set<ProgramElement*> result;
     // Converting it to an expression first
-    Expr expr1 = expr;
+    const Expr& expr1 = expr;
 
     // Get the assignments that match the variable. 
     std::set<ProgramElement*> assignments = getLeftSide(PkbRelationshipType::MODIFIES, variable, ElementType::ASSIGNMENT);
@@ -186,11 +179,11 @@ std::set<ProgramElement*> PkbGetter::getAssignmentGivenVariableAndExpression(con
     return result;
 }
 
-std::set<std::pair<ProgramElement*, ProgramElement*>> PkbGetter::getAssignmentWithVariableGivenExpression(const Expr expr, const ExpressionIndicator indicator) const {
+std::set<std::pair<ProgramElement*, ProgramElement*>> PkbGetter::getAssignmentWithVariableGivenExpression(const Expr& expr, const ExpressionIndicator& indicator) const {
 
     std::set<std::pair<ProgramElement*, ProgramElement*>> result;
     // Converting it to an expression first
-    Expr expr1 = expr;
+    const Expr& expr1 = expr;
 
     std::map<int, Expr>::iterator it;
     for (it = db->exprTable.begin(); it != db->exprTable.end(); it++) {
@@ -198,10 +191,8 @@ std::set<std::pair<ProgramElement*, ProgramElement*>> PkbGetter::getAssignmentWi
         if (it->second.isNullExpr()) { continue; }
         if (expressionProcessor.fullfillsMatching(expr1, it->second, indicator)) {
             // get the assignment
-            auto elementIter = db->elementStmtTable.find(it->first);
-
-            ProgramElement second = ProgramElement::createVariable(db->stmtTable.at(it->first).varModified.at(0));
-            ProgramElement first = db->elementStmtTable.at(it->first);
+            ProgramElement* second = &db->elementVarTable.at(db->stmtTable.at(it->first).varModified.at(0));
+            ProgramElement* first = &db->elementStmtTable.at(it->first);
             result.insert(std::make_pair(first, second));
         }
     }
@@ -248,10 +239,10 @@ std::set<std::pair<ProgramElement*, ProgramElement*>> PkbGetter::getIfWithVariab
 
 
     for (const auto& itset : ifStatements) {
-        if (db->stmtTable[itset->stmtNo].varUsed.size() != 0) {
+        if (!db->stmtTable[itset->stmtNo].varUsed.empty()) {
             for (const auto& i : db->stmtTable[itset->stmtNo].varUsed) {
                 // can be changed to get directly from element stmt table. 
-                ProgramElement var = ProgramElement::createVariable(i);
+                ProgramElement* var = &db->elementVarTable.at(i);
                 ProgramElement* ifStmt = itset;
                 result.insert(std::make_pair(ifStmt, var));
             }
@@ -260,17 +251,17 @@ std::set<std::pair<ProgramElement*, ProgramElement*>> PkbGetter::getIfWithVariab
     return result;
 };
 
-std::set<std::pair<ProgramElement, ProgramElement>>PkbGetter::getWhileWithVariable() const {
-    std::set<std::pair<ProgramElement, ProgramElement>> result;
-    std::set<ProgramElement> ifStatements = getEntity(ElementType::WHILE);
+std::set<std::pair<ProgramElement*, ProgramElement*>> PkbGetter::getWhileWithVariable() const {
+    std::set<std::pair<ProgramElement*, ProgramElement*>> result;
+    std::set<ProgramElement*> whileStatements = getEntity(ElementType::WHILE);
 
 
-    for (const auto& itset : ifStatements) {
-        if (db->stmtTable[itset.stmtNo].varUsed.size() != 0) {
-            for (const auto& i : db->stmtTable[itset.stmtNo].varUsed) {
-                ProgramElement var = ProgramElement::createVariable(i);
-                ProgramElement ifStmt = itset;
-                result.insert(std::make_pair(ifStmt, var));
+    for (const auto& itset : whileStatements) {
+        if (!db->stmtTable[itset->stmtNo].varUsed.empty()) {
+            for (const auto& i : db->stmtTable[itset->stmtNo].varUsed) {
+                ProgramElement* var = &db->elementVarTable.at(i);
+                ProgramElement* whileStmt = itset;
+                result.insert(std::make_pair(whileStmt, var));
             }
         }
     }

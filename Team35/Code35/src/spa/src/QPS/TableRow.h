@@ -13,8 +13,8 @@ public:
     int tableId; 
 
     // Unordered map would use the entity hash function. 
-    std::unordered_map<Entity, ProgramElement, EntityHashFunction> row;
-    TableRow(std::unordered_map<Entity, ProgramElement, EntityHashFunction> row);
+    std::unordered_map<Entity, ProgramElement*, EntityHashFunction> row;
+    TableRow(std::unordered_map<Entity, ProgramElement*, EntityHashFunction> row);
     TableRow();
 
 public:

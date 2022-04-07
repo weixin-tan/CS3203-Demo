@@ -10,7 +10,7 @@ class RelationshipGetter {
 
 public:
     static bool isStatementTypeToGet(const ElementType& typeToGet, const ElementType& targetType);
-    static void insertStmtElement(std::set<ProgramElement*>& result, int stmtNo, const ElementType& typeToGet);
+    static void insertStmtElement(std::set<ProgramElement*>& result, ProgramElement* statement, const ElementType& typeToGet);
 
     virtual bool isRelationship(const ProgramElement& leftSide, const ProgramElement& rightSide) = 0;
     virtual std::set<ProgramElement*> getLeftSide(const ProgramElement& rightSide, const ElementType& typeToGet) = 0;
