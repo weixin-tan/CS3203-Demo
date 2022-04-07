@@ -55,8 +55,7 @@ ProgramElement s10Table = ProgramElement::createStatement(ElementType::ASSIGNMEN
 ProgramElement s11Table = ProgramElement::createStatement(ElementType::PRINT, 11, "x");
 
 
-
-TEST_CASE("Test case 1"){
+TEST_CASE("creating results"){
 
     //create results
     Result result1;
@@ -134,23 +133,11 @@ TEST_CASE("Test case 1"){
     result8Elements.insert(ProgramElement::createStatement(ElementType::STATEMENT, 10));
     result8.setOneSynSet(result8Elements);
 
-    /*
-     * r1 - 2
-     * r2 - 1
-     * r3 - 2
-     * r4 - 1
-     * r5 - 1
-     * r6 - 1
-     * r7 - 1
-     * r8 - 1
-     */
 
-
-    /*
     SECTION("Merger 2 1 syn"){
-        Table t1(result2);
-        Table t2(result2);
-        Table tResult(t1, t2);
+        Table t1(&result2);
+        Table t2(&result2);
+        Table tResult(&t1, &t2);
         std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
         std::unordered_map<Entity, ProgramElement, EntityHashFunction> row;
         std::set<ProgramElement> oneSynSet = result2.getOneSynSet();
@@ -161,10 +148,11 @@ TEST_CASE("Test case 1"){
         REQUIRE((foo.find(row) != foo.end()) == true );
     }
 
+
     SECTION("Merger 2 1 syn"){
-        Table t1(result4);
-        Table t2(result4);
-        Table tResult(t1, t2);
+        Table t1(&result4);
+        Table t2(&result4);
+        Table tResult(&t1, &t2);
         std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
         std::unordered_map<Entity, ProgramElement, EntityHashFunction> row;
         std::set<ProgramElement> oneSynSet = result4.getOneSynSet();
@@ -176,9 +164,9 @@ TEST_CASE("Test case 1"){
     }
 
     SECTION("Merger 2 1 syn"){
-        Table t1(result5);
-        Table t2(result5);
-        Table tResult(t1, t2);
+        Table t1(&result5);
+        Table t2(&result5);
+        Table tResult(&t1, &t2);
         std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
         std::unordered_map<Entity, ProgramElement, EntityHashFunction> row;
         std::set<ProgramElement> oneSynSet = result5.getOneSynSet();
@@ -190,9 +178,9 @@ TEST_CASE("Test case 1"){
     }
 
     SECTION("Merger 2 1 syn"){
-        Table t1(result6);
-        Table t2(result6);
-        Table tResult(t1, t2);
+        Table t1(&result6);
+        Table t2(&result6);
+        Table tResult(&t1, &t2);
         std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
         std::unordered_map<Entity, ProgramElement, EntityHashFunction> row;
         std::set<ProgramElement> oneSynSet = result6.getOneSynSet();
@@ -204,9 +192,9 @@ TEST_CASE("Test case 1"){
     }
 
     SECTION("Merger 2 1 syn"){
-        Table t1(result7);
-        Table t2(result7);
-        Table tResult(t1, t2);
+        Table t1(&result7);
+        Table t2(&result7);
+        Table tResult(&t1, &t2);
         std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
         std::unordered_map<Entity, ProgramElement, EntityHashFunction> row;
         std::set<ProgramElement> oneSynSet = result7.getOneSynSet();
@@ -218,9 +206,9 @@ TEST_CASE("Test case 1"){
     }
 
     SECTION("Merger 2 1 syn"){
-        Table t1(result8);
-        Table t2(result8);
-        Table tResult(t1, t2);
+        Table t1(&result8);
+        Table t2(&result8);
+        Table tResult(&t1, &t2);
         std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
         std::unordered_map<Entity, ProgramElement, EntityHashFunction> row;
         std::set<ProgramElement> oneSynSet = result8.getOneSynSet();
@@ -232,9 +220,9 @@ TEST_CASE("Test case 1"){
     }
 
     SECTION("Merger 2 1 syn"){
-        Table t1(result4);
-        Table t2(result5);
-        Table tResult(t1, t2);
+        Table t1(&result4);
+        Table t2(&result5);
+        Table tResult(&t1, &t2);
         std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
         std::unordered_map<Entity, ProgramElement, EntityHashFunction> row1;
         std::set<ProgramElement> oneSynSet1 = result4.getOneSynSet();
@@ -253,9 +241,9 @@ TEST_CASE("Test case 1"){
     }
 
     SECTION("Merger 2 1 syn"){
-        Table t1(result4);
-        Table t2(result6);
-        Table tResult(t1, t2);
+        Table t1(&result4);
+        Table t2(&result6);
+        Table tResult(&t1, &t2);
         std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
         std::unordered_map<Entity, ProgramElement, EntityHashFunction> row1;
         std::set<ProgramElement> oneSynSet1 = result4.getOneSynSet();
@@ -274,9 +262,9 @@ TEST_CASE("Test case 1"){
     }
 
     SECTION("Merger 2 1 syn"){
-        Table t1(result4);
-        Table t2(result7);
-        Table tResult(t1, t2);
+        Table t1(&result4);
+        Table t2(&result7);
+        Table tResult(&t1, &t2);
         std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
         std::unordered_map<Entity, ProgramElement, EntityHashFunction> row1;
         std::set<ProgramElement> oneSynSet1 = result4.getOneSynSet();
@@ -295,9 +283,9 @@ TEST_CASE("Test case 1"){
     }
 
     SECTION("Merger 2 1 syn"){
-        Table t1(result4);
-        Table t2(result8);
-        Table tResult(t1, t2);
+        Table t1(&result4);
+        Table t2(&result8);
+        Table tResult(&t1, &t2);
         std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
         std::unordered_map<Entity, ProgramElement, EntityHashFunction> row1;
         std::set<ProgramElement> oneSynSet1 = result4.getOneSynSet();
@@ -316,9 +304,9 @@ TEST_CASE("Test case 1"){
     }
 
     SECTION("Merger 2 1 syn"){
-        Table t1(result5);
-        Table t2(result6);
-        Table tResult(t1, t2);
+        Table t1(&result5);
+        Table t2(&result6);
+        Table tResult(&t1, &t2);
         std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
         std::unordered_map<Entity, ProgramElement, EntityHashFunction> row1;
         std::set<ProgramElement> oneSynSet1 = result5.getOneSynSet();
@@ -337,9 +325,9 @@ TEST_CASE("Test case 1"){
     }
 
     SECTION("Merger 2 1 syn"){
-        Table t1(result7);
-        Table t2(result5);
-        Table tResult(t1, t2);
+        Table t1(&result7);
+        Table t2(&result5);
+        Table tResult(&t1, &t2);
         std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
         std::unordered_map<Entity, ProgramElement, EntityHashFunction> row1;
         std::set<ProgramElement> oneSynSet1 = result7.getOneSynSet();
@@ -358,9 +346,9 @@ TEST_CASE("Test case 1"){
     }
 
     SECTION("Merger 2 1 syn"){
-        Table t1(result8);
-        Table t2(result5);
-        Table tResult(t1, t2);
+        Table t1(&result8);
+        Table t2(&result5);
+        Table tResult(&t1, &t2);
         std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
         std::unordered_map<Entity, ProgramElement, EntityHashFunction> row1;
         std::set<ProgramElement> oneSynSet1 = result8.getOneSynSet();
@@ -378,25 +366,25 @@ TEST_CASE("Test case 1"){
         REQUIRE((foo.find(row2) != foo.end()) == true );
     }
 
-    SECTION("Merger 2 1 syn"){
-        Table t1(result8);
-        Table t2(result6);
-        Table tResult(t1, t2);
+    SECTION("Merger 2 1 syn") {
+        Table t1(&result8);
+        Table t2(&result6);
+        Table tResult(&t1, &t2);
         std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
         std::unordered_map<Entity, ProgramElement, EntityHashFunction> row1;
         std::set<ProgramElement> oneSynSet1 = result8.getOneSynSet();
-        for (const ProgramElement& elem : oneSynSet1) {
+        for (const ProgramElement &elem: oneSynSet1) {
             result8.getOneSynEntity().clear_aType();
-            row1.insert({ {std::make_pair(result8.getOneSynEntity(), elem)} });
+            row1.insert({{std::make_pair(result8.getOneSynEntity(), elem)}});
         }
-        REQUIRE((foo.find(row1) != foo.end()) == true );
+        REQUIRE((foo.find(row1) != foo.end()) == true);
         std::unordered_map<Entity, ProgramElement, EntityHashFunction> row2;
         std::set<ProgramElement> oneSynSet2 = result6.getOneSynSet();
-        for (const ProgramElement& elem : oneSynSet2) {
+        for (const ProgramElement &elem: oneSynSet2) {
             result6.getOneSynEntity().clear_aType();
-            row2.insert({ {std::make_pair(result6.getOneSynEntity(), elem)} });
+            row2.insert({{std::make_pair(result6.getOneSynEntity(), elem)}});
         }
-        REQUIRE((foo.find(row2) != foo.end()) == true );
+        REQUIRE((foo.find(row2) != foo.end()) == true);
     }
-     */
+
 }
