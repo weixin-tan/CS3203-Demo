@@ -60,6 +60,7 @@ ProgramElement assignElem9 = ProgramElement::createStatement(ElementType::ASSIGN
 ProgramElement assignElem10 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 10);
 std::set<ProgramElement> assigns = {assignElem1, assignElem2, assignElem3, assignElem7, assignElem8, assignElem9, assignElem10};
 
+/*
 TEST_CASE("Testing Empty Result from Short Circuit Optimisation"){
     ResultProcessor resultProcessor = ResultProcessor();
     ResultGroup emptyGroup;
@@ -434,3 +435,4 @@ TEST_CASE("Testing cases related to final table") {
         REQUIRE(testQuery4 == expectedResult4);
     }
 }
+ */
