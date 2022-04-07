@@ -28,6 +28,7 @@ private:
     std::set<Entity> findMissingEntities(const std::set<Entity>& returnEntities,
                                          const std::set<Entity>& finalTableEntities);
     std::vector<Result> findMissingResults(const std::set<Entity>& entities, const std::vector<Result>& results);
+
 };
 
 #endif //SPA_RESULTPROCESSOR_H
