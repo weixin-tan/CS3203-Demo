@@ -14,8 +14,8 @@ public:
     explicit FollowsTGetter(DB* db);
 
     bool isRelationship(const ProgramElement& leftSide, const ProgramElement& rightSide) override;
-    std::set<ProgramElement> getLeftSide(const ProgramElement& rightSide, const ElementType& typeToGet) override;
-    std::set<ProgramElement> getRightSide(const ProgramElement& leftSide, const ElementType& typeToGet) override;
+    std::set<ProgramElement*> getLeftSide(const ProgramElement& rightSide, const ElementType& typeToGet) override;
+    std::set<ProgramElement*> getRightSide(const ProgramElement& leftSide, const ElementType& typeToGet) override;
 };
 
 

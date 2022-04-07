@@ -9,24 +9,24 @@ bool CallsTGetter::isRelationship(const ProgramElement& leftSide, const ProgramE
     return (callsT != db->callsTTable.end() && callsT->second.find(rightSide.procName) != callsT->second.end());
 }
 
-std::set<ProgramElement> CallsTGetter::getLeftSide(const ProgramElement& rightSide, const ElementType& typeToGet) {
-    std::set<ProgramElement> result;
+std::set<ProgramElement*> CallsTGetter::getLeftSide(const ProgramElement& rightSide, const ElementType& typeToGet) {
+    std::set<ProgramElement*> result;
     if (!(typeToGet == ElementType::PROCEDURE && rightSide.elementType == ElementType::PROCEDURE))
         throw std::invalid_argument("Wrong element type for getLeftSide on CALLS_T");
     auto callerT = db->callsTTableR.find(rightSide.procName);
     if (callerT == db->callsTTableR.end()) return {};
     for (const std::string& callerTProc : callerT->second)
-        result.insert(ProgramElement::createProcedure(callerTProc));
+        result.insert(&db->elementProcTable.at(callerTProc));
     return result;
 }
 
-std::set<ProgramElement> CallsTGetter::getRightSide(const ProgramElement& leftSide, const ElementType& typeToGet) {
-    std::set<ProgramElement> result;
+std::set<ProgramElement*> CallsTGetter::getRightSide(const ProgramElement& leftSide, const ElementType& typeToGet) {
+    std::set<ProgramElement*> result;
     if (!(leftSide.elementType == ElementType::PROCEDURE && typeToGet == ElementType::PROCEDURE))
         throw std::invalid_argument("Wrong element type for getRightSide on CALLS_T");
     auto callsT = db->callsTTable.find(leftSide.procName);
     if (callsT == db->callsTTable.end()) return {};
     for (const std::string& calledProc : callsT->second)
-        result.insert(ProgramElement::createProcedure(calledProc));
+        result.insert(&db->elementProcTable.at(calledProc));
     return result;
 }

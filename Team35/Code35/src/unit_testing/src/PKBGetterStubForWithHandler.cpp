@@ -4,6 +4,7 @@
 
 #include "PKBGetterStubForWithHandler.h"
 
+/*
 PKBGetterStubForWithHandler::PKBGetterStubForWithHandler(DB* db) : PkbGetter(db) {
 }
 
@@ -73,6 +74,7 @@ std::set<ProgramElement> PKBGetterStubForWithHandler::getEntity(const ElementTyp
 
     return toReturn;
 }
+ */
 
 //procedure f {
 //  x = 5;  // 1

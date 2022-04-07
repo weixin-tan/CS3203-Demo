@@ -62,6 +62,7 @@ Entity wc = Entity(EntityType::WILDCARD, "_");
 
 
 
+/*
 TEST_CASE("Testing Modifies/Uses Relationships"){
 
     DB db;
@@ -337,3 +338,5 @@ TEST_CASE("Testing Follows(*)/Parent(*)/Next(*) Relationships"){
 }
 
 TEST_CASE("Testing Affects(*) Relationships") {}
+
+ */

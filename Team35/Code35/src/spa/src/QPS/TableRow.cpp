@@ -5,7 +5,7 @@
 unsigned int TableRow::counter = 0; 
 
 // creating a tablerow
-TableRow::TableRow(std::unordered_map<Entity, ProgramElement, EntityHashFunction> row) {
+TableRow::TableRow(std::unordered_map<Entity, ProgramElement*, EntityHashFunction> row) {
     tableId = counter; 
     // increasing the counter by 1 to give each row a unique id. 
     counter++; 
@@ -26,10 +26,10 @@ std::pair<bool, TableRow> TableRow::combineRow(TableRow const *row1, TableRow co
         // If there are no entities in the row, we continue. 
         if (row1->row.count(entity) == 0) continue;
         // If there the row does not match, we just return false (to indicate its invalid)
-        if (!(element == row1->row.at(entity))) return {false, TableRow()};
+        if (element != row1->row.at(entity)) return {false, TableRow()};
     }
     // just combine using a map! This will form a larger table. 
-    std::unordered_map<Entity, ProgramElement, EntityHashFunction> newRow;
+    std::unordered_map<Entity, ProgramElement*, EntityHashFunction> newRow;
     for (const auto& entityElemPair : row1->row)
         newRow.insert(entityElemPair);
     for (const auto& entityElemPair : row2->row)
@@ -39,13 +39,14 @@ std::pair<bool, TableRow> TableRow::combineRow(TableRow const *row1, TableRow co
 
 // Filters the entities to get only the tableRow with the following entites. 
 TableRow TableRow::filterRow(TableRow const *row, const std::vector<Entity> &entities) {
-    std::unordered_map<Entity, ProgramElement, EntityHashFunction> newRow;
+    // Inside the map. we create a new map of elements. 
+    std::unordered_map<Entity, ProgramElement*, EntityHashFunction> newRow;
     for (const auto& entity : entities) {
         if (row->row.find(entity) != row->row.end()) {
             newRow.emplace(entity, row->row.at(entity));
         }
         else {
-            return TableRow();
+            return {};
         }
     }
     return newRow;

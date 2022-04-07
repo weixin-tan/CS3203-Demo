@@ -61,7 +61,7 @@ std::vector<Result> QPSHandler::getNoClauseResults(const std::vector<Entity>& en
         Result result;
         result.setResultType(ResultType::NO_CLAUSE);
         ElementType elementTypeToGet = QpsTypeToPkbTypeConvertor::convertToPkbElement(entityToFind.eType);
-        std::set<ProgramElement> oneSyn = pg->getEntity(elementTypeToGet);
+        std::set<ProgramElement*> oneSyn = pg->getEntity(elementTypeToGet);
         if (oneSyn.empty()) {
             return {};
         }

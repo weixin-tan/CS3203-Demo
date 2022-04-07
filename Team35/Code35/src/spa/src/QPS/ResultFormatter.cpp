@@ -31,11 +31,11 @@ std::string ResultFormatter::extractTableRowInformation(const std::vector<Entity
     for (const auto& entity : entities) {
         Entity scrubbedEntity = entity;
         scrubbedEntity.aType = EntityAttributeType::NULL_ATTRIBUTE;
-        ProgramElement e = tableRow.row.at(scrubbedEntity);
+        ProgramElement* e = tableRow.row.at(scrubbedEntity);
         if (entity.aType == EntityAttributeType::NULL_ATTRIBUTE) {
-            str += e.toString();
+            str += e->toString();
         } else {
-            str += e.toString(entity.aType);
+            str += e->toString(entity.aType);
         }
         str += " ";
     }

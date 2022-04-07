@@ -1,5 +1,7 @@
 #include "Table.h"
 
+#include <utility>
+
 Table::Table() = default;
 
 Table::Table(const Result *r) {
@@ -8,12 +10,12 @@ Table::Table(const Result *r) {
 
     // Get the One Synonym Set/ Two Synonym sets for program elements
     // in the result. 
-    std::set<ProgramElement> oneSynSet = r->getOneSynSet();
-    std::set<std::pair<ProgramElement, ProgramElement>> twoSynSet = r->getTwoSynSet();
+    std::set<ProgramElement*> oneSynSet = r->getOneSynSet();
+    std::set<std::pair<ProgramElement*, ProgramElement*>> twoSynSet = r->getTwoSynSet();
     // Else, we will just add them individually into the table. 
     // The set will have pair indicating the entity and the element itself
     if (!oneSynSet.empty())
-        for (const ProgramElement& elem : oneSynSet) {
+        for (const auto& elem : oneSynSet) {
             r->getOneSynEntity().clear_aType();
             rows.insert({ {std::make_pair(r->getOneSynEntity(), elem)} });
         }
@@ -54,7 +56,7 @@ Table Table::extractColumns(const std::vector<Entity> *entities) {
         TableRow newRow = TableRow::filterRow(&row, *entities);
         // Note that this will only happen at the VERY first iteration. 
         // The result will always be empty. 
-        if (newRow.row.size() == 0) {
+        if (newRow.row.empty()) {
             return result;
         }
         else {

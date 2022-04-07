@@ -1,5 +1,6 @@
 #include "PkbGetterStubForTestSuchThatHandler.h"
 
+/*
 PkbGetterStubForTestSuchThatHandler::PkbGetterStubForTestSuchThatHandler(DB *db) : PkbGetter(db) {
 
 }
@@ -163,3 +164,5 @@ std::set<ProgramElement> PkbGetterStubForTestSuchThatHandler::getLeftSide(const 
     }
     return results;
 }
+
+ */

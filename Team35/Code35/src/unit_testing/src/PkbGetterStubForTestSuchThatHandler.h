@@ -1,6 +1,7 @@
 #ifndef SPA_PKBGETTERSTUBFORTESTSUCHTHATHANDLER_H
 #define SPA_PKBGETTERSTUBFORTESTSUCHTHATHANDLER_H
 
+/*
 
 #include "PkbGetter.h"
 
@@ -14,5 +15,7 @@ public:
     std::set<ProgramElement> getRightSide(const PkbRelationshipType& r, const ProgramElement& leftSide, const ElementType& typeToGet) override;
 
 };
+
+ */
 
 #endif //SPA_PKBGETTERSTUBFORTESTSUCHTHATHANDLER_H

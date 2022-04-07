@@ -30,6 +30,7 @@ using namespace std;
 
 // x, y, z
 
+/*
 TEST_CASE("Testing Both Side Fixed") {
     Entity fixedInt1 = Entity(EntityType::FIXED_INTEGER, "1");
     Entity fixedInt2 = Entity(EntityType::FIXED_INTEGER, "2");
@@ -111,6 +112,7 @@ TEST_CASE("1 side fixed") {
         REQUIRE((!result4.getValid() && result4.getOneSynSet().empty()));
     }
 }
+ */
 
 /*
     Entity procSyn1 = Entity(EntityType::PROCEDURE, "p1");
@@ -128,6 +130,7 @@ TEST_CASE("1 side fixed") {
     Entity ifSyn = Entity(EntityType::IF, "ifs");
  */
 
+/*
 TEST_CASE("test no sides fixed") {
     DB db;
     PkbGetter* pg = new PKBGetterStubForWithHandler(&db);
@@ -185,3 +188,4 @@ TEST_CASE("test no sides fixed") {
         REQUIRE(result3 == expectedResult3);
     }
 }
+ */

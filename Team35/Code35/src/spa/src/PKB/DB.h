@@ -15,6 +15,9 @@ public:
     // relationship tables
     std::map<int, ParsedStatement> stmtTable;
     std::map<int, ProgramElement> elementStmtTable;
+    std::map<std::string, ProgramElement> elementVarTable;
+    std::map<std::string, ProgramElement> elementProcTable;
+    std::map<std::string, ProgramElement> elementConstTable;
     std::map<int, std::set<int>> parentTable;
     std::map<int, std::set<int>> parentTableR;
     std::map<int, std::set<int>> parentTTable;

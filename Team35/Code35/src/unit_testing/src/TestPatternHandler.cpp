@@ -22,6 +22,7 @@
 //}
 
 
+/*
 
 TEST_CASE("Testing Right Side WILDCARD PATTERN Relationships") {
 
@@ -276,3 +277,4 @@ TEST_CASE("Testing Full Match PATTERN Relationships") {
     REQUIRE(result2 == expectedResult2);
     REQUIRE(result3 == expectedResult3);
 }
+ */

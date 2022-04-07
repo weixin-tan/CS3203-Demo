@@ -18,9 +18,9 @@ private:
     bool handleNoSynProcWildcard(PkbRelationshipType r, const Entity& left, const Entity& right);
     bool handleNoSynStmtWildcard(PkbRelationshipType r, const Entity& left, const Entity& right);
     bool handleNoSynVarWildcard(PkbRelationshipType r, const Entity& left);
-    std::set<ProgramElement> handleRightSyn(PkbRelationshipType r, const Entity& left, const Entity& right);
-    std::set<ProgramElement> handleLeftSyn(PkbRelationshipType r, const Entity& left, const Entity& right);
-    std::set<std::pair<ProgramElement, ProgramElement>> handleTwoSyn(PkbRelationshipType r, const Entity& left, const Entity& right);
+    std::set<ProgramElement*> handleRightSyn(PkbRelationshipType r, const Entity& left, const Entity& right);
+    std::set<ProgramElement*> handleLeftSyn(PkbRelationshipType r, const Entity& left, const Entity& right);
+    std::set<std::pair<ProgramElement*, ProgramElement*>> handleTwoSyn(PkbRelationshipType r, const Entity& left, const Entity& right);
 
 public:
     explicit SuchThatHandler(PkbGetter* pg);

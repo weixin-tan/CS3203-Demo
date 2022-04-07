@@ -34,6 +34,7 @@ ProgramElement ProgramElement::createConstant(const std::string& value) {
 ProgramElement ProgramElement::createVariable(const std::string& varName) {
     if (varName.empty())
         throw std::invalid_argument("Empty varName string provided");
+    
     return {ElementType::VARIABLE, ProgramElement::nullIntegerValue, ProgramElement::nullStringValue, varName, ProgramElement::nullStringValue};
 }
 
@@ -71,3 +72,5 @@ bool ProgramElement::operator<(const ProgramElement& r) const {
 bool ProgramElement::operator==(const ProgramElement& r) const {
     return tuple == r.tuple;
 }
+
+

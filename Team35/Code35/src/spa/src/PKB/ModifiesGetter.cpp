@@ -22,8 +22,8 @@ bool ModifiesGetter::isRelationship(const ProgramElement& leftSide, const Progra
 
 }
 
-std::set<ProgramElement> ModifiesGetter::getLeftSide(const ProgramElement& rightSide, const ElementType& typeToGet) {
-    std::set<ProgramElement> result;
+std::set<ProgramElement*> ModifiesGetter::getLeftSide(const ProgramElement& rightSide, const ElementType& typeToGet) {
+    std::set<ProgramElement*> result;
     if (!(isStatementType(typeToGet) || typeToGet == ElementType::PROCEDURE))
         throw std::invalid_argument("Wrong typeToGet for getLeftSide for Modifies");
     if (rightSide.elementType != ElementType::VARIABLE)
@@ -33,20 +33,20 @@ std::set<ProgramElement> ModifiesGetter::getLeftSide(const ProgramElement& right
         auto modifiesStmtNos = db->modifiesSTableR.find(rightSide.varName);
         if (modifiesStmtNos == db->modifiesSTableR.end()) return {};
         for (const auto& stmtNo : modifiesStmtNos->second)
-            insertStmtElement(result, db->elementStmtTable.at(stmtNo), typeToGet);
+            insertStmtElement(result, &db->elementStmtTable.at(stmtNo), typeToGet);
     }
 
     if (typeToGet == ElementType::PROCEDURE) {
         auto modifiesProcs = db->modifiesPTableR.find(rightSide.varName);
         if (modifiesProcs == db->modifiesPTableR.end()) return {};
         for (const auto& proc : modifiesProcs->second)
-            result.insert(ProgramElement::createProcedure(proc));
+            result.insert(&db->elementProcTable.at(proc));
     }
     return result;
 }
 
-std::set<ProgramElement> ModifiesGetter::getRightSide(const ProgramElement& leftSide, const ElementType& typeToGet) {
-    std::set<ProgramElement> result;
+std::set<ProgramElement*> ModifiesGetter::getRightSide(const ProgramElement& leftSide, const ElementType& typeToGet) {
+    std::set<ProgramElement*> result;
     if (!(isStatementType(leftSide.elementType) || leftSide.elementType == ElementType::PROCEDURE))
         throw std::invalid_argument("Wrong leftSide element type for getRightSide for Modifies");
     if (typeToGet != ElementType::VARIABLE)
@@ -56,13 +56,13 @@ std::set<ProgramElement> ModifiesGetter::getRightSide(const ProgramElement& left
         auto modifiedVars = db->modifiesSTable.find(leftSide.stmtNo);
         if (modifiedVars == db->modifiesSTable.end()) return {};
         for (const auto& var : modifiedVars->second)
-            result.insert(ProgramElement::createVariable(var));
+            result.insert(&db->elementVarTable.at(var));
     }
     if (leftSide.elementType == ElementType::PROCEDURE) {
         auto modifiedVars = db->modifiesPTable.find(leftSide.procName);
         if (modifiedVars == db->modifiesPTable.end()) return {};
         for (const auto& var : modifiedVars->second)
-            result.insert(ProgramElement::createVariable(var));
+            result.insert(&db->elementVarTable.at(var));
     }
     return result;
 }
