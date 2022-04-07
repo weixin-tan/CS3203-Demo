@@ -19,3 +19,4 @@ private:
 };
 
 #endif //SPA_RESULTFORMATTER_H
+
