@@ -8,7 +8,6 @@
 #include "QueryProcessor.h"
 #include "Result.h"
 #include "ResultFormatter.h"
-#include "ResultProcessor.h"
 #include "PreOptimiser.h"
 
 class QPSMainLogic {
@@ -20,13 +19,11 @@ private:
     QueryProcessor* queryProcessor;
     PreOptimiser* preOptimiser;
     QPSHandler* qpsHandler;
-    ResultProcessor* resultProcessor;
     ResultFormatter* resultFormatter;
 
     std::vector<Clause> callParser(const std::string& query);
     GroupedClause callPreOptimiser(const std::vector<Clause>& clauses);
-    ResultGroup callHandler(const GroupedClause& groupedClause);
-    FormattedResult callProcessor(const ResultGroup& resultGroup);
+    FormattedResult callHandler(const GroupedClause& groupedClause);
     std::list<std::string> callFormatter(const FormattedResult& processedResults);
     bool checkSemanticBoolError(const Entity& e);
 };

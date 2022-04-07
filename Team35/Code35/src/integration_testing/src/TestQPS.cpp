@@ -11,7 +11,6 @@ QPSMainLogic qr = QPSMainLogic(pkb.getGetter());
 QueryProcessor qp = QueryProcessor();
 QPSHandler qh = QPSHandler(pkb.getGetter());
 PreOptimiser preOp = PreOptimiser();
-ResultProcessor rp = ResultProcessor();
 
 /*
 
