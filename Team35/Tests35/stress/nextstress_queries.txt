@@ -1,3 +1,23 @@
+3 - two, fully connected, repeated
+stmt s, s1;
+Select s such that Next* (s, s1) and Next* (s, s1)
+
+5000
+3 - two, fully connected
+stmt s, s1, s2;
+Select s such that Next* (s, s1) and Next* (s1, s2)
+
+50000
+3 - two, fully connected
+stmt s, s1, s2, s3;
+Select s such that Next* (s, s1) and Next* (s2, s3)
+
+50000
+3 - two, fully connected
+stmt s, s1;
+Select s such that Next* (s, s1) and Next* (s1, s)
+
+50000
 46 - next* two
 stmt s;
 Select s such that Next* (s, 20) and Next* (s, 30)

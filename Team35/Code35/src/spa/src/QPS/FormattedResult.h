@@ -7,6 +7,7 @@
 #include "Table.h"
 #include "Type.h"
 #include "../PKB/ProgramElement.h"
+#include "vector"
 
 class FormattedResult {
 private:

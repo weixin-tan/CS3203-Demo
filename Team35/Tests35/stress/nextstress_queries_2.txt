@@ -1,0 +1,30 @@
+1 - one next*
+stmt s, s1;
+Select s such that Next* (s, s1)
+
+5000
+2 - two next* connected
+stmt s, s1, s2;
+Select s such that Next* (s, s1) and Next* (s1, s2)
+
+5000
+3 - two next* unconnected
+stmt s, s1, s2, s3;
+Select s such that Next* (s, s1) and Next* (s2, s3)
+
+5000
+4 - two next* fully connected inverse
+stmt s, s1;
+Select s such that Next* (s, s1) and Next* (s1, s)
+
+5000
+5 - three next* connected
+stmt s, s1, s2, s3;
+Select s such that Next* (s, s1) and Next* (s1, s2) and Next* (s2, s3)
+
+5000
+6 - three next* unconnected
+stmt s, s1, s2, s3, s4, s5;
+Select s such that Next* (s, s1) and Next* (s2, s3) and Next* (s4, s5)
+
+5000
