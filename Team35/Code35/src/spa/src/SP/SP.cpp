@@ -18,7 +18,8 @@ void SP::Parse(std::string filename) {
         program = concrete.parseProgram(tokenQueue);
     }
     catch (const std::invalid_argument& e) {
-        std::terminate();
+        std::cout << e.what();
+        exit(1);
     }
 
     procedureLst = program.getProcedureLst();

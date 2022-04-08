@@ -19,7 +19,7 @@ Expr ExpressionProcessor::tokenQueueToExpr(std::queue<Token> tokenQueue) {
 // parseExpr takes inorder, returns reverse
 Expr ExpressionProcessor::parseExpr(std::queue<Token>& tokensQueue) {
 	std::stack<Token> exprStack;
-	while (tokensQueue.front().getToken() != TokenType::SEMICOLON) {
+	while ((!tokensQueue.empty()) && (tokensQueue.front().getToken() != TokenType::SEMICOLON)) {
 		exprStack.push(tokensQueue.front());
 		tokensQueue.pop();
 	}
@@ -34,6 +34,11 @@ Expr ExpressionProcessor::parseExprRecursion(std::stack<Token>& exprStack) {
 	Expr expr;
 	std::queue<Token> termQueue;
 	int closure = 0;
+
+	if (exprStack.empty()) {
+		throw std::invalid_argument("Empty expression.");
+	}
+
 	while (!exprStack.empty()) {
 		if (exprStack.top().getToken() == TokenType::RIGHT_BRACE) {
 			closure++;
@@ -73,6 +78,11 @@ Term ExpressionProcessor::parseTerm(std::queue<Token>& termQueue) {
 	Term term;
 	std::queue<Token> factorQueue;
 	int closure = 0;
+
+	if (termQueue.empty()) {
+		throw std::invalid_argument("Empty term.");
+	}
+
 	while (!termQueue.empty()) {
 		if (termQueue.front().getToken() == TokenType::RIGHT_BRACE) {
 			closure++;
@@ -110,6 +120,11 @@ Term ExpressionProcessor::parseTerm(std::queue<Token>& termQueue) {
 // parseFactor takes reverse, returns reverse
 Factor ExpressionProcessor::parseFactor(std::queue<Token>& factorQueue) {
 	Factor factor;
+
+	if (factorQueue.empty()) {
+		throw std::invalid_argument("Empty factor.");
+	}
+
 	if (factorQueue.front().getToken() == TokenType::RIGHT_BRACE) {
 		// remove right_brace
 		factorQueue.pop();
