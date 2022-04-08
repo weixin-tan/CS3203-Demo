@@ -1,6 +1,6 @@
 #include "ExpressionProcessor.h"
 
-// code to be refactored
+// Returns a Expr object from query string.
 Expr ExpressionProcessor::stringToExpr(std::string query) {
 	query = query + ";";
 	Tokeniser tokeniser;
@@ -9,11 +9,12 @@ Expr ExpressionProcessor::stringToExpr(std::string query) {
 	return ep.parseExpr(tokenQueue);
 }
 
+// Returns a Expr object.
+// tokensQueue is a queue of Token objects.
 Expr ExpressionProcessor::tokenQueueToExpr(std::queue<Token> tokenQueue) {
 	return ExpressionProcessor::parseExpr(tokenQueue);
 }
 
-// for iteration 2.
 // Returns a Expr object.
 // tokensQueue is a queue of Token objects.
 // parseExpr takes inorder, returns reverse
@@ -26,7 +27,6 @@ Expr ExpressionProcessor::parseExpr(std::queue<Token>& tokensQueue) {
 	return ExpressionProcessor::parseExprRecursion(exprStack);
 }
 
-// for Iteration 2.
 // Returns a Expr object.
 // exprStack is a stack of Token objects.
 // parseExprRecursion takes reverse, returns reverse
@@ -70,7 +70,6 @@ Expr ExpressionProcessor::parseExprRecursion(std::stack<Token>& exprStack) {
 	return expr;
 }
 
-// for Iteration 2.
 // Returns a Term object.
 // termQueue is a queue of Token objects.
 // parseTerm takes reverse, returns reverse
@@ -114,7 +113,6 @@ Term ExpressionProcessor::parseTerm(std::queue<Token>& termQueue) {
 	return term;
 }
 
-// for Iteration 2.
 // Returns a Factor object.
 // factorQueue is a queue of Token objects.
 // parseFactor takes reverse, returns reverse

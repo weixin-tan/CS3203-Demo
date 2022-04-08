@@ -4,9 +4,6 @@
 // of code would be to just overwrite the basic expr constructor to set all
 // variables to null/nullptr
 
-//TODO: Refactor the code to call a new constructor that defaults everything to
-//null or nullptr. 
-
 void setOperator(TokenType);
 void setExpr(Expr);
 void setTerm(Term);
