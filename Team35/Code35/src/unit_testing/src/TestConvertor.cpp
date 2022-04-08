@@ -10,7 +10,7 @@
 using namespace std;
 
 
-TEST_CASE("Case 1") {
+TEST_CASE("basic convertor test - to test for simple expressions (Assignments only)") {
     // PKB setter
     PKB pkb;
 
@@ -104,7 +104,7 @@ TEST_CASE("Case 1") {
 //  }
 //}
 
-TEST_CASE("Case 2") {
+TEST_CASE("SIMPLE source code check : check for most statement types") {
     // PKB setter
     PKB pkb;
 
