@@ -111,6 +111,10 @@ StmtLst ConcreteSyntaxWithValidation::parseStmtLst(std::queue<Token>& tokensQueu
         tokensQueue.pop();
     }
 
+    if (stmtLst.getSize() == 0) {
+        throw std::invalid_argument("Empty statement list.");
+    }
+
     return stmtLst;
 }
 
