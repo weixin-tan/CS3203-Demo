@@ -54,11 +54,6 @@ private:
     static RelationshipRefGroup traverseGraph(const std::vector<RelationshipRef>& relationships,
                                             std::vector<RelationshipInfo>* rankings,
                                             std::unordered_map<int, std::vector<std::pair<int,int>>>* adjacencyList);
-
-    static std::string listToString(const std::vector<int>& ls);
-    static std::string vectorPairToString(const std::vector<std::pair<int,int>>& ls);
-    static void printAdjacencyList(const std::unordered_map<int, std::vector<std::pair<int,int>>>& adjacencyList);
-    static void printRankingList(std::vector<RelationshipInfo> rankings);
 };
 
 #endif //SPA_SRC_SPA_SRC_QPS_PREOPTIMISER_H_
