@@ -175,3 +175,37 @@ TEST_CASE("Negative Test cases: Missing braces/curlies") {
 }
 
 
+TEST_CASE("Negative Test cases: Assorted") {
+    Tokeniser tokeniser;
+    ConcreteSyntaxWithValidation concrete;
+
+    std::queue<Token> tokenQueueMissingProcName = tokeniser.putInQueue("procedure {x = 5;}");
+    REQUIRE_THROWS_WITH(concrete.parseProgram(tokenQueueMissingProcName), "Missing procedure name.");
+
+    std::queue<Token> tokenQueueEmptyProc = tokeniser.putInQueue("procedure main {}");
+    REQUIRE_THROWS_WITH(concrete.parseProgram(tokenQueueEmptyProc), "Empty statement list.");
+
+    std::queue<Token> tokenQueueInvalidStmtDeclare = tokeniser.putInQueue("procedure f {2a = 25;}");
+    REQUIRE_THROWS_WITH(concrete.parseProgram(tokenQueueInvalidStmtDeclare), "Invalid statement declaration keyword.");
+
+    std::queue<Token> tokenQueueInvalidAssignSymbol = tokeniser.putInQueue("procedure f {x = 5 > z;}");
+    REQUIRE_THROWS_WITH(concrete.parseProgram(tokenQueueInvalidAssignSymbol), "Invalid symbol in expression.");
+
+    std::queue<Token> tokenQueueMissingWhileLeftBrace = tokeniser.putInQueue("procedure f { while x == 3) {y = 1;} }");
+    REQUIRE_THROWS_WITH(concrete.parseProgram(tokenQueueMissingWhileLeftBrace), "Missing left brace.");
+
+    std::queue<Token> tokenQueueMissingThen = tokeniser.putInQueue("procedure main { if (x >= 3) {y = 2;} else {z = 3;} }");
+    REQUIRE_THROWS_WITH(concrete.parseProgram(tokenQueueMissingThen), "Missing then keyword.");
+
+    std::queue<Token> tokenQueueMissingElse = tokeniser.putInQueue("procedure main { if (x >= 3) then {y = 2;} {z = 3;} }");
+    REQUIRE_THROWS_WITH(concrete.parseProgram(tokenQueueMissingElse), "Missing else keyword.");
+
+    std::queue<Token> tokenQueueMissingReadVarName = tokeniser.putInQueue("procedure f {read ;}");
+    REQUIRE_THROWS_WITH(concrete.parseProgram(tokenQueueMissingReadVarName), "Missing variable name.");
+
+    std::queue<Token> tokenQueueMissingPrintSemicolon = tokeniser.putInQueue("procedure f {print y}");
+    REQUIRE_THROWS_WITH(concrete.parseProgram(tokenQueueMissingPrintSemicolon), "Missing semicolon.");
+
+    std::queue<Token> tokenQueueMissingCallProcName = tokeniser.putInQueue("procedure f {call ;}");
+    REQUIRE_THROWS_WITH(concrete.parseProgram(tokenQueueMissingCallProcName), "Missing procedure call name.");
+}
