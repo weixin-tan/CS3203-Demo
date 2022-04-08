@@ -1,12 +1,13 @@
-//
-// Created by Prerthan Munireternam on 04/04/2022.
-//
-
 #ifndef SPA_HASHING_H
 #define SPA_HASHING_H
 
-#include "Entity.h"
+#include <random>
+#include <vector>
+#include <algorithm>
+
 #include "../PKB/ProgramElement.h"
+#include "Entity.h"
+
 
 class Hashing{
 public:

@@ -19,6 +19,8 @@ public:
     std::string toString() const;
     bool equals(const Entity& e1) const;
 
+    size_t Entity::getEntityHash() const;
+
     void clear_aType();
     bool operator==(const Entity& e1) const;
     bool operator!=(const Entity& e1) const;

@@ -1,13 +1,4 @@
-//
-// Created by Prerthan Munireternam on 04/04/2022.
-//
-
-#include <random>
-#include <vector>
-#include <algorithm>
-
 #include "Hashing.h"
-#include "Entity.h"
 
 int Hashing::hashFunctionForEntities(Entity entity){
 
