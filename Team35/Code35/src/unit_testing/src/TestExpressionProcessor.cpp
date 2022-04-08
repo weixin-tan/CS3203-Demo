@@ -85,6 +85,27 @@ TEST_CASE("Check Similarity 4") {
     REQUIRE(expressionProcessor.fullfillsMatching(c, a, ExpressionIndicator::PARTIAL_MATCH) == false);
 }
 
+TEST_CASE("Check brackets Similarity") {
+    //Creating expression for x
+    // We will use the tokeniser to create the tokenqueue
+
+    ExpressionProcessor expressionProcessor;
+
+    Expr a = expressionProcessor.stringToExpr("(x);");
+
+    Expr b = expressionProcessor.stringToExpr("x;");
+
+    Expr c = expressionProcessor.stringToExpr("((x))");
+
+    REQUIRE(expressionProcessor.fullfillsMatching(b, a, ExpressionIndicator::PARTIAL_MATCH) == true);
+    REQUIRE(expressionProcessor.fullfillsMatching(b, c, ExpressionIndicator::PARTIAL_MATCH) == true);
+    REQUIRE(expressionProcessor.fullfillsMatching(a, c, ExpressionIndicator::PARTIAL_MATCH) == true);
+
+
+
+}
+
+
 TEST_CASE("Check integration") {
 
     ExpressionProcessor expressionProcessor;
