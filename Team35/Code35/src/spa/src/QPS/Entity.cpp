@@ -32,6 +32,10 @@ std::string Entity::toString() const {
     return buffer.str();
 }
 
+size_t Entity::getEntityHash() const {
+    return std::hash<std::string>{}(name) ^ (static_cast<std::size_t>(eType) * static_cast<std::size_t>(aType));
+}
+
 bool Entity::operator==(const Entity& e1) const {
     return eType == e1.eType && name == e1.name;
 }

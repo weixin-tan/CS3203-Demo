@@ -1,5 +1,5 @@
 #include "TableRow.h"
-#include <vector>
+
 
 // this is required to label all the tablerows present. 
 unsigned int TableRow::counter = 0; 
@@ -58,11 +58,18 @@ bool TableRow::operator<(TableRow row1) const {
 }
 
 bool TableRow::operator==(TableRow row1) const {
-    return this->tableId == row1.tableId;
+    return row.size() == row1.row.size()
+        && std::equal(row.begin(), row.end(),
+            row1.row.begin());
 }
 
 
 size_t TableRowHash::operator()(const TableRow& tableRow) const
 {
-    return std::hash<int>()(tableRow.tableId);
+    size_t beginning = std::hash<int>()(0);
+    for (const auto& [entity, element] : tableRow.row) {
+        beginning ^= (entity.getEntityHash() ^ element->getProgramElementHash());
+    }
+    return beginning;
+    
 }

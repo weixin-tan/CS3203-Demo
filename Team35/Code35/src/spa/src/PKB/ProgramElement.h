@@ -34,6 +34,7 @@ public:
 
     bool operator<(const ProgramElement& r) const;
     bool operator==(const ProgramElement& r) const;
+    size_t getProgramElementHash() const;
 };
 
 #endif //SPA_TEAM35_CODE35_SRC_SPA_SRC_PKB_PROGRAMELEMENT_H_

@@ -65,6 +65,11 @@ std::string ProgramElement::toString(EntityAttributeType entityAttributeType) co
 
 }
 
+size_t ProgramElement::getProgramElementHash() const {
+    return (std::hash<std::string>()(procName) + std::hash<std::string>()(varName) + std::hash<std::string>()(value))
+        ^ std::hash<int>()(stmtNo);
+}
+
 bool ProgramElement::operator<(const ProgramElement& r) const {
     return tuple < r.tuple;
 }
