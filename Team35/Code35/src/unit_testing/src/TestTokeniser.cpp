@@ -172,19 +172,3 @@ TEST_CASE("basic methods"){
     }
 
 }
-
-/*
-methods to test
-    bool isNumber(const std::string& str); check
-    bool isAlphabet(const std::string& str); not needed, checked in isName
-    bool isName(const std::string& str); check
-    Token tokeniser(std::string input);
-    std::queue<Token> putInQueue (std::string input);
-    std::string printToken(Token token); not needed
-    std::string lTrim(std::string s); not needed, checked in trim
-    std::string rTrim(std::string s); not needed, checked in trim
-    std::string trim(std::string s); check
-    std::string addSpace(std::string s); check
-    std::queue<Token> forbiddenWord(std::queue<Token> inputQueue);
-
- */
