@@ -229,12 +229,12 @@ Select s such that Parent* (w, s) and Next* (s, pn)
 18, 19, 20
 5000
 46 - Calls Calls
-stmt s, s1; variable v, v1; read r; assign a, a1; while w, w1; if ifs; print pn; procedure p, q, r; call c;
+stmt s, s1; variable v, v1; read rd; assign a, a1; while w, w1; if ifs; print pn; procedure p, q, r; call c;
 Select p such that Calls (p, q) and Calls (q, r)
 main
 5000
 47 - Calls Calls*
-stmt s, s1; variable v, v1; read r; assign a, a1; while w, w1; if ifs; print pn; procedure p, q, r; call c;
+stmt s, s1; variable v, v1; read rd; assign a, a1; while w, w1; if ifs; print pn; procedure p, q, r; call c;
 Select p such that Calls (p, q) and Calls* (p, r)
 main, mergesort
 5000
@@ -254,7 +254,7 @@ Select s such that Next* (s, s1) with s.stmt# = s1.stmt#
 12,13,17,18,19,20,22,23,24,25
 5000
 51 - Calls* Calls*
-stmt s, s1; variable v, v1; read r; assign a, a1; while w, w1; if ifs; print pn; procedure p, q, r; call c;
+stmt s, s1; variable v, v1; read rd; assign a, a1; while w, w1; if ifs; print pn; procedure p, q, r; call c;
 Select p such that Calls* (p, q) and Calls* (p, r)
 main, mergesort
 5000
