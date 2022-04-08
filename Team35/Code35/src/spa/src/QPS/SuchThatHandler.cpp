@@ -124,11 +124,7 @@ bool SuchThatHandler::handleNoSynStmtWildcard(PkbRelationshipType r, const Entit
 
     if (left.eType == EntityType::WILDCARD && right.eType == EntityType::WILDCARD) {
         std::set<std::pair<ProgramElement*, ProgramElement*>> check;
-        if (r == PkbRelationshipType::AFFECTS || r == PkbRelationshipType::AFFECTS_T) {
-            check = pg->getRelationshipPairs(r, ElementType::ASSIGNMENT, ElementType::ASSIGNMENT);
-        } else {
-            check = pg->getRelationshipPairs(r, ElementType::STATEMENT, ElementType::STATEMENT);
-        }
+        check = pg->getRelationshipPairs(r, ElementType::STATEMENT, ElementType::STATEMENT);
 
         if (!check.empty()) {
             valid = true;
@@ -136,17 +132,10 @@ bool SuchThatHandler::handleNoSynStmtWildcard(PkbRelationshipType r, const Entit
 
     } else if (left.eType == EntityType::WILDCARD) {
         std::set<ProgramElement*> check;
-        if (r == PkbRelationshipType::AFFECTS || r == PkbRelationshipType::AFFECTS_T) {
-            check = pg->getLeftSide(r,
-                                    ProgramElement::createStatement(ElementType::ASSIGNMENT,
+        check = pg->getLeftSide(r,
+                                ProgramElement::createStatement(ElementType::STATEMENT,
                                                                     std::stoi(right.name)),
-                                    ElementType::ASSIGNMENT);
-        } else {
-            check = pg->getLeftSide(r,
-                                    ProgramElement::createStatement(ElementType::STATEMENT,
-                                                                    std::stoi(right.name)),
-                                    ElementType::STATEMENT);
-        }
+                                ElementType::STATEMENT);
 
         if (!check.empty()) {
             valid = true;
@@ -154,16 +143,9 @@ bool SuchThatHandler::handleNoSynStmtWildcard(PkbRelationshipType r, const Entit
 
     } else {
         std::set<ProgramElement*> check;
-        if (r == PkbRelationshipType::AFFECTS || r == PkbRelationshipType::AFFECTS_T) {
-            check = pg->getRightSide(r,
-                                     ProgramElement::createStatement(ElementType::ASSIGNMENT,
-                                                                     std::stoi(left.name)),
-                                     ElementType::ASSIGNMENT);
-        } else {
-            check = pg->getRightSide(r, ProgramElement::createStatement(ElementType::STATEMENT,
+        check = pg->getRightSide(r, ProgramElement::createStatement(ElementType::STATEMENT,
                                                                         std::stoi(left.name)),
-                                     ElementType::STATEMENT);
-        }
+                                 ElementType::STATEMENT);
 
         if (!check.empty()) {
             valid = true;
@@ -215,8 +197,6 @@ std::set<ProgramElement*> SuchThatHandler::handleRightSyn(PkbRelationshipType r,
         std::set<std::pair<ProgramElement*, ProgramElement*>> pairs;
         if (r == PkbRelationshipType::CALLS || r == PkbRelationshipType::CALLS_T) {
             pairs = pg->getRelationshipPairs(r, ElementType::PROCEDURE, rightElemType);
-        } else if (r == PkbRelationshipType::AFFECTS || r == PkbRelationshipType::AFFECTS_T) {
-            pairs = pg->getRelationshipPairs(r, ElementType::ASSIGNMENT, rightElemType);
         } else {
             pairs = pg->getRelationshipPairs(r, ElementType::STATEMENT, rightElemType);
         }
@@ -249,8 +229,6 @@ std::set<ProgramElement*> SuchThatHandler::handleLeftSyn(PkbRelationshipType r, 
             pairs = pg->getRelationshipPairs(r, leftElemType, ElementType::PROCEDURE);
         } else if (r == PkbRelationshipType::MODIFIES || r == PkbRelationshipType::USES) {
             pairs = pg->getRelationshipPairs(r, leftElemType, ElementType::VARIABLE);
-        } else if (r == PkbRelationshipType::AFFECTS || r == PkbRelationshipType::AFFECTS_T) {
-            pairs = pg->getRelationshipPairs(r, leftElemType, ElementType::ASSIGNMENT);
         } else {
             pairs = pg->getRelationshipPairs(r, leftElemType, ElementType::STATEMENT);
         }
