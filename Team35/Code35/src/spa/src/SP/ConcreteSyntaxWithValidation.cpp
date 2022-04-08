@@ -90,7 +90,8 @@ StmtLst ConcreteSyntaxWithValidation::parseStmtLst(std::queue<Token>& tokensQueu
         throw std::invalid_argument("Missing right curly for procedure.");
     }
 
-    while (!isFrontQueueTokenType(tokensQueue, TokenType::RIGHT_CURLY)) {
+    while ((!tokensQueue.empty()) && (!isFrontQueueTokenType(tokensQueue, TokenType::RIGHT_CURLY))) {
+
         Statement temp_statement;
         try {
             temp_statement = ConcreteSyntaxWithValidation::parseStmt(tokensQueue);
@@ -100,8 +101,19 @@ StmtLst ConcreteSyntaxWithValidation::parseStmtLst(std::queue<Token>& tokensQueu
         }
         stmtLst.setNextStmt(temp_statement);
     }
+
+    if (tokensQueue.empty()) {
+        throw std::invalid_argument("Missing right curly.");
+    }
+
     // remove right_curly
-    tokensQueue.pop();
+    if ((!tokensQueue.empty()) && (isFrontQueueTokenType(tokensQueue, TokenType::RIGHT_CURLY))) {
+        tokensQueue.pop();
+    }
+
+    if (stmtLst.getSize() == 0) {
+        throw std::invalid_argument("Empty statement list.");
+    }
 
     return stmtLst;
 }
@@ -119,7 +131,7 @@ Statement ConcreteSyntaxWithValidation::parseStmt(std::queue<Token>& tokensQueue
         return (this->*tokenStatementFunctionMap.at(frontTokenType))(tokensQueue);
     }
     catch (const std::invalid_argument& e) {
-        throw std::invalid_argument("Invalid statement declaration keyword.");
+        throw;
     }
 }
 
@@ -161,10 +173,16 @@ Statement ConcreteSyntaxWithValidation::parseAssign(std::queue<Token>& tokensQue
     
     // Iteration 2 passing Expression class
     ExpressionProcessor ep = ExpressionProcessor();
-    assignStmt.expression = ep.parseExpr(tokensQueue);
+
+    try {
+        assignStmt.expression = ep.parseExpr(tokensQueue);
+    }
+    catch (const std::invalid_argument& e) {
+        throw;
+    }
 
     // semicolon
-    if (!isFrontQueueTokenType(tokensQueue, TokenType::SEMICOLON)) {
+    if ((tokensQueue.empty()) || (!isFrontQueueTokenType(tokensQueue, TokenType::SEMICOLON))) {
         throw std::invalid_argument("Missing semicolon.");
     }
     tokensQueue.pop();
@@ -183,7 +201,7 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseExprStr
     result.push_back(constVector);
 
     // stop when semicolon is reached
-    while (!isFrontQueueTokenType(tokensQueue, TokenType::SEMICOLON)) {
+    while ((!tokensQueue.empty()) && (!isFrontQueueTokenType(tokensQueue, TokenType::SEMICOLON))) {
         if (isFrontQueueTokenType(tokensQueue, TokenType::NAME)) {
             result[0].push_back(tokensQueue.front().getId());
         }
@@ -229,7 +247,7 @@ Statement ConcreteSyntaxWithValidation::parseWhile(std::queue<Token>& tokensQueu
     tokensQueue.pop();
 
     // remove left_brace
-    if (!isFrontQueueTokenType(tokensQueue, TokenType::LEFT_BRACE)) {
+    if ((tokensQueue.empty()) || (!isFrontQueueTokenType(tokensQueue, TokenType::LEFT_BRACE))) {
         throw std::invalid_argument("Missing left brace.");
     }
     tokensQueue.pop();
@@ -248,7 +266,7 @@ Statement ConcreteSyntaxWithValidation::parseWhile(std::queue<Token>& tokensQueu
 
     // parse stmtLst
     // remove left_curly
-    if (!isFrontQueueTokenType(tokensQueue, TokenType::LEFT_CURLY)) {
+    if ((tokensQueue.empty()) || (!isFrontQueueTokenType(tokensQueue, TokenType::LEFT_CURLY))) {
         throw std::invalid_argument("Missing left curly.");
     }
     tokensQueue.pop();
@@ -279,6 +297,12 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseCondExp
 
     // stop when left_brace is reached
     while (closure != 0) {
+
+        if (tokensQueue.empty()) {
+            throw std::invalid_argument("Incomplete conditional expression.");
+            break;
+        }
+
         if (isFrontQueueTokenType(tokensQueue, TokenType::LEFT_BRACE)) {
             closure++;
         }
@@ -482,7 +506,7 @@ Statement ConcreteSyntaxWithValidation::parseIf(std::queue<Token>& tokensQueue) 
     }
     tokensQueue.pop();
     // remove left_brace
-    if (!isFrontQueueTokenType(tokensQueue, TokenType::LEFT_BRACE)) {
+    if ((tokensQueue.empty()) || (!isFrontQueueTokenType(tokensQueue, TokenType::LEFT_BRACE))) {
         throw std::invalid_argument("Missing left brace.");
     }
     tokensQueue.pop();
@@ -501,12 +525,12 @@ Statement ConcreteSyntaxWithValidation::parseIf(std::queue<Token>& tokensQueue) 
 
     // parse then stmtLst
     // remove then_keyword
-    if (!isFrontQueueTokenType(tokensQueue, TokenType::THEN_KEYWORD)) {
+    if ((tokensQueue.empty()) || (!isFrontQueueTokenType(tokensQueue, TokenType::THEN_KEYWORD))) {
         throw std::invalid_argument("Missing then keyword.");
     }
     tokensQueue.pop();
     // remove left_curly
-    if (!isFrontQueueTokenType(tokensQueue, TokenType::LEFT_CURLY)) {
+    if ((tokensQueue.empty()) || (!isFrontQueueTokenType(tokensQueue, TokenType::LEFT_CURLY))) {
         throw std::invalid_argument("Missing left curly.");
     }
     tokensQueue.pop();
@@ -525,12 +549,12 @@ Statement ConcreteSyntaxWithValidation::parseIf(std::queue<Token>& tokensQueue) 
 
     // parse else stmtLst
     // remove else_keyword
-    if (!isFrontQueueTokenType(tokensQueue, TokenType::ELSE_KEYWORD)) {
+    if ((tokensQueue.empty()) || (!isFrontQueueTokenType(tokensQueue, TokenType::ELSE_KEYWORD))) {
         throw std::invalid_argument("Missing else keyword.");
     }
     tokensQueue.pop();
     // remove left_curly
-    if (!isFrontQueueTokenType(tokensQueue, TokenType::LEFT_CURLY)) {
+    if ((tokensQueue.empty()) || (!isFrontQueueTokenType(tokensQueue, TokenType::LEFT_CURLY))) {
         throw std::invalid_argument("Missing left curly.");
     }
     tokensQueue.pop();
@@ -568,7 +592,7 @@ Statement ConcreteSyntaxWithValidation::parseRead(std::queue<Token>& tokensQueue
     tokensQueue.pop();
     // Iteration 1 only passing vector of string
     std::vector<std::string> result;
-    if (!isFrontQueueTokenType(tokensQueue, TokenType::NAME)) {
+    if ((tokensQueue.empty()) || (!isFrontQueueTokenType(tokensQueue, TokenType::NAME))) {
         throw std::invalid_argument("Missing variable name.");
     }
     result.push_back(tokensQueue.front().getId());
@@ -576,7 +600,7 @@ Statement ConcreteSyntaxWithValidation::parseRead(std::queue<Token>& tokensQueue
     // remove varName
     tokensQueue.pop();
     // remove semicolon
-    if (!isFrontQueueTokenType(tokensQueue, TokenType::SEMICOLON)) {
+    if ((tokensQueue.empty()) || (!isFrontQueueTokenType(tokensQueue, TokenType::SEMICOLON))) {
         throw std::invalid_argument("Missing semicolon.");
     }
     tokensQueue.pop();
@@ -600,7 +624,7 @@ Statement ConcreteSyntaxWithValidation::parsePrint(std::queue<Token>& tokensQueu
     tokensQueue.pop();
     // Iteration 1 only passing vector of string
     std::vector<std::string> result;
-    if (!isFrontQueueTokenType(tokensQueue, TokenType::NAME)) {
+    if ((tokensQueue.empty()) || (!isFrontQueueTokenType(tokensQueue, TokenType::NAME))) {
         throw std::invalid_argument("Missing variable name.");
     }
     result.push_back(tokensQueue.front().getId());
@@ -608,7 +632,7 @@ Statement ConcreteSyntaxWithValidation::parsePrint(std::queue<Token>& tokensQueu
     // remove varName
     tokensQueue.pop();
     // remove semicolon
-    if (!isFrontQueueTokenType(tokensQueue, TokenType::SEMICOLON)) {
+    if ((tokensQueue.empty()) || (!isFrontQueueTokenType(tokensQueue, TokenType::SEMICOLON))) {
         throw std::invalid_argument("Missing semicolon.");
     }
     tokensQueue.pop();
@@ -628,11 +652,20 @@ Statement ConcreteSyntaxWithValidation::parseCall(std::queue<Token>& tokensQueue
     stmt_count++;
     callStmt.statementType = StatementType::CALL_STMT;
     // remove call_keyword
+    if (!isFrontQueueTokenType(tokensQueue, TokenType::CALL_KEYWORD)) {
+        throw std::invalid_argument("Missing call keyword.");
+    }
     tokensQueue.pop();
+    if ((tokensQueue.empty()) || (!isFrontQueueTokenType(tokensQueue, TokenType::NAME))) {
+        throw std::invalid_argument("Missing procedure call name.");
+    }
     callStmt.procName = tokensQueue.front().getId();
     // remove procName
     tokensQueue.pop();
     // remove semicolon
+    if ((tokensQueue.empty()) || (!isFrontQueueTokenType(tokensQueue, TokenType::SEMICOLON))) {
+        throw std::invalid_argument("Missing semicolon.");
+    }
     tokensQueue.pop();
     return callStmt;
 }
