@@ -2,12 +2,12 @@
 #define SPA_TEAM35_CODE35_SRC_SPA_SRC_PKB_AFFECTSTGETTER_H_
 
 #include "RelationshipGetter.h"
-#include "../DesignExtractor/DesignExtractor.h"
+#include "../DesignExtractor/AffectsTExtractor.h"
 
 class AffectsTGetter : public RelationshipGetter {
 private:
     DB* db;
-    DesignExtractor de;
+    AffectsTExtractor affectsTExtractor;
 
 public:
     explicit AffectsTGetter(DB* db);

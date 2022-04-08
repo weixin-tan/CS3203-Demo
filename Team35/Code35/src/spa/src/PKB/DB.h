@@ -9,7 +9,6 @@
 #include "ProgramElement.h"
 
 // just a dataclass to hold all the tables
-// TODO: package the table and reverse table nicely?
 struct DB {
 public:
     // relationship tables
@@ -57,6 +56,7 @@ public:
     std::set<int> computedAffectsTRSrc;
 
     // entity tables
+    std::set<int> stmtNos;
     std::set<std::string> variables;
     std::set<std::string> procedures;
     std::set<std::string> constants;

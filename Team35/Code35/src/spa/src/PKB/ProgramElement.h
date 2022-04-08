@@ -14,7 +14,6 @@ public:
     static const std::string nullStringValue;
 
 public:
-    // TODO: put back const
     ElementType elementType;
     int stmtNo;
     std::string procName;

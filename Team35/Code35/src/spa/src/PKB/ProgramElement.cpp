@@ -3,7 +3,6 @@
 
 const std::string ProgramElement::nullStringValue;
 
-// TODO: investigate std::move
 ProgramElement::ProgramElement(ElementType elementType, int stmtNo, const std::string& procName, const std::string& varName, const std::string& value) : elementType(elementType), stmtNo(stmtNo), procName(procName), varName(varName), value(value), tuple(elementType, stmtNo, procName, varName, value) {}
 
 

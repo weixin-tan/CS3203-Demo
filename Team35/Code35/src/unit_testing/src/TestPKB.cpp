@@ -1691,15 +1691,6 @@ TEST_CASE("PKB Validation") {
     }
 }
 
-TEST_CASE("Compute Reverse") {
-    std::map<int, std::set<std::string>> normalMap {
-            {1, {"a", "b", "c"}}
-    };
-    std::map<std::string, std::set<int>> reverseMap;
-    DesignExtractor::computeReverse<int, std::string>(normalMap, reverseMap, {"a", "b", "c"});
-    REQUIRE(!reverseMap.empty());
-}
-
 TEST_CASE("PATTERN RECOGNITION") {
     PKB pkb = PKB();
     PkbGetter* pkb_getter = pkb.getGetter();

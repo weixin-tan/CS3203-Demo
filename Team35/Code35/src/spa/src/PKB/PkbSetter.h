@@ -27,7 +27,6 @@ private:
 
 public:
     explicit PkbSetter(DB* db);
-    // TODO: change this to use global debug flag
     void insertStmts(const std::vector<std::vector<ParsedStatement>>& procedures, bool testing = false);
 };
 

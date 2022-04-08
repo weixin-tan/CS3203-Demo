@@ -17,6 +17,7 @@ PkbSetter::PkbSetter(DB* db) : db(db), designExtractor(db), pkbValidator(db) {}
 void PkbSetter::handleStatement(const ParsedStatement& parsedStatement) {
     db->stmtTable[parsedStatement.stmtNo] = parsedStatement;
     db->elementStmtTable.insert({parsedStatement.stmtNo, convertParsedStatement(parsedStatement)});
+    db->stmtNos.insert(parsedStatement.stmtNo);
 }
 
 void PkbSetter::handleVariables(const ParsedStatement& parsedStatement) {

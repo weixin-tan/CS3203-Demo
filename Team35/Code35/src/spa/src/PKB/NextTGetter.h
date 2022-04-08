@@ -3,11 +3,12 @@
 
 #include "RelationshipGetter.h"
 #include "../DesignExtractor/DesignExtractor.h"
+#include "../DesignExtractor/NextTExtractor.h"
 
 class NextTGetter : public RelationshipGetter {
 private:
     DB* db;
-    DesignExtractor de;
+    NextTExtractor nextTExtractor;
 
 public:
     explicit NextTGetter(DB* db);

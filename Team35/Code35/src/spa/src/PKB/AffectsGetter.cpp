@@ -1,6 +1,6 @@
 #include "AffectsGetter.h"
 
-AffectsGetter::AffectsGetter(DB* db) : db(db), de(db) {}
+AffectsGetter::AffectsGetter(DB* db) : db(db), affectsExtractor(db) {}
 
 bool AffectsGetter::isRelationship(const ProgramElement& leftSide, const ProgramElement& rightSide) {
     if (!(isStatementType(leftSide.elementType) && isStatementType(rightSide.elementType)))
@@ -9,7 +9,7 @@ bool AffectsGetter::isRelationship(const ProgramElement& leftSide, const Program
             || db->elementStmtTable.at(rightSide.stmtNo).elementType != ElementType::ASSIGNMENT) return false;
     if (db->usesSTable.at(rightSide.stmtNo).count(*db->modifiesSTable.at(leftSide.stmtNo).begin()) == 0)
         return false;
-    de.extractAffects(leftSide.stmtNo);
+    affectsExtractor.extractAffects(leftSide.stmtNo);
     auto affects = db->affectsTable.at(leftSide.stmtNo);
     return affects.count(rightSide.stmtNo) != 0;
 }
@@ -21,7 +21,7 @@ std::set<ProgramElement*> AffectsGetter::getLeftSide(const ProgramElement& right
     if (db->elementStmtTable.at(rightSide.stmtNo).elementType != ElementType::ASSIGNMENT
             || ((typeToGet != ElementType::ASSIGNMENT) && (typeToGet != ElementType::STATEMENT)))
         return {};
-    de.extractAffectsR(rightSide.stmtNo);
+    affectsExtractor.extractAffectsR(rightSide.stmtNo);
     for (const int& affectsStmtNo : db->affectsTableR.at(rightSide.stmtNo))
         RelationshipGetter::insertStmtElement(result, &db->elementStmtTable.at(affectsStmtNo), typeToGet);
     return result;
@@ -35,7 +35,7 @@ std::set<ProgramElement*> AffectsGetter::getRightSide(const ProgramElement& left
             || ((typeToGet != ElementType::ASSIGNMENT) && (typeToGet != ElementType::STATEMENT)))
         return {};
     const std::string var = *db->modifiesSTable.at(leftSide.stmtNo).begin();
-    de.extractAffects(leftSide.stmtNo);
+    affectsExtractor.extractAffects(leftSide.stmtNo);
     for (const int& affectsStmtNo : db->affectsTable.at(leftSide.stmtNo))
         RelationshipGetter::insertStmtElement(result, &db->elementStmtTable.at(affectsStmtNo), typeToGet);
     return result;
