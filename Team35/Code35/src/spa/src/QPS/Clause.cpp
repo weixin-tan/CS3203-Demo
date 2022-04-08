@@ -13,11 +13,11 @@ void Clause::appendRef(const RelationshipRef& r) {
 std::string Clause::toString() {
     std::ostringstream buffer;
     buffer << "entities to find: \n";
-    for (auto e : entityToFindList) {
+    for (const auto& e : entityToFindList) {
         buffer << e.toString();
     }
     buffer << "relationships to satisfy: \n";
-    for (auto r : refList) {
+    for (const auto& r : refList) {
         buffer << r.toString();
     }
     buffer << std::endl;
@@ -45,14 +45,14 @@ bool Clause::operator==(const Clause& c1) {
 bool Clause::equals(const Clause& c1) {
     bool toReturn = true;
     bool temp;
-    for (Entity e : entityToFindList) {
+    for (const Entity& e : entityToFindList) {
         temp = false;
         for (const auto& e1 : c1.entityToFindList) {
             temp = temp || (e.equals(e1));
         }
         toReturn = toReturn && temp;
     }
-    for (RelationshipRef r : refList) {
+    for (const RelationshipRef& r : refList) {
         temp = false;
         for (const auto& r1 : c1.refList) {
             temp = temp || (r.equals(r1));

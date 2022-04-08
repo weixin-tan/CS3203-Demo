@@ -125,6 +125,6 @@ bool checkWith(const RelationshipRef& r);
 bool checkWithEntity(const Entity& e);
 bool checkVariableToSelect(const Entity& e);
 
-bool checkAlreadyInClause(const std::vector<RelationshipRef>& relationshipList, RelationshipRef newRelationship);
+bool checkAlreadyInClause(const std::vector<RelationshipRef>& relationshipList, const RelationshipRef& newRelationship);
 
 #endif //SPA_SRC_SPA_SRC_QUERYREGEX_H_

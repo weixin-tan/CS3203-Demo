@@ -34,6 +34,7 @@ ProgramElement ProgramElement::createConstant(const std::string& value) {
 ProgramElement ProgramElement::createVariable(const std::string& varName) {
     if (varName.empty())
         throw std::invalid_argument("Empty varName string provided");
+    
     return {ElementType::VARIABLE, ProgramElement::nullIntegerValue, ProgramElement::nullStringValue, varName, ProgramElement::nullStringValue};
 }
 
@@ -64,6 +65,11 @@ std::string ProgramElement::toString(EntityAttributeType entityAttributeType) co
 
 }
 
+size_t ProgramElement::getProgramElementHash() const {
+    return (std::hash<std::string>()(procName) + std::hash<std::string>()(varName) + std::hash<std::string>()(value))
+        ^ std::hash<int>()(stmtNo);
+}
+
 bool ProgramElement::operator<(const ProgramElement& r) const {
     return tuple < r.tuple;
 }
@@ -71,3 +77,5 @@ bool ProgramElement::operator<(const ProgramElement& r) const {
 bool ProgramElement::operator==(const ProgramElement& r) const {
     return tuple == r.tuple;
 }
+
+

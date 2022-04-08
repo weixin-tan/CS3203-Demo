@@ -2,6 +2,7 @@
 #define SPA_PKBGETTERSTUBFORTESTPATTERNHANDLER_H
 
 
+/*
 #include "PkbGetter.h"
 
 class PkbGetterStubForTestPatternHandler : public PkbGetter {
@@ -21,5 +22,6 @@ public:
 
 };
 
+*/
 
 #endif //SPA_PKBGETTERSTUBFORTESTPATTERNHANDLER_H

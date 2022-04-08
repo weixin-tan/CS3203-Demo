@@ -7,8 +7,8 @@ PatternHandler::PatternHandler(PkbGetter* pg) {
 // Handles pattern relationships
 Result PatternHandler::handlePattern(const RelationshipRef& relRef) {
     Result result;
-    std::set<ProgramElement> oneSynSet;
-    std::set<std::pair<ProgramElement, ProgramElement>> twoSynSet;
+    std::set<ProgramElement*> oneSynSet;
+    std::set<std::pair<ProgramElement*, ProgramElement*>> twoSynSet;
 
     Entity left = relRef.leftEntity;
     Entity right = relRef.rightEntity;
@@ -40,7 +40,7 @@ Result PatternHandler::handlePattern(const RelationshipRef& relRef) {
 }
 
 // Handles cases where there is a wildcard on the left-hand side
-std::set<ProgramElement> PatternHandler::handleLeftWildcard(Entity right, Entity patternType) {
+std::set<ProgramElement*> PatternHandler::handleLeftWildcard(const Entity& right, const Entity& patternType) {
     ElementType patternElem = QpsTypeToPkbTypeConvertor::convertToPkbElement(patternType.eType);
     if (patternElem == ElementType::IF || patternElem == ElementType::WHILE ||
             (patternElem == ElementType::ASSIGNMENT && right.eType == EntityType::WILDCARD)) {
@@ -52,12 +52,12 @@ std::set<ProgramElement> PatternHandler::handleLeftWildcard(Entity right, Entity
         Expr rhsPattern = ExpressionProcessor::stringToExpr(right.name);
         return pg->getAssignmentGivenExpression(rhsPattern, ExpressionIndicator::PARTIAL_MATCH);
     } else {
-        return std::set<ProgramElement>{};
+        return {};
     }
 }
 
 // Handles cases where there is a fixed string on the left-hand side
-std::set<ProgramElement> PatternHandler::handleLeftFixed(Entity left, Entity right, Entity patternType) {
+std::set<ProgramElement*> PatternHandler::handleLeftFixed(const Entity& left, const Entity& right, const Entity& patternType) {
     ElementType patternElem = QpsTypeToPkbTypeConvertor::convertToPkbElement(patternType.eType);
     if (right.eType == EntityType::WILDCARD) {
         if (patternElem == ElementType::IF) {
@@ -69,7 +69,7 @@ std::set<ProgramElement> PatternHandler::handleLeftFixed(Entity left, Entity rig
                                    ProgramElement::createVariable(left.name),
                                    ElementType::ASSIGNMENT);
         } else {
-            return std::set<ProgramElement>{};
+            return {};
         }
     } else if (right.eType == EntityType::FIXED_STRING) {
         Expr rhsPattern = ExpressionProcessor::stringToExpr(right.name);
@@ -82,13 +82,13 @@ std::set<ProgramElement> PatternHandler::handleLeftFixed(Entity left, Entity rig
                                                            rhsPattern,
                                                            ExpressionIndicator::PARTIAL_MATCH);
     } else {
-        return std::set<ProgramElement>{};
+        return {};
     }
 }
 
 // Handles cases where there is a variable synonym on the left-hand side
-std::set<std::pair<ProgramElement, ProgramElement>>
-PatternHandler::handleLeftVariable(Entity left, Entity right, Entity patternType) {
+std::set<std::pair<ProgramElement*, ProgramElement*>>
+PatternHandler::handleLeftVariable(const Entity& left, const Entity& right, const Entity& patternType) {
     ElementType patternElem = QpsTypeToPkbTypeConvertor::convertToPkbElement(patternType.eType);
     if (right.eType == EntityType::WILDCARD) {
         if (patternElem == ElementType::IF) {
@@ -100,7 +100,7 @@ PatternHandler::handleLeftVariable(Entity left, Entity right, Entity patternType
                                             ElementType::ASSIGNMENT,
                                             ElementType::VARIABLE);
         } else {
-            return std::set<std::pair<ProgramElement, ProgramElement>>{};
+            return {};
         }
     } else if (right.eType == EntityType::FIXED_STRING) {
         Expr rhsPattern = ExpressionProcessor::stringToExpr(right.name);
@@ -109,6 +109,6 @@ PatternHandler::handleLeftVariable(Entity left, Entity right, Entity patternType
         Expr rhsPattern = ExpressionProcessor::stringToExpr(right.name);
         return pg->getAssignmentWithVariableGivenExpression(rhsPattern, ExpressionIndicator::PARTIAL_MATCH);
     } else {
-        return std::set<std::pair<ProgramElement, ProgramElement>>{};
+        return {};
     }
 }

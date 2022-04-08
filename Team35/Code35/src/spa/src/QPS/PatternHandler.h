@@ -11,10 +11,10 @@ class PatternHandler {
 private:
     PkbGetter* pg;
 
-    std::set<ProgramElement> handleLeftWildcard(Entity right, Entity patternType);
-    std::set<ProgramElement> handleLeftFixed(Entity left, Entity right, Entity patternType);
-    std::set<std::pair<ProgramElement, ProgramElement>> handleLeftVariable(Entity left, Entity right,
-                                                                           Entity patternType);
+    std::set<ProgramElement*> handleLeftWildcard(const Entity& right, const Entity& patternType);
+    std::set<ProgramElement*> handleLeftFixed(const Entity& left, const Entity& right, const Entity& patternType);
+    std::set<std::pair<ProgramElement*, ProgramElement*>> handleLeftVariable(const Entity& left, const Entity& right,
+                                                                           const Entity& patternType);
 
 public:
     explicit PatternHandler(PkbGetter* pg);

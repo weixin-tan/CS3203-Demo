@@ -4,7 +4,6 @@ QPSMainLogic::QPSMainLogic(PkbGetter* pg) {
     QPSMainLogic::queryProcessor = new QueryProcessor();
     QPSMainLogic::preOptimiser = new PreOptimiser();
     QPSMainLogic::qpsHandler = new QPSHandler(pg);
-    QPSMainLogic::resultProcessor = new ResultProcessor();
     QPSMainLogic::resultFormatter = new ResultFormatter();
 }
 
@@ -20,9 +19,8 @@ std::list<std::string> QPSMainLogic::parse(const std::string& query) {
         return emptyList;
     }
     GroupedClause groupedClause = callPreOptimiser(clauses);
-    ResultGroup resultGroup = callHandler(groupedClause);
-    FormattedResult processedResults = callProcessor(resultGroup);
-    std::list<std::string> finalResult = callFormatter(processedResults);
+    FormattedResult formattedResult = callHandler(groupedClause);
+    std::list<std::string> finalResult = callFormatter(formattedResult);
     return finalResult;
 }
 
@@ -34,18 +32,14 @@ GroupedClause QPSMainLogic::callPreOptimiser(const std::vector<Clause>& clauses)
     return preOptimiser->optimise(clauses);
 }
 
-ResultGroup QPSMainLogic::callHandler(const GroupedClause& groupedClause) {
+FormattedResult QPSMainLogic::callHandler(const GroupedClause& groupedClause) {
     return qpsHandler->processClause(groupedClause);
-}
-
-FormattedResult QPSMainLogic::callProcessor(const ResultGroup& resultGroup) {
-    return resultProcessor->processResults(resultGroup);
 }
 
 std::list<std::string> QPSMainLogic::callFormatter(const FormattedResult& processedResults) {
     return resultFormatter->formatResult(processedResults);
 }
 
-bool QPSMainLogic::checkSemanticBoolError(Entity e) {
+bool QPSMainLogic::checkSemanticBoolError(const Entity& e) {
     return e.eType == EntityType::BOOLEAN && e.name == "FALSE";
 }

@@ -152,3 +152,26 @@ TEST_CASE("Basic check 2 - while, if etc. ") {
 
 }
 
+/*
+TEST_CASE("Negative Test cases: Missing braces/curlies") {
+    Tokeniser tokeniser;
+    ConcreteSyntaxWithValidation concrete;
+
+    std::queue<Token> tokenQueueMissingRightProc = tokeniser.putInQueue("procedure f {x = 5; y = x; x = 5; while( x>4 ){ read z; if (z<10) then {x = 100; z = 5;} else {y = 100; z = 0; }}");
+    REQUIRE_THROWS_WITH(concrete.parseProgram(tokenQueueMissingRightProc), "Missing right curly for procedure");
+
+    std::queue<Token> tokenQueueMissingRightthen = tokeniser.putInQueue("procedure f {x = 5; y = x; x = 5; while( x>4 ){ read z; if (z<10) then {x = 100; z = 5; else {y = 100; z = 0; }}}");
+    REQUIRE_THROWS_WITH(concrete.parseProgram(tokenQueueMissingRightthen), "Missing right curly for procedure");
+
+    std::queue<Token> tokenQueueMissingLeftCurlyIf = tokeniser.putInQueue("procedure f {x = 5; y = x; x = 5; while( x>4 ){read z; if (z<10) then x = 100; z = 5}; else {y = 100; z = 0; }}}");
+    REQUIRE_THROWS_WITH(concrete.parseProgram(tokenQueueMissingLeftCurlyIf), "Missing left curly.");
+
+    std::queue<Token> tokenQueueMissingLeftCurlyProc = tokeniser.putInQueue("procedure f x = 5; y = x; x = 5; while( x>4 ) read z; if (z<10) then {x = 100; z = 5}; else {y = 100; z = 0; }}}");
+    REQUIRE_THROWS_WITH(concrete.parseProgram(tokenQueueMissingRightProc), "Missing left curly for procedure.");
+
+    std::queue<Token> tokenQueueMissingLeftCurlyWhile = tokeniser.putInQueue("procedure f {x = 5; y = x; x = 5; while( x>4 ) read z; if (z<10) then { x = 100; z = 5}; else {y = 100; z = 0; }}}");
+    REQUIRE_THROWS_WITH(concrete.parseProgram(tokenQueueMissingLeftCurlyWhile), "Missing left curly.");
+
+}
+*/
+

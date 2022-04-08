@@ -583,6 +583,8 @@ std::vector<std::string> extractDesignEntityAndSynonyms(const std::string& s) {
     std::vector<std::string> returnList;
     std::vector<std::string> laterSynonymsList = splitString(s, ",");
     std::vector<std::string> frontDesignEntityAndSynonym = splitStringBySpaces(laterSynonymsList.front());
+
+    returnList.reserve(frontDesignEntityAndSynonym.size());
     for (auto& i : frontDesignEntityAndSynonym) {
         returnList.push_back(i);
     }
@@ -1019,7 +1021,7 @@ bool checkVariableToSelect(const Entity& e) {
     }
 }
 
-bool checkAlreadyInClause(const std::vector<RelationshipRef>& relationshipList, RelationshipRef newRelationship) {
+bool checkAlreadyInClause(const std::vector<RelationshipRef>& relationshipList, const RelationshipRef& newRelationship) {
     bool toReturn = false;
     for (const RelationshipRef& rel : relationshipList) {
         toReturn = toReturn || newRelationship.equals(rel);

@@ -2,6 +2,7 @@
 #define SPA_TOKENISER_H
 
 #include <string>
+#include <set>
 #include <queue>
 #include <sstream>
 #include <iostream>

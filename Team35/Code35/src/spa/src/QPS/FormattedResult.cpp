@@ -1,10 +1,13 @@
 #include "FormattedResult.h"
 
+#include <utility>
+
 FormattedResult::FormattedResult() {
     valid = false;
     isBoolReturn = false;
     entityList = {};
-    finalTable = Table(Result());
+    const Result result = Result();
+    finalTable = Table(&result);
 }
 
 bool FormattedResult::getValid() const {
@@ -32,9 +35,16 @@ void FormattedResult::setBoolReturn(bool b) {
 }
 
 void FormattedResult::setEntityList(std::vector<Entity> entities) {
-    FormattedResult::entityList = entities;
+    FormattedResult::entityList = std::move(entities);
 }
 
 void FormattedResult::setFinalTable(Table table) {
-    FormattedResult::finalTable = table;
+    FormattedResult::finalTable = std::move(table);
+}
+
+bool FormattedResult::operator==(const FormattedResult &f1) const {
+    return FormattedResult::isBoolReturn == f1.isBoolReturn &&
+           FormattedResult::valid == f1.valid &&
+           FormattedResult::entityList == f1.entityList &&
+           FormattedResult::finalTable.rows.size() == f1.finalTable.rows.size();
 }

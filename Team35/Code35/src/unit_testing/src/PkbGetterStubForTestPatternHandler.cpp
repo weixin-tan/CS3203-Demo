@@ -1,5 +1,6 @@
 #include "PkbGetterStubForTestPatternHandler.h"
 
+/*
 PkbGetterStubForTestPatternHandler::PkbGetterStubForTestPatternHandler(DB *db) : PkbGetter(db) {}
 
 std::set<std::pair<ProgramElement, ProgramElement>>
@@ -123,3 +124,4 @@ PkbGetterStubForTestPatternHandler::getAssignmentGivenVariableAndExpression(cons
     }
     return results;
 }
+*/

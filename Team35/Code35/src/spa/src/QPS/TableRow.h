@@ -13,13 +13,13 @@ public:
     int tableId; 
 
     // Unordered map would use the entity hash function. 
-    std::unordered_map<Entity, ProgramElement, EntityHashFunction> row;
-    TableRow(std::unordered_map<Entity, ProgramElement, EntityHashFunction> row);
+    std::unordered_map<Entity, ProgramElement*, EntityHashFunction> row;
+    TableRow(std::unordered_map<Entity, ProgramElement*, EntityHashFunction> row);
     TableRow();
 
 public:
-    static std::pair<bool, TableRow> combineRow(TableRow row1, TableRow row2);
-    static TableRow filterRow(TableRow row, std::vector<Entity> entities);
+    static std::pair<bool, TableRow> combineRow(TableRow const *row1, TableRow const *row2);
+    static TableRow filterRow(TableRow const * row, const std::vector<Entity> &entities);
     bool operator<(TableRow row1) const;
     bool operator==(TableRow row1) const;
 };
