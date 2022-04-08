@@ -14,20 +14,22 @@ public:
 private:
     static void createDeclarationObjects(std::vector<std::string>* designEntityArr,
                                          std::unordered_map<std::string, Entity>* entityMap);
-    static RelationshipRef createRelationshipObject(std::vector<std::string>* relRefList,
-                                                    std::unordered_map<std::string, Entity>* entityMap);
-    static Entity findRelationshipEntity(const std::string& s, std::unordered_map<std::string, Entity>* entityMap);
-    static RelationshipRef createPatternObject(std::vector<std::string>* patternList,
-                                               std::unordered_map<std::string, Entity>* entityMap);
-    static Entity createExpressionEntity(const std::string& s);
-    static Entity findRelationshipEntityWithAttribute(const std::string& s,
+    static RelationshipRef createSuchThatRelationship(std::vector<std::string>* relRefList,
                                                       std::unordered_map<std::string, Entity>* entityMap);
-    static RelationshipRef createWithObject(std::vector<std::string>* clauseList,
+    static Entity getSuchThatEntity(const std::string& s, std::unordered_map<std::string, Entity>* entityMap);
+    static RelationshipRef createPatternRelationship(std::vector<std::string>* patternList,
+                                                     std::unordered_map<std::string, Entity>* entityMap);
+    static Entity createExpressionEntity(const std::string& s);
+    static Entity createEntityWithAttribute(const std::string& s,
                                             std::unordered_map<std::string, Entity>* entityMap);
+    static RelationshipRef createWithRelationship(std::vector<std::string>* clauseList,
+                                                  std::unordered_map<std::string, Entity>* entityMap);
     static void addIfNotDuplicate(Clause* newClause, const RelationshipRef& newRef);
 
-    static void handleVariablesToFind(std::vector<std::string>* variablesToSelect, Clause* newClause,
-                                      bool* isValid, std::unordered_map<std::string, Entity>* entityMap);
+    static void handleVariablesToFind(std::vector<std::string>* variablesToSelect,
+                                      Clause* newClause,
+                                      bool* isValid,
+                                      std::unordered_map<std::string,Entity>* entityMap);
 
     static void handleSuchThat(std::vector<std::string>* SuchThatClauses,
                                Clause* newClause,

@@ -4,6 +4,7 @@
 #include "QPS/Clause.h"
 #include "catch.hpp"
 #include "QPS/QueryProcessor.h"
+#include "TestQueryPreprocessingAndPreOptimiserUtils.h"
 
 using namespace std;
 
@@ -21,29 +22,19 @@ TEST_CASE("testing valid queries on parseQuery") {
     Clause c10 = Clause();
     Clause c11 = Clause();
 
-    Entity a = Entity(EntityType::ASSIGNMENT, "a");
-    Entity s = Entity(EntityType::STATEMENT, "s");
-    Entity v = Entity(EntityType::VARIABLE, "v");
-    Entity w = Entity(EntityType::WHILE, "w");
-    Entity countEntity = Entity(EntityType::FIXED_STRING, "count");
-    Entity fixedInt = Entity(EntityType::FIXED_INTEGER, "6");
-    Entity wildcardEntity = Entity(EntityType::WILDCARD, "_");
-    Entity xEntity = Entity(EntityType::FIXED_STRING, "x");
-    Entity countplus1Entity = Entity(EntityType::FIXED_STRING_WITHIN_WILDCARD, "count + 1");
-
-    RelationshipRef r3 = RelationshipRef(RelationshipType::FOLLOWS_T, fixedInt, s);
-    RelationshipRef r4 = RelationshipRef(RelationshipType::MODIFIES, fixedInt, v);
+    RelationshipRef r3 = RelationshipRef(RelationshipType::FOLLOWS_T, int6, s);
+    RelationshipRef r4 = RelationshipRef(RelationshipType::MODIFIES, int6, v);
     RelationshipRef r5 = RelationshipRef(RelationshipType::PARENT_T, w, a);
-    RelationshipRef r6 = RelationshipRef(RelationshipType::PATTERN, wildcardEntity, countplus1Entity, a);
-    RelationshipRef r7 = RelationshipRef(RelationshipType::PATTERN, xEntity, countplus1Entity, a);
+    RelationshipRef r6 = RelationshipRef(RelationshipType::PATTERN, wildcard, countplus1Entity, a);
+    RelationshipRef r7 = RelationshipRef(RelationshipType::PATTERN, x, countplus1Entity, a);
     RelationshipRef r8_a = RelationshipRef(RelationshipType::USES, a, v);
-    RelationshipRef r8_b = RelationshipRef(RelationshipType::PATTERN, v, wildcardEntity, a);
+    RelationshipRef r8_b = RelationshipRef(RelationshipType::PATTERN, v, wildcard, a);
     RelationshipRef r9_a = RelationshipRef(RelationshipType::PARENT_T, w, a);
-    RelationshipRef r9_b = RelationshipRef(RelationshipType::PATTERN, countEntity, wildcardEntity, a);
-    RelationshipRef r10_a = RelationshipRef(RelationshipType::PATTERN, xEntity, wildcardEntity, a);
-    RelationshipRef r10_b = RelationshipRef(RelationshipType::USES, a, xEntity);
+    RelationshipRef r9_b = RelationshipRef(RelationshipType::PATTERN, countEntity, wildcard, a);
+    RelationshipRef r10_a = RelationshipRef(RelationshipType::PATTERN, x, wildcard, a);
+    RelationshipRef r10_b = RelationshipRef(RelationshipType::USES, a, x);
     RelationshipRef r11_a = RelationshipRef(RelationshipType::PARENT_T, w, a);
-    RelationshipRef r11_b = RelationshipRef(RelationshipType::PATTERN, countEntity, wildcardEntity, a);
+    RelationshipRef r11_b = RelationshipRef(RelationshipType::PATTERN, countEntity, wildcard, a);
 
     std::string s1 = "while w;Select w";
     std::string s2 = "variable      v     ; Select     v      ";
@@ -531,7 +522,7 @@ TEST_CASE("test advanced queries") {
     RelationshipRef r1 = RelationshipRef(RelationshipType::NEXT_T, int1, int2);
     RelationshipRef r2 = RelationshipRef(RelationshipType::AFFECTS, a1, a2);
     RelationshipRef r3 = RelationshipRef(RelationshipType::WITH, cProcname, pProcname);
-    RelationshipRef r4a = RelationshipRef(RelationshipType::PATTERN, x, wildcard, whileEntity);
+    RelationshipRef r4a = RelationshipRef(RelationshipType::PATTERN, x, wildcard, w);
     RelationshipRef r4b = RelationshipRef(RelationshipType::PATTERN, x, wildcard, ifEntity);
     RelationshipRef r5_a = RelationshipRef(RelationshipType::NEXT_T, int1, s);
     RelationshipRef r5_b = RelationshipRef(RelationshipType::NEXT_T, s, int3);
@@ -805,17 +796,4 @@ TEST_CASE("edge cases") {
         REQUIRE(qp.parsePQL(space3).empty());
         REQUIRE(qp.parsePQL(space4).empty());
     }
-}
-
-TEST_CASE("debugging") {
-    QueryProcessor qp = QueryProcessor();
-    string s1 = "assign a; Select BOOLEAN pattern a (_,\"y\") and pattern a (_, \"x\")" ;
-    vector<Clause> c = qp.parsePQL(s1);
-
-    if (c.empty()) {
-        cout << "invalid!" << "\n";
-    } else {
-        cout << c[0].toString() << "\n";
-    }
-
 }

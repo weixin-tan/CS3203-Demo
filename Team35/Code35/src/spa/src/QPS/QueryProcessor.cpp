@@ -49,8 +49,8 @@ void QueryProcessor::createDeclarationObjects(std::vector<std::string>* designEn
  * @param entityMap entityMap to reference entity objects from
  * @return Created RelationshipRef object
  */
-RelationshipRef QueryProcessor::createRelationshipObject(std::vector<std::string>* relRefList,
-                                                         std::unordered_map<std::string, Entity>* entityMap) {
+RelationshipRef QueryProcessor::createSuchThatRelationship(std::vector<std::string>* relRefList,
+                                                           std::unordered_map<std::string, Entity>* entityMap) {
     std::string relStr = (*relRefList)[0];
     RelationshipType rType;
     if (relStr == "Follows") {
@@ -81,8 +81,8 @@ RelationshipRef QueryProcessor::createRelationshipObject(std::vector<std::string
         //this relationship type is NULL -> invalid
         rType = RelationshipType::NULL_RELATIONSHIP;
     }
-    Entity leftEntity = findRelationshipEntity((*relRefList)[1], entityMap);
-    Entity rightEntity = findRelationshipEntity((*relRefList)[2], entityMap);
+    Entity leftEntity = getSuchThatEntity((*relRefList)[1], entityMap);
+    Entity rightEntity = getSuchThatEntity((*relRefList)[2], entityMap);
 
     if (rType == RelationshipType::NULL_RELATIONSHIP || leftEntity.eType == EntityType::NULL_ENTITY
             || rightEntity.eType == EntityType::NULL_ENTITY) {
@@ -98,8 +98,8 @@ RelationshipRef QueryProcessor::createRelationshipObject(std::vector<std::string
  * @param entityMap entityMap to reference entity objects from
  * @return Created Entity object
  */
-Entity QueryProcessor::findRelationshipEntity(const std::string& s,
-                                              std::unordered_map<std::string, Entity>* entityMap) {
+Entity QueryProcessor::getSuchThatEntity(const std::string& s,
+                                         std::unordered_map<std::string, Entity>* entityMap) {
     if (entityMapContains(s, entityMap)) {
         return (*entityMap)[s];
     } else if (isWildCard(s)) {
@@ -121,11 +121,11 @@ Entity QueryProcessor::findRelationshipEntity(const std::string& s,
  * @param entityMap entityMap to reference entity objects from
  * @return Created PATTERN RelationshipRef object
  */
-RelationshipRef QueryProcessor::createPatternObject(std::vector<std::string>* patternList,
-                                                    std::unordered_map<std::string, Entity>* entityMap) {
+RelationshipRef QueryProcessor::createPatternRelationship(std::vector<std::string>* patternList,
+                                                          std::unordered_map<std::string, Entity>* entityMap) {
     RelationshipType rType = RelationshipType::PATTERN;
-    Entity assignmentEntity = findRelationshipEntity((*patternList)[0], entityMap);
-    Entity leftEntity = findRelationshipEntity((*patternList)[1], entityMap);
+    Entity assignmentEntity = getSuchThatEntity((*patternList)[0], entityMap);
+    Entity leftEntity = getSuchThatEntity((*patternList)[1], entityMap);
     Entity rightEntity = createExpressionEntity((*patternList)[2]);
 
     if (assignmentEntity.eType == EntityType::NULL_ENTITY || leftEntity.eType == EntityType::NULL_ENTITY
@@ -157,16 +157,28 @@ Entity QueryProcessor::createExpressionEntity(const std::string& s) {
     }
 }
 
-Entity QueryProcessor::findRelationshipEntityWithAttribute(const std::string& s,
-                                                           std::unordered_map<std::string, Entity>* entityMap) {
+RelationshipRef QueryProcessor::createWithRelationship(std::vector<std::string>* clauseList,
+                                                       std::unordered_map<std::string, Entity>* entityMap) {
+    RelationshipType rType = RelationshipType::WITH;
+    Entity leftEntity = createEntityWithAttribute((*clauseList)[0], entityMap);
+    Entity rightEntity = createEntityWithAttribute((*clauseList)[1], entityMap);
+    if (leftEntity.eType == EntityType::NULL_ENTITY || rightEntity.eType == EntityType::NULL_ENTITY) {
+        return RelationshipRef(RelationshipType::NULL_RELATIONSHIP, leftEntity, rightEntity);
+    } else {
+        return RelationshipRef(rType, leftEntity, rightEntity);
+    }
+}
+
+Entity QueryProcessor::createEntityWithAttribute(const std::string& s,
+                                                 std::unordered_map<std::string, Entity>* entityMap) {
     std::vector<std::string> tempArr = splitString(s, ".");
     if (tempArr.size() == 1) {
-        return findRelationshipEntity(s, entityMap);
+        return getSuchThatEntity(s, entityMap);
     } else if (tempArr.size() == 2) {
         std::string entityName = tempArr[0];
         std::string attributeName = tempArr[1];
 
-        Entity basicEntity = findRelationshipEntity(entityName, entityMap);
+        Entity basicEntity = getSuchThatEntity(entityName, entityMap);
         EntityType eType = basicEntity.eType;
         std::string name = basicEntity.name;
         EntityAttributeType aType;
@@ -190,17 +202,6 @@ Entity QueryProcessor::findRelationshipEntityWithAttribute(const std::string& s,
     }
 }
 
-RelationshipRef QueryProcessor::createWithObject(std::vector<std::string>* clauseList,
-                                                 std::unordered_map<std::string, Entity>* entityMap) {
-    RelationshipType rType = RelationshipType::WITH;
-    Entity leftEntity = findRelationshipEntityWithAttribute((*clauseList)[0], entityMap);
-    Entity rightEntity = findRelationshipEntityWithAttribute((*clauseList)[1], entityMap);
-    if (leftEntity.eType == EntityType::NULL_ENTITY || rightEntity.eType == EntityType::NULL_ENTITY) {
-        return RelationshipRef(RelationshipType::NULL_RELATIONSHIP, leftEntity, rightEntity);
-    } else {
-        return RelationshipRef(rType, leftEntity, rightEntity);
-    }
-}
 
 void QueryProcessor::addIfNotDuplicate(Clause* newClause, const RelationshipRef& newRef) {
     if (!checkAlreadyInClause((*newClause).refList, newRef)) {
@@ -212,7 +213,7 @@ void QueryProcessor::handleVariablesToFind(std::vector<std::string>* variablesTo
                                            bool* isValid, std::unordered_map<std::string, Entity>* entityMap) {
     bool containsBoolean = false;
     for (const auto& s : (*variablesToSelect)) {
-        Entity toAdd = findRelationshipEntityWithAttribute(s, entityMap);
+        Entity toAdd = createEntityWithAttribute(s, entityMap);
         (*newClause).appendEntityToFind(toAdd);
         (*isValid) = (*isValid) && checkVariableToSelect(toAdd);
         if (toAdd.eType == EntityType::BOOLEAN) {
@@ -231,7 +232,7 @@ void QueryProcessor::handleSuchThat(std::vector<std::string>* SuchThatClauses, C
         std::vector<std::string> relRefList = extractItemsInBrackets(s);
         (*isValid) = (*isValid) && checkRelRefList(&relRefList);
         if ((*isValid)) {
-            RelationshipRef newRef = createRelationshipObject(&relRefList, entityMap);
+            RelationshipRef newRef = createSuchThatRelationship(&relRefList, entityMap);
             (*isSemanticallyValid) = (*isSemanticallyValid) && checkRelationshipRef(newRef);
             addIfNotDuplicate(newClause, newRef);
         }
@@ -245,7 +246,7 @@ void QueryProcessor::handlePattern(std::vector<std::string>* PatternClauses, Cla
         std::vector<std::string> patternList = extractPatternBrackets(s);
         (*isValid) = (*isValid) && checkPatternList(&patternList);
         if (*isValid) {
-            RelationshipRef newRef = createPatternObject(&patternList, entityMap);
+            RelationshipRef newRef = createPatternRelationship(&patternList, entityMap);
             (*isValid) = (*isValid) && checkPatternSyntax(&patternList, entityMap, newRef);
             (*isSemanticallyValid) = (*isSemanticallyValid) && checkRelationshipRef(newRef);
             addIfNotDuplicate(newClause, newRef);
@@ -260,7 +261,7 @@ void QueryProcessor::handleWith(std::vector<std::string>* WithClauses, Clause* n
         std::vector<std::string> clausesList = splitStringBySpaces(s);
         (*isValid) = (*isValid) && clausesList.size() == 2;
         if ((*isValid)) {
-            RelationshipRef newRef = createWithObject(&clausesList, entityMap);
+            RelationshipRef newRef = createWithRelationship(&clausesList, entityMap);
             (*isValid) = (*isValid) && checkWithSyntax(&clausesList, entityMap, newRef);
             (*isSemanticallyValid) = (*isSemanticallyValid) && checkRelationshipRef(newRef);
             addIfNotDuplicate(newClause, newRef);

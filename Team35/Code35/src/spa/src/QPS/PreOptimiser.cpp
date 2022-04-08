@@ -261,31 +261,3 @@ void PreOptimiser::traverseNeighbours(int currentRelationship,
         }
     }
 }
-
-std::string PreOptimiser::listToString(const std::vector<int>& ls) {
-    std::string s = "[";
-    for (int i : ls) {
-        s = s + std::to_string(i) + " ";
-    }
-    return s + "]";
-}
-
-std::string PreOptimiser::vectorPairToString(const std::vector<std::pair<int,int>>& ls) {
-    std::string s = "[";
-    for (auto i : ls) {
-        s = s + "(" + std::to_string(i.first) + ", " + std::to_string(i.second) + ") ";
-    }
-    return s + "]";
-}
-
-void PreOptimiser::printAdjacencyList(const std::unordered_map<int, std::vector<std::pair<int,int>>>& adjacencyList) {
-    for (auto const& pair : adjacencyList) {
-        std::cout << "{" << pair.first << ": " << vectorPairToString(pair.second) << "}\n";
-    }
-}
-
-void PreOptimiser::printRankingList(std::vector<RelationshipInfo> rankings){
-    for (auto & ranking : rankings) {
-        std::cout << ranking.toString() << "\n";
-    }
-}
