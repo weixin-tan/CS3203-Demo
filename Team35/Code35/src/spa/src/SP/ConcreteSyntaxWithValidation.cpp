@@ -135,8 +135,6 @@ Statement ConcreteSyntaxWithValidation::parseStmt(std::queue<Token>& tokensQueue
     }
 }
 
-// start for parsing assign
-
 // Returns a STATEMENT object.
 // tokensQueue is a queue of Token objects.
 Statement ConcreteSyntaxWithValidation::parseAssign(std::queue<Token>& tokensQueue) {
@@ -154,13 +152,13 @@ Statement ConcreteSyntaxWithValidation::parseAssign(std::queue<Token>& tokensQue
     assignStmt.varName = result;
     tokensQueue.pop();
 
-    // single equal sign
+    // equal sign
     if (!isFrontQueueTokenType(tokensQueue, TokenType::ASSIGN)) {
         throw std::invalid_argument("Missing equal sign.");
     }
     tokensQueue.pop();
 
-    // Iteration 1 only passing vector of string
+    // pass vector of string
     std::vector<std::vector<std::string>> resultString;
     try {
         resultString = ConcreteSyntaxWithValidation::parseExprString(tokensQueue);
@@ -171,7 +169,7 @@ Statement ConcreteSyntaxWithValidation::parseAssign(std::queue<Token>& tokensQue
     assignStmt.expr = resultString[0];
     assignStmt.constant = resultString[1];
     
-    // Iteration 2 passing Expression class
+    // pass Expression class
     ExpressionProcessor ep = ExpressionProcessor();
 
     try {
@@ -190,7 +188,6 @@ Statement ConcreteSyntaxWithValidation::parseAssign(std::queue<Token>& tokensQue
     return assignStmt;
 }
 
-// for iteration 1.
 // Returns a vector of vector of strings.
 // tokensQueue is a queue of Token objects.
 std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseExprString(std::queue<Token> tokensQueue) {
@@ -226,11 +223,6 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseExprStr
     return result;
 }
 
-// end of chaining methods for parsing Assign
-
-
-// start for parsing WHILE
-
 // Returns a STATEMENT object.
 // tokensQueue is a queue of Token objects.
 Statement ConcreteSyntaxWithValidation::parseWhile(std::queue<Token>& tokensQueue) {
@@ -252,7 +244,7 @@ Statement ConcreteSyntaxWithValidation::parseWhile(std::queue<Token>& tokensQueu
     }
     tokensQueue.pop();
 
-    // Iteration 1 only passing vector of string
+    // pass vector of string
     std::vector<std::vector<std::string>> resultString;
     try {
         resultString = ConcreteSyntaxWithValidation::parseCondExprString(tokensQueue);
@@ -295,7 +287,7 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseCondExp
     result.push_back(constVector);
     int closure = 1;
 
-    // stop when left_brace is reached
+    // stop when final right_brace is reached
     while (closure != 0) {
 
         if (tokensQueue.empty()) {
@@ -342,155 +334,6 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseCondExp
     return result;
 }
 
-// not used for Iteration 1.
-// Returns a CondExpr object.
-// tokensQueue is a queue of Token objects.
-// parse condExpr
-CondExpr ConcreteSyntaxWithValidation::parseCondExpr(std::queue<Token>& tokensQueue) {
-    std::queue<Token> condExprQueue;
-    int closure = 1;
-    while (closure != 0) {
-        if (isFrontQueueTokenType(tokensQueue, TokenType::LEFT_BRACE)) {
-            closure++;
-        }
-        if (isFrontQueueTokenType(tokensQueue, TokenType::RIGHT_BRACE)) {
-            if (closure == 1) {
-                closure--;
-                // remove right_brace
-                tokensQueue.pop();
-                break;
-            }
-            else {
-                closure--;
-            }
-        }
-        condExprQueue.push(tokensQueue.front());
-        tokensQueue.pop();
-    }
-    return ConcreteSyntaxWithValidation::parseCondExprRecursion(condExprQueue);
-}
-
-// Returns a CondExpr object.
-// condExprQueue is a queue of Token objects.
-// parse condExpr recursive
-CondExpr ConcreteSyntaxWithValidation::parseCondExprRecursion(std::queue<Token>& condExprQueue) {
-    CondExpr condExpr;
-    std::queue<Token> relExprQueue;
-    int closure = 0;
-    while (!condExprQueue.empty()) {
-        if (isFrontQueueTokenType(condExprQueue, TokenType::LEFT_BRACE)) {
-            closure++;
-            condExprQueue.pop();
-            continue;
-        }
-        if (isFrontQueueTokenType(condExprQueue, TokenType::RIGHT_BRACE)) {
-            closure--;
-            condExprQueue.pop();
-            continue;
-        }
-        if (isFrontQueueTokenType(condExprQueue, TokenType::NOT)) {
-            continue;
-        }
-        if ((closure == 0) && (isFrontQueueTokenType(condExprQueue, TokenType::AND)) || (isFrontQueueTokenType(condExprQueue, TokenType::OR))) {
-            break;
-        }
-        relExprQueue.push(condExprQueue.front());
-        condExprQueue.pop();
-    }
-    condExpr.setRelExpr(ConcreteSyntaxWithValidation::parseRelExpr(relExprQueue));
-
-    if (!condExprQueue.empty()) {
-        condExpr.setOperator(condExprQueue.front().getToken());
-        condExprQueue.pop();
-        condExpr.setCondExpr(ConcreteSyntaxWithValidation::parseCondExprRecursion(condExprQueue));
-    }
-    return condExpr;
-}
-
-// Returns a RelExpr object.
-// relExprQueue is a queue of Token objects.
-// parse rel_expr
-RelExpr ConcreteSyntaxWithValidation::parseRelExpr(std::queue<Token>& relExprQueue) {
-    RelExpr relExpr;
-    std::queue<Token> relFactorOneQueue;
-    std::queue<Token> relFactorTwoQueue;
-    int closure = 0;
-
-    // set rel_factor one
-    while (!relExprQueue.empty()) {
-        if (isFrontQueueTokenType(relExprQueue, TokenType::LEFT_BRACE)) {
-            closure++;
-        }
-        if (isFrontQueueTokenType(relExprQueue, TokenType::RIGHT_BRACE)) {
-            closure--;
-        }
-        if ((closure == 0) && (isFrontQueueTokenType(relExprQueue, TokenType::GREATER)) || (isFrontQueueTokenType(relExprQueue, TokenType::GEQ))
-            || (isFrontQueueTokenType(relExprQueue, TokenType::LESSER)) || (isFrontQueueTokenType(relExprQueue, TokenType::LEQ))
-            || (isFrontQueueTokenType(relExprQueue, TokenType::EQUAL)) || (isFrontQueueTokenType(relExprQueue, TokenType::NOT_EQUAL))) {
-            break;
-        }
-        relFactorOneQueue.push(relExprQueue.front());
-        relExprQueue.pop();
-    }
-    relExpr.setRelFactorOne(ConcreteSyntaxWithValidation::parseRelFactor(relFactorOneQueue));
-
-    relExpr.setOperator(relExprQueue.front().getToken());
-    relExprQueue.pop();
-
-    // set rel_factor two
-    while (!relExprQueue.empty()) {
-        if (isFrontQueueTokenType(relExprQueue, TokenType::LEFT_BRACE)) {
-            closure++;
-        }
-        if (isFrontQueueTokenType(relExprQueue, TokenType::RIGHT_BRACE)) {
-            closure--;
-        }
-        if ((closure == 0) && (isFrontQueueTokenType(relExprQueue, TokenType::GREATER)) || (isFrontQueueTokenType(relExprQueue, TokenType::GEQ))
-            || (isFrontQueueTokenType(relExprQueue, TokenType::LESSER)) || (isFrontQueueTokenType(relExprQueue, TokenType::LEQ))
-            || (isFrontQueueTokenType(relExprQueue, TokenType::EQUAL)) || (isFrontQueueTokenType(relExprQueue, TokenType::NOT_EQUAL))) {
-            break;
-        }
-        relFactorTwoQueue.push(relExprQueue.front());
-        relExprQueue.pop();
-    }
-    relExpr.setRelFactorTwo(ConcreteSyntaxWithValidation::parseRelFactor(relFactorTwoQueue));
-    return relExpr;
-}
-
-// not used for Iteration 1.
-// Returns a RelFactor object.
-// relFactorQueue is a queue of Token objects.
-// parse rel_factor
-RelFactor ConcreteSyntaxWithValidation::parseRelFactor(std::queue<Token>& relFactorQueue) {
-    RelFactor relFactor;
-    ExpressionProcessor ep = ExpressionProcessor();
-    if (relFactorQueue.size() != 1) {
-        std::stack<Token> exprStack;
-        while (!relFactorQueue.empty()) {
-            exprStack.push(relFactorQueue.front());
-            relFactorQueue.pop();
-        }
-        relFactor.setExpr(ep.parseExprRecursion(exprStack));
-        relFactor.setType(FactorType::EXPR);
-    }
-    else if (isFrontQueueTokenType(relFactorQueue, TokenType::NAME)) {
-        relFactor.setVarName(relFactorQueue.front());
-        relFactor.setType(FactorType::VAR);
-        relFactorQueue.pop();
-    }
-    else if (isFrontQueueTokenType(relFactorQueue, TokenType::INTEGER)) {
-        relFactor.setConstValue(relFactorQueue.front());
-        relFactor.setType(FactorType::CONST);
-        relFactorQueue.pop();
-    }
-    return relFactor;
-}
-
-// end for parsing WHILE
-
-
-// start for parsing IF/Else
-
 // Returns a STATEMENT object.
 // tokensQueue is a queue of Token objects.
 Statement ConcreteSyntaxWithValidation::parseIf(std::queue<Token>& tokensQueue) {
@@ -511,7 +354,7 @@ Statement ConcreteSyntaxWithValidation::parseIf(std::queue<Token>& tokensQueue) 
     }
     tokensQueue.pop();
 
-    // Iteration 1 only passing vector of string
+    // pass vector of string
     std::vector<std::vector<std::string>> resultString;
     try {
         resultString = ConcreteSyntaxWithValidation::parseCondExprString(tokensQueue);
@@ -573,10 +416,6 @@ Statement ConcreteSyntaxWithValidation::parseIf(std::queue<Token>& tokensQueue) 
 
     return ifStmt;
 }
-// end for parsing IF/Else
-// done
-
-// start for parsing READ
 
 // Returns a STATEMENT object.
 // tokensQueue is a queue of Token objects.
@@ -590,7 +429,7 @@ Statement ConcreteSyntaxWithValidation::parseRead(std::queue<Token>& tokensQueue
         throw std::invalid_argument("Missing read keyword.");
     }
     tokensQueue.pop();
-    // Iteration 1 only passing vector of string
+    // pass vector of string
     std::vector<std::string> result;
     if ((tokensQueue.empty()) || (!isFrontQueueTokenType(tokensQueue, TokenType::NAME))) {
         throw std::invalid_argument("Missing variable name.");
@@ -606,9 +445,6 @@ Statement ConcreteSyntaxWithValidation::parseRead(std::queue<Token>& tokensQueue
     tokensQueue.pop();
     return readStmt;
 }
-// end for parsing READ
-
-// start for parsing PRINT
 
 // Returns a STATEMENT object.
 // tokensQueue is a queue of Token objects.
@@ -622,7 +458,7 @@ Statement ConcreteSyntaxWithValidation::parsePrint(std::queue<Token>& tokensQueu
         throw std::invalid_argument("Missing print keyword.");
     }
     tokensQueue.pop();
-    // Iteration 1 only passing vector of string
+    // pass vector of string
     std::vector<std::string> result;
     if ((tokensQueue.empty()) || (!isFrontQueueTokenType(tokensQueue, TokenType::NAME))) {
         throw std::invalid_argument("Missing variable name.");
@@ -638,12 +474,7 @@ Statement ConcreteSyntaxWithValidation::parsePrint(std::queue<Token>& tokensQueu
     tokensQueue.pop();
     return printStmt;
 }
-// end for parsing PRINT
 
-
-// start for parsing CALL
-
-// not used for Iteration 1
 // Returns a STATEMENT object.
 // tokensQueue is a queue of Token objects.
 Statement ConcreteSyntaxWithValidation::parseCall(std::queue<Token>& tokensQueue) {
@@ -669,7 +500,6 @@ Statement ConcreteSyntaxWithValidation::parseCall(std::queue<Token>& tokensQueue
     tokensQueue.pop();
     return callStmt;
 }
-// end for parsing CALL
 
 // Helper functions
 bool ConcreteSyntaxWithValidation::isFrontQueueTokenType(std::queue<Token>& tokensQueue, TokenType tokenType) {

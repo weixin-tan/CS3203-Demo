@@ -25,10 +25,6 @@ public:
     Statement parseStmt(std::queue<Token>& tokensQueue);
     Statement parseAssign(std::queue<Token>& tokensQueue);
     Statement parseWhile(std::queue<Token>& tokensQueue);
-    CondExpr parseCondExpr(std::queue<Token>& tokensQueue);
-    CondExpr parseCondExprRecursion(std::queue<Token>& condExprQueue);
-    RelExpr parseRelExpr(std::queue<Token>& relExprQueue);
-    RelFactor parseRelFactor(std::queue<Token>& relFactorQueue);
     Statement parseIf(std::queue<Token>& tokensQueue);
     Statement parseRead(std::queue<Token>& tokensQueue);
     Statement parsePrint(std::queue<Token>& tokensQueue); 
