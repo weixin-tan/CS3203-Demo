@@ -483,7 +483,7 @@ TEST_CASE("Integration Testing") {
         REQUIRE(compareStringLists(result9, expectedResult9));
         REQUIRE(compareStringLists(result10, expectedResult10));
         REQUIRE(compareStringLists(result11, expectedResult11));
-        //REQUIRE(compareStringLists(result12, expectedResult12));
+        REQUIRE(compareStringLists(result12, expectedResult12));
         REQUIRE(compareStringLists(result13, expectedResult13));
         REQUIRE(compareStringLists(result14, expectedResult14));
     }
@@ -529,7 +529,7 @@ TEST_CASE("Integration Testing") {
         std::list<std::string> expectedResult17 = {};
         std::list<std::string> expectedResult18 = {"2 2"};
         std::list<std::string> expectedResult19 = {"5 5 5 5"};
-        std::list<std::string> expectedResult20 = {};
+        std::list<std::string> expectedResult20 = {"FALSE"};
 
         std::list<std::string> result1 = qpsMainLogic.parse(com1);
         std::list<std::string> result2 = qpsMainLogic.parse(com2);
@@ -571,6 +571,6 @@ TEST_CASE("Integration Testing") {
         REQUIRE(compareStringLists(result17, expectedResult17));
         REQUIRE(compareStringLists(result18, expectedResult18));
         REQUIRE(compareStringLists(result19, expectedResult19));
-        //REQUIRE(compareStringLists(result20, expectedResult20));
+        REQUIRE(compareStringLists(result20, expectedResult20));
     }
 }
