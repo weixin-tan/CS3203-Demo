@@ -31,6 +31,8 @@ public:
     Term parseTerm(std::queue<Token>& termQueue);
     Factor parseFactor(std::queue<Token>& factorQueue);
     bool fullfillsMatching(Expr exp1, Expr exp2, ExpressionIndicator expressionIndicator) const;
+    std::queue<Token> formatExpr(std::queue<Token> tokensQueue);
+    int getPriority(Token token);
 };
 
 #endif

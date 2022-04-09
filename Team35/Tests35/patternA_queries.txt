@@ -458,10 +458,10 @@ assign a;
 Select a pattern a ("another", _"a/b*c"_)
 
 5000
-6570321 - negative subexpression match
+6570321 - positive subexpression match
 assign a;
 Select a pattern a ("another", _"(a/(b*c))"_)
-
+7
 5000
 6570321 - negative subexpression match
 assign a;
@@ -488,8 +488,8 @@ assign a;
 Select a pattern a ("another", _"(e-f)-g"_)
 
 5000
-6570321 - negative subexpression match
+6570321 - positive subexpression match
 assign a;
 Select a pattern a ("another", _"(h-i*((j+k))-m/n)"_)
-
+7
 5000
