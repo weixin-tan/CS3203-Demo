@@ -5,7 +5,6 @@
 
 #include <chrono>
 
-
 PKB pkb = PKB();
 QPSMainLogic qr = QPSMainLogic(pkb.getGetter());
 QueryProcessor qp = QueryProcessor();
@@ -31,6 +30,9 @@ PreOptimiser preOp = PreOptimiser();
 //    }
 //  }
 //  print x; // 11
+//  call g;
+//}
+//procedure g {
 //}
 
 bool compareProgramElementLists(std::vector<ProgramElement> lista, std::vector<ProgramElement> listb) {

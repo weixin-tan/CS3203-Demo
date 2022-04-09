@@ -8,6 +8,14 @@ QPSHandler::QPSHandler(PkbGetter* pg) {
     QPSHandler::withHandler = new WithHandler(pg);
 }
 
+bool isFixedEntityGroup(RelationshipRef r) {
+    return (r.leftEntity.eType == EntityType::FIXED_INTEGER || r.leftEntity.eType == EntityType::FIXED_STRING ||
+            r.leftEntity.eType == EntityType::FIXED_STRING_WITHIN_WILDCARD)
+           &&
+           (r.rightEntity.eType == EntityType::FIXED_INTEGER || r.rightEntity.eType == EntityType::FIXED_STRING ||
+            r.rightEntity.eType == EntityType::FIXED_STRING_WITHIN_WILDCARD);
+}
+
 FormattedResult QPSHandler::processClause(const GroupedClause& groupedClause) const {
     FormattedResult emptyFormattedResult;
     FormattedResult finalFormattedResult;
@@ -24,15 +32,18 @@ FormattedResult QPSHandler::processClause(const GroupedClause& groupedClause) co
 
     finalFormattedResult.setEntityList(groupedClause.entityToFindList);
     std::vector<Table> intermediateTables;
-    for (const auto& group: groupedClause.relRefGroups){
-        std::vector<Result> results = handleRelRefGroups(group);
-        if (results.empty()) {
+
+    if (isFixedEntityGroup(groupedClause.relRefGroups[0].relRefGroup[0])) {
+        if(!handleFixedEntityGroup(groupedClause.relRefGroups[0])) {
             return emptyFormattedResult;
         }
-        if (results[0].getOneSynSet().empty() && results[0].getTwoSynSet().empty()) {
+    }
+
+    for (const auto& group: groupedClause.relRefGroups){
+        if (isFixedEntityGroup(group.relRefGroup[0])) {
             continue;
         }
-        Table intermediateTable = buildIntermediateTable(results);
+        Table intermediateTable = handleRelRefGroups(group);
         if (intermediateTable.rows.empty()) {
             return emptyFormattedResult;
         }
@@ -65,9 +76,25 @@ FormattedResult QPSHandler::processClause(const GroupedClause& groupedClause) co
     return finalFormattedResult;
 }
 
+bool QPSHandler::handleFixedEntityGroup(const RelationshipRefGroup &group) const {
+    for (const auto& r : group.relRefGroup) {
+        Result tempResult = getResult(r);
+        if (!tempResult.getValid()) {
+            return false;
+        }
+    }
+    return true;
+}
+
 FormattedResult QPSHandler::handleZeroClause(const std::vector<Entity>& entitiesToFind) const {
     FormattedResult formattedResult;
     formattedResult.setValid(true);
+
+    if (entitiesToFind[0].eType == EntityType::BOOLEAN) {
+        formattedResult.setBoolReturn(true);
+        return formattedResult;
+    }
+    
     formattedResult.setEntityList(entitiesToFind);
 
     std::set<Entity> tableEntities = extractEntitySet(entitiesToFind);
@@ -121,40 +148,36 @@ std::vector<Result> QPSHandler::getNoClauseResults(const std::vector<Entity>& en
     return results;
 }
 
-std::vector<Result> QPSHandler::handleRelRefGroups(const RelationshipRefGroup& relRefGroup) const {
-    std::vector<Result> results;
+Table QPSHandler::handleRelRefGroups(const RelationshipRefGroup& relRefGroup) const {
+    Table intermediateTable;
     for (const auto& r : relRefGroup.relRefGroup) {
-        Result tempResult;
-        if (r.rType == RelationshipType::PATTERN) {
-            tempResult = patternHandler->handlePattern(r);
-        } else if (r.rType == RelationshipType::WITH) {
-            tempResult = withHandler->handleWith(r);
-        } else {
-            tempResult = suchThatHandler->handleSuchThat(r);
-        }
+        Result tempResult = getResult(r);
         if (!tempResult.getValid()) {
             return {};
         }
-        results.push_back(tempResult);
-    }
-    return results;
-}
-
-Table QPSHandler::buildIntermediateTable(const std::vector<Result>& results) const {
-    Table intermediateTable = Table(&results[0]);
-
-    if (results.size() == 1) {
-        return intermediateTable;
-    }
-
-    for (int i = 1; i < results.size(); i++) {
-        Table tempTable = Table(&results[i]);
-        intermediateTable = Table(&intermediateTable, &tempTable);
+        Table tempTable = Table(&tempResult);
         if (intermediateTable.rows.empty()) {
-            break;
+            intermediateTable = tempTable;
+        } else {
+            intermediateTable = Table(&intermediateTable, &tempTable);
+        }
+        if (intermediateTable.rows.empty()) {
+            return {};
         }
     }
     return intermediateTable;
+}
+
+Result QPSHandler::getResult(const RelationshipRef& r) const {
+    Result tempResult;
+    if (r.rType == RelationshipType::PATTERN) {
+        tempResult = patternHandler->handlePattern(r);
+    } else if (r.rType == RelationshipType::WITH) {
+        tempResult = withHandler->handleWith(r);
+    } else {
+        tempResult = suchThatHandler->handleSuchThat(r);
+    }
+    return tempResult;
 }
 
 std::set<Entity> QPSHandler::extractEntitySet(const std::vector<Entity>& entityList) const {

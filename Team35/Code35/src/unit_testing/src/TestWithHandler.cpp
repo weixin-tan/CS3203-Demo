@@ -29,7 +29,7 @@
 
 // x, y, z
 
-QPS_ENTITY_INFO entInfoW;
+QPS_GENERAL_DATA_INFO entInfoW;
 QPS_SOURCE_INFO sourceInfoW;
 
 Result scrubResult(Result r) {

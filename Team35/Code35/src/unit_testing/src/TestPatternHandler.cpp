@@ -45,7 +45,7 @@
 
 PATTERN_SOURCE_INFO patternInfo;
 QPS_SOURCE_INFO sourceInfoP;
-QPS_ENTITY_INFO entityInfoP;
+QPS_GENERAL_DATA_INFO entityInfoP;
 
 TEST_CASE("Testing Right Side WILDCARD PATTERN Relationships") {
     DB db;

@@ -31,7 +31,7 @@
 // Follows, Follows*, Parent, Parent*, Next, Next*, Affects, Affects* are similar in implementation
 // Calls, Calls* are similar in implementation
 
-QPS_ENTITY_INFO entInfoST;
+QPS_GENERAL_DATA_INFO entInfoST;
 QPS_SOURCE_INFO sourceInfoST;
 
 TEST_CASE("Testing Modifies/Uses Relationships"){

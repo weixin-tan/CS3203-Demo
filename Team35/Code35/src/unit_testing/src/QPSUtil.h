@@ -4,6 +4,8 @@
 #include <set>
 #include "ProgramElement.h"
 #include "Entity.h"
+#include "RelationshipRef.h"
+#include "Result.h"
 
 // Source for testing
 //procedure f {
@@ -100,6 +102,12 @@ struct QPS_SOURCE_INFO {
 
     std::set<std::pair<ProgramElement*, ProgramElement*>> ifVar = {{&if6, &varZ}};
     std::set<std::pair<ProgramElement*, ProgramElement*>> whileVar = {{&while4, &varX}};
+
+
+    std::set<std::pair<ProgramElement*, ProgramElement*>>
+    followsAssignAssign = {{&assign1, &assign2}, {&assign2, &assign3}, {&assign7, &assign8}, {&assign9, &assign10}};
+
+    std::set<ProgramElement*> exprXFullMatchSet = {&assign2};
 };
 
 struct PATTERN_SOURCE_INFO {
@@ -143,7 +151,7 @@ struct PATTERN_SOURCE_INFO {
     std::set<ProgramElement*> assignGivenExprVarFull = {&assign4, &assign5};
 };
 
-struct QPS_ENTITY_INFO {
+struct QPS_GENERAL_DATA_INFO {
     Entity procSyn1 = Entity(EntityType::PROCEDURE, "p1");
     Entity procSyn2 = Entity(EntityType::PROCEDURE, "p2");
 
@@ -160,13 +168,21 @@ struct QPS_ENTITY_INFO {
     Entity readSynStmtAttr = Entity(EntityType::READ, "r", EntityAttributeType::STMT);
     Entity readSynVarAttr = Entity(EntityType::READ, "r", EntityAttributeType::VARNAME);
     Entity assignSyn = Entity(EntityType::ASSIGNMENT, "a");
+    Entity assignSynStmtAttr = Entity(EntityType::ASSIGNMENT, "a", EntityAttributeType::STMT);
+    Entity assignSyn1 = Entity(EntityType::ASSIGNMENT, "a1");
+    Entity assignSyn2 = Entity(EntityType::ASSIGNMENT, "a2");
+    Entity assignSyn3 = Entity(EntityType::ASSIGNMENT, "a3");
+
     Entity callSyn = Entity(EntityType::CALL, "call");
+    Entity callSynProcAttr = Entity(EntityType::CALL, "call", EntityAttributeType::PROCNAME);
+
     Entity whileSyn = Entity(EntityType::WHILE, "w");
     Entity ifSyn = Entity(EntityType::IF, "ifs");
 
 
     Entity fixedInt1 = Entity(EntityType::FIXED_INTEGER, "1");
     Entity fixedInt2 = Entity(EntityType::FIXED_INTEGER, "2");
+    Entity fixedInt3 = Entity(EntityType::FIXED_INTEGER, "3");
     Entity fixedInt4 = Entity(EntityType::FIXED_INTEGER, "4");
     Entity fixedInt5 = Entity(EntityType::FIXED_INTEGER, "5");
     Entity fixedInt6 = Entity(EntityType::FIXED_INTEGER, "6");
@@ -185,8 +201,20 @@ struct QPS_ENTITY_INFO {
     Entity fixedStringWWX = Entity(EntityType::FIXED_STRING_WITHIN_WILDCARD, "x");
     Entity fixedStringWWBC = Entity(EntityType::FIXED_STRING_WITHIN_WILDCARD, "b + c");
 
-
+    Entity boolean = Entity(EntityType::BOOLEAN, "");
     Entity wildcard = Entity(EntityType::WILDCARD, "_");
+
+    RelationshipRef followsAA1 = RelationshipRef(RelationshipType::FOLLOWS, assignSyn, assignSyn1);
+    RelationshipRef followsA1A2 = RelationshipRef(RelationshipType::FOLLOWS, assignSyn1, assignSyn2);
+    RelationshipRef followsA2A3 = RelationshipRef(RelationshipType::FOLLOWS, assignSyn2, assignSyn3);
+
+    RelationshipRef follows12 = RelationshipRef(RelationshipType::FOLLOWS, fixedInt1, fixedInt2);
+    RelationshipRef follows23 = RelationshipRef(RelationshipType::FOLLOWS, fixedInt2, fixedInt3);
+    RelationshipRef follows13 = RelationshipRef(RelationshipType::FOLLOWS, fixedInt1, fixedInt3);
+
+    RelationshipRef patternAXWc = RelationshipRef(RelationshipType::PATTERN, fixedStringX, wildcard, assignSyn);
+    RelationshipRef patternAWcX = RelationshipRef(RelationshipType::PATTERN, wildcard, fixedStringX, assignSyn);
+    RelationshipRef patternA1WcWc = RelationshipRef(RelationshipType::PATTERN, wildcard, wildcard, assignSyn1);
 };
 
 #endif //SPA_QPSUTIL_H

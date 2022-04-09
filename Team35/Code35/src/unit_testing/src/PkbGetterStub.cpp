@@ -89,6 +89,10 @@ PkbGetterStub::getRelationshipPairs(const PkbRelationshipType &r, const ElementT
     if (r == PkbRelationshipType::AFFECTS_T && leftTypeToGet == ElementType::STATEMENT && rightTypeToGet == ElementType::STATEMENT) {
         return {{&sourceInfo.stmt1, &sourceInfo.stmt2}, {&sourceInfo.stmt2, &sourceInfo.stmt9}};
     }
+    if (r == PkbRelationshipType::FOLLOWS && leftTypeToGet == ElementType::ASSIGNMENT && rightTypeToGet == ElementType::ASSIGNMENT) {
+        return {{&sourceInfo.assign1, &sourceInfo.assign2}, {&sourceInfo.assign2, &sourceInfo.assign3},
+                {&sourceInfo.assign7, &sourceInfo.assign8}, {&sourceInfo.assign9, &sourceInfo.assign10}};
+    }
     return {};
 }
 
@@ -104,6 +108,12 @@ bool PkbGetterStub::isRelationship(const PkbRelationshipType &r, const ProgramEl
         return true;
     }
     if (r == PkbRelationshipType::NEXT && leftSide == sourceInfo.stmt11 && rightSide == sourceInfo.stmt12) {
+        return true;
+    }
+    if (r == PkbRelationshipType::FOLLOWS && leftSide == sourceInfo.stmt1 && rightSide == sourceInfo.stmt2) {
+        return true;
+    }
+    if (r == PkbRelationshipType::FOLLOWS && leftSide == sourceInfo.stmt2 && rightSide == sourceInfo.stmt3) {
         return true;
     }
     return false;
@@ -153,6 +163,9 @@ std::set<ProgramElement*> PkbGetterStub::getLeftSide(const PkbRelationshipType &
     if (r == PkbRelationshipType::NEXT && rightSide == sourceInfo.stmt2 && typeToGet == ElementType::STATEMENT) {
         return {&sourceInfo.stmt1};
     }
+    if (r == PkbRelationshipType::MODIFIES && rightSide == sourceInfo.varX && typeToGet == ElementType::ASSIGNMENT) {
+        return {&sourceInfo.assign1, &sourceInfo.assign3, &sourceInfo.assign7};
+    }
     return {};
 }
 
@@ -200,6 +213,9 @@ std::set<ProgramElement*> PkbGetterStub::getAssignmentGivenExpression(const Expr
     }
     if (ep.fullfillsMatching(expr, ExpressionProcessor::stringToExpr("a + b + c"), ExpressionIndicator::FULL_MATCH) && indicator==ExpressionIndicator::FULL_MATCH) {
         return patternInfo.assignGivenExprFull;
+    }
+    if (ep.fullfillsMatching(expr, ExpressionProcessor::stringToExpr("x"), ExpressionIndicator::FULL_MATCH) && indicator==ExpressionIndicator::FULL_MATCH) {
+        return sourceInfo.exprXFullMatchSet;
     }
     return {};
 }
