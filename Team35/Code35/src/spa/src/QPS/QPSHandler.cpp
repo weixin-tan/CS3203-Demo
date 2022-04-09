@@ -8,14 +8,16 @@ QPSHandler::QPSHandler(PkbGetter* pg) {
     QPSHandler::withHandler = new WithHandler(pg);
 }
 
-bool isFixedEntityGroup(RelationshipRef r) {
+bool isFixedEntityGroup(const RelationshipRef& r) {
     return (r.leftEntity.eType == EntityType::FIXED_INTEGER || r.leftEntity.eType == EntityType::FIXED_STRING ||
-            r.leftEntity.eType == EntityType::FIXED_STRING_WITHIN_WILDCARD || r.leftEntity.eType == EntityType::WILDCARD)
+            r.leftEntity.eType == EntityType::FIXED_STRING_WITHIN_WILDCARD ||
+            r.leftEntity.eType == EntityType::WILDCARD)
            &&
            (r.rightEntity.eType == EntityType::FIXED_INTEGER || r.rightEntity.eType == EntityType::FIXED_STRING ||
-            r.rightEntity.eType == EntityType::FIXED_STRING_WITHIN_WILDCARD || r.rightEntity.eType == EntityType::WILDCARD)
+            r.rightEntity.eType == EntityType::FIXED_STRING_WITHIN_WILDCARD ||
+            r.rightEntity.eType == EntityType::WILDCARD)
            &&
-           (r.rType != RelationshipType::PATTERN && r.rType != RelationshipType::WITH);
+           (r.rType != RelationshipType::PATTERN);
 }
 
 FormattedResult QPSHandler::processClause(const GroupedClause& groupedClause) const {

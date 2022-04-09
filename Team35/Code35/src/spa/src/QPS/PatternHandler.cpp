@@ -57,7 +57,8 @@ std::set<ProgramElement*> PatternHandler::handleLeftWildcard(const Entity& right
 }
 
 // Handles cases where there is a fixed string on the left-hand side
-std::set<ProgramElement*> PatternHandler::handleLeftFixed(const Entity& left, const Entity& right, const Entity& patternType) {
+std::set<ProgramElement*> PatternHandler::handleLeftFixed(const Entity& left,
+                                                          const Entity& right, const Entity& patternType) {
     ElementType patternElem = QpsTypeToPkbTypeConvertor::convertToPkbElement(patternType.eType);
     if (right.eType == EntityType::WILDCARD) {
         if (patternElem == ElementType::IF) {

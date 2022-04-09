@@ -238,7 +238,7 @@ TEST_CASE("Integration Testing") {
         std::string st3 = "stmt s;\nSelect s such that Next*(2, _)";
         std::string st4 = "stmt s;\nSelect s such that Follows*(_, _)";
         std::string st5 = "stmt s;\nSelect s such that Next(s, 8)";
-        std::string st6 = "stmt s;\nSelect s such that Parent*(s, 7)";
+        std::string st6 = "stmt s;\nSelect s such that Parent*(4, s)";
         std::string st7 = "stmt s1, s2;\nSelect s2 such that Parent(s1, s2)";
         std::string st8 = "stmt s;\nSelect s such that Follows(_, s)";
         std::string st9 = "stmt s;\nSelect s such that Parent(s, _)";
@@ -259,7 +259,7 @@ TEST_CASE("Integration Testing") {
 
         std::list<std::string> allStmts = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"};
         std::list<std::string> expectedResult5 = {"7"};
-        std::list<std::string> expectedResult6 = {"4", "6"};
+        std::list<std::string> expectedResult6 = {"5", "6", "7", "8", "9", "10"};
         std::list<std::string> expectedResult7 = {"5", "6", "7", "8", "9", "10"};
         std::list<std::string> expectedResult8 = {"2", "3", "4", "6", "8", "10", "11", "12"};
         std::list<std::string> expectedResult9 = {"4", "6"};
@@ -279,221 +279,298 @@ TEST_CASE("Integration Testing") {
         REQUIRE(compareStringLists(result11, expectedResult11));
 
     }
-    /*
+
     SECTION("SUCH THAT CLAUSE - Modifies/Uses/Calls(*)") {
         std::string st1 = "assign a; Select a such that Modifies(1, \"x\")";
-        std::string st2 = "assign a; Select a such that Uses(1, _)";
-        std::string st3 = "assign a; Select a such that Modifies(a, \"x\")";
-        std::string st4 = "while w; Select w such that Modifies(1, \"x\")";
-        std::string st5 = "read r; Select r such that Modifies(r, \"z\")";
-        std::string st6 = "print p; Select p such that Uses(p, \"z\")";
-        std::string st7 = "while w; Select w such that Uses(w, \"x\")";
-        std::string st8 = "if ifs; Select ifs such that Modifies(ifs, \"x\")";
-        std::string st9 = "stmt s; variable v; Select v such that Uses(s, v)";
-        std::string st10 = "constant c; variable v; Select c such that Uses(2, v)";
-        std::string st11 = "assign a; constant c; Select c such that Modifies(a, \"w\")";
-        std::string st12 = "assign a; Select a such that Modifies(a, _)";
-        std::string st13 = "stmt s; Select s such that Modifies(s, \"z\")";
+        std::string st2 = "assign a; Select a such that Uses(_, \"x\")";
+        std::string st3 = "assign a; Select a such that Modifies(3, _)";
+        std::string st4 = "assign a; Select a such that Uses(_, _)";
+        std::string st5 = "assign a; Select a such that Uses(a, \"x\")";
+        std::string st6 = "variable v; Select v such that Modifies(9, v)";
+        std::string st7 = "print p; variable v; Select p such that Uses(p, v)";
+        std::string st8 = "read r; Select r such that Modifies(r, \"z\")";
+        std::string st9 = "variable v; Select v such that Uses(6, v)";
+        std::string st10 = "variable v; while w; Select w such that Uses(w, v)";
+        std::string st11 = "variable v; Select v such that Modifies(\"f\", v)";
+        std::string st12 = "procedure p; Select p such that Uses(p, \"x\")";
+        std::string st13 = "variable v; procedure p; Select <p, v> such that Uses(p, v)";
+        std::string st14 = "procedure p; Select p such that Calls(p, \"g\")";
+        std::string st15 = "procedure p; Select p such that Calls*(\"f\", p)";
+        std::string st16 = "procedure p1, p2; Select <p1, p2> such that Calls*(p1, p2)";
 
-        std::vector<ProgramElement> expectedResult3;
-        expectedResult3.push_back(a1);
-        expectedResult3.push_back(a3);
-        expectedResult3.push_back(a7);
-        std::vector<ProgramElement> expectedResult8;
-        expectedResult8.push_back(ProgramElement::createStatement(ElementType::IF, 6));
-        std::vector<ProgramElement> expectedResult9;
-        expectedResult9.push_back(vx);
-        expectedResult9.push_back(vz);
-        std::vector<ProgramElement> expectedResult13;
-        expectedResult13.push_back(s4);
-        expectedResult13.push_back(s5);
-        expectedResult13.push_back(s6);
-        expectedResult13.push_back(s8);
-        expectedResult13.push_back(s10);
+        std::list<std::string> assigns = {"1", "2", "3", "7", "8", "9", "10"};
+        std::list<std::string> empty = {};
+        std::list<std::string> expectedResult5 = {"2"};
+        std::list<std::string> expectedResult6 = {"y"};
+        std::list<std::string> expectedResult7 = {"11", "13"};
+        std::list<std::string> expectedResult8 = {"5"};
+        std::list<std::string> expectedResult9 = {"z"};
+        std::list<std::string> expectedResult10 = {"4"};
+        std::list<std::string> expectedResult11 = {"x", "y", "z"};
+        std::list<std::string> expectedResult12 = {"f", "g"};
+        std::list<std::string> expectedResult13 = {"f x", "f z", "g x"};
+        std::list<std::string> expectedResult14 = {"f"};
+        std::list<std::string> expectedResult15 = {"g"};
+        std::list<std::string> expectedResult16 = {"f g"};
 
-        std::vector<ProgramElement> empty = {};
-        std::vector<ProgramElement> result1 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st1)))));
-        std::vector<ProgramElement> result2 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st2)))));
-        std::vector<ProgramElement> result3 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st3)))));
-        std::vector<ProgramElement> result4 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st4)))));
-        std::vector<ProgramElement> result5 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st5)))));
-        std::vector<ProgramElement> result6 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st6)))));
-        std::vector<ProgramElement> result7 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st7)))));
-        std::vector<ProgramElement> result8 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st8)))));
-        std::vector<ProgramElement> result9 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st9)))));
-        std::vector<ProgramElement> result10 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st10)))));
-        std::vector<ProgramElement> result11 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st11)))));
-        std::vector<ProgramElement> result12 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st12)))));
-        std::vector<ProgramElement> result13 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st13)))));
+        std::list<std::string> result1 = qpsMainLogic.parse(st1);
+        std::list<std::string> result2 = qpsMainLogic.parse(st2);
+        std::list<std::string> result3 = qpsMainLogic.parse(st3);
+        std::list<std::string> result4 = qpsMainLogic.parse(st4);
+        std::list<std::string> result5 = qpsMainLogic.parse(st5);
+        std::list<std::string> result6 = qpsMainLogic.parse(st6);
+        std::list<std::string> result7 = qpsMainLogic.parse(st7);
+        std::list<std::string> result8 = qpsMainLogic.parse(st8);
+        std::list<std::string> result9 = qpsMainLogic.parse(st9);
+        std::list<std::string> result10 = qpsMainLogic.parse(st10);
+        std::list<std::string> result11 = qpsMainLogic.parse(st11);
+        std::list<std::string> result12 = qpsMainLogic.parse(st12);
+        std::list<std::string> result13 = qpsMainLogic.parse(st13);
+        std::list<std::string> result14 = qpsMainLogic.parse(st14);
+        std::list<std::string> result15 = qpsMainLogic.parse(st15);
+        std::list<std::string> result16 = qpsMainLogic.parse(st16);
 
-        REQUIRE(compareProgramElementLists(result1, assignments));
-        REQUIRE(compareProgramElementLists(result2, assignments));
-        REQUIRE(compareProgramElementLists(result3, expectedResult3));
-        REQUIRE(compareProgramElementLists(result4, whiles));
-        REQUIRE(compareProgramElementLists(result5, reads));
-        REQUIRE(compareProgramElementLists(result6, empty));
-        REQUIRE(compareProgramElementLists(result7, whiles));
-        REQUIRE(compareProgramElementLists(result8, expectedResult8));
-        REQUIRE(compareProgramElementLists(result9, expectedResult9));
-        REQUIRE(compareProgramElementLists(result10, constants));
-        REQUIRE(compareProgramElementLists(result11, empty));
-        REQUIRE(compareProgramElementLists(result12, assignments));
-        REQUIRE(compareProgramElementLists(result13, expectedResult13));
-
+        REQUIRE(compareStringLists(result1, assigns));
+        REQUIRE(compareStringLists(result2, empty));
+        REQUIRE(compareStringLists(result3, assigns));
+        REQUIRE(compareStringLists(result4, empty));
+        REQUIRE(compareStringLists(result5, expectedResult5));
+        REQUIRE(compareStringLists(result6, expectedResult6));
+        REQUIRE(compareStringLists(result7, expectedResult7));
+        REQUIRE(compareStringLists(result8, expectedResult8));
+        REQUIRE(compareStringLists(result9, expectedResult9));
+        REQUIRE(compareStringLists(result10, expectedResult10));
+        REQUIRE(compareStringLists(result11, expectedResult11));
+        REQUIRE(compareStringLists(result12, expectedResult12));
+        REQUIRE(compareStringLists(result13, expectedResult13));
+        REQUIRE(compareStringLists(result14, expectedResult14));
+        REQUIRE(compareStringLists(result15, expectedResult15));
+        REQUIRE(compareStringLists(result16, expectedResult16));
     }
-    /*
+    
     SECTION("PATTERN CLAUSE") {
         std::string p1 = "assign a; Select a pattern a(_, _\"5\"_)";
-        std::string p2 = "assign a; Select a pattern a(\"x\", _)";
-        std::string p3 = "assign a; Select a pattern a(\"y\", _\"x\"_)";
-        std::string p4 = "assign a; Select a pattern a(_, _)";
-        std::string p5 = "assign a; assign a1; Select a1 pattern a(_, _)";
-        std::string p6 = "assign a; assign a1; Select a1 pattern a(_, _\"5\"_)";
-        std::string p7 = "assign a; assign a1; Select a1 pattern a(\"b\", _)";
-        std::string p8 = "assign a; assign a1; Select a1 pattern a(_, _\"b\"_)";
-        std::string p9 = "assign a; Select a pattern a(\"b\", _)";
-        std::string p10 = "assign a; while w; Select w pattern a(_, _\"5\"_)";
-        std::string p11 = "assign a; variable v; Select v pattern a (v, _)";
-        std::string p12 = "assign a; variable v; Select a pattern a (v, _)";
+        std::string p2 = "assign a; Select a pattern a(_, \"5\")";
+        std::string p3 = "assign a; Select a pattern a(\"x\", _)";
+        std::string p4 = R"(assign a; Select a pattern a("x", "5"))";
+        std::string p5 = R"(assign a; Select a pattern a("z", _"0"_))";
+        std::string p6 = "assign a; Select a pattern a (_, _)";
+        std::string p7 = "variable v; assign a; Select a pattern a (v, _\"100\"_)";
+        std::string p8 = "variable v; assign a; Select v pattern a (v, \"5\")";
+        std::string p9 = "print p; assign a; variable v; Select p pattern a (v, \"x\")";
+        std::string p10 = "variable v; assign a; Select v pattern a (v, _)";
+        std::string p11 = "while w; Select BOOLEAN pattern w(_, _, _)";
+        std::string p12 = "if ifs; Select BOOLEAN pattern ifs(_. _)";
+        std::string p13 = "while w; Select w pattern w(_, _)";
+        std::string p14 = "while w; Select w pattern w(\"x\", _)";
+        std::string p15 = "variable v; while w; Select v pattern w(v, _)";
+        std::string p16 = "if ifs; Select ifs pattern ifs(_, _, _)";
+        std::string p17 = "if ifs; Select ifs pattern ifs(\"z\", _, _)";
+        std::string p18 = "if ifs; variable v; Select v pattern ifs(v, _, _)";
 
-        std::vector<ProgramElement> empty = {};
-        std::vector<ProgramElement> expectedResult1;
-        expectedResult1.push_back(a1);
-        expectedResult1.push_back(a3);
-        expectedResult1.push_back(a8);
-        std::vector<ProgramElement> expectedResult2;
-        expectedResult2.push_back(a1);
-        expectedResult2.push_back(a3);
-        expectedResult2.push_back(a7);
-        std::vector<ProgramElement> expectedResult3;
-        expectedResult3.push_back(a2);
+        std::list<std::string> expectedResult1 = {"1", "3", "8"};
+        std::list<std::string> expectedResult2 = {"1", "3", "8"};
+        std::list<std::string> expectedResult3 = {"1", "3", "7"};
+        std::list<std::string> expectedResult4 = {"1", "3"};
+        std::list<std::string> expectedResult5 = {"10"};
+        std::list<std::string> expectedResult6 = {"1", "2", "3", "7", "8", "9", "10"};
+        std::list<std::string> expectedResult7 = {"7", "9"};
+        std::list<std::string> expectedResult8 = {"x", "z"};
+        std::list<std::string> expectedResult9 = {"11", "13"};
+        std::list<std::string> expectedResult10 = {"x", "y", "z"};
+        std::list<std::string> expectedResult11 = {};
+        std::list<std::string> expectedResult12 = {};
+        std::list<std::string> expectedResult13 = {"4"};
+        std::list<std::string> expectedResult14 = {"4"};
+        std::list<std::string> expectedResult15 = {"x"};
+        std::list<std::string> expectedResult16 = {"6"};
+        std::list<std::string> expectedResult17 = {"6"};
+        std::list<std::string> expectedResult18 = {"z"};
 
-        std::vector<ProgramElement> result1 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                p1)))));
-        std::vector<ProgramElement> result2 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                p2)))));
-        std::vector<ProgramElement> result3 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                p3)))));
-        std::vector<ProgramElement> result4 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                p4)))));
-        std::vector<ProgramElement> result5 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                p5)))));
-        std::vector<ProgramElement> result6 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                p6)))));
-        std::vector<ProgramElement> result7 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                p7)))));
-        std::vector<ProgramElement> result8 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                p8)))));
-        std::vector<ProgramElement> result9 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                p9)))));
-        std::vector<ProgramElement> result10 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                p10)))));
-        std::vector<ProgramElement> result11 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                p11)))));
-        std::vector<ProgramElement> result12 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                p12)))));
+        std::list<std::string> result1 = qpsMainLogic.parse(p1);
+        std::list<std::string> result2 = qpsMainLogic.parse(p2);
+        std::list<std::string> result3 = qpsMainLogic.parse(p3);
+        std::list<std::string> result4 = qpsMainLogic.parse(p4);
+        std::list<std::string> result5 = qpsMainLogic.parse(p5);
+        std::list<std::string> result6 = qpsMainLogic.parse(p6);
+        std::list<std::string> result7 = qpsMainLogic.parse(p7);
+        std::list<std::string> result8 = qpsMainLogic.parse(p8);
+        std::list<std::string> result9 = qpsMainLogic.parse(p9);
+        std::list<std::string> result10 = qpsMainLogic.parse(p10);
+        std::list<std::string> result11 = qpsMainLogic.parse(p11);
+        std::list<std::string> result12 = qpsMainLogic.parse(p12);
+        std::list<std::string> result13 = qpsMainLogic.parse(p13);
+        std::list<std::string> result14 = qpsMainLogic.parse(p14);
+        std::list<std::string> result15 = qpsMainLogic.parse(p15);
+        std::list<std::string> result16 = qpsMainLogic.parse(p16);
+        std::list<std::string> result17 = qpsMainLogic.parse(p17);
+        std::list<std::string> result18 = qpsMainLogic.parse(p18);
 
-        REQUIRE(compareProgramElementLists(result1, expectedResult1));
-        REQUIRE(compareProgramElementLists(result2, expectedResult2));
-        REQUIRE(compareProgramElementLists(result3, expectedResult3));
-        REQUIRE(compareProgramElementLists(result4, assignments));
-        REQUIRE(compareProgramElementLists(result5, assignments));
-        REQUIRE(compareProgramElementLists(result6, assignments));
-        REQUIRE(compareProgramElementLists(result7, empty));
-        REQUIRE(compareProgramElementLists(result8, empty));
-        REQUIRE(compareProgramElementLists(result9, empty));
-        REQUIRE(compareProgramElementLists(result10, whiles));
-        REQUIRE(compareProgramElementLists(result11, variables));
-        REQUIRE(compareProgramElementLists(result12, assignments));
+        REQUIRE(compareStringLists(result1, expectedResult1));
+        REQUIRE(compareStringLists(result2, expectedResult2));
+        REQUIRE(compareStringLists(result3, expectedResult3));
+        REQUIRE(compareStringLists(result4, expectedResult4));
+        REQUIRE(compareStringLists(result5, expectedResult5));
+        REQUIRE(compareStringLists(result6, expectedResult6));
+        REQUIRE(compareStringLists(result7, expectedResult7));
+        REQUIRE(compareStringLists(result8, expectedResult8));
+        REQUIRE(compareStringLists(result9, expectedResult9));
+        REQUIRE(compareStringLists(result10, expectedResult10));
+        REQUIRE(compareStringLists(result11, expectedResult11));
+        REQUIRE(compareStringLists(result12, expectedResult12));
+        REQUIRE(compareStringLists(result13, expectedResult13));
+        REQUIRE(compareStringLists(result14, expectedResult14));
+        REQUIRE(compareStringLists(result15, expectedResult15));
+        REQUIRE(compareStringLists(result16, expectedResult16));
+        REQUIRE(compareStringLists(result17, expectedResult17));
+        REQUIRE(compareStringLists(result18, expectedResult18));
+    }
+
+    SECTION("WITH CLAUSES") {
+        std::string w1 = "read r; Select r with 1 = 1";
+        std::string w2 = R"(read r; Select r with "a" = "a" )";
+        std::string w3 = "read r; Select r with r.varName = \"z\"";
+        std::string w4 = "assign a; Select a with a.stmt# = 3";
+        std::string w5 = "constant c; Select c with c.value = 100";
+        std::string w6 = "procedure p; Select p with p.procName = \"f\"";
+        std::string w7 = "call c; procedure p; Select c with c.procName = p.procName";
+        std::string w8 = "stmt s; constant c; Select s with s.stmt# = c.value";
+        std::string w9 = "Select BOOLEAN with 12 = 12";
+        std::string w10 = "assign a; Select a with 3 = a.stmt#";
+        std::string w11 = "constant c; Select c with 100 = c.value";
+        std::string w12 = "stmt s; Select s with 1 == 1";
+        std::string w13 = "stmt s; Select s with s = s";
+        std::string w14 = "stmt s; Select BOOLEAN with s = 2";
+
+        std::list<std::string> expectedResult1 = {"5"};
+        std::list<std::string> expectedResult2 = {"5"};
+        std::list<std::string> expectedResult3 = {"5"};
+        std::list<std::string> expectedResult4 = {"3"};
+        std::list<std::string> expectedResult5 = {"100"};
+        std::list<std::string> expectedResult6 = {"f"};
+        std::list<std::string> expectedResult7 = {"12"};
+        std::list<std::string> expectedResult8 = {"4", "5", "10"};
+        std::list<std::string> expectedResult9 = {"TRUE"};
+        std::list<std::string> expectedResult10 = {"3"};
+        std::list<std::string> expectedResult11 = {"100"};
+        std::list<std::string> expectedResult12 = {};
+        std::list<std::string> expectedResult13 = {};
+        std::list<std::string> expectedResult14 = {};
+
+        std::list<std::string> result1 = qpsMainLogic.parse(w1);
+        std::list<std::string> result2 = qpsMainLogic.parse(w2);
+        std::list<std::string> result3 = qpsMainLogic.parse(w3);
+        std::list<std::string> result4 = qpsMainLogic.parse(w4);
+        std::list<std::string> result5 = qpsMainLogic.parse(w5);
+        std::list<std::string> result6 = qpsMainLogic.parse(w6);
+        std::list<std::string> result7 = qpsMainLogic.parse(w7);
+        std::list<std::string> result8 = qpsMainLogic.parse(w8);
+        std::list<std::string> result9 = qpsMainLogic.parse(w9);
+        std::list<std::string> result10 = qpsMainLogic.parse(w10);
+        std::list<std::string> result11 = qpsMainLogic.parse(w11);
+        std::list<std::string> result12 = qpsMainLogic.parse(w12);
+        std::list<std::string> result13 = qpsMainLogic.parse(w13);
+        std::list<std::string> result14 = qpsMainLogic.parse(w14);
+
+        REQUIRE(compareStringLists(result1, expectedResult1));
+        REQUIRE(compareStringLists(result2, expectedResult2));
+        REQUIRE(compareStringLists(result3, expectedResult3));
+        REQUIRE(compareStringLists(result4, expectedResult4));
+        REQUIRE(compareStringLists(result5, expectedResult5));
+        REQUIRE(compareStringLists(result6, expectedResult6));
+        REQUIRE(compareStringLists(result7, expectedResult7));
+        REQUIRE(compareStringLists(result8, expectedResult8));
+        REQUIRE(compareStringLists(result9, expectedResult9));
+        REQUIRE(compareStringLists(result10, expectedResult10));
+        REQUIRE(compareStringLists(result11, expectedResult11));
+        //REQUIRE(compareStringLists(result12, expectedResult12));
+        REQUIRE(compareStringLists(result13, expectedResult13));
+        REQUIRE(compareStringLists(result14, expectedResult14));
     }
 
     SECTION("COMBINATION CLAUSES") {
-
-        std::string com1 =
-                "if ifs; stmt s; assign a; assign a1; Select a1 such that Parent (ifs, a1) pattern a1 (_, _\"100\"_)";
-        std::string com2 = "assign a; assign a1; Select a1 such that Follows (a, a1) pattern a (_, _\"100\"_)";
+        std::string com1 = "if ifs; stmt s; assign a; assign a1; Select a1 such that Parent (ifs, a1) pattern a1 (_, _\"100\"_)";
+        std::string com2 = "assign a; assign a1; Select a1 such that Follows (a, a1) pattern a (_, \"100\")";
         std::string com3 = "assign a; assign a1; Select a1 such that Follows (a1, a) pattern a (_, _\"5\"_)";
-        std::string com4 =
-                "if ifs; stmt s; assign a; assign a1; Select a such that Follows (a1, s) pattern a1 (_, _\"100\"_)";
-        std::string com5 =
-                "constant c; variable v; assign a; assign a1; Select c such that Modifies (a, v) pattern a1 (_, _\"15\"_)";
+        std::string com4 = "if ifs; stmt s; assign a; assign a1; Select a such that Follows (a1, s) pattern a1 (_, _\"100\"_)";
+        std::string com5 = "constant c; variable v; assign a; assign a1; Select c such that Modifies (a, v) pattern a1 (_, \"15\")";
         std::string com6 = "assign a, a1; variable v; Select a such that Uses (a1, v) pattern a (v, _)";
         std::string com7 = "assign a, a1; variable v, v1; Select v such that Uses (a, v) pattern a1 (v, _)";
         std::string com8 = "assign a, a1; variable v, v1; Select v1 such that Modifies (a, v) pattern a1 (v1, _)";
-        std::string com9 = "assign a; variable v; Select a such that Modifies (a, \"y\") pattern a (v, _\"100\"_)";
-        std::string com10 = "print p; assign a; variable v; Select a such that Uses (p, \"x\") pattern a (v, _\"x\"_)";
+        std::string com9 = R"(assign a; variable v; Select a such that Modifies (a, "y") pattern a (v, _"100"_))";
+        std::string com10 = R"(print p; assign a; variable v; Select a such that Uses (p, "x") pattern a (v, _"x"_))";
+        std::string com11 = "print p; stmt s; variable v; Select p.stmt# such that Uses(p, v) and Follows(p, s) with s.stmt# = 12";
+        std::string com12 = "assign a, a1; stmt s; Select <a, a1> such that Follows(a, a1) with a.stmt# = s.stmt# pattern a(_, \"5\")";
+        std::string com13 = "while w; stmt s; Select w such that Parent*(w, s) with s.stmt# = 5";
+        std::string com14 = "assign s; while w; Select BOOLEAN such that Parent(w, s) with s.stmt# = 5 and s.stmt# = 6";
+        std::string com15 = "stmt s; while w; Select BOOLEAN such that Parent(w, s) with s.stmt# = 5";
+        std::string com16 = R"(call c; procedure p1, p2; Select <p1, p2> such that Calls(p1, p2) with p1.procName = "f" and c.procName = "g")";
+        std::string com17 = R"(call c; procedure p1, p2; Select <p1, p2> such that Calls(p1, p2) with p1.procName = "f" and c.procName = "f")";
+        std::string com18 = R"(assign a, a1; Select <a.stmt#, a> pattern a ("y", _) such that Affects(a1, a) pattern a(_, "x"))";
+        std::string com19 = "constant c; stmt s; Select <c, s, c.value, s.stmt#> with c.value = s.stmt# and s.stmt# = c.value such that Parent(4, s)";
+        std::string com20 = "print p; stmt s; constant c; Select BOOLEAN such that Parent(s, p) pattern c(_, _)";
 
-        std::vector<ProgramElement> empty = {};
-        std::vector<ProgramElement> expectedResult1;
-        expectedResult1.push_back(a7);
-        expectedResult1.push_back(a9);
-        std::vector<ProgramElement> expectedResult2;
-        expectedResult2.push_back(a8);
-        expectedResult2.push_back(a10);
-        std::vector<ProgramElement> expectedResult3;
-        expectedResult3.push_back(a2);
-        expectedResult3.push_back(a7);
-        std::vector<ProgramElement> expectedResult6;
-        expectedResult6.push_back(a1);
-        expectedResult6.push_back(a3);
-        expectedResult6.push_back(a7);
-        std::vector<ProgramElement> expectedResult7;
-        expectedResult7.push_back(vx);
-        std::vector<ProgramElement> expectedResult9;
-        expectedResult9.push_back(a9);
-        std::vector<ProgramElement> expectedResult10;
-        expectedResult10.push_back(a2);
+        std::list<std::string> expectedResult1 = {"7", "9"};
+        std::list<std::string> expectedResult2 = {"8", "10"};
+        std::list<std::string> expectedResult3 = {"2", "7"};
+        std::list<std::string> expectedResult4 = {"1", "2", "3", "7", "8", "9", "10"};
+        std::list<std::string> expectedResult5 = {};
+        std::list<std::string> expectedResult6 = {"1", "3", "7"};
+        std::list<std::string> expectedResult7 = {"x"};
+        std::list<std::string> expectedResult8 = {"x", "y", "z"};
+        std::list<std::string> expectedResult9 = {"9"};
+        std::list<std::string> expectedResult10 = {"2"};
+        std::list<std::string> expectedResult11 = {"11"};
+        std::list<std::string> expectedResult12 = {"1 2"};
+        std::list<std::string> expectedResult13 = {"4"};
+        std::list<std::string> expectedResult14 = {"FALSE"};
+        std::list<std::string> expectedResult15 = {"TRUE"};
+        std::list<std::string> expectedResult16 = {"f g"};
+        std::list<std::string> expectedResult17 = {};
+        std::list<std::string> expectedResult18 = {"2 2"};
+        std::list<std::string> expectedResult19 = {"5 5 5 5"};
+        std::list<std::string> expectedResult20 = {};
 
-        std::vector<ProgramElement> result1 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                com1)))));
-        std::vector<ProgramElement> result2 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                com2)))));
-        std::vector<ProgramElement> result3 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                com3)))));
-        std::vector<ProgramElement> result4 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                com4)))));
-        std::vector<ProgramElement> result5 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                com5)))));
-        std::vector<ProgramElement> result6 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                com6)))));
-        std::vector<ProgramElement> result7 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                com7)))));
-        std::vector<ProgramElement> result8 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                com8)))));
-        std::vector<ProgramElement> result9 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                com9)))));
-        std::vector<ProgramElement> result10 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                com10)))));
+        std::list<std::string> result1 = qpsMainLogic.parse(com1);
+        std::list<std::string> result2 = qpsMainLogic.parse(com2);
+        std::list<std::string> result3 = qpsMainLogic.parse(com3);
+        std::list<std::string> result4 = qpsMainLogic.parse(com4);
+        std::list<std::string> result5 = qpsMainLogic.parse(com5);
+        std::list<std::string> result6 = qpsMainLogic.parse(com6);
+        std::list<std::string> result7 = qpsMainLogic.parse(com7);
+        std::list<std::string> result8 = qpsMainLogic.parse(com8);
+        std::list<std::string> result9 = qpsMainLogic.parse(com9);
+        std::list<std::string> result10 = qpsMainLogic.parse(com10);
+        std::list<std::string> result11 = qpsMainLogic.parse(com11);
+        std::list<std::string> result12 = qpsMainLogic.parse(com12);
+        std::list<std::string> result13 = qpsMainLogic.parse(com13);
+        std::list<std::string> result14 = qpsMainLogic.parse(com14);
+        std::list<std::string> result15 = qpsMainLogic.parse(com15);
+        std::list<std::string> result16 = qpsMainLogic.parse(com16);
+        std::list<std::string> result17 = qpsMainLogic.parse(com17);
+        std::list<std::string> result18 = qpsMainLogic.parse(com18);
+        std::list<std::string> result19 = qpsMainLogic.parse(com19);
+        std::list<std::string> result20 = qpsMainLogic.parse(com20);
 
-        REQUIRE(compareProgramElementLists(result1, expectedResult1));
-        REQUIRE(compareProgramElementLists(result2, expectedResult2));
-        REQUIRE(compareProgramElementLists(result3, expectedResult3));
-        REQUIRE(compareProgramElementLists(result4, assignments));
-        REQUIRE(compareProgramElementLists(result5, empty));
-        REQUIRE(compareProgramElementLists(result6, expectedResult6));
-        REQUIRE(compareProgramElementLists(result7, expectedResult7));
-        REQUIRE(compareProgramElementLists(result8, variables));
-        REQUIRE(compareProgramElementLists(result9, expectedResult9));
-        REQUIRE(compareProgramElementLists(result10, expectedResult10));
+        REQUIRE(compareStringLists(result1, expectedResult1));
+        REQUIRE(compareStringLists(result2, expectedResult2));
+        REQUIRE(compareStringLists(result3, expectedResult3));
+        REQUIRE(compareStringLists(result4, expectedResult4));
+        REQUIRE(compareStringLists(result5, expectedResult5));
+        REQUIRE(compareStringLists(result6, expectedResult6));
+        REQUIRE(compareStringLists(result7, expectedResult7));
+        REQUIRE(compareStringLists(result8, expectedResult8));
+        REQUIRE(compareStringLists(result9, expectedResult9));
+        REQUIRE(compareStringLists(result10, expectedResult10));
+        REQUIRE(compareStringLists(result11, expectedResult11));
+        REQUIRE(compareStringLists(result12, expectedResult12));
+        REQUIRE(compareStringLists(result13, expectedResult13));
+        REQUIRE(compareStringLists(result14, expectedResult14));
+        REQUIRE(compareStringLists(result15, expectedResult15));
+        REQUIRE(compareStringLists(result16, expectedResult16));
+        REQUIRE(compareStringLists(result17, expectedResult17));
+        REQUIRE(compareStringLists(result18, expectedResult18));
+        REQUIRE(compareStringLists(result19, expectedResult19));
+        //REQUIRE(compareStringLists(result20, expectedResult20));
     }
-    
-    auto stop = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-    cout << "Time taken by function: "
-        << duration.count() << " microseconds" << endl;
-}
-*/
 }

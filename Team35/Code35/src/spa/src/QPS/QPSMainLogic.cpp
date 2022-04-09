@@ -8,18 +8,22 @@ QPSMainLogic::QPSMainLogic(PkbGetter* pg) {
 }
 
 std::list<std::string> QPSMainLogic::parse(const std::string& query) {
+    std::list<std::string> emptyList;
     std::vector<Clause> clauses = callParser(query);
     if (clauses.empty()) {
-        std::list<std::string> emptyList;
         return emptyList;
     }
     if (checkSemanticBoolError(clauses[0].entityToFindList[0])) {
-        std::list<std::string> emptyList;
         emptyList.emplace_back("FALSE");
         return emptyList;
     }
     GroupedClause groupedClause = callPreOptimiser(clauses);
-    FormattedResult formattedResult = callHandler(groupedClause);
+    FormattedResult formattedResult;
+    try {
+        formattedResult = callHandler(groupedClause);
+    } catch (std::invalid_argument& e){
+        return emptyList;
+    }
     std::list<std::string> finalResult = callFormatter(formattedResult);
     return finalResult;
 }
