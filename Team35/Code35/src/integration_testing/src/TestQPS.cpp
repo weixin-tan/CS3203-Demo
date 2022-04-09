@@ -3,16 +3,9 @@
 #include "QPS/QueryProcessor.h"
 #include "QPS/QPSMainLogic.h"
 
-#include <chrono>
 
 PKB pkb = PKB();
-QPSMainLogic qr = QPSMainLogic(pkb.getGetter());
-QueryProcessor qp = QueryProcessor();
-QPSHandler qh = QPSHandler(pkb.getGetter());
-PreOptimiser preOp = PreOptimiser();
-
-/*
-
+QPSMainLogic qpsMainLogic = QPSMainLogic(pkb.getGetter());
 
 //SETUP: 
 //procedure f {
@@ -30,380 +23,265 @@ PreOptimiser preOp = PreOptimiser();
 //    }
 //  }
 //  print x; // 11
-//  call g;
+//  call g; // 12
 //}
 //procedure g {
+//  print x;
 //}
 
-bool compareProgramElementLists(std::vector<ProgramElement> lista, std::vector<ProgramElement> listb) {
-    bool toReturn = true;
-    if (lista.empty() && listb.empty()){
-        return true;
-    }else if (listb.empty() && !lista.empty()){
-        return false;
-    }else if (lista.empty() && !listb.empty()){
-        return false;
+bool compareStringLists(std::list<std::string> listA, std::list<std::string> listB) {
+    std::set<std::string> firstSet;
+    std::set<std::string> secondSet;
+
+    for (const auto& s : listA) {
+        firstSet.insert(s);
     }
-    for (ProgramElement a : lista) {
-        bool temp = false;
-        for (ProgramElement b : listb) {
-            temp = temp || b == a;
-        }
-        toReturn = toReturn && temp;
+    for (const auto& s : listB) {
+        secondSet.insert(s);
     }
-    return toReturn;
+
+    return firstSet == secondSet;
 }
 
+ExpressionProcessor ep;
+std::vector<ParsedStatement> stmtList1 = {
 
-TEST_CASE("test comparision functions"){
-    ProgramElement a = ProgramElement::createStatement(ElementType::STATEMENT, 1);
-    ProgramElement b = ProgramElement::createStatement(ElementType::STATEMENT, 2);
-    ProgramElement c = ProgramElement::createStatement(ElementType::STATEMENT, 1);
-    ProgramElement d = ProgramElement::createStatement(ElementType::STATEMENT, 3);
-    SECTION("testing compareProgramElementLists function"){
-        std::vector<ProgramElement> x1;
-        x1.push_back(a);
-        std::vector<ProgramElement> y1;
-        y1.push_back(b);
-        std::vector<ProgramElement> x2;
-        x2.push_back(a);
-        std::vector<ProgramElement> y2;
-        y2.push_back(c);
-        std::vector<ProgramElement> x3;
-        x3.push_back(a);
-        x3.push_back(b);
-        std::vector<ProgramElement> y3;
-        y3.push_back(b);
-        y3.push_back(c);
-        std::vector<ProgramElement> x4;
-        x4.push_back(a);
-        x4.push_back(c);
-        std::vector<ProgramElement> y4;
-        y4.push_back(b);
-        y4.push_back(d);
-        std::vector<ProgramElement> x5;
-        x5.push_back(a);
-        x5.push_back(b);
-        std::vector<ProgramElement> y5;
-        y5.push_back(c);
-        y5.push_back(d);
-        REQUIRE(!compareProgramElementLists(x1,y1));
-        REQUIRE(compareProgramElementLists(x2,y2));
-        REQUIRE(compareProgramElementLists(x3,y3));
-        REQUIRE(!compareProgramElementLists(x4,y4));
-        REQUIRE(!compareProgramElementLists(x5,y5));
-    }
-}
-//#to-do viv check if this is right bc i have no idea lmao
-std::vector<ParsedStatement> pStatements = {
-        ParsedStatement(1,
-                        ParsedStatement::DEFAULT_NULL_STMT_NO,
-                        ParsedStatement::DEFAULT_NULL_STMT_NO,
-                        StatementType::ASSIGNMENT_STMT,
-                        ParsedStatement::defaultPattern,
-                        "f",
-                        {},
-                        {"x"},
-                        {"5"},
-                        ParsedStatement::DEFAULT_PROCEDURE_NAME,
-                        ParsedStatement::DEFAULT_NULL_STMT_NO),
-        ParsedStatement(2,
-                        ParsedStatement::DEFAULT_NULL_STMT_NO,
-                        ParsedStatement::DEFAULT_NULL_STMT_NO,
-                        StatementType::ASSIGNMENT_STMT,
-                        ParsedStatement::defaultPattern,
-                        "f",
-                        {"x"},
-                        {"y"},
-                        {},
-                        ParsedStatement::DEFAULT_PROCEDURE_NAME,
-                        1),
-        ParsedStatement(3,
-                        ParsedStatement::DEFAULT_NULL_STMT_NO,
-                        ParsedStatement::DEFAULT_NULL_STMT_NO,
-                        StatementType::ASSIGNMENT_STMT,
-                        ParsedStatement::defaultPattern,
-                        "f",
-                        {},
-                        {"x"},
-                        {"5"},
-                        ParsedStatement::DEFAULT_PROCEDURE_NAME,
-                        2),
-        ParsedStatement(4,
-                        ParsedStatement::DEFAULT_NULL_STMT_NO,
-                        ParsedStatement::DEFAULT_NULL_STMT_NO,
-                        StatementType::WHILE_STMT,
-                        ParsedStatement::defaultPattern,
-                        "f",
-                        {"x"},
-                        {},
-                        {"4"},
-                        ParsedStatement::DEFAULT_PROCEDURE_NAME,
-                        3),
-        ParsedStatement(5,
-                        ParsedStatement::DEFAULT_NULL_STMT_NO,
-                        4,
-                        StatementType::READ_STMT,
-                        ParsedStatement::defaultPattern,
-                        "f",
-                        {},
-                        {"z"},
-                        {},
-                        ParsedStatement::DEFAULT_PROCEDURE_NAME,
-                        ParsedStatement::DEFAULT_NULL_STMT_NO),
-        ParsedStatement(6,
-                        ParsedStatement::DEFAULT_NULL_STMT_NO,
-                        4,
-                        StatementType::IF_STMT,
-                        ParsedStatement::defaultPattern,
-                        "f",
-                        {"z"},
-                        {},
-                        {"10"},
-                        ParsedStatement::DEFAULT_PROCEDURE_NAME,
-                        5),
-        ParsedStatement(7,
-                        6,
-                        ParsedStatement::DEFAULT_NULL_STMT_NO,
-                        StatementType::ASSIGNMENT_STMT,
-                        ParsedStatement::defaultPattern,
-                        "f",
-                        {},
-                        {"x"},
-                        {"100"},
-                        ParsedStatement::DEFAULT_PROCEDURE_NAME,
-                        ParsedStatement::DEFAULT_NULL_STMT_NO),
-        ParsedStatement(8,
-                        6,
-                        ParsedStatement::DEFAULT_NULL_STMT_NO,
-                        StatementType::ASSIGNMENT_STMT,
-                        ParsedStatement::defaultPattern,
-                        "f",
-                        {},
-                        {"z"},
-                        {"5"},
-                        ParsedStatement::DEFAULT_PROCEDURE_NAME,
-                        7),
-        ParsedStatement(9,
-                        6,
-                        ParsedStatement::DEFAULT_NULL_STMT_NO,
-                        StatementType::ASSIGNMENT_STMT,
-                        ParsedStatement::defaultPattern,
-                        "f",
-                        {},
-                        {"y"},
-                        {"100"},
-                        ParsedStatement::DEFAULT_PROCEDURE_NAME,
-                        ParsedStatement::DEFAULT_NULL_STMT_NO),
-        ParsedStatement(10,
-                        6,
-                        ParsedStatement::DEFAULT_NULL_STMT_NO,
-                        StatementType::ASSIGNMENT_STMT,
-                        ParsedStatement::defaultPattern,
-                        "f",
-                        {},
-                        {"z"},
-                        {"0"},
-                        ParsedStatement::DEFAULT_PROCEDURE_NAME,
-                        9),
-        ParsedStatement(11,
-                        ParsedStatement::DEFAULT_NULL_STMT_NO,
-                        ParsedStatement::DEFAULT_NULL_STMT_NO,
-                        StatementType::PRINT_STMT,
-                        ParsedStatement::defaultPattern,
-                        "f",
-                        {"x"},
-                        {},
-                        {},
-                        ParsedStatement::DEFAULT_PROCEDURE_NAME,
-                        4),
+                {
+                                ParsedStatement(1,
+                                                ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                StatementType::ASSIGNMENT_STMT,
+                                                ep.stringToExpr("5"),
+                                                "f",
+                                                {},
+                                                {"x"},
+                                                {"5"},
+                                                ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                                ParsedStatement::DEFAULT_NULL_STMT_NO),
+                                ParsedStatement(2,
+                                                ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                StatementType::ASSIGNMENT_STMT,
+                                                ep.stringToExpr("x"),
+                                                "f",
+                                                {"x"},
+                                                {"y"},
+                                                {},
+                                                ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                                1),
+                                ParsedStatement(3,
+                                                ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                StatementType::ASSIGNMENT_STMT,
+                                                ep.stringToExpr("5"),
+                                                "f",
+                                                {},
+                                                {"x"},
+                                                {"5"},
+                                                ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                                2),
+                                ParsedStatement(4,
+                                                ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                StatementType::WHILE_STMT,
+                                                ep.stringToExpr("x > 4"),
+                                                "f",
+                                                {"x"},
+                                                {},
+                                                {"4"},
+                                                ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                                3),
+                                ParsedStatement(5,
+                                                ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                4,
+                                                StatementType::READ_STMT,
+                                                ParsedStatement::defaultPattern,
+                                                "f",
+                                                {},
+                                                {"z"},
+                                                {},
+                                                ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                                ParsedStatement::DEFAULT_NULL_STMT_NO),
+                                ParsedStatement(6,
+                                                ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                4,
+                                                StatementType::IF_STMT,
+                                                ep.stringToExpr("z > 10"),
+                                                "f",
+                                                {"z"},
+                                                {},
+                                                {"10"},
+                                                ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                                5),
+                                ParsedStatement(7,
+                                                6,
+                                                ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                StatementType::ASSIGNMENT_STMT,
+                                                ep.stringToExpr("100"),
+                                                "f",
+                                                {},
+                                                {"x"},
+                                                {"100"},
+                                                ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                                ParsedStatement::DEFAULT_NULL_STMT_NO),
+                                ParsedStatement(8,
+                                                6,
+                                                ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                StatementType::ASSIGNMENT_STMT,
+                                                ep.stringToExpr("5"),
+                                                "f",
+                                                {},
+                                                {"z"},
+                                                {"5"},
+                                                ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                                7),
+                                ParsedStatement(9,
+                                                6,
+                                                ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                StatementType::ASSIGNMENT_STMT,
+                                                ep.stringToExpr("100"),
+                                                "f",
+                                                {},
+                                                {"y"},
+                                                {"100"},
+                                                ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                                ParsedStatement::DEFAULT_NULL_STMT_NO),
+                                ParsedStatement(10,
+                                                6,
+                                                ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                StatementType::ASSIGNMENT_STMT,
+                                                ep.stringToExpr("0"),
+                                                "f",
+                                                {},
+                                                {"z"},
+                                                {"0"},
+                                                ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                                9),
+                                ParsedStatement(11,
+                                                ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                StatementType::PRINT_STMT,
+                                                ParsedStatement::defaultPattern,
+                                                "f",
+                                                {"x"},
+                                                {},
+                                                {},
+                                                ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                                4),
+                                ParsedStatement(12,
+                                                ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                StatementType::CALL_STMT,
+                                                Expr(),
+                                                "f",
+                                                {},
+                                                {},
+                                                {},
+                                                "g",
+                                                11)
+                }
 };
 
+std::vector<ParsedStatement> stmtList2 = {ParsedStatement(13,
+                                                          ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                          ParsedStatement::DEFAULT_NULL_STMT_NO,
+                                                          StatementType::PRINT_STMT,
+                                                          Expr(),
+                                                          "g",
+                                                          {"x"},
+                                                          {},
+                                                          {},
+                                                          ParsedStatement::DEFAULT_PROCEDURE_NAME,
+                                                          ParsedStatement::DEFAULT_NULL_STMT_NO
+                                                          )};
+
+
 TEST_CASE("Integration Testing") {
-    auto start = std::chrono::high_resolution_clock::now();
-
-    std::vector<std::vector<ParsedStatement>> stmtlsts;
-    std::vector<ParsedStatement> stmtlst;
-
-    for (const ParsedStatement& parsedStatement : pStatements)
-        stmtlst.push_back(parsedStatement);
-
-    stmtlsts.push_back(stmtlst);
+    std::vector<std::vector<ParsedStatement>> stmtlsts = {stmtList1, stmtList2};
     pkb.getSetter()->insertStmts(stmtlsts);
-    std::vector<ProgramElement> statements;
-
-    ProgramElement s1 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 1);
-    ProgramElement s2 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 2);
-    ProgramElement s3 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 3);
-    ProgramElement s4 = ProgramElement::createStatement(ElementType::WHILE, 4);
-    ProgramElement s5 = ProgramElement::createStatement(ElementType::READ, 5, "z");
-    ProgramElement s6 = ProgramElement::createStatement(ElementType::IF, 6);
-    ProgramElement s7 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 7);
-    ProgramElement s8 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 8);
-    ProgramElement s9 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 9);
-    ProgramElement s10 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 10);
-    ProgramElement s11 = ProgramElement::createStatement(ElementType::PRINT, 11, "x");
-
-    statements.push_back(s1);
-    statements.push_back(s2);
-    statements.push_back(s3);
-    statements.push_back(s4);
-    statements.push_back(s5);
-    statements.push_back(s6);
-    statements.push_back(s7);
-    statements.push_back(s8);
-    statements.push_back(s9);
-    statements.push_back(s10);
-    statements.push_back(s11);
-
-    std::vector<ProgramElement> variables;
-    ProgramElement vx = ProgramElement::createVariable("x");
-    ProgramElement vy = ProgramElement::createVariable("y");
-    ProgramElement vz = ProgramElement::createVariable("z");
-    variables.push_back(vx);
-    variables.push_back(vy);
-    variables.push_back(vz);
-
-    std::vector<ProgramElement> constants;
-    ProgramElement c0 = ProgramElement::createConstant("0");
-    ProgramElement c100 = ProgramElement::createConstant("100");
-    ProgramElement c5 = ProgramElement::createConstant("5");
-    ProgramElement c10 = ProgramElement::createConstant("10");
-    ProgramElement c4 = ProgramElement::createConstant("4");
-    constants.push_back(c0);
-    constants.push_back(c100);
-    constants.push_back(c5);
-    constants.push_back(c10);
-    constants.push_back(c4);
-
-    std::vector<ProgramElement> assignments;
-    ProgramElement a1 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 1);
-    ProgramElement a2 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 2);
-    ProgramElement a3 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 3);
-    ProgramElement a7 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 7);
-    ProgramElement a8 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 8);
-    ProgramElement a9 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 9);
-    ProgramElement a10 = ProgramElement::createStatement(ElementType::ASSIGNMENT, 10);
-    assignments.push_back(a1);
-    assignments.push_back(a2);
-    assignments.push_back(a3);
-    assignments.push_back(a7);
-    assignments.push_back(a8);
-    assignments.push_back(a9);
-    assignments.push_back(a10);
-
-    std::vector<ProgramElement> prints;
-    ProgramElement print1 = ProgramElement::createStatement(ElementType::PRINT, 11, "x");
-    prints.push_back(print1);
-
-    std::vector<ProgramElement> reads;
-    ProgramElement r1 = ProgramElement::createStatement(ElementType::READ, 5, "z");
-    reads.push_back(r1);
-
-    std::vector<ProgramElement> whiles;
-    ProgramElement w1 = ProgramElement::createStatement(ElementType::WHILE, 4);
-    whiles.push_back(w1);
-
-    std::vector<ProgramElement> ifs;
-    ProgramElement if1 = ProgramElement::createStatement(ElementType::IF, 6);
-    ifs.push_back(if1);
-
-    std::vector<ProgramElement> procedures;
-    ProgramElement prod1 = ProgramElement::createProcedure("f");
 
     SECTION("NO CLAUSES") {
         std::string nc1 = "variable v; Select v";
         std::string nc2 = "constant c; Select c";
         std::string nc3 = "assign a; Select a";
         std::string nc4 = "print p; Select p";
+        std::string nc5 = "print p; constant c; Select <p, c>";
+        std::string nc6 = "read r; Select r.varName";
 
-        std::vector<ProgramElement> result1 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                nc1)))));
-        std::vector<ProgramElement> result2 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                nc2)))));
-        std::vector<ProgramElement> result3 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                nc3)))));
-        std::vector<ProgramElement> result4 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                nc4)))));
+        std::list<std::string> result1 = qpsMainLogic.parse(nc1);
+        std::list<std::string> result2 = qpsMainLogic.parse(nc2);
+        std::list<std::string> result3 = qpsMainLogic.parse(nc3);
+        std::list<std::string> result4 = qpsMainLogic.parse(nc4);
+        std::list<std::string> result5 = qpsMainLogic.parse(nc5);
+        std::list<std::string> result6 = qpsMainLogic.parse(nc6);
 
-        REQUIRE(compareProgramElementLists(result1, variables));
-        REQUIRE(compareProgramElementLists(result2, constants));
-        REQUIRE(compareProgramElementLists(result3, assignments));
-        REQUIRE(compareProgramElementLists(result4, prints));
+        std::list<std::string> expectedResult1 = {"x", "y", "z"};
+        std::list<std::string> expectedResult2 = {"0", "4", "5", "10", "100"};
+        std::list<std::string> expectedResult3 = {"1", "2", "3", "7", "8", "9", "10"};
+        std::list<std::string> expectedResult4 = {"11", "13"};
+        std::list<std::string> expectedResult5 = {"11 0", "11 4", "11 5", "11 10", "11 100",
+                                                  "13 0", "13 4", "13 5", "13 10", "13 100"};
+        std::list<std::string> expectedResult6 = {"z"};
 
-    }
-
-    SECTION("SUCH THAT CLAUSE - Follows/FollowsT/Parent/ParentT") {
-        std::string st1 = "if ifs; print p;\nSelect p such that Parent (4, ifs)";
-        std::string st2 = "while w; assign a;\nSelect a such that Parent* (w, a)";
-        std::string st3 = "print p; Select p such that Follows* (_, p)";
-        std::string st4 = "read r; Select r such that Follows* (r, _)";
-        std::string st5 = "stmt s; Select s such that Parent*(s, 7)";
-        std::string st6 = "stmt s; Select s such that Follows(_, _)";
-        std::string st7 = "assign a; assign a1; Select a such that Follows(a, a1)";
-        std::string st8 = "constant c; Select c such that Follows*(1, 11)";
-        std::string st9 = "read r; Select r such that Follows(5, _)";
-        std::string st10 = "while w; Select w such that Parent*(4, 7)";
-        std::string st11 = "read r; Select r such that Follows(_, 5)";
-        std::string st12 = "assign a; Select a such that Follows*(7, 9)";
-
-        std::vector<ProgramElement> empty = {};
-        std::vector<ProgramElement> expectedResult2;
-        expectedResult2.push_back(a7);
-        expectedResult2.push_back(a8);
-        expectedResult2.push_back(a9);
-        expectedResult2.push_back(a10);
-        std::vector<ProgramElement> expectedResult5;
-        expectedResult5.push_back(s4);
-        expectedResult5.push_back(s6);
-        std::vector<ProgramElement> expectedResult7;
-        expectedResult7.push_back(a1);
-        expectedResult7.push_back(a2);
-        expectedResult7.push_back(a7);
-        expectedResult7.push_back(a9);
-
-        std::vector<ProgramElement> result1 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st1)))));
-        std::vector<ProgramElement> result2 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st2)))));
-        std::vector<ProgramElement> result3 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st3)))));
-        std::vector<ProgramElement> result4 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st4)))));
-        std::vector<ProgramElement> result5 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st5)))));
-        std::vector<ProgramElement> result6 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st6)))));
-        std::vector<ProgramElement> result7 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st7)))));
-        std::vector<ProgramElement> result8 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st8)))));
-        std::vector<ProgramElement> result9 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st9)))));
-        std::vector<ProgramElement> result10 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st10)))));
-        std::vector<ProgramElement> result11 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st11)))));
-        std::vector<ProgramElement> result12 = rp.processResults(op.optimise(qh.processClause(preOp.optimise(qp.parsePQL(
-                st12)))));
-
-        REQUIRE(compareProgramElementLists(result1, prints));
-        REQUIRE(compareProgramElementLists(result2, expectedResult2));
-        REQUIRE(compareProgramElementLists(result3, prints));
-        REQUIRE(compareProgramElementLists(result4, reads));
-        REQUIRE(compareProgramElementLists(result5, expectedResult5));
-        REQUIRE(compareProgramElementLists(result6, statements));
-        REQUIRE(compareProgramElementLists(result7, expectedResult7));
-        REQUIRE(compareProgramElementLists(result8, constants));
-        REQUIRE(compareProgramElementLists(result9, reads));
-        REQUIRE(compareProgramElementLists(result10, whiles));
-        REQUIRE(compareProgramElementLists(result11, reads));
-        REQUIRE(compareProgramElementLists(result12, empty));
+        REQUIRE(compareStringLists(result1, expectedResult1));
+        REQUIRE(compareStringLists(result2, expectedResult2));
+        REQUIRE(compareStringLists(result3, expectedResult3));
+        REQUIRE(compareStringLists(result4, expectedResult4));
+        REQUIRE(compareStringLists(result5, expectedResult5));
+        REQUIRE(compareStringLists(result6, expectedResult6));
 
     }
 
-    SECTION("SUCH THAT CLAUSE - Modifies/Uses") {
-        std::string st1 = "assign a; Select a such that Modifies(1, _)";
+    SECTION("SUCH THAT CLAUSES - Follows(*)/Parent(*)/Next(*)/Affects(*)") {
+        std::string st1 = "stmt s;\nSelect s such that Affects* (1, 2)";
+        std::string st2 = "stmt s;\nSelect s such that Affects(_, 2)";
+        std::string st3 = "stmt s;\nSelect s such that Next*(2, _)";
+        std::string st4 = "stmt s;\nSelect s such that Follows*(_, _)";
+        std::string st5 = "stmt s;\nSelect s such that Next(s, 8)";
+        std::string st6 = "stmt s;\nSelect s such that Parent*(s, 7)";
+        std::string st7 = "stmt s1, s2;\nSelect s2 such that Parent(s1, s2)";
+        std::string st8 = "stmt s;\nSelect s such that Follows(_, s)";
+        std::string st9 = "stmt s;\nSelect s such that Parent(s, _)";
+        std::string st10 = "variable v;\nSelect v such that Follows(_, _)";
+        std::string st11 = "while w; call c;\n Select c such that Affects(w, c)";
+
+        std::list<std::string> result1 = qpsMainLogic.parse(st1);
+        std::list<std::string> result2 = qpsMainLogic.parse(st2);
+        std::list<std::string> result3 = qpsMainLogic.parse(st3);
+        std::list<std::string> result4 = qpsMainLogic.parse(st4);
+        std::list<std::string> result5 = qpsMainLogic.parse(st5);
+        std::list<std::string> result6 = qpsMainLogic.parse(st6);
+        std::list<std::string> result7 = qpsMainLogic.parse(st7);
+        std::list<std::string> result8 = qpsMainLogic.parse(st8);
+        std::list<std::string> result9 = qpsMainLogic.parse(st9);
+        std::list<std::string> result10 = qpsMainLogic.parse(st10);
+        std::list<std::string> result11 = qpsMainLogic.parse(st11);
+
+        std::list<std::string> allStmts = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"};
+        std::list<std::string> expectedResult5 = {"7"};
+        std::list<std::string> expectedResult6 = {"4", "6"};
+        std::list<std::string> expectedResult7 = {"5", "6", "7", "8", "9", "10"};
+        std::list<std::string> expectedResult8 = {"2", "3", "4", "6", "8", "10", "11", "12"};
+        std::list<std::string> expectedResult9 = {"4", "6"};
+        std::list<std::string> expectedResult10 = {"x", "y", "z"};
+        std::list<std::string> expectedResult11 = {};
+
+        REQUIRE(compareStringLists(result1, allStmts));
+        REQUIRE(compareStringLists(result2, allStmts));
+        REQUIRE(compareStringLists(result3, allStmts));
+        REQUIRE(compareStringLists(result4, allStmts));
+        REQUIRE(compareStringLists(result5, expectedResult5));
+        REQUIRE(compareStringLists(result6, expectedResult6));
+        REQUIRE(compareStringLists(result7, expectedResult7));
+        REQUIRE(compareStringLists(result8, expectedResult8));
+        REQUIRE(compareStringLists(result9, expectedResult9));
+        REQUIRE(compareStringLists(result10, expectedResult10));
+        REQUIRE(compareStringLists(result11, expectedResult11));
+
+    }
+    /*
+    SECTION("SUCH THAT CLAUSE - Modifies/Uses/Calls(*)") {
+        std::string st1 = "assign a; Select a such that Modifies(1, \"x\")";
         std::string st2 = "assign a; Select a such that Uses(1, _)";
         std::string st3 = "assign a; Select a such that Modifies(a, \"x\")";
         std::string st4 = "while w; Select w such that Modifies(1, \"x\")";
@@ -476,7 +354,7 @@ TEST_CASE("Integration Testing") {
         REQUIRE(compareProgramElementLists(result13, expectedResult13));
 
     }
-
+    /*
     SECTION("PATTERN CLAUSE") {
         std::string p1 = "assign a; Select a pattern a(_, _\"5\"_)";
         std::string p2 = "assign a; Select a pattern a(\"x\", _)";
@@ -618,3 +496,4 @@ TEST_CASE("Integration Testing") {
         << duration.count() << " microseconds" << endl;
 }
 */
+}
