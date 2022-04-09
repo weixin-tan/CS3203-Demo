@@ -28,7 +28,7 @@ Expr ExpressionProcessor::parseExpr(std::queue<Token>& tokensQueue) {
 	}
 	formattedQueue = formatExpr(tempQueue);
 	while (!formattedQueue.empty()) {
-		exprStack.push(tokensQueue.front());
+		exprStack.push(formattedQueue.front());
 		formattedQueue.pop();
 	}
 	return ExpressionProcessor::parseExprRecursion(exprStack);
@@ -339,11 +339,13 @@ std::queue<Token> ExpressionProcessor::formatExpr(std::queue<Token> tokensQueue)
 			st.push(token);
 		}
 		else if (tokenType == TokenType::RIGHT_BRACE) {
-			while (st.top().getToken() != TokenType::LEFT_BRACE) {
+			while ((!st.empty()) && (st.top().getToken() != TokenType::LEFT_BRACE)) {
 				result.push(st.top());
 				st.pop();
 			}
-			st.pop();
+			if (!st.empty()) {
+				st.pop();
+			}
 		}
 		else {
 			while ((!st.empty()) && (getPriority(token) <= getPriority(st.top()))) {
@@ -372,8 +374,14 @@ std::queue<Token> ExpressionProcessor::formatExpr(std::queue<Token> tokensQueue)
 			st2.push(tokenVector);
 		}
 		else {
+			if (st2.empty()) {
+				throw std::invalid_argument("Invalid expression.");
+			}
 			std::vector<Token> op1 = st2.top();
 			st2.pop();
+			if (st2.empty()) {
+				throw std::invalid_argument("Invalid expression.");
+			}
 			std::vector<Token> op2 = st2.top();
 			st2.pop();
 			Token leftBrace = Token(TokenType::LEFT_BRACE, "(");

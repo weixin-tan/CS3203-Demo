@@ -133,7 +133,7 @@ TEST_CASE("Nested Example - nested at front") {
     Expr e = expressionProcessor.stringToExpr("1-t");
 
     REQUIRE(expressionProcessor.fullfillsMatching(b, a, ExpressionIndicator::PARTIAL_MATCH) == true);
-    REQUIRE(expressionProcessor.fullfillsMatching(c, a, ExpressionIndicator::PARTIAL_MATCH) == false);
+    REQUIRE(expressionProcessor.fullfillsMatching(c, a, ExpressionIndicator::PARTIAL_MATCH) == true);
     REQUIRE(expressionProcessor.fullfillsMatching(d, a, ExpressionIndicator::PARTIAL_MATCH) == true);
     REQUIRE(expressionProcessor.fullfillsMatching(e, a, ExpressionIndicator::PARTIAL_MATCH) == false);
 
