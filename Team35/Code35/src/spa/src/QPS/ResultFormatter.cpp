@@ -16,7 +16,8 @@ std::list<std::string> ResultFormatter::formatResult(const FormattedResult& fina
     return result;
 }
 
-std::list<std::string> ResultFormatter::extractTableInformation(const std::vector<Entity>& entities, const Table& table) {
+std::list<std::string> ResultFormatter::extractTableInformation(const std::vector<Entity>& entities,
+                                                                const Table& table) {
     std::list<std::string> result;
     for (const auto& row : table.rows) {
         std::string str = extractTableRowInformation(entities, row);
