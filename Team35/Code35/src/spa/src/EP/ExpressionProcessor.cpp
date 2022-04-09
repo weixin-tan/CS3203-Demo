@@ -20,9 +20,16 @@ Expr ExpressionProcessor::tokenQueueToExpr(std::queue<Token> tokenQueue) {
 // parseExpr takes inorder, returns reverse
 Expr ExpressionProcessor::parseExpr(std::queue<Token>& tokensQueue) {
 	std::stack<Token> exprStack;
+	std::queue<Token> tempQueue;
+	std::queue<Token> formattedQueue;
 	while ((!tokensQueue.empty()) && (tokensQueue.front().getToken() != TokenType::SEMICOLON)) {
-		exprStack.push(tokensQueue.front());
+		tempQueue.push(tokensQueue.front());
 		tokensQueue.pop();
+	}
+	formattedQueue = formatExpr(tempQueue);
+	while (!formattedQueue.empty()) {
+		exprStack.push(tokensQueue.front());
+		formattedQueue.pop();
 	}
 	return ExpressionProcessor::parseExprRecursion(exprStack);
 }
@@ -313,4 +320,93 @@ std::shared_ptr<Expr> ExpressionProcessor::getNestedExpr(Term* root2) const
 	}
 	
 	return std::shared_ptr<Expr>(nullptr);;
+}
+
+// Formats the expression, removes redundant braces.
+std::queue<Token> ExpressionProcessor::formatExpr(std::queue<Token> tokensQueue) {
+	std::stack<Token> st;
+	std::queue<Token> result;
+
+	while (!tokensQueue.empty()) {
+		Token token = tokensQueue.front();
+		TokenType tokenType = token.getToken();
+		tokensQueue.pop();
+
+		if ((tokenType == TokenType::LETTER) || (tokenType == TokenType::NAME) || (tokenType == TokenType::DIGIT) || (tokenType == TokenType::INTEGER)) {
+			result.push(token);
+		}
+		else if (tokenType == TokenType::LEFT_BRACE) {
+			st.push(token);
+		}
+		else if (tokenType == TokenType::RIGHT_BRACE) {
+			while (st.top().getToken() != TokenType::LEFT_BRACE) {
+				result.push(st.top());
+				st.pop();
+			}
+			st.pop();
+		}
+		else {
+			while ((!st.empty()) && (getPriority(token) <= getPriority(st.top()))) {
+				result.push(st.top());
+				st.pop();
+			}
+			st.push(token);
+		}
+	}
+
+	while (!st.empty()) {
+		result.push(st.top());
+		st.pop();
+	}
+
+	std::stack<std::vector<Token>> st2;
+
+	while (!result.empty()) {
+		Token token = result.front();
+		TokenType tokenType = token.getToken();
+		std::vector<Token> tokenVector;
+		tokenVector.push_back(token);
+		result.pop();
+
+		if ((tokenType == TokenType::LETTER) || (tokenType == TokenType::NAME) || (tokenType == TokenType::DIGIT) || (tokenType == TokenType::INTEGER)) {
+			st2.push(tokenVector);
+		}
+		else {
+			std::vector<Token> op1 = st2.top();
+			st2.pop();
+			std::vector<Token> op2 = st2.top();
+			st2.pop();
+			Token leftBrace = Token(TokenType::LEFT_BRACE, "(");
+			std::vector<Token> leftBraceVector;
+			leftBraceVector.push_back(leftBrace);
+			Token rightBrace = Token(TokenType::RIGHT_BRACE, ")");
+			std::vector<Token> rightBraceVector;
+			rightBraceVector.push_back(rightBrace);
+
+			std::vector<Token> resultVector;
+			resultVector.insert(resultVector.end(), leftBraceVector.begin(), leftBraceVector.end());
+			resultVector.insert(resultVector.end(), op2.begin(), op2.end());
+			resultVector.insert(resultVector.end(), tokenVector.begin(), tokenVector.end());
+			resultVector.insert(resultVector.end(), op1.begin(), op1.end());
+			resultVector.insert(resultVector.end(), rightBraceVector.begin(), rightBraceVector.end());
+			st2.push(resultVector);
+		}
+	}
+
+	std::vector<Token> resultFinalVector = st2.top();
+	std::queue<Token, std::deque<Token>> resultFinal(std::deque<Token>(resultFinalVector.begin(), resultFinalVector.end()));
+	return resultFinal;
+}
+
+int ExpressionProcessor::getPriority(Token token) {
+	TokenType tokenType = token.getToken();
+	if ((tokenType == TokenType::MULTIPLY) || (tokenType == TokenType::DIVIDE) || (tokenType == TokenType::MODULO)) {
+		return 2;
+	}
+	else if ((tokenType == TokenType::ADD) || (tokenType == TokenType::SUBTRACT)) {
+		return 1;
+	}
+	else {
+		return -1;
+	}
 }
