@@ -647,7 +647,7 @@ std::vector<std::string> splitVariablesAndClauses(const std::string& s) {
 
 std::vector<std::string> extractWithClauses(const std::string& s) {
     std::vector<std::string> toReturn;
-    std::string temp = std::regex_replace(s, std::regex("="), " ");
+    std::string temp = std::regex_replace(s, std::regex("="), " = ");
     std::vector<std::string> tempList = splitStringBySpaces(temp);
     std::vector<std::string> tokenList;
 
@@ -655,42 +655,41 @@ std::vector<std::string> extractWithClauses(const std::string& s) {
     bool afterDot = false;
     int i = 0;
     int j = 0;
-    int quotationCount = 0;
+
+    int status = 1;
+    int addNextWord = 1;
+    int addNextWordThenChain = 2;
+    int chainWord = 3;
 
     while (i < tempList.size()) {
-        if (tempList[i] == ".") {
-            afterDot = true;
-        } else if (extractFirstChar(tempList[i]) == "\"" && extractLastChar(tempList[i]) == "\""
-                && tempList[i].size() > 1) {
+        if (tempList[i] == "=" || tempList[i] == "and" || tempList[i] == "with") {
+            status = 2;
             tokenList.push_back(tempList[i]);
             j = j + 1;
-        } else if (extractFirstChar(tempList[i]) == "\"" && quotationCount == 0) {
+        } else if (status == addNextWord) {
+            status = 2;
             tokenList.push_back(tempList[i]);
             j = j + 1;
-            quotationCount = 1;
-        } else if (extractLastChar(tempList[i]) == "\"" && quotationCount == 1) {
-            tokenList[j - 1] = tokenList[j - 1] + tempList[i];
-            quotationCount = 0;
-        } else if (quotationCount == 1) {
-            tokenList[j - 1] = tokenList[j - 1] + tempList[i];
-        } else if (afterDot) {
-            tokenList[j - 1] = tokenList[j - 1] + "." + tempList[i];
-            afterDot = false;
+        } else if (status == addNextWordThenChain) {
+            status = 3;
+            tokenList.push_back(tempList[i]);
+            j = j + 1;
         } else {
-            tokenList.push_back(tempList[i]);
-            j = j + 1;
+            tokenList[j - 1] = tokenList[j - 1] + tempList[i];
         }
         i = i + 1;
     }
 
-    while (tokenList.size() % 3 != 0) {
+
+    while (tokenList.size() % 4 != 0) {
         tokenList.emplace_back("");
     }
 
-    for (int q = 0; q < tokenList.size(); q = q + 3) {
-        temp = tokenList[q] + " " + tokenList[q + 1] + " " + tokenList[q + 2];
+    for (int q = 0; q < tokenList.size(); q = q + 4) {
+        temp = tokenList[q] + " " + tokenList[q + 1] + " " + tokenList[q + 2] + " " + tokenList[q + 3];
         toReturn.push_back(temp);
     }
+
     return toReturn;
 }
 
@@ -858,6 +857,17 @@ std::vector<std::string> extractPatternBrackets(const std::string& s) {
         returnList.insert(std::end(returnList), std::begin(tempArr), std::end(tempArr));
     }
     return returnList;
+}
+
+std::vector<std::string> extractWithSynoymns(const std::string& s){
+    std::vector<std::string> toReturn;
+    std::vector<std::string> withList = splitStringBySpaces(s);
+
+    if (withList.size() == 3 && withList[1] == "="){
+        toReturn.push_back(withList[0]);
+        toReturn.push_back(withList[2]);
+    }
+    return toReturn;
 }
 
 bool checkRelationshipRef(const RelationshipRef& r) {

@@ -171,12 +171,15 @@ RelationshipRef QueryProcessor::createWithRelationship(std::vector<std::string>*
 
 Entity QueryProcessor::createEntityWithAttribute(const std::string& s,
                                                  std::unordered_map<std::string, Entity>* entityMap) {
+
     std::vector<std::string> tempArr = splitString(s, ".");
-    if (tempArr.size() == 1) {
+    if (!doesStringExist(s, ".")) {
         return getSuchThatEntity(s, entityMap);
     } else if (tempArr.size() == 2) {
-        std::string entityName = tempArr[0];
-        std::string attributeName = tempArr[1];
+        long dotPosition = s.find(".");
+
+        std::string entityName = stripString(s.substr(0, dotPosition));
+        std::string attributeName = stripString(s.substr(dotPosition+1, s.length()-dotPosition-1));
 
         Entity basicEntity = getSuchThatEntity(entityName, entityMap);
         EntityType eType = basicEntity.eType;
@@ -257,7 +260,7 @@ void QueryProcessor::handleWith(std::vector<std::string>* WithClauses, Clause* n
                                 bool* isValid, bool* isSemanticallyValid,
                                 std::unordered_map<std::string, Entity>* entityMap) {
     for (const auto& s : *WithClauses) {
-        std::vector<std::string> clausesList = splitStringBySpaces(s);
+        std::vector<std::string> clausesList = extractWithSynoymns(s);
         (*isValid) = (*isValid) && clausesList.size() == 2;
         if ((*isValid)) {
             RelationshipRef newRef = createWithRelationship(&clausesList, entityMap);
@@ -326,6 +329,11 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& queryString) {
 
         handleVariablesToFind(&variablesToSelect, &newClause, &isValid, &entityMap);
 
+        if (newClause.entityToFindList[0].eType == EntityType::BOOLEAN && doesStringExist(selectStmt, "<")){
+            isValid = false;
+        }
+
+
         if (!isValid) {
             break;
         }
@@ -344,8 +352,7 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& queryString) {
             break;
         }
 
-        handleWith(&WithClauses, &newClause,
-                   &isValid, &isSemanticallyValid, &entityMap);
+        handleWith(&WithClauses, &newClause, &isValid, &isSemanticallyValid, &entityMap);
 
         if (!isValid) {
             break;
