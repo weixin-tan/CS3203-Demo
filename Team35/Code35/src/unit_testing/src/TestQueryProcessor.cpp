@@ -788,19 +788,3 @@ TEST_CASE("edge cases") {
         REQUIRE(qp.parsePQL(space4).empty());
     }
 }
-TEST_CASE("debugging")
-{
-    QueryProcessor qp = QueryProcessor();
-    string s1 = "Select BOOLEAN with1=1";
-    vector<Clause> c = qp.parsePQL(s1);
-
-    if (c.empty())
-    {
-        cout << "invalid!"
-             << "\n";
-    }
-    else
-    {
-        cout << c[0].toString() << "\n";
-    }
-}
