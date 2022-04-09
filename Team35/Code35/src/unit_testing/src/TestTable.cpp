@@ -55,7 +55,6 @@ ProgramElement s10Table = ProgramElement::createStatement(ElementType::ASSIGNMEN
 ProgramElement s11Table = ProgramElement::createStatement(ElementType::PRINT, 11, "x");
 
 
-/*
 TEST_CASE("creating results"){
 
     //create results
@@ -67,7 +66,7 @@ TEST_CASE("creating results"){
     result1Elements.insert(std::pair<ProgramElement, ProgramElement>(ProgramElement::createProcedure("f"), ProgramElement::createVariable("x")));
     result1Elements.insert(std::pair<ProgramElement, ProgramElement>(ProgramElement::createProcedure("f"), ProgramElement::createVariable("y")));
     result1Elements.insert(std::pair<ProgramElement, ProgramElement>(ProgramElement::createProcedure("f"), ProgramElement::createVariable("z")));
-    result1.setTwoSynSet(result1Elements);
+    //result1.setTwoSynSet(result1Elements);
 
     Result result2;
     result2.setResultType(ResultType::SUCH_THAT_CLAUSE);
@@ -76,16 +75,15 @@ TEST_CASE("creating results"){
     std::set<ProgramElement> result2Elements;
     result2Elements.insert(ProgramElement::createVariable("x"));
     result2Elements.insert(ProgramElement::createVariable("z"));
-    result2.setOneSynSet(result2Elements);
+
 
     Result result3;
     result3.setResultType(ResultType::SUCH_THAT_CLAUSE);
     result3.setValid(true);
     result3.setTwoSynEntities(std::pair<Entity, Entity> (readSynTable, varSynTable));
-    //result3.setTwoS2ynEntities(std::pair<Entity, Entity>(readSyn, varSyn));
     std::set<std::pair<ProgramElement, ProgramElement>> result3Elements;
     result3Elements.insert(std::pair<ProgramElement, ProgramElement>(ProgramElement::createStatement(ElementType::READ, 5), ProgramElement::createVariable("z")));
-    result3.setTwoSynSet(result3Elements);
+
 
     Result result4;
     result4.setResultType(ResultType::SUCH_THAT_CLAUSE);
@@ -93,7 +91,7 @@ TEST_CASE("creating results"){
     result4.setOneSynEntity(varSynTable);
     std::set<ProgramElement> result4Elements;
     result4Elements.insert(ProgramElement::createVariable("x"));
-    result4.setOneSynSet(result4Elements);
+
 
     Result result5;
     result5.setResultType(ResultType::SUCH_THAT_CLAUSE);
@@ -101,7 +99,7 @@ TEST_CASE("creating results"){
     result5.setOneSynEntity(procSyn1Table);
     std::set<ProgramElement> result5Elements;
     result5Elements.insert(ProgramElement::createProcedure("f"));
-    result5.setOneSynSet(result5Elements);
+
 
     Result result6;
     result6.setResultType(ResultType::SUCH_THAT_CLAUSE);
@@ -109,7 +107,7 @@ TEST_CASE("creating results"){
     result6.setOneSynEntity(ifSynTable);
     std::set<ProgramElement> result6Elements;
     result6Elements.insert(ProgramElement::createStatement(ElementType::IF, 6));
-    result6.setOneSynSet(result6Elements);
+
 
     Result result7;
     result7.setResultType(ResultType::SUCH_THAT_CLAUSE);
@@ -117,7 +115,7 @@ TEST_CASE("creating results"){
     result7.setOneSynEntity(procSyn1Table);
     std::set<ProgramElement> result7Elements;
     result7Elements.insert(ProgramElement::createProcedure("f"));
-    result7.setOneSynSet(result7Elements);
+
 
     Result result8;
     result8.setResultType(ResultType::SUCH_THAT_CLAUSE);
@@ -132,261 +130,126 @@ TEST_CASE("creating results"){
     result8Elements.insert(ProgramElement::createStatement(ElementType::STATEMENT, 8));
     result8Elements.insert(ProgramElement::createStatement(ElementType::STATEMENT, 9));
     result8Elements.insert(ProgramElement::createStatement(ElementType::STATEMENT, 10));
-    result8.setOneSynSet(result8Elements);
+    
 
 
-    SECTION("Merger 2 1 syn"){
+    SECTION("Extract entities 1"){
+        Table t1(&result1);
+        std::vector<Entity> input;
+        input.push_back(result2.getTwoSynEntities().first);
+        input.push_back(result2.getTwoSynEntities().second);
+        auto col = t1.extractColumns(&input);
+        auto row = col.rows;
+        REQUIRE(row.size() < input.size());
+        REQUIRE(input.size()==2);
+        for(auto itr : row){
+            REQUIRE(itr.tableId > 0);
+        }
+    }
+
+    SECTION("Extract entities 2"){
         Table t1(&result2);
-        Table t2(&result2);
-        Table tResult(&t1, &t2);
-        std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
-        std::unordered_map<Entity, ProgramElement, EntityHashFunction> row;
-        std::set<ProgramElement> oneSynSet = result2.getOneSynSet();
-        for (const ProgramElement& elem : oneSynSet) {
-            result2.getOneSynEntity().clear_aType();
-            row.insert({ {std::make_pair(result2.getOneSynEntity(), elem)} });
+        std::vector<Entity> input;
+        input.push_back(result2.getOneSynEntity());
+        auto col = t1.extractColumns(&input);
+        auto row = col.rows;
+        REQUIRE(row.size() < input.size());
+        for(auto itr : row){
+            REQUIRE(itr.tableId > 0);
         }
-        REQUIRE((foo.find(row) != foo.end()) == true );
+    }
+
+    SECTION("Extract entities 3"){
+        Table t1(&result3);
+        std::vector<Entity> input;
+        input.push_back(result3.getTwoSynEntities().first);
+        input.push_back(result3.getTwoSynEntities().second);
+        auto col = t1.extractColumns(&input);
+        auto row = col.rows;
+        REQUIRE(row.size() < input.size());
+        REQUIRE(input.size()==2);
+        for(auto itr : row){
+            REQUIRE(itr.tableId > 0);
+        }
     }
 
 
-    SECTION("Merger 2 1 syn"){
+    SECTION("Extract entities 4"){
         Table t1(&result4);
-        Table t2(&result4);
-        Table tResult(&t1, &t2);
-        std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
-        std::unordered_map<Entity, ProgramElement, EntityHashFunction> row;
-        std::set<ProgramElement> oneSynSet = result4.getOneSynSet();
-        for (const ProgramElement& elem : oneSynSet) {
-            result4.getOneSynEntity().clear_aType();
-            row.insert({ {std::make_pair(result4.getOneSynEntity(), elem)} });
+        std::vector<Entity> input;
+        input.push_back(result4.getOneSynEntity());
+        auto col = t1.extractColumns(&input);
+        auto row = col.rows;
+        REQUIRE(row.size()==0);
+        REQUIRE(input.size()==1);
+        REQUIRE(row.size() <= input.size());
+        for(auto itr : row){
+            REQUIRE(itr.tableId > 0);
         }
-        REQUIRE((foo.find(row) != foo.end()) == true );
     }
 
-    SECTION("Merger 2 1 syn"){
+
+
+    SECTION("Extract entities 5"){
         Table t1(&result5);
-        Table t2(&result5);
-        Table tResult(&t1, &t2);
-        std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
-        std::unordered_map<Entity, ProgramElement, EntityHashFunction> row;
-        std::set<ProgramElement> oneSynSet = result5.getOneSynSet();
-        for (const ProgramElement& elem : oneSynSet) {
-            result5.getOneSynEntity().clear_aType();
-            row.insert({ {std::make_pair(result5.getOneSynEntity(), elem)} });
+        std::vector<Entity> input;
+        input.push_back(result5.getOneSynEntity());
+        auto col = t1.extractColumns(&input);
+        auto row = col.rows;
+        REQUIRE(row.size()==0);
+        REQUIRE(input.size()==1);
+        REQUIRE(row.size() <= input.size());
+        for(auto itr : row){
+            REQUIRE(itr.tableId > 0);
         }
-        REQUIRE((foo.find(row) != foo.end()) == true );
     }
 
-    SECTION("Merger 2 1 syn"){
+
+
+    SECTION("Extract entities 6"){
         Table t1(&result6);
-        Table t2(&result6);
-        Table tResult(&t1, &t2);
-        std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
-        std::unordered_map<Entity, ProgramElement, EntityHashFunction> row;
-        std::set<ProgramElement> oneSynSet = result6.getOneSynSet();
-        for (const ProgramElement& elem : oneSynSet) {
-            result6.getOneSynEntity().clear_aType();
-            row.insert({ {std::make_pair(result6.getOneSynEntity(), elem)} });
+        std::vector<Entity> input;
+        input.push_back(result6.getOneSynEntity());
+        auto col = t1.extractColumns(&input);
+        auto row = col.rows;
+        REQUIRE(row.size()==0);
+        REQUIRE(input.size()==1);
+        REQUIRE(row.size() <= input.size());
+        for(auto itr : row){
+            REQUIRE(itr.tableId > 0);
         }
-        REQUIRE((foo.find(row) != foo.end()) == true );
     }
 
-    SECTION("Merger 2 1 syn"){
+
+
+
+    SECTION("Extract entities 7"){
         Table t1(&result7);
-        Table t2(&result7);
-        Table tResult(&t1, &t2);
-        std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
-        std::unordered_map<Entity, ProgramElement, EntityHashFunction> row;
-        std::set<ProgramElement> oneSynSet = result7.getOneSynSet();
-        for (const ProgramElement& elem : oneSynSet) {
-            result7.getOneSynEntity().clear_aType();
-            row.insert({ {std::make_pair(result7.getOneSynEntity(), elem)} });
+        std::vector<Entity> input;
+        input.push_back(result7.getOneSynEntity());
+        auto col = t1.extractColumns(&input);
+        auto row = col.rows;
+        REQUIRE(row.size()==0);
+        REQUIRE(input.size()==1);
+        REQUIRE(row.size() <= input.size());
+        for(auto itr : row){
+            REQUIRE(itr.tableId > 0);
         }
-        REQUIRE((foo.find(row) != foo.end()) == true );
     }
 
-    SECTION("Merger 2 1 syn"){
+
+
+    SECTION("Extract entities 8"){
         Table t1(&result8);
-        Table t2(&result8);
-        Table tResult(&t1, &t2);
-        std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
-        std::unordered_map<Entity, ProgramElement, EntityHashFunction> row;
-        std::set<ProgramElement> oneSynSet = result8.getOneSynSet();
-        for (const ProgramElement& elem : oneSynSet) {
-            result8.getOneSynEntity().clear_aType();
-            row.insert({ {std::make_pair(result8.getOneSynEntity(), elem)} });
+        std::vector<Entity> input;
+        input.push_back(result8.getOneSynEntity());
+        auto col = t1.extractColumns(&input);
+        auto row = col.rows;
+        REQUIRE(row.size() < input.size());
+        for(auto itr : row){
+            REQUIRE(itr.tableId > 0);
         }
-        REQUIRE((foo.find(row) != foo.end()) == true );
     }
 
-    SECTION("Merger 2 1 syn"){
-        Table t1(&result4);
-        Table t2(&result5);
-        Table tResult(&t1, &t2);
-        std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
-        std::unordered_map<Entity, ProgramElement, EntityHashFunction> row1;
-        std::set<ProgramElement> oneSynSet1 = result4.getOneSynSet();
-        for (const ProgramElement& elem : oneSynSet1) {
-            result4.getOneSynEntity().clear_aType();
-            row1.insert({ {std::make_pair(result4.getOneSynEntity(), elem)} });
-        }
-        REQUIRE((foo.find(row1) != foo.end()) == true );
-        std::unordered_map<Entity, ProgramElement, EntityHashFunction> row2;
-        std::set<ProgramElement> oneSynSet2 = result5.getOneSynSet();
-        for (const ProgramElement& elem : oneSynSet2) {
-            result5.getOneSynEntity().clear_aType();
-            row2.insert({ {std::make_pair(result5.getOneSynEntity(), elem)} });
-        }
-        REQUIRE((foo.find(row2) != foo.end()) == true );
-    }
-
-    SECTION("Merger 2 1 syn"){
-        Table t1(&result4);
-        Table t2(&result6);
-        Table tResult(&t1, &t2);
-        std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
-        std::unordered_map<Entity, ProgramElement, EntityHashFunction> row1;
-        std::set<ProgramElement> oneSynSet1 = result4.getOneSynSet();
-        for (const ProgramElement& elem : oneSynSet1) {
-            result4.getOneSynEntity().clear_aType();
-            row1.insert({ {std::make_pair(result8.getOneSynEntity(), elem)} });
-        }
-        REQUIRE((foo.find(row1) != foo.end()) == true );
-        std::unordered_map<Entity, ProgramElement, EntityHashFunction> row2;
-        std::set<ProgramElement> oneSynSet2 = result6.getOneSynSet();
-        for (const ProgramElement& elem : oneSynSet2) {
-            result6.getOneSynEntity().clear_aType();
-            row2.insert({ {std::make_pair(result6.getOneSynEntity(), elem)} });
-        }
-        REQUIRE((foo.find(row2) != foo.end()) == true );
-    }
-
-    SECTION("Merger 2 1 syn"){
-        Table t1(&result4);
-        Table t2(&result7);
-        Table tResult(&t1, &t2);
-        std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
-        std::unordered_map<Entity, ProgramElement, EntityHashFunction> row1;
-        std::set<ProgramElement> oneSynSet1 = result4.getOneSynSet();
-        for (const ProgramElement& elem : oneSynSet1) {
-            result4.getOneSynEntity().clear_aType();
-            row1.insert({ {std::make_pair(result8.getOneSynEntity(), elem)} });
-        }
-        REQUIRE((foo.find(row1) != foo.end()) == true );
-        std::unordered_map<Entity, ProgramElement, EntityHashFunction> row2;
-        std::set<ProgramElement> oneSynSet2 = result7.getOneSynSet();
-        for (const ProgramElement& elem : oneSynSet2) {
-            result7.getOneSynEntity().clear_aType();
-            row2.insert({ {std::make_pair(result7.getOneSynEntity(), elem)} });
-        }
-        REQUIRE((foo.find(row2) != foo.end()) == true );
-    }
-
-    SECTION("Merger 2 1 syn"){
-        Table t1(&result4);
-        Table t2(&result8);
-        Table tResult(&t1, &t2);
-        std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
-        std::unordered_map<Entity, ProgramElement, EntityHashFunction> row1;
-        std::set<ProgramElement> oneSynSet1 = result4.getOneSynSet();
-        for (const ProgramElement& elem : oneSynSet1) {
-            result4.getOneSynEntity().clear_aType();
-            row1.insert({ {std::make_pair(result8.getOneSynEntity(), elem)} });
-        }
-        REQUIRE((foo.find(row1) != foo.end()) == true );
-        std::unordered_map<Entity, ProgramElement, EntityHashFunction> row2;
-        std::set<ProgramElement> oneSynSet2 = result8.getOneSynSet();
-        for (const ProgramElement& elem : oneSynSet2) {
-            result8.getOneSynEntity().clear_aType();
-            row2.insert({ {std::make_pair(result8.getOneSynEntity(), elem)} });
-        }
-        REQUIRE((foo.find(row2) != foo.end()) == true );
-    }
-
-    SECTION("Merger 2 1 syn"){
-        Table t1(&result5);
-        Table t2(&result6);
-        Table tResult(&t1, &t2);
-        std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
-        std::unordered_map<Entity, ProgramElement, EntityHashFunction> row1;
-        std::set<ProgramElement> oneSynSet1 = result5.getOneSynSet();
-        for (const ProgramElement& elem : oneSynSet1) {
-            result5.getOneSynEntity().clear_aType();
-            row1.insert({ {std::make_pair(result5.getOneSynEntity(), elem)} });
-        }
-        REQUIRE((foo.find(row1) != foo.end()) == true );
-        std::unordered_map<Entity, ProgramElement, EntityHashFunction> row2;
-        std::set<ProgramElement> oneSynSet2 = result6.getOneSynSet();
-        for (const ProgramElement& elem : oneSynSet2) {
-            result6.getOneSynEntity().clear_aType();
-            row2.insert({ {std::make_pair(result6.getOneSynEntity(), elem)} });
-        }
-        REQUIRE((foo.find(row2) != foo.end()) == true );
-    }
-
-    SECTION("Merger 2 1 syn"){
-        Table t1(&result7);
-        Table t2(&result5);
-        Table tResult(&t1, &t2);
-        std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
-        std::unordered_map<Entity, ProgramElement, EntityHashFunction> row1;
-        std::set<ProgramElement> oneSynSet1 = result7.getOneSynSet();
-        for (const ProgramElement& elem : oneSynSet1) {
-            result7.getOneSynEntity().clear_aType();
-            row1.insert({ {std::make_pair(result7.getOneSynEntity(), elem)} });
-        }
-        REQUIRE((foo.find(row1) != foo.end()) == true );
-        std::unordered_map<Entity, ProgramElement, EntityHashFunction> row2;
-        std::set<ProgramElement> oneSynSet2 = result5.getOneSynSet();
-        for (const ProgramElement& elem : oneSynSet2) {
-            result5.getOneSynEntity().clear_aType();
-            row2.insert({ {std::make_pair(result5.getOneSynEntity(), elem)} });
-        }
-        REQUIRE((foo.find(row2) != foo.end()) == true );
-    }
-
-    SECTION("Merger 2 1 syn"){
-        Table t1(&result8);
-        Table t2(&result5);
-        Table tResult(&t1, &t2);
-        std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
-        std::unordered_map<Entity, ProgramElement, EntityHashFunction> row1;
-        std::set<ProgramElement> oneSynSet1 = result8.getOneSynSet();
-        for (const ProgramElement& elem : oneSynSet1) {
-            result8.getOneSynEntity().clear_aType();
-            row1.insert({ {std::make_pair(result8.getOneSynEntity(), elem)} });
-        }
-        REQUIRE((foo.find(row1) != foo.end()) == true );
-        std::unordered_map<Entity, ProgramElement, EntityHashFunction> row2;
-        std::set<ProgramElement> oneSynSet2 = result5.getOneSynSet();
-        for (const ProgramElement& elem : oneSynSet2) {
-            result5.getOneSynEntity().clear_aType();
-            row2.insert({ {std::make_pair(result5.getOneSynEntity(), elem)} });
-        }
-        REQUIRE((foo.find(row2) != foo.end()) == true );
-    }
-
-    SECTION("Merger 2 1 syn") {
-        Table t1(&result8);
-        Table t2(&result6);
-        Table tResult(&t1, &t2);
-        std::unordered_set<TableRow, TableRowHash> foo = tResult.rows;
-        std::unordered_map<Entity, ProgramElement, EntityHashFunction> row1;
-        std::set<ProgramElement> oneSynSet1 = result8.getOneSynSet();
-        for (const ProgramElement &elem: oneSynSet1) {
-            result8.getOneSynEntity().clear_aType();
-            row1.insert({{std::make_pair(result8.getOneSynEntity(), elem)}});
-        }
-        REQUIRE((foo.find(row1) != foo.end()) == true);
-        std::unordered_map<Entity, ProgramElement, EntityHashFunction> row2;
-        std::set<ProgramElement> oneSynSet2 = result6.getOneSynSet();
-        for (const ProgramElement &elem: oneSynSet2) {
-            result6.getOneSynEntity().clear_aType();
-            row2.insert({{std::make_pair(result6.getOneSynEntity(), elem)}});
-        }
-        REQUIRE((foo.find(row2) != foo.end()) == true);
-    }
 
 }
-*/
