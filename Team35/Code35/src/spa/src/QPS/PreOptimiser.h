@@ -26,7 +26,6 @@ private:
 
     static bool rankingPredicate(const RelationshipInfo& a, const RelationshipInfo& b);
 
-
     static bool priorityQueueComparator(const std::vector<int>& a, const std::vector<int>& b);
 
     static bool isFixedEntity(const Entity& e);
@@ -36,10 +35,11 @@ private:
     static int countNumberOfFixedEntities(const RelationshipRef& r);
 
     static void findConnectedRelationshipsAndAdd(int index1,
-                                                 std::unordered_map<int, std::vector<std::pair<int,int>>>* adjacencyList,
+                                                 std::unordered_map<int,
+                                                                    std::vector<std::pair<int, int>>>* adjacencyList,
                                                  const std::vector<RelationshipRef>& relationships);
     static void addRelationshipIfConnected(int index1, int index2, int numberOfEntitiesRelated,
-                                           std::unordered_map<int, std::vector<std::pair<int,int>>>* adjacencyList);
+                                           std::unordered_map<int, std::vector<std::pair<int, int>>>* adjacencyList);
     static int checkRelationshipsConnected(const RelationshipRef& r1, const RelationshipRef& r2);
 
     static int notVisitedYet(std::vector<RelationshipInfo>* rankings);
@@ -47,13 +47,16 @@ private:
     static int findRelationshipInfo(std::vector<RelationshipInfo>* rankings, int relationshipNumber);
 
     static void traverseNeighbours(int currentRelationship,
-                                          std::vector<RelationshipInfo>* rankings,
-                                          std::unordered_map<int, std::vector<std::pair<int,int>>>* adjacencyList,
-                                          std::priority_queue<std::vector<int>, std::vector<std::vector<int>>, bool (*)(const std::vector<int>&, const std::vector<int>&)>* priorityQueue);
+                                   std::vector<RelationshipInfo>* rankings,
+                                   std::unordered_map<int, std::vector<std::pair<int, int>>>* adjacencyList,
+                                   std::priority_queue<std::vector<int>,
+                                                       std::vector<std::vector<int>>,
+                                                       bool (*)(const std::vector<int>&,
+                                                                const std::vector<int>&)>* priorityQueue);
 
     static RelationshipRefGroup traverseGraph(const std::vector<RelationshipRef>& relationships,
-                                            std::vector<RelationshipInfo>* rankings,
-                                            std::unordered_map<int, std::vector<std::pair<int,int>>>* adjacencyList);
+                                              std::vector<RelationshipInfo>* rankings,
+                                              std::unordered_map<int, std::vector<std::pair<int, int>>>* adjacencyList);
 };
 
 #endif //SPA_SRC_SPA_SRC_QPS_PREOPTIMISER_H_

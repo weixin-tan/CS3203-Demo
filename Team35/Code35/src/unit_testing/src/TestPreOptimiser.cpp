@@ -6,11 +6,11 @@
 
 using namespace std;
 
-void printGroups(std::vector<RelationshipRefGroup> groups) {
+void printGroups(const std::vector<RelationshipRefGroup>& groups) {
     int i = 0;
-    for (auto group : groups) {
+    for (const auto& group : groups) {
         cout << "group " << i << "\n";
-        for (auto relationship : group.relRefGroup) {
+        for (const auto& relationship : group.relRefGroup) {
             cout << relationship.toString();
         }
         i = i + 1;

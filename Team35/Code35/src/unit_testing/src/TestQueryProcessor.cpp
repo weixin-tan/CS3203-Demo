@@ -448,25 +448,6 @@ TEST_CASE("trippy queries") {
 TEST_CASE("test advanced queries") {
     QueryProcessor qp = QueryProcessor();
 
-    Entity a = Entity(EntityType::ASSIGNMENT, "a");
-    Entity astmt = Entity(EntityType::ASSIGNMENT, "a", EntityAttributeType::STMT);
-    Entity a1 = Entity(EntityType::ASSIGNMENT, "a1");
-    Entity a1stmt = Entity(EntityType::ASSIGNMENT, "a1", EntityAttributeType::STMT);
-    Entity a2 = Entity(EntityType::ASSIGNMENT, "a2");
-    Entity a2stmt = Entity(EntityType::ASSIGNMENT, "a2", EntityAttributeType::STMT);
-    Entity ifEntity = Entity(EntityType::IF, "ifs");
-    Entity s = Entity(EntityType::STATEMENT, "s");
-    Entity whileEntity = Entity(EntityType::WHILE, "w");
-    Entity wildcard = Entity(EntityType::WILDCARD, "_");
-    Entity boolean = Entity(EntityType::BOOLEAN, "BOOLEAN");
-    Entity int1 = Entity(EntityType::FIXED_INTEGER, "1");
-    Entity int2 = Entity(EntityType::FIXED_INTEGER, "2");
-    Entity int3 = Entity(EntityType::FIXED_INTEGER, "3");
-    Entity x = Entity(EntityType::FIXED_STRING, "x");
-    Entity patternString = Entity(EntityType::FIXED_STRING, "pattern");
-    Entity cProcname = Entity(EntityType::CALL, "c", EntityAttributeType::PROCNAME);
-    Entity pProcname = Entity(EntityType::PROCEDURE, "p", EntityAttributeType::PROCNAME);
-
     string s1 = "\nSelect       BOOLEAN\t\t\t\tsuch\n\n\n\nthat     Next* (\t1\t,\t2\t)\n\n";
     string s2 = "assign a1, a2;Select <a1, a2\n.\nstmt#> such that Affects (a1, a2)";
     string s3 = "procedure p; call c; Select c.procName with c\t.\tprocName = p    .    procName";
@@ -528,7 +509,7 @@ TEST_CASE("test advanced queries") {
     RelationshipRef r5_b = RelationshipRef(RelationshipType::NEXT_T, s, int3);
     RelationshipRef r5_c = RelationshipRef(RelationshipType::FOLLOWS_T, int1, int3);
     RelationshipRef r8_a = RelationshipRef(RelationshipType::PATTERN, patternString, wildcard, a);
-    RelationshipRef r8_b = RelationshipRef(RelationshipType::PATTERN, patternString, wildcard, whileEntity);
+    RelationshipRef r8_b = RelationshipRef(RelationshipType::PATTERN, patternString, wildcard, w);
     RelationshipRef r8_c = RelationshipRef(RelationshipType::PATTERN, patternString, wildcard, ifEntity);
     RelationshipRef r11_a = RelationshipRef(RelationshipType::WITH, astmt, int1);
     RelationshipRef r11_b = RelationshipRef(RelationshipType::WITH, a1stmt, int3);
@@ -549,7 +530,7 @@ TEST_CASE("test advanced queries") {
         c3.appendRef(r3);
         REQUIRE(s3_output.equals(c3));
 
-        c4.appendEntityToFind(whileEntity);
+        c4.appendEntityToFind(w);
         c4.appendRef(r4a);
         c4.appendRef(r4b);
         REQUIRE(s4_output.equals(c4));

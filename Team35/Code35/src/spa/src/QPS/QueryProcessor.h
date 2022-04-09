@@ -29,7 +29,7 @@ private:
     static void handleVariablesToFind(std::vector<std::string>* variablesToSelect,
                                       Clause* newClause,
                                       bool* isValid,
-                                      std::unordered_map<std::string,Entity>* entityMap);
+                                      std::unordered_map<std::string, Entity>* entityMap);
 
     static void handleSuchThat(std::vector<std::string>* SuchThatClauses,
                                Clause* newClause,

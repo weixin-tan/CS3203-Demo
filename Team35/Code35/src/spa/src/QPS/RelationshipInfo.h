@@ -13,7 +13,7 @@ public:
     int relationshipEase;
     int relationshipNumber;
 
-    std::string toString();
+    std::string toString() const;
 };
 
 #endif //SPA_SRC_SPA_SRC_QPS_RELATIONSHIPINFO_H_

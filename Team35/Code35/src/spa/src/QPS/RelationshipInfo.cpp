@@ -1,6 +1,5 @@
 #include "RelationshipInfo.h"
 
-
 RelationshipInfo::RelationshipInfo(int visitedNum, int commonSyn, int fixedEntities, int ease, int relationshipNum) {
     visited = visitedNum;
     numberOfCommonSynoymns = commonSyn;
@@ -9,14 +8,14 @@ RelationshipInfo::RelationshipInfo(int visitedNum, int commonSyn, int fixedEntit
     relationshipNumber = relationshipNum;
 }
 
-std::string RelationshipInfo::toString() {
+std::string RelationshipInfo::toString() const {
 
     std::ostringstream buffer;
     buffer << "visited: " << visited
-        << " numberOfCommonSynoymns: " << numberOfCommonSynoymns
-        << " numberOfFixedEntities: " << numberOfFixedEntities
-        << " relationshipEase: " << relationshipEase
-        << " relationshipNumber: " << relationshipNumber;
+           << " numberOfCommonSynoymns: " << numberOfCommonSynoymns
+           << " numberOfFixedEntities: " << numberOfFixedEntities
+           << " relationshipEase: " << relationshipEase
+           << " relationshipNumber: " << relationshipNumber;
 
     return buffer.str();
 }

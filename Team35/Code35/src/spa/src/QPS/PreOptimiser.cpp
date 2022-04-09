@@ -20,29 +20,29 @@ std::unordered_map<RelationshipType, int> PreOptimiser::easeOfRelationshipMap = 
 };
 
 bool PreOptimiser::rankingPredicate(const RelationshipInfo& a, const RelationshipInfo& b) {
-    if (a.visited < b.visited){
+    if (a.visited < b.visited) {
         return true;
-    }else if (a.visited > b.visited){
+    } else if (a.visited > b.visited) {
         return false;
     }
-    if (a.numberOfCommonSynoymns > b.numberOfCommonSynoymns){
+    if (a.numberOfCommonSynoymns > b.numberOfCommonSynoymns) {
         return true;
-    }else if (a.numberOfCommonSynoymns < b.numberOfCommonSynoymns){
+    } else if (a.numberOfCommonSynoymns < b.numberOfCommonSynoymns) {
         return false;
     }
-    if (a.numberOfFixedEntities > b.numberOfFixedEntities){
+    if (a.numberOfFixedEntities > b.numberOfFixedEntities) {
         return true;
-    }else if (a.numberOfFixedEntities < b.numberOfFixedEntities){
+    } else if (a.numberOfFixedEntities < b.numberOfFixedEntities) {
         return false;
     }
-    if (a.relationshipEase > b.relationshipEase){
+    if (a.relationshipEase > b.relationshipEase) {
         return true;
-    }else if (a.relationshipEase < b.relationshipEase){
+    } else if (a.relationshipEase < b.relationshipEase) {
         return false;
     }
-    if (a.relationshipNumber < b.relationshipNumber){
+    if (a.relationshipNumber < b.relationshipNumber) {
         return true;
-    }else{
+    } else {
         return false;
     }
 }
@@ -52,25 +52,25 @@ int PreOptimiser::numberOfFixedEntitiesIndex = 1;
 int PreOptimiser::relationshipEaseIndex = 2;
 int PreOptimiser::relationshipNumberIndex = 3;
 
-bool PreOptimiser::priorityQueueComparator(const std::vector<int>& a, const std::vector<int>& b){
-    if (a[numberOfCommonSynoymnsIndex] < b[numberOfCommonSynoymnsIndex]){
+bool PreOptimiser::priorityQueueComparator(const std::vector<int>& a, const std::vector<int>& b) {
+    if (a[numberOfCommonSynoymnsIndex] < b[numberOfCommonSynoymnsIndex]) {
         return true;
-    }else if (a[numberOfCommonSynoymnsIndex] > b[numberOfCommonSynoymnsIndex]){
+    } else if (a[numberOfCommonSynoymnsIndex] > b[numberOfCommonSynoymnsIndex]) {
         return false;
     }
-    if (a[numberOfFixedEntitiesIndex] < b[numberOfFixedEntitiesIndex]){
+    if (a[numberOfFixedEntitiesIndex] < b[numberOfFixedEntitiesIndex]) {
         return true;
-    }else if (a[numberOfFixedEntitiesIndex] > b[numberOfFixedEntitiesIndex]){
+    } else if (a[numberOfFixedEntitiesIndex] > b[numberOfFixedEntitiesIndex]) {
         return false;
     }
-    if (a[relationshipEaseIndex] < b[relationshipEaseIndex]){
+    if (a[relationshipEaseIndex] < b[relationshipEaseIndex]) {
         return true;
-    }else if (a[relationshipEaseIndex] > b[relationshipEaseIndex]){
+    } else if (a[relationshipEaseIndex] > b[relationshipEaseIndex]) {
         return false;
     }
-    if (a[relationshipNumberIndex] > b[relationshipNumberIndex]){
+    if (a[relationshipNumberIndex] > b[relationshipNumberIndex]) {
         return true;
-    }else{
+    } else {
         return false;
     }
 }
@@ -80,7 +80,7 @@ GroupedClause PreOptimiser::optimise(const std::vector<Clause>& clauses) {
     Clause c = clauses[0];
     toReturn.setEntityToFindList(c.entityToFindList);
 
-    if (!c.refList.empty()){
+    if (!c.refList.empty()) {
         toReturn.setRelationshipRefGroup(groupRelationships(c.refList));
     }
 
@@ -90,7 +90,7 @@ GroupedClause PreOptimiser::optimise(const std::vector<Clause>& clauses) {
 std::vector<RelationshipRefGroup> PreOptimiser::groupRelationships(const std::vector<RelationshipRef>& relationships) {
     std::vector<RelationshipRefGroup> groups;
     RelationshipRefGroup noSynonymGroup;
-    std::unordered_map<int, std::vector<std::pair<int,int>>> adjacencyList;
+    std::unordered_map<int, std::vector<std::pair<int, int>>> adjacencyList;
     std::vector<RelationshipInfo> rankings;
 
     rankings.reserve(relationships.size());
@@ -116,7 +116,7 @@ std::vector<RelationshipRefGroup> PreOptimiser::groupRelationships(const std::ve
         groups.push_back(noSynonymGroup);
     }
 
-    while (notVisitedYet(&rankings) != -1){
+    while (notVisitedYet(&rankings) != -1) {
         RelationshipRefGroup tempGroup = traverseGraph(relationships, &rankings, &adjacencyList);
         groups.push_back(tempGroup);
     }
@@ -134,30 +134,30 @@ bool PreOptimiser::isFixedEntityOrWildcard(const Entity& e) {
 bool PreOptimiser::entityMatchRelRef(const Entity& e, const RelationshipRef& r) {
     return e == r.leftEntity || e == r.rightEntity || e == r.AssignmentEntity;
 }
-int PreOptimiser::countNumberOfFixedEntities(const RelationshipRef& r){
+int PreOptimiser::countNumberOfFixedEntities(const RelationshipRef& r) {
     int count = 0;
-    if (isFixedEntity(r.leftEntity)){
+    if (isFixedEntity(r.leftEntity)) {
         count = count + 1;
     }
-    if (isFixedEntity(r.rightEntity)){
+    if (isFixedEntity(r.rightEntity)) {
         count = count + 1;
     }
-
-    if (r.rType == RelationshipType::PATTERN){
+    if (r.rType == RelationshipType::PATTERN) {
         count = count - 1;
     }
     return count;
 }
 
 void PreOptimiser::findConnectedRelationshipsAndAdd(int index1,
-                                                    std::unordered_map<int, std::vector<std::pair<int,int>>>* adjacencyList,
+                                                    std::unordered_map<int,
+                                                                       std::vector<std::pair<int, int>>>* adjacencyList,
                                                     const std::vector<RelationshipRef>& relationships) {
     (*adjacencyList)[index1] = {};
     RelationshipRef r1 = relationships[index1];
     RelationshipRef r2;
 
-    for (int index2 = 0; index2 < relationships.size(); index2++){
-        if (index1 != index2){
+    for (int index2 = 0; index2 < relationships.size(); index2++) {
+        if (index1 != index2) {
             r2 = relationships[index2];
             int numberOfEntitiesRelated = checkRelationshipsConnected(r1, r2);
             addRelationshipIfConnected(index1, index2, numberOfEntitiesRelated, adjacencyList);
@@ -165,9 +165,10 @@ void PreOptimiser::findConnectedRelationshipsAndAdd(int index1,
     }
 }
 void PreOptimiser::addRelationshipIfConnected(int index1, int index2, int numberOfEntitiesRelated,
-                                              std::unordered_map<int, std::vector<std::pair<int,int>>>* adjacencyList) {
-    if (numberOfEntitiesRelated >= 1){
-        std::pair<int,int> tempPair = {numberOfEntitiesRelated, index2};
+                                              std::unordered_map<int,
+                                                                 std::vector<std::pair<int, int>>>* adjacencyList) {
+    if (numberOfEntitiesRelated >= 1) {
+        std::pair<int, int> tempPair = {numberOfEntitiesRelated, index2};
         (*adjacencyList)[index1].push_back(tempPair);
     }
 }
@@ -188,23 +189,21 @@ int PreOptimiser::checkRelationshipsConnected(const RelationshipRef& r1, const R
 }
 
 int PreOptimiser::notVisitedYet(std::vector<RelationshipInfo>* rankings) {
-    if ((*rankings).empty()){
+    if ((*rankings).empty()) {
         return -1;
     }
-
     std::sort((*rankings).begin(), (*rankings).end(), rankingPredicate);
     RelationshipInfo chosenRelationshipRanking = (*rankings)[0];
-
-    if (chosenRelationshipRanking.visited == 1){
+    if (chosenRelationshipRanking.visited == 1) {
         return -1;
-    }else{
+    } else {
         return chosenRelationshipRanking.relationshipNumber;
     }
 }
 
-int PreOptimiser::findRelationshipInfo(std::vector<RelationshipInfo>* rankings, int relationshipNumber){
-    for (int i = 0; i < (*rankings).size(); i++ ){
-        if ((*rankings)[i].relationshipNumber == relationshipNumber){
+int PreOptimiser::findRelationshipInfo(std::vector<RelationshipInfo>* rankings, int relationshipNumber) {
+    for (int i = 0; i < (*rankings).size(); i++) {
+        if ((*rankings)[i].relationshipNumber == relationshipNumber) {
             return i;
         }
     }
@@ -213,10 +212,12 @@ int PreOptimiser::findRelationshipInfo(std::vector<RelationshipInfo>* rankings, 
 
 RelationshipRefGroup PreOptimiser::traverseGraph(const std::vector<RelationshipRef>& relationships,
                                                  std::vector<RelationshipInfo>* rankings,
-                                                 std::unordered_map<int, std::vector<std::pair<int,int>>>* adjacencyList) {
+                                                 std::unordered_map<int,
+                                                                    std::vector<std::pair<int, int>>>* adjacencyList) {
     RelationshipRefGroup tempGroup;
     std::priority_queue<std::vector<int>, std::vector<std::vector<int>>,
-                        bool (*)(const std::vector<int>&, const std::vector<int>&)> priorityQueue(priorityQueueComparator);
+                        bool (*)(const std::vector<int>&, const std::vector<int>&)>
+            priorityQueue(priorityQueueComparator);
 
     int notVisitedInfoIndex = findRelationshipInfo(rankings, notVisitedYet(rankings));
 
@@ -225,13 +226,13 @@ RelationshipRefGroup PreOptimiser::traverseGraph(const std::vector<RelationshipR
                         (*rankings)[notVisitedInfoIndex].relationshipEase,
                         (*rankings)[notVisitedInfoIndex].relationshipNumber});
 
-    while (!priorityQueue.empty()){
+    while (!priorityQueue.empty()) {
         std::vector<int> currentNode = priorityQueue.top();
         int currentRelationship = currentNode[relationshipNumberIndex];
         int currentRelationshipIndex = findRelationshipInfo(rankings, currentRelationship);
         priorityQueue.pop();
 
-        if ((*rankings)[currentRelationshipIndex].visited == 0){
+        if ((*rankings)[currentRelationshipIndex].visited == 0) {
             (*rankings)[currentRelationshipIndex].visited = 1;
             tempGroup.addRelRef(relationships[currentRelationship]);
             traverseNeighbours(currentRelationship, rankings, adjacencyList, &priorityQueue);
@@ -242,17 +243,21 @@ RelationshipRefGroup PreOptimiser::traverseGraph(const std::vector<RelationshipR
 
 void PreOptimiser::traverseNeighbours(int currentRelationship,
                                       std::vector<RelationshipInfo>* rankings,
-                                      std::unordered_map<int, std::vector<std::pair<int,int>>>* adjacencyList,
-                                      std::priority_queue<std::vector<int>, std::vector<std::vector<int>>, bool (*)(const std::vector<int>&, const std::vector<int>&)>* priorityQueue) {
+                                      std::unordered_map<int, std::vector<std::pair<int, int>>>* adjacencyList,
+                                      std::priority_queue<std::vector<int>,
+                                                          std::vector<std::vector<int>>,
+                                                          bool (*)(const std::vector<int>&,
+                                                                   const std::vector<int>&)>* priorityQueue) {
 
-    for (auto neighbour: (*adjacencyList)[currentRelationship]){
+    for (auto neighbour : (*adjacencyList)[currentRelationship]) {
         int numberOfEntitiesRelated = neighbour.first;
         int neighbourRelationship = neighbour.second;
         int neighbourIndex = findRelationshipInfo(rankings, neighbourRelationship);
 
-        if ((*rankings)[neighbourIndex].visited == 0){
+        if ((*rankings)[neighbourIndex].visited == 0) {
 
-            (*rankings)[neighbourIndex].numberOfCommonSynoymns =  (*rankings)[neighbourIndex].numberOfCommonSynoymns + numberOfEntitiesRelated;
+            (*rankings)[neighbourIndex].numberOfCommonSynoymns =
+                    (*rankings)[neighbourIndex].numberOfCommonSynoymns + numberOfEntitiesRelated;
 
             (*priorityQueue).push({(*rankings)[neighbourIndex].numberOfCommonSynoymns,
                                    (*rankings)[neighbourIndex].numberOfFixedEntities,

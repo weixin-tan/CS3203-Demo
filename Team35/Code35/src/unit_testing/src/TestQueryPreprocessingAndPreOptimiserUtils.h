@@ -4,9 +4,6 @@
 #include <iostream>
 #include "Entity.h"
 
-extern int testingvar;
-
-
 extern Entity a;
 extern Entity a1;
 extern Entity a2;

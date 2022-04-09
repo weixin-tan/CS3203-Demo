@@ -171,7 +171,15 @@ bool checkDeclarationSemanticallyValid(std::vector<std::string>* sArr,
             return false;
         }
     }
-    return true;
+
+    bool returnBool = true;
+
+    for (int i = 1; i < (*sArr).size(); i++) {
+        for (int j = i + 1; j < (*sArr).size(); j++) {
+            returnBool = returnBool && !((*sArr)[i] == (*sArr)[j]);
+        }
+    }
+    return returnBool;
 }
 
 /**
@@ -210,7 +218,7 @@ bool checkPatternList(std::vector<std::string>* patternList) {
 bool checkPatternSyntax(std::vector<std::string>* patternList,
                         std::unordered_map<std::string, Entity>* entityMap,
                         const RelationshipRef& newRef) {
-    if (newRef.rType == RelationshipType::NULL_RELATIONSHIP){
+    if (newRef.rType == RelationshipType::NULL_RELATIONSHIP) {
         return false;
     }
     if (newRef.AssignmentEntity.eType == EntityType::ASSIGNMENT) {
@@ -227,12 +235,12 @@ bool checkPatternSyntax(std::vector<std::string>* patternList,
 bool checkWithSyntax(std::vector<std::string>* withList,
                      std::unordered_map<std::string, Entity>* entityMap,
                      const RelationshipRef& newRef) {
-    if (newRef.leftEntity.eType == EntityType::NULL_ENTITY || newRef.rightEntity.eType == EntityType::NULL_ENTITY ) {
+    if (newRef.leftEntity.eType == EntityType::NULL_ENTITY || newRef.rightEntity.eType == EntityType::NULL_ENTITY) {
         return false;
     }
     bool returnBool = true;
-    if (newRef.leftEntity.eType != EntityType::FIXED_STRING && newRef.leftEntity.eType != EntityType::FIXED_INTEGER){
-        if (newRef.leftEntity.aType == EntityAttributeType::NULL_ATTRIBUTE){
+    if (newRef.leftEntity.eType != EntityType::FIXED_STRING && newRef.leftEntity.eType != EntityType::FIXED_INTEGER) {
+        if (newRef.leftEntity.aType == EntityAttributeType::NULL_ATTRIBUTE) {
             return false;
         }
         returnBool = returnBool && isIdent(newRef.leftEntity.name);
@@ -1021,7 +1029,8 @@ bool checkVariableToSelect(const Entity& e) {
     }
 }
 
-bool checkAlreadyInClause(const std::vector<RelationshipRef>& relationshipList, const RelationshipRef& newRelationship) {
+bool checkAlreadyInClause(const std::vector<RelationshipRef>& relationshipList,
+                          const RelationshipRef& newRelationship) {
     bool toReturn = false;
     for (const RelationshipRef& rel : relationshipList) {
         toReturn = toReturn || newRelationship.equals(rel);

@@ -202,7 +202,6 @@ Entity QueryProcessor::createEntityWithAttribute(const std::string& s,
     }
 }
 
-
 void QueryProcessor::addIfNotDuplicate(Clause* newClause, const RelationshipRef& newRef) {
     if (!checkAlreadyInClause((*newClause).refList, newRef)) {
         (*newClause).appendRef(newRef);
