@@ -12,7 +12,7 @@ void SP::Parse(std::string filename) {
 
     // Creating the queue of tokens
     tokenQueue = tokeniser.putInQueue(buffer.str());
-    
+
     // Create Program
     try {
         program = concrete.parseProgram(tokenQueue);

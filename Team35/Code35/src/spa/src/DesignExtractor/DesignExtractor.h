@@ -31,7 +31,6 @@ private:
     NextExtractor nextExtractor;
     std::vector<PrecomputableRelationshipExtractor*> precomputableExtractors;
 
-
 public:
     explicit DesignExtractor(DB* db);
     void precompute();

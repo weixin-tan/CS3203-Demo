@@ -2,7 +2,7 @@
 
 Term::Term() {
     this->termFlag = false;
-    this->factorFlag = false; 
+    this->factorFlag = false;
 }
 
 TokenType Term::getOperator() const {
@@ -15,7 +15,7 @@ std::shared_ptr<Term> Term::getTerm() const {
 
 Term* Term::getTermPtr() const {
     if (!this->hasTerm()) {
-        return nullptr; 
+        return nullptr;
     }
     return this->term.get();
 }
@@ -50,5 +50,5 @@ void Term::setTerm(std::shared_ptr<Term> term) {
 
 void Term::setFactor(Factor factor) {
     this->factor = factor;
-    this->factorFlag = true; 
+    this->factorFlag = true;
 }

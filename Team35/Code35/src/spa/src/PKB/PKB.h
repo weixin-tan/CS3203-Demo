@@ -7,12 +7,12 @@
 using namespace std;
 
 class PKB {
-  DB db;
-  PkbGetter pkbGetter;
-  PkbSetter pkbSetter;
+    DB db;
+    PkbGetter pkbGetter;
+    PkbSetter pkbSetter;
 public:
-  PKB();
-  PkbGetter* getGetter();
-  PkbSetter* getSetter();
-  void clearCache();
+    PKB();
+    PkbGetter* getGetter();
+    PkbSetter* getSetter();
+    void clearCache();
 };

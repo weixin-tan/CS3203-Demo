@@ -3,7 +3,7 @@
 FollowsExtractor::FollowsExtractor(DB* db) : db(db) {}
 
 void FollowsExtractor::computeReverse() {
-    for (const auto& [leftSide, rightSides] : db->followsTable)
+    for (const auto&[leftSide, rightSides] : db->followsTable)
         for (const auto& rightSide : rightSides)
             db->followsTableR[rightSide].insert(leftSide);
     for (const auto& r : db->stmtNos)

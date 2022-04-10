@@ -15,18 +15,18 @@ public:
     Statement();
 
     Statement(int stmtNo, StatementType statementType,
-        std::vector<std::string> varName, std::vector<std::string> expr,
-        std::vector<std::string> condExpr, std::string procName,
-        std::vector<std::string> constant, std::shared_ptr<StmtLst> ifthenStmtList,
-        std::shared_ptr<StmtLst> ifelseStmtList, std::shared_ptr<StmtLst> whileStmtList);
+              std::vector<std::string> varName, std::vector<std::string> expr,
+              std::vector<std::string> condExpr, std::string procName,
+              std::vector<std::string> constant, std::shared_ptr<StmtLst> ifthenStmtList,
+              std::shared_ptr<StmtLst> ifelseStmtList, std::shared_ptr<StmtLst> whileStmtList);
 
     int stmtNo;
 
     StatementType statementType;
-    
+
     // For read, print and assignment statements
     std::vector<std::string> varName;
-    
+
     // For assignment statements
     std::vector<std::string> expr;
     Expr expression;
@@ -39,7 +39,7 @@ public:
     std::string procName;
 
     //for CONSTANT variables
-    std::vector<std::string> constant; 
+    std::vector<std::string> constant;
 
     // for then, else, while statements. 
     std::shared_ptr<StmtLst> ifthenStmtList;

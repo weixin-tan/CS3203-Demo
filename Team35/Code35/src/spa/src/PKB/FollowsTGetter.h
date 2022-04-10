@@ -18,5 +18,4 @@ public:
     std::set<ProgramElement*> getRightSide(const ProgramElement& leftSide, const ElementType& typeToGet) override;
 };
 
-
 #endif //SPA_TEAM35_CODE35_SRC_SPA_SRC_PKB_FOLLOWSTGETTER_H_

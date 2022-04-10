@@ -20,7 +20,8 @@ void AffectsExtractor::dfsAffects(int src, const std::string& var) {
 
         ElementType stmtType = db->elementStmtTable.at(curStmtNo).elementType;
         if (!isStart && ((stmtType != ElementType::WHILE) && (stmtType != ElementType::IF))
-                && db->modifiesSTable.at(curStmtNo).count(var) == 1) continue;  // modifies, don't dfs further
+                && db->modifiesSTable.at(curStmtNo).count(var) == 1)
+            continue;  // modifies, don't dfs further
         isStart = false;
         auto nextStmtNos = db->nextTable.find(curStmtNo);
         if (nextStmtNos == db->nextTable.end()) continue;
@@ -46,7 +47,8 @@ void AffectsExtractor::dfsAffectsR(int src, const std::string& var, std::set<int
 
         ElementType stmtType = db->elementStmtTable.at(curStmtNo).elementType;
         if (!isStart && ((stmtType != ElementType::WHILE) && (stmtType != ElementType::IF))
-                && db->modifiesSTable.at(curStmtNo).count(var) == 1) continue;  // modifies, don't dfs further
+                && db->modifiesSTable.at(curStmtNo).count(var) == 1)
+            continue;  // modifies, don't dfs further
         isStart = false;
         auto nextStmtNos = db->nextTableR.find(curStmtNo);
         if (nextStmtNos == db->nextTableR.end()) continue;

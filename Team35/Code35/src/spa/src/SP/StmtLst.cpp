@@ -24,5 +24,5 @@ void StmtLst::setNextStmt(Statement stmt) {
 }
 
 void StmtLst::SetContainerType(ContainerType containerType) {
-    this-> containerType = containerType;
+    this->containerType = containerType;
 }

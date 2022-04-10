@@ -11,19 +11,26 @@ ParsedStatement::ParsedStatement() {
     this->ifStmtNo = DEFAULT_NULL_STMT_NO; //if statement number refers to the statement number of if
     this->whileStmtNo = DEFAULT_NULL_STMT_NO; // while statement number refers to the statement number of while
     this->statementType = StatementType::NONE_STMT; // what kind of statement it is.
-    this->pattern = defaultPattern; 
+    this->pattern = defaultPattern;
     this->procedureName = DEFAULT_PROCEDURE_NAME;
     this->varUsed;
     this->varModified;
     this->procedureCalled = DEFAULT_PROCEDURE_NAME;
     this->preceding = DEFAULT_NULL_STMT_NO;
-    this->constant; 
+    this->constant;
 }
 
-ParsedStatement::ParsedStatement(int stmtNo, int ifStmtNo, int whileStmtNo,
-    StatementType statementType, Expr pattern, std::string procedureName,
-    std::vector<std::string> varUsed, std::vector<std::string> varModified, std::vector<std::string> constant,
-    std::string procedureCalled, int preceding) {
+ParsedStatement::ParsedStatement(int stmtNo,
+                                 int ifStmtNo,
+                                 int whileStmtNo,
+                                 StatementType statementType,
+                                 Expr pattern,
+                                 std::string procedureName,
+                                 std::vector<std::string> varUsed,
+                                 std::vector<std::string> varModified,
+                                 std::vector<std::string> constant,
+                                 std::string procedureCalled,
+                                 int preceding) {
 
     this->stmtNo = stmtNo;
     this->ifStmtNo = ifStmtNo; //if statement number refers to the statement number of if

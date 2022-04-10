@@ -1,6 +1,6 @@
 #include "PkbValidator.h"
 
-PkbValidator::PkbValidator(DB *db) : db(db) {}
+PkbValidator::PkbValidator(DB* db) : db(db) {}
 
 void PkbValidator::validateNoCyclicCall() {
     for (const auto&[proc, calledTProc] : db->callsTTable) {

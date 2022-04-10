@@ -3,7 +3,7 @@
 UsesPExtractor::UsesPExtractor(DB* db) : db(db) {}
 
 void UsesPExtractor::computeReverse() {
-    for (const auto& [leftSide, rightSides] : db->usesPTable)
+    for (const auto&[leftSide, rightSides] : db->usesPTable)
         for (const auto& rightSide : rightSides)
             db->usesPTableR[rightSide].insert(leftSide);
     for (const auto& r : db->variables)
@@ -13,7 +13,8 @@ void UsesPExtractor::computeReverse() {
 void UsesPExtractor::precomputeRelationship() {
     std::map<std::string, std::set<std::string>>& usesPTable = db->usesPTable;
     for (const auto&[_, parsedStatement] : db->stmtTable)
-        usesPTable[parsedStatement.procedureName].insert(parsedStatement.varUsed.begin(), parsedStatement.varUsed.end());
+        usesPTable[parsedStatement.procedureName].insert(parsedStatement.varUsed.begin(),
+                                                         parsedStatement.varUsed.end());
 
     for (const auto&[callingProc, calledTProcs] : db->callsTTable) {
         for (const auto& calledTProc : calledTProcs) {

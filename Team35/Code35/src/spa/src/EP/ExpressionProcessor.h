@@ -1,7 +1,6 @@
 #ifndef SPA_EXPRESSIONPROCESSOR_H
 #define SPA_EXPRESSIONPROCESSOR_H
 
-
 #include "../SP/Token.h"
 #include "../SP/Tokeniser.h"
 #include "../SP/Expr.h"
@@ -32,7 +31,7 @@ public:
     Factor parseFactor(std::queue<Token>& factorQueue);
     bool fullfillsMatching(Expr exp1, Expr exp2, ExpressionIndicator expressionIndicator) const;
     std::queue<Token> formatExpr(std::queue<Token> tokensQueue);
-    
+
 };
 
 #endif

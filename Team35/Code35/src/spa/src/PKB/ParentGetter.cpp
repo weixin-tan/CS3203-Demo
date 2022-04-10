@@ -3,7 +3,7 @@
 ParentGetter::ParentGetter(DB* db) : db(db) {}
 
 bool ParentGetter::isRelationship(const ProgramElement& leftSide, const ProgramElement& rightSide) {
-    if(!(isStatementType(leftSide.elementType) && isStatementType(rightSide.elementType)))
+    if (!(isStatementType(leftSide.elementType) && isStatementType(rightSide.elementType)))
         throw std::invalid_argument("Wrong element type for isParent");
     auto children = db->parentTable.find(leftSide.stmtNo);
     return (children != db->parentTable.end() && children->second.find(rightSide.stmtNo) != children->second.end());
@@ -11,7 +11,7 @@ bool ParentGetter::isRelationship(const ProgramElement& leftSide, const ProgramE
 
 std::set<ProgramElement*> ParentGetter::getLeftSide(const ProgramElement& rightSide, const ElementType& typeToGet) {
     std::set<ProgramElement*> result;
-    if(!(isStatementType(rightSide.elementType) && isStatementType(typeToGet)))
+    if (!(isStatementType(rightSide.elementType) && isStatementType(typeToGet)))
         throw std::invalid_argument("Wrong element type for getLeftSide on Parent");
     auto parent = db->parentTableR.find(rightSide.stmtNo);
     if (parent == db->parentTableR.end()) return {};

@@ -17,8 +17,10 @@
 class ConcreteSyntaxWithValidation {
 public:
     ConcreteSyntaxWithValidation();
-    std::map<TokenType, Statement(ConcreteSyntaxWithValidation::*)(std::queue<Token>& tokensQueue)> tokenStatementFunctionMap;
-    std::map<TokenType, Statement(ConcreteSyntaxWithValidation::*)(std::queue<Token>& tokensQueue)> initialiseTokenMap();
+    std::map<TokenType, Statement(ConcreteSyntaxWithValidation::*)(std::queue<Token>& tokensQueue)>
+            tokenStatementFunctionMap;
+    std::map<TokenType,
+             Statement(ConcreteSyntaxWithValidation::*)(std::queue<Token>& tokensQueue)> initialiseTokenMap();
     Program parseProgram(std::queue<Token> tokensQueue);
     Procedure parseProcedure(std::queue<Token>& tokensQueue);
     StmtLst parseStmtLst(std::queue<Token>& tokensQueue);
@@ -27,7 +29,7 @@ public:
     Statement parseWhile(std::queue<Token>& tokensQueue);
     Statement parseIf(std::queue<Token>& tokensQueue);
     Statement parseRead(std::queue<Token>& tokensQueue);
-    Statement parsePrint(std::queue<Token>& tokensQueue); 
+    Statement parsePrint(std::queue<Token>& tokensQueue);
     Statement parseCall(std::queue<Token>& tokensQueue);
 
     std::vector<std::vector<std::string>> parseExprString(std::queue<Token> tokensQueue);

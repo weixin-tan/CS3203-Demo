@@ -66,5 +66,4 @@ public:
     void clearCache();
 };
 
-
 #endif //SPA_DB_H

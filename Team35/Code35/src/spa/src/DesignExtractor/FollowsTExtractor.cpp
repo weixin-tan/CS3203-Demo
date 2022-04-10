@@ -4,7 +4,7 @@
 FollowsTExtractor::FollowsTExtractor(DB* db) : db(db) {}
 
 void FollowsTExtractor::computeReverse() {
-    for (const auto& [leftSide, rightSides] : db->followsTTable)
+    for (const auto&[leftSide, rightSides] : db->followsTTable)
         for (const auto& rightSide : rightSides)
             db->followsTTableR[rightSide].insert(leftSide);
     for (const auto& r : db->stmtNos)

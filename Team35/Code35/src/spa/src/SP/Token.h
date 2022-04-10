@@ -8,12 +8,10 @@
 //enum TokenType{LETTER, DIGIT, NAME,  SPECIALCHAR, SEMICOLON, RIGHT_CURLY, LEFT_CURLY, READ, PRINT, CALL, WHILE, IF,
 //        PROCEDURE, THEN, ELSE};
 
-inline const char* ToString(TokenType v)
-{
-    switch (v)
-    {
-        case TokenType::LETTER:   return "LETTER";
-        case TokenType::DIGIT:   return "DIGIT";
+inline const char* ToString(TokenType v) {
+    switch (v) {
+        case TokenType::LETTER: return "LETTER";
+        case TokenType::DIGIT: return "DIGIT";
         case TokenType::NAME: return "NAME";
         case TokenType::SPECIALCHAR: return "SPECIALCHAR";
         case TokenType::SEMICOLON: return "SEMICOLON";
@@ -27,10 +25,9 @@ inline const char* ToString(TokenType v)
         case TokenType::PROCEDURE_KEYWORD: return "PROCEDURE_KEYWORD";
         case TokenType::THEN_KEYWORD: return "THEN_KEYWORD";
         case TokenType::ELSE_KEYWORD: return "ELSE_KEYWORD";
-        default:      return "[Unknown TokenType]";
+        default: return "[Unknown TokenType]";
     }
 }
-
 
 class Token {
 public:
@@ -47,6 +44,5 @@ public:
     TokenType getToken();
     std::string getId();
 };
-
 
 #endif //SPA_TOKEN_H
