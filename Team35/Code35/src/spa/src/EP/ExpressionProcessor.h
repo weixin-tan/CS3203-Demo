@@ -20,7 +20,7 @@ class ExpressionProcessor {
     bool isSubtree(Term* term1, Term* term2) const;
     bool isSubtree(Term* term1, Expr* root2) const;
     std::shared_ptr<Expr> getNestedExpr(Term* root2) const;
-
+    int getPriority(Token token);
 
 public:
 
@@ -32,7 +32,7 @@ public:
     Factor parseFactor(std::queue<Token>& factorQueue);
     bool fullfillsMatching(Expr exp1, Expr exp2, ExpressionIndicator expressionIndicator) const;
     std::queue<Token> formatExpr(std::queue<Token> tokensQueue);
-    int getPriority(Token token);
+    
 };
 
 #endif
