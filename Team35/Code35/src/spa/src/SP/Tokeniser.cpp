@@ -201,18 +201,6 @@ std::string Tokeniser::printToken(Token token) {
     return output;
 }
 
-/*
-std::queue<Token> Tokeniser::putInQueue(std::string input) {
-    std::queue<Token> tqueue;
-    std::stringstream checker(input);
-    std::string temp;
-    while(getline(checker, temp, ' ')){
-        Token t = tokeniser(temp);
-        tqueue.push(t);
-    }
-    return tqueue;
-}
- */
 
 std::vector<std::string> Spacer(std::string input) {
     std::stringstream ss;
@@ -328,7 +316,7 @@ std::queue<Token> Tokeniser::putInQueue(std::string input) {
         }
     }
     std::queue<Token> ansQueue = forbiddenWord(tqueue);
-    //return tqueue;
+
     return ansQueue;
 
 }
@@ -355,8 +343,8 @@ std::string Tokeniser::addSpace(std::string s) {
         char check = s[i];
         bool edit = false;
         for (const auto& spaceToken : spaceList) {
-            if (s[i] == spaceToken && i <= s.length()) { //todo: check for last position
-                // TODO: RESOLVE PYRAMID OF DOOM!
+            if (s[i] == spaceToken && i <= s.length()) {
+
                 char next = s[i + 1];
                 if ((s[i] == '!' || s[i] == '=' || s[i] == '>' || s[i] == '<') && next == '=') {
                     returnString = returnString + " " + check + next + " ";
@@ -365,14 +353,7 @@ std::string Tokeniser::addSpace(std::string s) {
                     break;
 
                 }
-                if (s[i] == '&' && next == '&') {
-                    returnString = returnString + " " + check + next + " ";
-                    i++;
-                    edit = true;
-                    break;
-
-                }
-                if (s[i] == '|' && next == '|') {
+                if ( (s[i] == '&' && next == '&') || (s[i] == '|' && next == '|') ) {
                     returnString = returnString + " " + check + next + " ";
                     i++;
                     edit = true;

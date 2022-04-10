@@ -130,7 +130,7 @@ TEST_CASE("creating results"){
     result8Elements.insert(ProgramElement::createStatement(ElementType::STATEMENT, 8));
     result8Elements.insert(ProgramElement::createStatement(ElementType::STATEMENT, 9));
     result8Elements.insert(ProgramElement::createStatement(ElementType::STATEMENT, 10));
-    
+
 
 
     SECTION("Extract entities 1"){
