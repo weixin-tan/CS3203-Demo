@@ -16,7 +16,7 @@ TEST_CASE("SP round 0 iteration test") {
     Tokeniser tokeniser = Tokeniser();
     ConcreteSyntaxWithValidation concrete = ConcreteSyntaxWithValidation();
 
-    std::ifstream t("iter0.txt");
+    std::ifstream t("..\\..\\..\\..\\..\\src\\integration_testing\\src\\iter0.txt");
     std::stringstream buffer;
     buffer << t.rdbuf();
     ProcedureLst procedureLst;
@@ -74,7 +74,7 @@ TEST_CASE("SP round 1 basic iteration test") {
     Tokeniser tokeniser = Tokeniser();
     ConcreteSyntaxWithValidation concrete = ConcreteSyntaxWithValidation();
 
-    std::ifstream t("iter1.txt");
+    std::ifstream t("..\\..\\..\\..\\..\\src\\integration_testing\\src\\iter1.txt");
     std::stringstream buffer;
     buffer << t.rdbuf();
     ProcedureLst procedureLst;
@@ -232,7 +232,7 @@ TEST_CASE("SP Forbidden word") {
     Tokeniser tokeniser = Tokeniser();
     ConcreteSyntaxWithValidation concrete = ConcreteSyntaxWithValidation();
 
-    std::ifstream t("iter1forbidden.txt");
+    std::ifstream t("..\\..\\..\\..\\..\\src\\integration_testing\\src\\iter1forbidden.txt");
     std::stringstream buffer;
     buffer << t.rdbuf();
     ProcedureLst procedureLst;

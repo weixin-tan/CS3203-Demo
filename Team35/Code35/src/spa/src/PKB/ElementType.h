@@ -1,23 +1,22 @@
 #ifndef SPA_TEAM35_CODE35_SRC_SPA_SRC_PKB_ELEMENTTYPE_H_
 #define SPA_TEAM35_CODE35_SRC_SPA_SRC_PKB_ELEMENTTYPE_H_
 
-// TODO: rename to EntityType once deconflicted
 enum class ElementType {
-  // statements
-  STATEMENT,
-  READ,
-  PRINT,
-  CALL,
-  WHILE,
-  IF,
-  ASSIGNMENT,
+    // statements
+    STATEMENT,
+    READ,
+    PRINT,
+    CALL,
+    WHILE,
+    IF,
+    ASSIGNMENT,
 
-  // procedures
-  PROCEDURE,
+    // procedures
+    PROCEDURE,
 
-  // singles
-  VARIABLE,
-  CONSTANT,
+    // singles
+    VARIABLE,
+    CONSTANT,
 };
 
 bool isStatementType(const ElementType& element_type);

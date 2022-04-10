@@ -10,7 +10,7 @@ private:
     TokenType tokenType;
     std::shared_ptr<Expr> expr;
     Term term;
-    bool termFlag; 
+    bool termFlag;
     bool exprFlag;
 public:
     Expr();

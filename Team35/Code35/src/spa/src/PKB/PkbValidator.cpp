@@ -1,6 +1,6 @@
 #include "PkbValidator.h"
 
-PkbValidator::PkbValidator(DB *db) : db(db) {}
+PkbValidator::PkbValidator(DB* db) : db(db) {}
 
 void PkbValidator::validateNoCyclicCall() {
     for (const auto&[proc, calledTProc] : db->callsTTable) {
@@ -27,5 +27,19 @@ void PkbValidator::validateNoDuplicateProcedure(const std::vector<std::vector<Pa
         if (definedProcs.count(proc) != 0)
             throw std::invalid_argument("PROCEDURE " + proc + " redefined!\n");
         definedProcs.insert(proc);
+    }
+}
+
+void PkbValidator::validate(const std::vector<std::vector<ParsedStatement>>& procedures, bool testing) {
+    try {
+        validateNoCyclicCall();
+        validateCallsExists();
+        PkbValidator::validateNoDuplicateProcedure(procedures);
+    } catch (const std::exception& e) {
+        if (testing) throw e;  // testing purpose
+        std::cout <<
+                  "SIMPLE source semantic error detected. Details following:\n" <<
+                  e.what() << '\n';
+        exit(1);
     }
 }

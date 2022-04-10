@@ -2,6 +2,7 @@
 #define SPA_TOKENISER_H
 
 #include <string>
+#include <set>
 #include <queue>
 #include <sstream>
 #include <iostream>
@@ -22,7 +23,7 @@ public:
     bool isName(const std::string& str);
     Token tokeniser(std::string input);
     //std::string tokenPrinter(Tokeniser t);
-    std::queue<Token> putInQueue (std::string input);
+    std::queue<Token> putInQueue(std::string input);
     std::string printToken(Token token);
     std::string lTrim(std::string s);
     std::string rTrim(std::string s);
@@ -30,10 +31,6 @@ public:
     std::string addSpace(std::string s);
     std::queue<Token> forbiddenWord(std::queue<Token> inputQueue);
 
-
-
-
 };
-
 
 #endif //SPA_TOKENISER_H

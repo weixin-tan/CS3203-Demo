@@ -14,7 +14,6 @@ public:
     static const std::string nullStringValue;
 
 public:
-    // TODO: put back const
     ElementType elementType;
     int stmtNo;
     std::string procName;
@@ -22,10 +21,16 @@ public:
     std::string value;
 
 private:
-    ProgramElement(ElementType elementType, int stmtNo, const std::string& procName, const std::string& varName, const std::string& value);
+    ProgramElement(ElementType elementType,
+                   int stmtNo,
+                   const std::string& procName,
+                   const std::string& varName,
+                   const std::string& value);
 
 public:
-    static ProgramElement createStatement(ElementType elementType, int stmtNo, const std::string& procOrVarName = ProgramElement::nullStringValue);
+    static ProgramElement createStatement(ElementType elementType,
+                                          int stmtNo,
+                                          const std::string& procOrVarName = ProgramElement::nullStringValue);
     static ProgramElement createProcedure(const std::string& procName);
     static ProgramElement createVariable(const std::string& varName);
     static ProgramElement createConstant(const std::string& value);  // use string to avoid overflow
@@ -34,6 +39,7 @@ public:
 
     bool operator<(const ProgramElement& r) const;
     bool operator==(const ProgramElement& r) const;
+    size_t getProgramElementHash() const;
 };
 
 #endif //SPA_TEAM35_CODE35_SRC_SPA_SRC_PKB_PROGRAMELEMENT_H_

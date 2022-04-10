@@ -14,19 +14,17 @@ enum class ContainerType {
 class Statement;
 
 class StmtLst {
-private: 
+private:
     std::vector<Statement> stmts;
 public:
     StmtLst();
     ContainerType containerType;
 
-    ContainerType getContainerType(); 
+    ContainerType getContainerType();
     Statement getStmtAtIndex(int index) const;
     std::size_t getSize() const;
     void setNextStmt(Statement stmt);
     void SetContainerType(ContainerType containerType);
 };
-
-
 
 #endif

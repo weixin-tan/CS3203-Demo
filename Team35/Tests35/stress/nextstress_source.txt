@@ -1,0 +1,144 @@
+procedure main {
+	while (checker == 0) {
+		aaa = 0;
+		while (bbb = 0) {
+			aa = 0; 
+			while (bb = 0) {
+				a = 0;
+				while (b == 0) {
+					b = 0;
+					while (b == 0) {
+						b = 0;
+						while (b = 0) {
+							b = 0;
+						}
+					}
+				}
+				c = 0;
+				while (d == 0) {
+					d = 0;
+				}
+				e = 0;
+				while (f == 0) {
+					f = 0;
+				}
+				g = 0;
+			}
+			cc = 0;
+			while (dd = 0) {
+				while (i == 0) {
+					while (i == 0) {
+						while (i == 0) {
+							i = 0;
+						}
+					}
+				}
+				while (k == 0) {
+					k = 0;
+				}
+				while (n == 0) {
+					n = 0;
+				}
+			}
+			ee = 0;
+		}
+		bbb = 30;
+
+		y = 0;
+		if (a == 0) then {
+			if (aa == 0) then {
+				if (aaa == 0) then {
+					if (aaa == 0) then {
+						if (aaa = 0) then {
+							aaa = 37;
+						} else {
+							aaa = 2;
+						}
+					} else {
+						aaa = 3;
+					}
+				} else {
+					bbb = 0;
+				}
+			} else {
+				if (ccc == 0) then {
+					ccc = 0;
+				} else {
+					ddd = 0;
+				}
+			}
+		} else {
+			if (bb == 0) then {
+				if (eee == 45) then {
+					eee = 0;
+				} else {
+					fff = 0;
+				}
+			} else {
+				if (ggg == 0) then {
+					ggg = 0;
+				} else {
+					hhh = 0;
+				}
+			}
+		}
+		y = 51;
+
+		x = 0;
+		if (a == 0) then {
+			aa = 0;
+			while (b == 55) {
+				bb = 0;
+				if (c == 0) then {
+					cc = 58;
+					while (d == 0) {
+						dd = 0;
+						if (e == 0) then {
+							ee = 62;
+						} else {
+							ee = 1;
+						}
+					}
+					cc = 64;
+				} else {
+					cc = 2;
+					while (e == 0) {
+						ee = 0;
+					}
+				}
+			}
+			aa = 68;
+		} else {
+			if (f == 0) then {
+				ff = 0;
+				while (g == 0) {
+					gg = 0;
+					while (h == 0) {
+						hh = 74;
+						if (i == 0) then {
+							ii = 76;
+						} else {
+							ii = 77;
+						}
+					}
+				}
+			} else {
+				jj = 0;
+				while (j == 0) {
+					a = 1;
+					a = 2;
+					a = 3;
+					a = 4; 
+					a = 5;
+					a = 6;
+					a = 7;
+					a = 8;
+					a = 9; 
+					a = 10;
+				}
+				jj = 90;
+			}
+		}
+		x = 91;
+	}
+}

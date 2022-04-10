@@ -7,4 +7,14 @@ void DB::clearCache() {
     nextTTableR.clear();
     computedNextTSrc.clear();
     computedNextTRSrc.clear();
+
+    affectsTable.clear();
+    affectsTableR.clear();
+    computedAffectsSrc.clear();
+    computedAffectsRSrc.clear();
+
+    affectsTTable.clear();
+    affectsTTableR.clear();
+    computedAffectsTSrc.clear();
+    computedAffectsTRSrc.clear();
 }

@@ -12,13 +12,14 @@ void SP::Parse(std::string filename) {
 
     // Creating the queue of tokens
     tokenQueue = tokeniser.putInQueue(buffer.str());
-    
+
     // Create Program
     try {
         program = concrete.parseProgram(tokenQueue);
     }
     catch (const std::invalid_argument& e) {
-        std::terminate();
+        std::cout << e.what();
+        exit(1);
     }
 
     procedureLst = program.getProcedureLst();

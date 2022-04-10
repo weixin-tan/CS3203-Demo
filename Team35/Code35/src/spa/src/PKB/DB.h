@@ -9,14 +9,14 @@
 #include "ProgramElement.h"
 
 // just a dataclass to hold all the tables
-// TODO: package the table and reverse table nicely?
 struct DB {
 public:
     // relationship tables
     std::map<int, ParsedStatement> stmtTable;
     std::map<int, ProgramElement> elementStmtTable;
-    std::map<std::string, std::set<int>> constantToStmtTable;
-    std::map<int, std::set<std::string>> usesStmtToConstantTable;
+    std::map<std::string, ProgramElement> elementVarTable;
+    std::map<std::string, ProgramElement> elementProcTable;
+    std::map<std::string, ProgramElement> elementConstTable;
     std::map<int, std::set<int>> parentTable;
     std::map<int, std::set<int>> parentTableR;
     std::map<int, std::set<int>> parentTTable;
@@ -46,8 +46,17 @@ public:
     std::map<int, std::set<int>> nextTTableR;
     std::set<int> computedNextTSrc;
     std::set<int> computedNextTRSrc;
+    std::map<int, std::set<int>> affectsTable;
+    std::map<int, std::set<int>> affectsTableR;
+    std::set<int> computedAffectsSrc;
+    std::set<int> computedAffectsRSrc;
+    std::map<int, std::set<int>> affectsTTable;
+    std::map<int, std::set<int>> affectsTTableR;
+    std::set<int> computedAffectsTSrc;
+    std::set<int> computedAffectsTRSrc;
 
     // entity tables
+    std::set<int> stmtNos;
     std::set<std::string> variables;
     std::set<std::string> procedures;
     std::set<std::string> constants;
@@ -56,6 +65,5 @@ public:
     DB();
     void clearCache();
 };
-
 
 #endif //SPA_DB_H

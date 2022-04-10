@@ -4,15 +4,12 @@
 // of code would be to just overwrite the basic expr constructor to set all
 // variables to null/nullptr
 
-//TODO: Refactor the code to call a new constructor that defaults everything to
-//null or nullptr. 
-
 void setOperator(TokenType);
 void setExpr(Expr);
 void setTerm(Term);
 
 Expr::Expr() {
-    this->termFlag = false; 
+    this->termFlag = false;
     this->exprFlag = false;
     this->tokenType = TokenType::NONE;
 }
@@ -35,9 +32,9 @@ std::shared_ptr<Expr> Expr::getExpr() const {
 
 Expr* Expr::getExprPtr() const {
     if (!this->hasExpr()) {
-        return nullptr; 
+        return nullptr;
     }
-    return expr.get(); 
+    return expr.get();
 }
 
 Term Expr::getTerm() const {
@@ -52,11 +49,11 @@ Term* Expr::getTermPtr() {
 }
 
 bool Expr::hasExpr() const {
-    return exprFlag; 
+    return exprFlag;
 }
 
 bool Expr::hasTerm() const {
-    return termFlag; 
+    return termFlag;
 }
 
 void Expr::setOperator(TokenType tokenType) {
@@ -70,5 +67,5 @@ void Expr::setExpr(std::shared_ptr<Expr> expr) {
 
 void Expr::setTerm(Term term) {
     this->term = term;
-    this->termFlag = true; 
+    this->termFlag = true;
 }

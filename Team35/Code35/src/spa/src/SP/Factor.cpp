@@ -1,7 +1,7 @@
 #include "Factor.h"
 
 Factor::Factor() {
-    this->exprFlag = false; 
+    this->exprFlag = false;
 }
 
 FactorType Factor::getType() const {
@@ -24,7 +24,7 @@ std::shared_ptr<Expr> Factor::getExpr() const {
 }
 
 bool Factor::hasExpr() const {
-    return this->exprFlag; 
+    return this->exprFlag;
 }
 
 void Factor::setType(FactorType type) {
