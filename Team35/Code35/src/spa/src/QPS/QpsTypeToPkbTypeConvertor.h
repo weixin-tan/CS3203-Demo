@@ -16,5 +16,4 @@ public:
     static PkbRelationshipType convertToPkbRelType(RelationshipType t);
 };
 
-
 #endif //SPA_QPSTYPETOPKBTYPECONVERTOR_H

@@ -11,9 +11,8 @@ private:
     void computeReverse();
 
 public:
-    CallsTExtractor(DB* db);
+    explicit CallsTExtractor(DB* db);
     void precomputeRelationship() override;
 };
-
 
 #endif //SPA_TEAM35_CODE35_SRC_SPA_SRC_DESIGNEXTRACTOR_CALLSTEXTRACTOR_H_

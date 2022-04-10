@@ -21,18 +21,18 @@ private:
                                             ProgramElement* elementB,
                                             std::set<std::pair<ProgramElement*, ProgramElement*>>* toReturn);
     static std::set<ProgramElement*> matchProgramElements(const std::set<ProgramElement*>& setA,
-                                                         const Entity& fixedEntity,
-                                                         EntityAttributeType aType);
+                                                          const Entity& fixedEntity,
+                                                          EntityAttributeType aType);
     static std::set<std::pair<ProgramElement*,
                               ProgramElement*>> matchProgramElements(const std::set<ProgramElement*>& setA,
-                                                                    const std::set<ProgramElement*>& setB,
-                                                                    EntityAttributeType aType,
-                                                                    EntityAttributeType bType);
+                                                                     const std::set<ProgramElement*>& setB,
+                                                                     EntityAttributeType aType,
+                                                                     EntityAttributeType bType);
 
     static bool handleBothSidesFixed(const Entity& leftEntity, const Entity& rightEntity);
     std::set<ProgramElement*> handleOneSideFixed(const Entity& fixedSide, const Entity& notFixedSide);
     std::set<std::pair<ProgramElement*, ProgramElement*>> handleNoSideFixed(const Entity& leftEntity,
-                                                                          const Entity& rightEntity);
+                                                                            const Entity& rightEntity);
 };
 
 #endif //SPA_SRC_SPA_SRC_WITHHANDLER_H_

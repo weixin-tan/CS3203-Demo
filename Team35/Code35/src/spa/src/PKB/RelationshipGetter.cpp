@@ -4,7 +4,9 @@ bool RelationshipGetter::isStatementTypeToGet(const ElementType& typeToGet, cons
     return (typeToGet == ElementType::STATEMENT) || (typeToGet == targetType);
 }
 
-void RelationshipGetter::insertStmtElement(std::set<ProgramElement*>& result, ProgramElement* statement, const ElementType& typeToGet) {
+void RelationshipGetter::insertStmtElement(std::set<ProgramElement*>& result,
+                                           ProgramElement* statement,
+                                           const ElementType& typeToGet) {
     if (isStatementTypeToGet(typeToGet, statement->elementType))
         result.insert(statement);
 }

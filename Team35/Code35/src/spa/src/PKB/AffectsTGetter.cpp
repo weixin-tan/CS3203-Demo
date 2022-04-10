@@ -6,7 +6,8 @@ bool AffectsTGetter::isRelationship(const ProgramElement& leftSide, const Progra
     if (!(isStatementType(leftSide.elementType) && isStatementType(rightSide.elementType)))
         throw std::invalid_argument("Wrong element type for isAffectsT");
     if (db->elementStmtTable.at(leftSide.stmtNo).elementType != ElementType::ASSIGNMENT
-            || db->elementStmtTable.at(rightSide.stmtNo).elementType != ElementType::ASSIGNMENT) return false;
+            || db->elementStmtTable.at(rightSide.stmtNo).elementType != ElementType::ASSIGNMENT)
+        return false;
     affectsTExtractor.extractAffectsT(leftSide.stmtNo);
     auto affects = db->affectsTTable.at(leftSide.stmtNo);
     return affects.count(rightSide.stmtNo) != 0;
@@ -14,7 +15,7 @@ bool AffectsTGetter::isRelationship(const ProgramElement& leftSide, const Progra
 
 std::set<ProgramElement*> AffectsTGetter::getLeftSide(const ProgramElement& rightSide, const ElementType& typeToGet) {
     std::set<ProgramElement*> result;
-    if(!(isStatementType(rightSide.elementType) && isStatementType(typeToGet)))
+    if (!(isStatementType(rightSide.elementType) && isStatementType(typeToGet)))
         throw std::invalid_argument("Wrong element type for getLeftSide on AffectsT");
     if (db->elementStmtTable.at(rightSide.stmtNo).elementType != ElementType::ASSIGNMENT
             || ((typeToGet != ElementType::ASSIGNMENT) && (typeToGet != ElementType::STATEMENT)))

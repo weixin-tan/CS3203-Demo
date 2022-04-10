@@ -3,13 +3,12 @@
 ParentExtractor::ParentExtractor(DB* db) : db(db) {}
 
 void ParentExtractor::computeReverse() {
-    for (const auto& [leftSide, rightSides] : db->parentTable)
+    for (const auto&[leftSide, rightSides] : db->parentTable)
         for (const auto& rightSide : rightSides)
             db->parentTableR[rightSide].insert(leftSide);
     for (const auto& r : db->stmtNos)
         if (db->parentTableR.find(r) == db->parentTableR.end()) db->parentTableR.insert({r, {}});
 }
-
 
 void ParentExtractor::precomputeRelationship() {
     std::map<int, std::set<int>>& parentTable = db->parentTable;

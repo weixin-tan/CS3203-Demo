@@ -3,7 +3,7 @@
 ModifiesSExtractor::ModifiesSExtractor(DB* db) : db(db) {}
 
 void ModifiesSExtractor::computeReverse() {
-    for (const auto& [leftSide, rightSides] : db->modifiesSTable)
+    for (const auto&[leftSide, rightSides] : db->modifiesSTable)
         for (const auto& rightSide : rightSides)
             db->modifiesSTableR[rightSide].insert(leftSide);
     for (const auto& r : db->variables)

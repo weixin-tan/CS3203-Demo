@@ -680,7 +680,6 @@ std::vector<std::string> extractWithClauses(const std::string& s) {
         i = i + 1;
     }
 
-
     while (tokenList.size() % 4 != 0) {
         tokenList.emplace_back("");
     }
@@ -859,11 +858,11 @@ std::vector<std::string> extractPatternBrackets(const std::string& s) {
     return returnList;
 }
 
-std::vector<std::string> extractWithSynoymns(const std::string& s){
+std::vector<std::string> extractWithSynoymns(const std::string& s) {
     std::vector<std::string> toReturn;
     std::vector<std::string> withList = splitStringBySpaces(s);
 
-    if (withList.size() == 3 && withList[1] == "="){
+    if (withList.size() == 3 && withList[1] == "=") {
         toReturn.push_back(withList[0]);
         toReturn.push_back(withList[2]);
     }

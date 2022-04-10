@@ -9,8 +9,10 @@ ConcreteSyntaxWithValidation::ConcreteSyntaxWithValidation() {
     this->tokenStatementFunctionMap = ConcreteSyntaxWithValidation::initialiseTokenMap();
 }
 
-std::map<TokenType, Statement(ConcreteSyntaxWithValidation::*)(std::queue<Token>& tokensQueue)> ConcreteSyntaxWithValidation::initialiseTokenMap() {
-    std::map<TokenType, Statement(ConcreteSyntaxWithValidation::*)(std::queue<Token>& tokensQueue)> tokenStatementFunctionMap; 
+std::map<TokenType,
+         Statement(ConcreteSyntaxWithValidation::*)(std::queue<Token>& tokensQueue)> ConcreteSyntaxWithValidation::initialiseTokenMap() {
+    std::map<TokenType, Statement(ConcreteSyntaxWithValidation::*)(std::queue<Token>& tokensQueue)>
+            tokenStatementFunctionMap;
 
     tokenStatementFunctionMap.emplace(TokenType::READ_KEYWORD, &ConcreteSyntaxWithValidation::parseRead);
     tokenStatementFunctionMap.emplace(TokenType::PRINT_KEYWORD, &ConcreteSyntaxWithValidation::parsePrint);
@@ -70,7 +72,7 @@ Procedure ConcreteSyntaxWithValidation::parseProcedure(std::queue<Token>& tokens
     try {
         stmtLst = ConcreteSyntaxWithValidation::parseStmtLst(tokensQueue);
     }
-    catch (const std::invalid_argument& e){
+    catch (const std::invalid_argument& e) {
         throw;
     }
     stmtLst.SetContainerType(ContainerType::PROCEDURE_CONTAINER);
@@ -124,8 +126,8 @@ Statement ConcreteSyntaxWithValidation::parseStmt(std::queue<Token>& tokensQueue
     TokenType frontTokenType = tokensQueue.front().getToken();
     try {
         if (frontTokenType != TokenType::READ_KEYWORD && frontTokenType != TokenType::PRINT_KEYWORD
-            && frontTokenType != TokenType::CALL_KEYWORD && frontTokenType != TokenType::WHILE_KEYWORD
-            && frontTokenType != TokenType::IF_KEYWORD && frontTokenType != TokenType::NAME) {
+                && frontTokenType != TokenType::CALL_KEYWORD && frontTokenType != TokenType::WHILE_KEYWORD
+                && frontTokenType != TokenType::IF_KEYWORD && frontTokenType != TokenType::NAME) {
             throw std::invalid_argument("Invalid statement declaration keyword.");
         }
         return (this->*tokenStatementFunctionMap.at(frontTokenType))(tokensQueue);
@@ -168,7 +170,7 @@ Statement ConcreteSyntaxWithValidation::parseAssign(std::queue<Token>& tokensQue
     }
     assignStmt.expr = resultString[0];
     assignStmt.constant = resultString[1];
-    
+
     // pass Expression class
     ExpressionProcessor ep = ExpressionProcessor();
 
@@ -201,21 +203,19 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseExprStr
     while ((!tokensQueue.empty()) && (!isFrontQueueTokenType(tokensQueue, TokenType::SEMICOLON))) {
         if (isFrontQueueTokenType(tokensQueue, TokenType::NAME)) {
             result[0].push_back(tokensQueue.front().getId());
-        }
-        else if (isFrontQueueTokenType(tokensQueue, TokenType::INTEGER) || isFrontQueueTokenType(tokensQueue, TokenType::DIGIT)){
+        } else if (isFrontQueueTokenType(tokensQueue, TokenType::INTEGER)
+                || isFrontQueueTokenType(tokensQueue, TokenType::DIGIT)) {
             result[1].push_back(tokensQueue.front().getId());
         }
-        // other valid symbols in expr
+            // other valid symbols in expr
         else if ((isFrontQueueTokenType(tokensQueue, TokenType::LEFT_BRACE)) ||
-            (isFrontQueueTokenType(tokensQueue, TokenType::RIGHT_BRACE)) ||
-            (isFrontQueueTokenType(tokensQueue, TokenType::ADD)) ||
-            (isFrontQueueTokenType(tokensQueue, TokenType::SUBTRACT)) ||
-            (isFrontQueueTokenType(tokensQueue, TokenType::MULTIPLY)) ||
-            (isFrontQueueTokenType(tokensQueue, TokenType::DIVIDE)) ||
-            (isFrontQueueTokenType(tokensQueue, TokenType::MODULO))) {
-            ;
-        }
-        else {
+                (isFrontQueueTokenType(tokensQueue, TokenType::RIGHT_BRACE)) ||
+                (isFrontQueueTokenType(tokensQueue, TokenType::ADD)) ||
+                (isFrontQueueTokenType(tokensQueue, TokenType::SUBTRACT)) ||
+                (isFrontQueueTokenType(tokensQueue, TokenType::MULTIPLY)) ||
+                (isFrontQueueTokenType(tokensQueue, TokenType::DIVIDE)) ||
+                (isFrontQueueTokenType(tokensQueue, TokenType::MODULO))) { ;
+        } else {
             throw std::invalid_argument("Invalid symbol in expression.");
         }
         tokensQueue.pop();
@@ -297,35 +297,32 @@ std::vector<std::vector<std::string>> ConcreteSyntaxWithValidation::parseCondExp
 
         if (isFrontQueueTokenType(tokensQueue, TokenType::LEFT_BRACE)) {
             closure++;
-        }
-        else if (isFrontQueueTokenType(tokensQueue, TokenType::RIGHT_BRACE))  {
+        } else if (isFrontQueueTokenType(tokensQueue, TokenType::RIGHT_BRACE)) {
             if (closure == 1) {
                 closure--;
                 // remove right_brace
                 tokensQueue.pop();
                 break;
-            }
-            else {
+            } else {
                 closure--;
             }
-        }
-        else if (isFrontQueueTokenType(tokensQueue, TokenType::NAME)) {
+        } else if (isFrontQueueTokenType(tokensQueue, TokenType::NAME)) {
             result[0].push_back(tokensQueue.front().getId());
-        }
-        else if (isFrontQueueTokenType(tokensQueue, TokenType::INTEGER) || isFrontQueueTokenType(tokensQueue, TokenType::DIGIT)) {
+        } else if (isFrontQueueTokenType(tokensQueue, TokenType::INTEGER)
+                || isFrontQueueTokenType(tokensQueue, TokenType::DIGIT)) {
             result[1].push_back(tokensQueue.front().getId());
         }
-        // invalid symbols in condExpr
+            // invalid symbols in condExpr
         else if ((isFrontQueueTokenType(tokensQueue, TokenType::SPECIALCHAR)) ||
-            (isFrontQueueTokenType(tokensQueue, TokenType::SEMICOLON)) ||
-            (isFrontQueueTokenType(tokensQueue, TokenType::LEFT_CURLY)) ||
-            (isFrontQueueTokenType(tokensQueue, TokenType::RIGHT_CURLY)) ||
-            (isFrontQueueTokenType(tokensQueue, TokenType::READ_KEYWORD)) ||
-            (isFrontQueueTokenType(tokensQueue, TokenType::PRINT_KEYWORD)) ||
-            (isFrontQueueTokenType(tokensQueue, TokenType::CALL_KEYWORD)) ||
-            (isFrontQueueTokenType(tokensQueue, TokenType::WHILE_KEYWORD)) ||
-            (isFrontQueueTokenType(tokensQueue, TokenType::IF_KEYWORD)) ||
-            (isFrontQueueTokenType(tokensQueue, TokenType::PROCEDURE_KEYWORD))) {
+                (isFrontQueueTokenType(tokensQueue, TokenType::SEMICOLON)) ||
+                (isFrontQueueTokenType(tokensQueue, TokenType::LEFT_CURLY)) ||
+                (isFrontQueueTokenType(tokensQueue, TokenType::RIGHT_CURLY)) ||
+                (isFrontQueueTokenType(tokensQueue, TokenType::READ_KEYWORD)) ||
+                (isFrontQueueTokenType(tokensQueue, TokenType::PRINT_KEYWORD)) ||
+                (isFrontQueueTokenType(tokensQueue, TokenType::CALL_KEYWORD)) ||
+                (isFrontQueueTokenType(tokensQueue, TokenType::WHILE_KEYWORD)) ||
+                (isFrontQueueTokenType(tokensQueue, TokenType::IF_KEYWORD)) ||
+                (isFrontQueueTokenType(tokensQueue, TokenType::PROCEDURE_KEYWORD))) {
             throw std::invalid_argument("Invalid symbol.");
         }
 

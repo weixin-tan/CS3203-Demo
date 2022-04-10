@@ -14,7 +14,7 @@ private:
     std::set<ProgramElement*> handleLeftWildcard(const Entity& right, const Entity& patternType);
     std::set<ProgramElement*> handleLeftFixed(const Entity& left, const Entity& right, const Entity& patternType);
     std::set<std::pair<ProgramElement*, ProgramElement*>> handleLeftVariable(const Entity& left, const Entity& right,
-                                                                           const Entity& patternType);
+                                                                             const Entity& patternType);
 
 public:
     explicit PatternHandler(PkbGetter* pg);

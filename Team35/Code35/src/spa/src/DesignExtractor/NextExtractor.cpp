@@ -4,7 +4,7 @@
 NextExtractor::NextExtractor(DB* db) : db(db) {}
 
 void NextExtractor::computeReverse() {
-    for (const auto& [leftSide, rightSides] : db->nextTable)
+    for (const auto&[leftSide, rightSides] : db->nextTable)
         for (const auto& rightSide : rightSides)
             db->nextTableR[rightSide].insert(leftSide);
     for (const auto& r : db->stmtNos)
@@ -53,7 +53,7 @@ void NextExtractor::dfsNext(const int& originStmt, std::set<int>& visited) {
 }
 
 void NextExtractor::computeStmtListHead() {
-    for (const auto& [stmtNo, parsedStatement]: db->stmtTable) {
+    for (const auto&[stmtNo, parsedStatement] : db->stmtTable) {
         int parentStmtNo = ((parsedStatement.ifStmtNo != ParsedStatement::DEFAULT_NULL_STMT_NO)
                             ? parsedStatement.ifStmtNo
                             : parsedStatement.whileStmtNo);
@@ -62,7 +62,7 @@ void NextExtractor::computeStmtListHead() {
             stmtListHead[parentStmtNo].insert(stmtNo);
         }
     }
-    for (const auto& [stmtNo, parsedStatement]: db->stmtTable) {
+    for (const auto&[stmtNo, parsedStatement] : db->stmtTable) {
         int parentStmtNo = ((parsedStatement.ifStmtNo != ParsedStatement::DEFAULT_NULL_STMT_NO)
                             ? parsedStatement.ifStmtNo
                             : parsedStatement.whileStmtNo);
@@ -77,7 +77,7 @@ void NextExtractor::precomputeRelationship() {
     std::map<int, std::set<int>>& nextTable = db->nextTable;
     computeStmtListHead();
     std::set<int> visited;
-    for (const auto& [stmtNo, _]: db->stmtTable) {
+    for (const auto&[stmtNo, _] : db->stmtTable) {
         if (visited.find(stmtNo) == visited.end())
             dfsNext(stmtNo, visited);
     }

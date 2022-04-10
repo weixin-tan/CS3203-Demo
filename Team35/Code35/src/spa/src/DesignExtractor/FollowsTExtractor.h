@@ -15,5 +15,4 @@ public:
     void precomputeRelationship() override;
 };
 
-
 #endif //SPA_TEAM35_CODE35_SRC_SPA_SRC_DESIGNEXTRACTOR_FOLLOWSTEXTRACTOR_H_

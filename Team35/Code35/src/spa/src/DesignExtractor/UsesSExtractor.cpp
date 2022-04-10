@@ -3,7 +3,7 @@
 UsesSExtractor::UsesSExtractor(DB* db) : db(db) {}
 
 void UsesSExtractor::computeReverse() {
-    for (const auto& [leftSide, rightSides] : db->usesSTable)
+    for (const auto&[leftSide, rightSides] : db->usesSTable)
         for (const auto& rightSide : rightSides)
             db->usesSTableR[rightSide].insert(leftSide);
     for (const auto& r : db->variables)

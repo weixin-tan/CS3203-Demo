@@ -1,27 +1,28 @@
 #include "TableRow.h"
 
+#include <utility>
 
-// this is required to label all the tablerows present. 
-unsigned int TableRow::counter = 0; 
+// this is required to label all the tablerows present.
+unsigned int TableRow::counter = 0;
 
 // creating a tablerow
 TableRow::TableRow(std::unordered_map<Entity, ProgramElement*, EntityHashFunction> row) {
-    tableId = counter; 
+    tableId = counter;
     // increasing the counter by 1 to give each row a unique id. 
-    counter++; 
-    this->row = row; 
+    counter++;
+    this->row = std::move(row);
 }
 
 // Creating an empty tablerow. 
 TableRow::TableRow() {
-    tableId = counter; 
+    tableId = counter;
     counter++;
     this->row = {};
 }
 
 // Combining a row together. We use the boolean to see if it is correct. 
 // optimises by merging the rows that are the shortest together. 
-std::pair<bool, TableRow> TableRow::combineRow(TableRow const *row1, TableRow const *row2) {
+std::pair<bool, TableRow> TableRow::combineRow(TableRow const* row1, TableRow const* row2) {
     for (const auto&[entity, element] : row2->row) {
         // If there are no entities in the row, we continue. 
         if (row1->row.count(entity) == 0) continue;
@@ -38,14 +39,13 @@ std::pair<bool, TableRow> TableRow::combineRow(TableRow const *row1, TableRow co
 }
 
 // Filters the entities to get only the tableRow with the following entites. 
-TableRow TableRow::filterRow(TableRow const *row, const std::vector<Entity> &entities) {
+TableRow TableRow::filterRow(TableRow const* row, const std::vector<Entity>& entities) {
     // Inside the map. we create a new map of elements. 
     std::unordered_map<Entity, ProgramElement*, EntityHashFunction> newRow;
     for (const auto& entity : entities) {
         if (row->row.find(entity) != row->row.end()) {
             newRow.emplace(entity, row->row.at(entity));
-        }
-        else {
+        } else {
             return {};
         }
     }
@@ -53,23 +53,21 @@ TableRow TableRow::filterRow(TableRow const *row, const std::vector<Entity> &ent
 }
 
 // for comparing elements for map
-bool TableRow::operator<(TableRow row1) const {
+bool TableRow::operator<(const TableRow& row1) const {
     return this->tableId < row1.tableId;
 }
 
 bool TableRow::operator==(TableRow row1) const {
     return row.size() == row1.row.size()
-        && std::equal(row.begin(), row.end(),
-            row1.row.begin());
+            && std::equal(row.begin(), row.end(),
+                          row1.row.begin());
 }
 
-
-size_t TableRowHash::operator()(const TableRow& tableRow) const
-{
+size_t TableRowHash::operator()(const TableRow& tableRow) const {
     size_t beginning = std::hash<int>()(0);
-    for (const auto& [entity, element] : tableRow.row) {
+    for (const auto&[entity, element] : tableRow.row) {
         beginning ^= (entity.getEntityHash() ^ element->getProgramElementHash());
     }
     return beginning;
-    
+
 }

@@ -94,22 +94,22 @@ bool SuchThatHandler::handleNoSynProcWildcard(PkbRelationshipType r, const Entit
 
     if (left.eType == EntityType::WILDCARD && right.eType == EntityType::WILDCARD) {
         std::set<std::pair<ProgramElement*, ProgramElement*>> check = pg->getRelationshipPairs(r,
-                                                                                             ElementType::PROCEDURE,
-                                                                                             ElementType::PROCEDURE);
+                                                                                               ElementType::PROCEDURE,
+                                                                                               ElementType::PROCEDURE);
         if (!check.empty()) {
             valid = true;
         }
     } else if (left.eType == EntityType::WILDCARD) {
         std::set<ProgramElement*> check = pg->getLeftSide(r,
-                                                         ProgramElement::createProcedure(right.name),
-                                                         ElementType::PROCEDURE);
+                                                          ProgramElement::createProcedure(right.name),
+                                                          ElementType::PROCEDURE);
         if (!check.empty()) {
             valid = true;
         }
     } else {
         std::set<ProgramElement*> check = pg->getRightSide(r,
-                                                          ProgramElement::createProcedure(left.name),
-                                                          ElementType::PROCEDURE);
+                                                           ProgramElement::createProcedure(left.name),
+                                                           ElementType::PROCEDURE);
         if (!check.empty()) {
             valid = true;
         }
@@ -134,7 +134,7 @@ bool SuchThatHandler::handleNoSynStmtWildcard(PkbRelationshipType r, const Entit
         std::set<ProgramElement*> check;
         check = pg->getLeftSide(r,
                                 ProgramElement::createStatement(ElementType::STATEMENT,
-                                                                    std::stoi(right.name)),
+                                                                std::stoi(right.name)),
                                 ElementType::STATEMENT);
 
         if (!check.empty()) {
@@ -144,7 +144,7 @@ bool SuchThatHandler::handleNoSynStmtWildcard(PkbRelationshipType r, const Entit
     } else {
         std::set<ProgramElement*> check;
         check = pg->getRightSide(r, ProgramElement::createStatement(ElementType::STATEMENT,
-                                                                        std::stoi(left.name)),
+                                                                    std::stoi(left.name)),
                                  ElementType::STATEMENT);
 
         if (!check.empty()) {
@@ -161,17 +161,17 @@ bool SuchThatHandler::handleNoSynVarWildcard(PkbRelationshipType r, const Entity
 
     if (left.eType == EntityType::FIXED_STRING) {
         std::set<ProgramElement*> check = pg->getRightSide(r,
-                                                          ProgramElement::createProcedure(left.name),
-                                                          ElementType::VARIABLE);
+                                                           ProgramElement::createProcedure(left.name),
+                                                           ElementType::VARIABLE);
         if (!check.empty()) {
             valid = true;
         }
     }
     if (left.eType == EntityType::FIXED_INTEGER) {
         std::set<ProgramElement*> check = pg->getRightSide(r,
-                                                          ProgramElement::createStatement(ElementType::STATEMENT,
-                                                                                          std::stoi(left.name)),
-                                                          ElementType::VARIABLE);
+                                                           ProgramElement::createStatement(ElementType::STATEMENT,
+                                                                                           std::stoi(left.name)),
+                                                           ElementType::VARIABLE);
         if (!check.empty()) {
             valid = true;
         }
@@ -181,7 +181,9 @@ bool SuchThatHandler::handleNoSynVarWildcard(PkbRelationshipType r, const Entity
 }
 
 // Handles cases where there is a synonym on right side
-std::set<ProgramElement*> SuchThatHandler::handleRightSyn(PkbRelationshipType r, const Entity& left, const Entity& right) {
+std::set<ProgramElement*> SuchThatHandler::handleRightSyn(PkbRelationshipType r,
+                                                          const Entity& left,
+                                                          const Entity& right) {
     std::set<ProgramElement*> oneSynSet;
     ElementType rightElemType = QpsTypeToPkbTypeConvertor::convertToPkbElement(right.eType);
 
@@ -209,7 +211,9 @@ std::set<ProgramElement*> SuchThatHandler::handleRightSyn(PkbRelationshipType r,
 }
 
 // Handles cases where there is a synonym on left side
-std::set<ProgramElement*> SuchThatHandler::handleLeftSyn(PkbRelationshipType r, const Entity& left, const Entity& right) {
+std::set<ProgramElement*> SuchThatHandler::handleLeftSyn(PkbRelationshipType r,
+                                                         const Entity& left,
+                                                         const Entity& right) {
     std::set<ProgramElement*> oneSynSet;
     ElementType leftElemType = QpsTypeToPkbTypeConvertor::convertToPkbElement(left.eType);
 
@@ -245,8 +249,8 @@ std::set<std::pair<ProgramElement*, ProgramElement*>>
 SuchThatHandler::handleTwoSyn(PkbRelationshipType r, const Entity& left, const Entity& right) {
     ElementType leftElemType = QpsTypeToPkbTypeConvertor::convertToPkbElement(left.eType);
     ElementType rightElemType = QpsTypeToPkbTypeConvertor::convertToPkbElement(right.eType);
-    std::set<std::pair<ProgramElement*, ProgramElement*>> allPairs = pg->getRelationshipPairs(r,leftElemType,
-                                                                                            rightElemType);
+    std::set<std::pair<ProgramElement*, ProgramElement*>> allPairs = pg->getRelationshipPairs(r, leftElemType,
+                                                                                              rightElemType);
     if (left == right) {
         std::set<std::pair<ProgramElement*, ProgramElement*>> resultPairs;
         for (const auto& p : allPairs) {

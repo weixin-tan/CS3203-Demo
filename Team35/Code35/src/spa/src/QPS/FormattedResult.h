@@ -29,5 +29,4 @@ public:
     bool operator==(const FormattedResult& f1) const;
 };
 
-
 #endif //SPA_FORMATTEDRESULT_H

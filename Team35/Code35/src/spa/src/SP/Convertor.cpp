@@ -3,7 +3,6 @@
 std::string Convertor::currProcedureName = "no_procedure";
 std::vector<ParsedStatement> Convertor::finalResults;
 
-
 Convertor::Convertor(PkbSetter* pkb_setter) {
     this->pkb_setter = pkb_setter;
     this->statementFunctionMap = Convertor::initialiseMap();
@@ -45,7 +44,10 @@ std::vector<ParsedStatement> Convertor::statementListReader(StmtLst statementLis
 
 // Reading every statement in the container. 
     for (int i = 0; i < statementList.getSize(); i++) {
-        finalResults.push_back(this->readStatement(statementList.getStmtAtIndex(i), containerType, nestedstack, containerNumber));
+        finalResults.push_back(this->readStatement(statementList.getStmtAtIndex(i),
+                                                   containerType,
+                                                   nestedstack,
+                                                   containerNumber));
     }
 
     return finalResults;
@@ -61,9 +63,9 @@ std::vector<ParsedStatement> Convertor::statementListReader(StmtLst statementLis
 // would not follow the same format as the SIMPLE source code. Hence, a vector could be used to store and sort
 // based on statement number. 
 ParsedStatement Convertor::readStatement(Statement stmt, ContainerType containerType,
-    std::stack<int> &nestedStack, int containerNum) {
+                                         std::stack<int>& nestedStack, int containerNum) {
 
-    ParsedStatement current_statement; 
+    ParsedStatement current_statement;
     current_statement.stmtNo = stmt.stmtNo;
     current_statement.procedureName = currProcedureName;
     current_statement.preceding = nestedStack.top();
@@ -71,18 +73,14 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
 
     //populate container type (parent)
     switch (containerType) {
-    case ContainerType::IF_THEN_CONTAINER:
-    case ContainerType::IF_ELSE_CONTAINER:
-        current_statement.ifStmtNo = containerNum;
-        break;
-    case ContainerType::WHILE_CONTAINER:
-        current_statement.whileStmtNo = containerNum;
-        break;
-    case ContainerType::PROCEDURE_CONTAINER:
-        break;
-    default:
-        throw std::invalid_argument("no such container type");
-        break;
+        case ContainerType::IF_THEN_CONTAINER:
+        case ContainerType::IF_ELSE_CONTAINER:current_statement.ifStmtNo = containerNum;
+            break;
+        case ContainerType::WHILE_CONTAINER:current_statement.whileStmtNo = containerNum;
+            break;
+        case ContainerType::PROCEDURE_CONTAINER:break;
+        default:throw std::invalid_argument("no such container type");
+            break;
     }
 
     //push the value into the stack
@@ -91,24 +89,23 @@ ParsedStatement Convertor::readStatement(Statement stmt, ContainerType container
     //Check the statement types and extract required values
     try {
         current_statement = (this->*statementFunctionMap.at(stmt.statementType))(stmt, &current_statement);
-    } catch(std::out_of_range& e){
+    } catch (std::out_of_range& e) {
         throw std::invalid_argument("no such statement type");
     }
 
-    return current_statement; 
+    return current_statement;
 }
 
-
-ParsedStatement Convertor::extractAssignmentStatement(Statement stmt, ParsedStatement *current_statement) {
+ParsedStatement Convertor::extractAssignmentStatement(Statement stmt, ParsedStatement* current_statement) {
     current_statement->varModified = stmt.varName;
     current_statement->varUsed = stmt.expr;
     current_statement->constant = stmt.constant;
     current_statement->pattern = stmt.expression;
-    return *current_statement; 
+    return *current_statement;
 }
 
-ParsedStatement Convertor::extractIfStatement(Statement stmt, ParsedStatement *current_statement) {
-    
+ParsedStatement Convertor::extractIfStatement(Statement stmt, ParsedStatement* current_statement) {
+
     current_statement->varUsed = stmt.condExpr;
     current_statement->constant = stmt.constant;
     current_statement->pattern = stmt.expression;
@@ -119,7 +116,7 @@ ParsedStatement Convertor::extractIfStatement(Statement stmt, ParsedStatement *c
     return *current_statement;
 }
 
-ParsedStatement Convertor::extractCallStatement(Statement stmt, ParsedStatement *current_statement) {
+ParsedStatement Convertor::extractCallStatement(Statement stmt, ParsedStatement* current_statement) {
     current_statement->procedureCalled = stmt.procName;
     return *current_statement;
 }

@@ -9,8 +9,8 @@
 class TableRow {
 
 public:
-    static unsigned int counter; 
-    int tableId; 
+    static unsigned int counter;
+    int tableId;
 
     // Unordered map would use the entity hash function. 
     std::unordered_map<Entity, ProgramElement*, EntityHashFunction> row;
@@ -18,14 +18,14 @@ public:
     TableRow();
 
 public:
-    static std::pair<bool, TableRow> combineRow(TableRow const *row1, TableRow const *row2);
-    static TableRow filterRow(TableRow const * row, const std::vector<Entity> &entities);
-    bool operator<(TableRow row1) const;
+    static std::pair<bool, TableRow> combineRow(TableRow const* row1, TableRow const* row2);
+    static TableRow filterRow(TableRow const* row, const std::vector<Entity>& entities);
+    bool operator<(const TableRow& row1) const;
     bool operator==(TableRow row1) const;
 };
 
 class TableRowHash {
-public: 
+public:
     size_t operator()(const TableRow& tableRow) const;
 };
 

@@ -3,7 +3,7 @@
 ModifiesPExtractor::ModifiesPExtractor(DB* db) : db(db) {}
 
 void ModifiesPExtractor::computeReverse() {
-    for (const auto& [leftSide, rightSides] : db->modifiesPTable)
+    for (const auto&[leftSide, rightSides] : db->modifiesPTable)
         for (const auto& rightSide : rightSides)
             db->modifiesPTableR[rightSide].insert(leftSide);
     for (const auto& r : db->variables)
@@ -13,7 +13,8 @@ void ModifiesPExtractor::computeReverse() {
 void ModifiesPExtractor::precomputeRelationship() {
     std::map<std::string, std::set<std::string>>& modifiesPTable = db->modifiesPTable;
     for (const auto&[_, parsedStatement] : db->stmtTable)
-        modifiesPTable[parsedStatement.procedureName].insert(parsedStatement.varModified.begin(), parsedStatement.varModified.end());
+        modifiesPTable[parsedStatement.procedureName].insert(parsedStatement.varModified.begin(),
+                                                             parsedStatement.varModified.end());
 
     for (const auto&[callingProc, calledTProcs] : db->callsTTable) {
         for (const auto& calledTProc : calledTProcs) {
@@ -26,4 +27,3 @@ void ModifiesPExtractor::precomputeRelationship() {
         if (modifiesPTable.find(proc) == modifiesPTable.end()) modifiesPTable.insert({proc, {}});
     computeReverse();
 }
-

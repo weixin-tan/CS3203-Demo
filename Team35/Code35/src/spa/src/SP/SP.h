@@ -16,12 +16,12 @@ public:
     Tokeniser tokeniser;
     ConcreteSyntaxWithValidation concrete;
     Convertor convertor;
-    
+
     SP(PkbSetter* pkb_setter);
 
     void Parse(std::string filename);
-    
-    Program program; 
+
+    Program program;
     std::queue<Token> tokenQueue;
 };
 

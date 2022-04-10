@@ -5,11 +5,11 @@
 
 const std::map<StatementType, ElementType> PkbSetter::spTypeToElementTypeTable = {
         {StatementType::ASSIGNMENT_STMT, ElementType::ASSIGNMENT},
-        {StatementType::PRINT_STMT,  ElementType::PRINT},
-        {StatementType::CALL_STMT,   ElementType::CALL},
-        {StatementType::IF_STMT,     ElementType::IF},
-        {StatementType::WHILE_STMT,  ElementType::WHILE},
-        {StatementType::READ_STMT,   ElementType::READ}
+        {StatementType::PRINT_STMT, ElementType::PRINT},
+        {StatementType::CALL_STMT, ElementType::CALL},
+        {StatementType::IF_STMT, ElementType::IF},
+        {StatementType::WHILE_STMT, ElementType::WHILE},
+        {StatementType::READ_STMT, ElementType::READ}
 };
 
 PkbSetter::PkbSetter(DB* db) : db(db), designExtractor(db), pkbValidator(db) {}
@@ -21,11 +21,11 @@ void PkbSetter::handleStatement(const ParsedStatement& parsedStatement) {
 }
 
 void PkbSetter::handleVariables(const ParsedStatement& parsedStatement) {
-    for (const auto& var: parsedStatement.varModified) {
+    for (const auto& var : parsedStatement.varModified) {
         db->variables.insert(var);
         db->elementVarTable.insert({var, ProgramElement::createVariable(var)});
     }
-    for (const auto& var: parsedStatement.varUsed) {
+    for (const auto& var : parsedStatement.varUsed) {
         db->variables.insert(var);
         db->elementVarTable.insert({var, ProgramElement::createVariable(var)});
     }
@@ -33,7 +33,8 @@ void PkbSetter::handleVariables(const ParsedStatement& parsedStatement) {
 
 void PkbSetter::handleProcedure(const ParsedStatement& parsedStatement) {
     db->procedures.insert(parsedStatement.procedureName);
-    db->elementProcTable.insert({parsedStatement.procedureName, ProgramElement::createProcedure(parsedStatement.procedureName)});
+    db->elementProcTable.insert({parsedStatement.procedureName,
+                                 ProgramElement::createProcedure(parsedStatement.procedureName)});
 }
 
 void PkbSetter::handleConstants(const ParsedStatement& statement) {

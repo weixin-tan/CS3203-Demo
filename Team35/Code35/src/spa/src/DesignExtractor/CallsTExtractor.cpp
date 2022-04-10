@@ -4,7 +4,7 @@
 CallsTExtractor::CallsTExtractor(DB* db) : db(db) {}
 
 void CallsTExtractor::computeReverse() {
-    for (const auto& [leftSide, rightSides] : db->callsTTable)
+    for (const auto&[leftSide, rightSides] : db->callsTTable)
         for (const auto& rightSide : rightSides)
             db->callsTTableR[rightSide].insert(leftSide);
     for (const auto& r : db->procedures)

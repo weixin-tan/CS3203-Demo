@@ -21,10 +21,16 @@ public:
     std::string value;
 
 private:
-    ProgramElement(ElementType elementType, int stmtNo, const std::string& procName, const std::string& varName, const std::string& value);
+    ProgramElement(ElementType elementType,
+                   int stmtNo,
+                   const std::string& procName,
+                   const std::string& varName,
+                   const std::string& value);
 
 public:
-    static ProgramElement createStatement(ElementType elementType, int stmtNo, const std::string& procOrVarName = ProgramElement::nullStringValue);
+    static ProgramElement createStatement(ElementType elementType,
+                                          int stmtNo,
+                                          const std::string& procOrVarName = ProgramElement::nullStringValue);
     static ProgramElement createProcedure(const std::string& procName);
     static ProgramElement createVariable(const std::string& varName);
     static ProgramElement createConstant(const std::string& value);  // use string to avoid overflow

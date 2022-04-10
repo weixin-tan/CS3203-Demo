@@ -4,7 +4,7 @@
 ParentTExtractor::ParentTExtractor(DB* db) : db(db) {}
 
 void ParentTExtractor::computeReverse() {
-    for (const auto& [leftSide, rightSides] : db->parentTTable)
+    for (const auto&[leftSide, rightSides] : db->parentTTable)
         for (const auto& rightSide : rightSides)
             db->parentTTableR[rightSide].insert(leftSide);
     for (const auto& r : db->stmtNos)
