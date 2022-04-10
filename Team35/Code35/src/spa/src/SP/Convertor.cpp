@@ -19,7 +19,6 @@ std::vector<std::vector<ParsedStatement>> Convertor::procedureReader(ProcedureLs
 
         results.push_back(statementListReader(procedurelist.getProcedureAtIndex(i).getStmtLst(), -1));
 
-        // TODO: Sending the statement list to the PKB - should be removed 
         ///for (const ParsedStatement i : finalResults) {
         //	pkb_setter->insertStmt(i);
         //}
@@ -32,7 +31,6 @@ std::vector<std::vector<ParsedStatement>> Convertor::procedureReader(ProcedureLs
     return results;
 }
 
-// FOR TESTING, THE RETURN TYPE IS SUPPOSED TO BE VOID (TO SIMULATE PASSING TO PKB)
 // Identifes the type of statementlist, and also includes the line number of the container. 
 // For Procedures, since there are no line numbers, line number will be -1. 
 // Creates a stack for the line numbers of the statement container..
