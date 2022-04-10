@@ -179,7 +179,7 @@ Entity QueryProcessor::createEntityWithAttribute(const std::string& s,
         long dotPosition = s.find(".");
 
         std::string entityName = stripString(s.substr(0, dotPosition));
-        std::string attributeName = stripString(s.substr(dotPosition+1, s.length()-dotPosition-1));
+        std::string attributeName = stripString(s.substr(dotPosition + 1, s.length() - dotPosition - 1));
 
         Entity basicEntity = getSuchThatEntity(entityName, entityMap);
         EntityType eType = basicEntity.eType;
@@ -329,10 +329,9 @@ std::vector<Clause> QueryProcessor::parsePQL(const std::string& queryString) {
 
         handleVariablesToFind(&variablesToSelect, &newClause, &isValid, &entityMap);
 
-        if (newClause.entityToFindList[0].eType == EntityType::BOOLEAN && doesStringExist(selectStmt, "<")){
+        if (newClause.entityToFindList[0].eType == EntityType::BOOLEAN && doesStringExist(selectStmt, "<")) {
             isValid = false;
         }
-
 
         if (!isValid) {
             break;

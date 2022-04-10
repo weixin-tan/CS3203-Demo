@@ -8,8 +8,7 @@
 #include "../PKB/ProgramElement.h"
 #include "Entity.h"
 
-
-class Hashing{
+class Hashing {
 public:
     //constructor
     Entity entity; //entity to be hashed

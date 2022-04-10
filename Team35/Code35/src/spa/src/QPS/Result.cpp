@@ -68,7 +68,7 @@ std::set<ProgramElement> convertToLogicalOneSyn(const std::set<ProgramElement*>&
     return logicalSet;
 }
 
-std::set<std::pair<ProgramElement,ProgramElement>>
+std::set<std::pair<ProgramElement, ProgramElement>>
 convertToLogicalTwoSyn(const std::set<std::pair<ProgramElement*, ProgramElement*>>& pointerSet) {
     std::set<std::pair<ProgramElement, ProgramElement>> logicalSet;
     for (auto pair : pointerSet) {
@@ -79,9 +79,9 @@ convertToLogicalTwoSyn(const std::set<std::pair<ProgramElement*, ProgramElement*
 
 bool Result::operator==(const Result& r1) const {
     return type == r1.type &&
-           valid == r1.valid &&
-           oneSynEntity == r1.oneSynEntity &&
-           convertToLogicalOneSyn(oneSynSet) == convertToLogicalOneSyn(r1.oneSynSet) &&
-           twoSynEntities == r1.twoSynEntities &&
-           convertToLogicalTwoSyn(twoSynSet) == convertToLogicalTwoSyn(r1.twoSynSet);
+            valid == r1.valid &&
+            oneSynEntity == r1.oneSynEntity &&
+            convertToLogicalOneSyn(oneSynSet) == convertToLogicalOneSyn(r1.oneSynSet) &&
+            twoSynEntities == r1.twoSynEntities &&
+            convertToLogicalTwoSyn(twoSynSet) == convertToLogicalTwoSyn(r1.twoSynSet);
 }

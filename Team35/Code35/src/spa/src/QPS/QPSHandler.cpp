@@ -12,12 +12,13 @@ bool isFixedEntityGroup(const RelationshipRef& r) {
     return (r.leftEntity.eType == EntityType::FIXED_INTEGER || r.leftEntity.eType == EntityType::FIXED_STRING ||
             r.leftEntity.eType == EntityType::FIXED_STRING_WITHIN_WILDCARD ||
             r.leftEntity.eType == EntityType::WILDCARD)
-           &&
-           (r.rightEntity.eType == EntityType::FIXED_INTEGER || r.rightEntity.eType == EntityType::FIXED_STRING ||
-            r.rightEntity.eType == EntityType::FIXED_STRING_WITHIN_WILDCARD ||
-            r.rightEntity.eType == EntityType::WILDCARD)
-           &&
-           (r.rType != RelationshipType::PATTERN);
+            &&
+                    (r.rightEntity.eType == EntityType::FIXED_INTEGER || r.rightEntity.eType == EntityType::FIXED_STRING
+                            ||
+                                    r.rightEntity.eType == EntityType::FIXED_STRING_WITHIN_WILDCARD ||
+                            r.rightEntity.eType == EntityType::WILDCARD)
+            &&
+                    (r.rType != RelationshipType::PATTERN);
 }
 
 FormattedResult QPSHandler::processClause(const GroupedClause& groupedClause) const {
@@ -38,12 +39,12 @@ FormattedResult QPSHandler::processClause(const GroupedClause& groupedClause) co
     std::vector<Table> intermediateTables;
 
     if (isFixedEntityGroup(groupedClause.relRefGroups[0].relRefGroup[0])) {
-        if(!handleFixedEntityGroup(groupedClause.relRefGroups[0])) {
+        if (!handleFixedEntityGroup(groupedClause.relRefGroups[0])) {
             return emptyFormattedResult;
         }
     }
 
-    for (const auto& group: groupedClause.relRefGroups){
+    for (const auto& group : groupedClause.relRefGroups) {
         if (isFixedEntityGroup(group.relRefGroup[0])) {
             continue;
         }
@@ -80,7 +81,7 @@ FormattedResult QPSHandler::processClause(const GroupedClause& groupedClause) co
     return finalFormattedResult;
 }
 
-bool QPSHandler::handleFixedEntityGroup(const RelationshipRefGroup &group) const {
+bool QPSHandler::handleFixedEntityGroup(const RelationshipRefGroup& group) const {
     for (const auto& r : group.relRefGroup) {
         Result tempResult = getResult(r);
         if (!tempResult.getValid()) {
@@ -98,7 +99,7 @@ FormattedResult QPSHandler::handleZeroClause(const std::vector<Entity>& entities
         formattedResult.setBoolReturn(true);
         return formattedResult;
     }
-    
+
     formattedResult.setEntityList(entitiesToFind);
 
     std::set<Entity> tableEntities = extractEntitySet(entitiesToFind);
@@ -228,7 +229,7 @@ Table QPSHandler::buildFinalTable(const std::vector<Table>& tables) const {
     return finalTable;
 }
 
-std::set<Entity> QPSHandler::extractTableEntities(const TableRow& tableRow) const{
+std::set<Entity> QPSHandler::extractTableEntities(const TableRow& tableRow) const {
     std::set<Entity> entities;
     for (const auto& r : tableRow.row) {
         entities.insert(r.first);

@@ -21,7 +21,7 @@ std::list<std::string> QPSMainLogic::parse(const std::string& query) {
     FormattedResult formattedResult;
     try {
         formattedResult = callHandler(groupedClause);
-    } catch (std::invalid_argument& e){
+    } catch (std::invalid_argument& e) {
         return emptyList;
     }
     std::list<std::string> finalResult = callFormatter(formattedResult);

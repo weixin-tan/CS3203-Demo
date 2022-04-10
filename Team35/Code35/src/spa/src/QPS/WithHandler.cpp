@@ -51,8 +51,8 @@ std::set<ProgramElement*> WithHandler::getProgramElements(const EntityType& eTyp
 }
 
 std::set<ProgramElement*> WithHandler::matchProgramElements(const std::set<ProgramElement*>& setA,
-                                                           const Entity& fixedEntity,
-                                                           EntityAttributeType aType) {
+                                                            const Entity& fixedEntity,
+                                                            EntityAttributeType aType) {
     std::set<ProgramElement*> toReturn;
     std::string stringA;
     std::string stringB = fixedEntity.name;
@@ -76,9 +76,9 @@ void WithHandler::insertIfSameAttributeString(const std::string& stringA, const 
 
 std::set<std::pair<ProgramElement*,
                    ProgramElement*>> WithHandler::matchProgramElements(const std::set<ProgramElement*>& setA,
-                                                                      const std::set<ProgramElement*>& setB,
-                                                                      EntityAttributeType aType,
-                                                                      EntityAttributeType bType) {
+                                                                       const std::set<ProgramElement*>& setB,
+                                                                       EntityAttributeType aType,
+                                                                       EntityAttributeType bType) {
     std::set<std::pair<ProgramElement*, ProgramElement*>> toReturn;
     std::string stringA;
     std::string stringB;
@@ -102,7 +102,7 @@ std::set<ProgramElement*> WithHandler::handleOneSideFixed(const Entity& fixedSid
 }
 
 std::set<std::pair<ProgramElement*, ProgramElement*>> WithHandler::handleNoSideFixed(const Entity& leftEntity,
-                                                                                   const Entity& rightEntity) {
+                                                                                     const Entity& rightEntity) {
     std::set<ProgramElement*> setA = getProgramElements(leftEntity.eType);
     std::set<ProgramElement*> setB = getProgramElements(rightEntity.eType);
 
