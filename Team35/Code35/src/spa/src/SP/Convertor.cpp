@@ -19,7 +19,6 @@ std::vector<std::vector<ParsedStatement>> Convertor::procedureReader(ProcedureLs
 
         results.push_back(statementListReader(procedurelist.getProcedureAtIndex(i).getStmtLst(), -1));
 
-        // TODO: Sending the statement list to the PKB - should be removed 
         ///for (const ParsedStatement i : finalResults) {
         //	pkb_setter->insertStmt(i);
         //}
