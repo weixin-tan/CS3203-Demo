@@ -32,7 +32,6 @@ std::vector<std::vector<ParsedStatement>> Convertor::procedureReader(ProcedureLs
     return results;
 }
 
-// FOR TESTING, THE RETURN TYPE IS SUPPOSED TO BE VOID (TO SIMULATE PASSING TO PKB)
 // Identifes the type of statementlist, and also includes the line number of the container. 
 // For Procedures, since there are no line numbers, line number will be -1. 
 // Creates a stack for the line numbers of the statement container..
